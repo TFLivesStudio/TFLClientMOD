@@ -32,19 +32,21 @@ jobs:
           distribution: microsoft
           java-version: '25'
 
-      - name: Set up Gradle 9.7.1
+      - name: Validate checked-in Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: Set up Gradle and dependency cache
         uses: gradle/actions/setup-gradle@v5
         with:
-          gradle-version: '9.7.1'
           cache-read-only: ${{ github.event_name == 'pull_request' }}
 
       - name: Verify Java and Gradle
         run: |
           java -version
-          gradle --version
+          ./gradlew --version
 
       - name: Compile and test
-        run: gradle --no-daemon --stacktrace clean build
+        run: ./gradlew --no-daemon --stacktrace clean build
 
       - name: Ensure distributable JAR exists
         shell: bash
