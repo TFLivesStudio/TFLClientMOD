@@ -23,11 +23,15 @@
 - [ ] Pruebas manuales A01–A19: **pendientes**.
 - [ ] Escenas 3D **todavía no** incluidas.
 
-## 0.3 — Polishing
-- [ ] Renderizado visual profesional, temas consistentes y traducción completa.
-- [ ] Editor HUD con drag, resize, guías y perfiles.
-- [ ] Registro de módulos aislados con configuración independiente.
-- [ ] Pruebas de accesibilidad, escalado GUI y diferentes GPU.
+## 0.3 — PROJECT OVERDRIVE · Super Update (planificada)
+**[Misión completa y criterios de aceptación](MISSION_0.3_OVERDRIVE.md)**
+- [ ] Arquitectura modular, perfiles, keybinds, migración de configuración y fallbacks.
+- [ ] Menú, pause screen y opciones renovadas con múltiples temas y accesibilidad.
+- [ ] Editor HUD visual con drag, snap, escala, visibilidad y widgets PvP/survival.
+- [ ] Herramientas PvP, zoom, waypoints, overlays de información y construcción.
+- [ ] Diagnóstico de rendimiento, perfiles honestos y pruebas de compatibilidad.
+- [ ] Escenarios 3D y funciones sociales **stretch**: solo si superan QA y presupuestos de rendimiento.
+- [ ] Entregas alpha escalonadas; CI, tests y revisión manual antes de versión estable.
 
 ## 0.4 — Gameplay multimodo
 - [ ] HUD PvP, CPS, teclas, crosshair y efectos.
