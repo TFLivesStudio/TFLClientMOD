@@ -34,7 +34,7 @@ public final class TflCoreClient implements ClientModInitializer {
                 Identifier.fromNamespaceAndPath(MOD_ID, "controls"));
         KeyMapping settingsKey = KeyMappingHelper.registerKeyMapping(
                 new KeyMapping("key.tflcore.settings",
-                        InputConstants.Type.KEYSYM, InputConstants.KEY_RSHIFT, category));
+                        InputConstants.Type.KEYBOARD, InputConstants.KEY_RSHIFT, category));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (settingsKey.consumeClick()) {
