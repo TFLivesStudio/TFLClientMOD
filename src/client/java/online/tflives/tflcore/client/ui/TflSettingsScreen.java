@@ -3,6 +3,7 @@ package online.tflives.tflcore.client.ui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
 import online.tflives.tflcore.client.TflCoreClient;
 import online.tflives.tflcore.client.config.TflSettings;
@@ -116,7 +117,11 @@ public final class TflSettingsScreen extends Screen {
 
     @Override
     public void onClose() {
-        this.minecraft.gui.setScreen(parent);
+        if (parent instanceof TflMainMenuScreen && !TflCoreClient.settings().get().customMainMenu) {
+            this.minecraft.gui.setScreen(new TitleScreen());
+        } else {
+            this.minecraft.gui.setScreen(parent);
+        }
     }
 
     @Override
