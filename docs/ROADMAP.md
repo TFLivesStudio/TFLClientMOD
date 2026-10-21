@@ -1,47 +1,48 @@
-# TFL Core — Roadmap
+# TFL Core — Roadmap oficial
 
-## Product principles
-- Minecraft **26.3 first** (Fabric), **1.8.9 second** (compatibility strategy TBD).
-- Strictly client-side; no server-side requirements or competitive advantages through prohibited features.
-- Fast by default, beautiful when enabled, fully configurable.
-- Use specialized optimization mods bundled by **TFL Client** rather than reimplementing their internals.
-- Local-first configuration and no telemetry without explicit opt-in.
-- Distribute through TFL Client; no launcher authentication credentials are handled by the mod.
+## Principios
+- Minecraft 26.3 con Fabric y Java 25 primero; port 1.8.9 posteriormente.
+- Client-side; sin paquetes de red propios, seguimiento o cuentas obligatorias.
+- Rendimiento medido, gráficos configurables y accesibilidad.
+- Mejor aprovechar mods especializados de optimización que duplicar su código.
 
-## 0.1 Foundation (this branch)
-- [x] Fabric Loom scaffold, Java 25 target, client-only entrypoint.
-- [ ] CI build confirmed, reproducible Gradle wrapper checked in.
-- [ ] In-game smoke test on 26.3.
+## 0.1 — Foundation (aprobado)
+- [x] Entrada client-only, CI/Gradle Wrapper.
+- [x] Minecraft 26.3 abre mundo e inicializa el mod (test del usuario).
 
-## 0.2 Settings and module system
-- Modular feature registration and dependency/compatibility checks.
-- Local, versioned JSON settings, migrations, presets, export/import.
-- Central keybind manager, Right Shift to open TFL Core settings.
-- Clear failure isolation between optional modules.
+## 0.2 — First interactive alpha (código + CI; falta prueba en Minecraft)
+- [x] Menú principal propio TFL Selection.
+- [x] Acceso a mundos, multijugador, opciones y configuración del Core.
+- [x] Temas BLUE / MIDNIGHT / FROST.
+- [x] Fondo animado 2D de bajo coste; opción para reducir movimiento.
+- [x] Right Shift, tecla editable desde opciones de Minecraft.
+- [x] Configuración JSON local con guardado atómico y validación.
+- [x] HUD FPS/coordenadas/reloj con interruptores individuales.
+- [x] Perfiles BALANCED/FPS/QUALITY que afectan **solo** a TFL Core.
+- [x] Pruebas automáticas de configuración.
+- [ ] Pruebas manuales A01–A19: **pendientes**.
+- [ ] Escenas 3D **todavía no** incluidas.
 
-## 0.3 Interface
-- Custom main menu with static fallback and configurable 3D scenes.
-- Blue TFLives identity, multiple user-selectable themes.
-- UI scaling, accessibility, reduced motion and low-impact presets.
+## 0.3 — Polishing
+- [ ] Renderizado visual profesional, temas consistentes y traducción completa.
+- [ ] Editor HUD con drag, resize, guías y perfiles.
+- [ ] Registro de módulos aislados con configuración independiente.
+- [ ] Pruebas de accesibilidad, escalado GUI y diferentes GPU.
 
-## 0.4 HUD
-- Widget framework, drag/resize editor, profile import/export.
-- FPS, frametimes, ping, coordinates, armor, effects, keystrokes, CPS, biome/time.
+## 0.4 — Gameplay multimodo
+- [ ] HUD PvP, CPS, teclas, crosshair y efectos.
+- [ ] Exploración, waypoints, brújula, armadura, durabilidad.
+- [ ] Herramientas técnicas de construcción y redstone.
 
-## 0.5 Gameplay
-- PvP HUD and custom crosshair, zoom, waypoints, minimap and technical overlays.
-- Never claim server-side information unavailable to the client.
-- Feature permissions/compatibility cautions for third-party servers.
+## 0.5 — Performance
+- [ ] Paquete curado y probado de Sodium/Lithium/etc desde TFL Client.
+- [ ] Benchmark con FPS, frametime p95/p99, RAM y carga.
+- [ ] Escenas 3D reales opcionales con límite de GPU y respaldo estático.
+- [ ] No afirmar ganancias de rendimiento sin mediciones.
 
-## 0.6 Performance and integration
-- Presets: FPS / Balanced / Quality / Custom / hardware suggestions.
-- Integrate optimization mod settings only through compatible APIs or supported configs.
-- Optional Discord Rich Presence; launcher integration via an explicit, safe protocol.
-- Configuration sync via a future secure backend with opt-in and offline fallback.
+## 0.6+ — Online opcional
+- [ ] Discord Rich Presence, interoperabilidad segura con el launcher.
+- [ ] Exportar/importar y eventualmente sincronizar perfiles con consentimiento.
 
-## 1.8.9 port
-- Separate adapter/implementation after Fabric 26.3 is stable.
-- Evaluate Forge 1.8.9 + compatible OptiFine as a candidate, not a predetermined solution.
-
-## Not yet implemented
-Everything after the 0.1 bootstrap. The roadmap is an intention, not a feature list of a released build.
+## Port clásico 1.8.9
+Se evaluará tras estabilidad de 26.3, con base distinta y paridad funcional razonable.
