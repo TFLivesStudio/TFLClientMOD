@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "tflcore",
+  "version": "${version}",
+  "name": "TFL Core",
+  "description": "Mod central de TFL Selection, cliente multimodo para Minecraft.",
+  "authors": [
+    "TFLives"
+  ],
+  "contact": {
+    "homepage": "https://github.com/TFLivesStudio/TFLClientMOD",
+    "sources": "https://github.com/TFLivesStudio/TFLClientMOD"
+  },
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "online.tflives.tflcore.client.TflCoreClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

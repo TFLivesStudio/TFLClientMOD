@@ -1,0 +1,76 @@
+name: TFL Core · Build Fabric 26.3
+
+on:
+  push:
+    branches:
+      - main
+      - feat/fabric-26.3-foundation
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tflcore-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Fabric 26.3 · Java 25
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: microsoft
+          java-version: '25'
+
+      - name: Validate checked-in Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: Set up Gradle and dependency cache
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+
+      - name: Verify Java and Gradle
+        run: |
+          java -version
+          ./gradlew --version
+
+      - name: Compile and test
+        run: ./gradlew --no-daemon --stacktrace clean build
+
+      - name: Ensure distributable JAR exists
+        shell: bash
+        run: |
+          shopt -s nullglob
+          jars=(build/libs/*.jar)
+          release=()
+          for jar in "${jars[@]}"; do
+            case "$jar" in *-dev.jar|*-sources.jar) ;; *) release+=("$jar") ;; esac
+          done
+          if [ "${#release[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one production JAR; found ${#release[@]}"
+            exit 1
+          fi
+          echo "Distributable artifact: ${release[0]}"
+          sha256sum "${release[0]}"
+
+      - name: Upload testable TFL Core
+        uses: actions/upload-artifact@v7
+        with:
+          name: TFL-Core-Fabric-26.3-${{ github.run_number }}
+          path: |
+            build/libs/*.jar
+            !build/libs/*-dev.jar
+            !build/libs/*-sources.jar
+          if-no-files-found: error
+          retention-days: 30
