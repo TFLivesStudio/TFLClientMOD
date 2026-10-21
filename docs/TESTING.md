@@ -1,5 +1,7 @@
 # TFL Core 0.1.0-SNAPSHOT — first smoke test
 
+> **Documento histórico.** La guía vigente es [TESTING_0.3.md](TESTING_0.3.md). La 0.3.0-alpha.1 todavía no se ha validado en partida.
+
 **Scope:** Minecraft Java **26.3**, **Fabric**, **Java 25**. This is an initial bootstrap, **not** a finished playable custom client.
 
 ## Obtain a verified build
