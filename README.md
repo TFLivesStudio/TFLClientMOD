@@ -1,11 +1,27 @@
-# TFL Core — TFL Selection
+# TFL Selection · TFL Core
 
-Cliente de Minecraft de TFLives, distribuido exclusivamente mediante TFL Client.
+[![Fabric 26.3 Build](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml/badge.svg)](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml)
 
-## Objetivo
+Cliente oficial de Minecraft de **TFLives**, distribuido mediante **TFL Client**.
 
-Un cliente **client-side**, modular, personalizable y de alto rendimiento para PvP, supervivencia, aventura, construcción, redstone y experiencia visual. La versión inicial apunta a **Minecraft Java 26.3 con Fabric**; el futuro port **1.8.9** se abordará después.
+## Estado
+**0.2.0-SNAPSHOT**, alpha experimental. Objetivo inicial: **Minecraft Java 26.3 / Fabric / Java 25**. Se abordará **Minecraft 1.8.9** después de validar la versión moderna.
 
-El desarrollo comienza en ramas de trabajo y se integrará a `main` mediante pull requests revisados.
+### Incluido en 0.2
+- Menú principal TFL Selection con enlaces a modos de juego y configuración.
+- Personalización con BLUE, MIDNIGHT, FROST; efecto de fondo de bajo coste y reducción de movimiento.
+- Configuración local persistente en `config/tflcore.json`, sin cuentas ni telemetría.
+- Acceso a configuración con Right Shift y botones dentro del menú.
+- HUD inicial de FPS, coordenadas y reloj opcional.
+- Perfiles de efectos **internos del Core** (BALANCED/FPS/QUALITY); no se promete modificar ajustes gráficos de otros mods.
 
-> Estado: repositorio recién inicializado; la primera implementación y el plan técnico se preparan en una rama de desarrollo.
+### Pendiente
+- Escenas 3D reales, HUD arrastrable, widgets avanzados, integraciones con optimizadores y TFL Client, port 1.8.9.
+
+## Compilación
+Windows: `gradlew.bat clean build`  
+Linux/macOS: `./gradlew clean build`
+
+Requiere **Java 25**. GitHub Actions publica el `.jar` en cada compilación satisfactoria. Para uso dentro de Minecraft instala la compilación normal, no `-sources.jar` ni `-dev.jar`.
+
+[Pruebas de la versión 0.2](docs/TESTING_0.2.md) · [Arquitectura](docs/ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md)
