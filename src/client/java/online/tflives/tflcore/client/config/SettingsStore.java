@@ -19,6 +19,7 @@ public final class SettingsStore {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Path path;
     private TflSettings settings;
+    private boolean readOnly;
 
     public SettingsStore(Path path) {
         this.path = path;
@@ -35,7 +36,8 @@ public final class SettingsStore {
             TflSettings value = GSON.fromJson(reader, TflSettings.class);
             if (value == null) throw new IllegalArgumentException("Settings JSON is null");
             if (value.schemaVersion > TflSettings.SCHEMA_VERSION) {
-                LOGGER.warn("Settings schema {} is newer than this TFL Core. Using defaults without overwriting the file.", value.schemaVersion);
+                readOnly = true;
+                LOGGER.warn("Settings schema {} is newer than this TFL Core. Using defaults; file is read-only.", value.schemaVersion);
                 return new TflSettings();
             }
             value.normalize();
@@ -47,6 +49,10 @@ public final class SettingsStore {
     }
 
     public boolean save() {
+        if (readOnly) {
+            LOGGER.warn("Refusing to overwrite settings from a newer TFL Core version: {}", path);
+            return false;
+        }
         Path tmp = null;
         try {
             Files.createDirectories(path.toAbsolutePath().getParent());
