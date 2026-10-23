@@ -1,20 +1,20 @@
-name: Validate adopted TRS Client source
-
+name: TFL Core adopted distribution
 on:
   push:
-    branches: [adopt/trs-client-foundation]
-    paths:
-      - '.github/workflows/verify-trs-adoption.yml'
+    branches: [adopt/trs-client-foundation, main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
-
+concurrency:
+  group: tfl-adopted-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   fabric-26-3:
-    name: Verify upstream Fabric 26.3
+    name: TFL Fabric 26.3 · tests and distribution audit
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,31 +23,47 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+      - uses: gradle/actions/wrapper-validation@v4
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build Fabric 26.3 from complete vendored source
+      - name: Build adapted implementation and execute common tests
         working-directory: vendor/trs-client
+        run: bash gradlew --no-daemon --max-workers=2 :common:test :common:moduleInventory :fabric:26.3:build -PtrsVersions=26.3
+      - name: Verify packaging tools and scan source
         run: |
-          chmod +x ./gradlew
-          ./gradlew --no-daemon --stacktrace :fabric:26.3:build -PtrsVersions=26.3
-      - name: Show artifacts
-        if: success()
+          python3 -m unittest discover -s tools -p 'test_*.py'
+          python3 tools/scan_secrets.py
+      - name: Package development build, inspect real metadata, hash and preserve source
         shell: bash
         run: |
-          find vendor/trs-client/fabric -type f -path '*/build/libs/*.jar' -printf '%p (%s bytes)\n' | tee "$RUNNER_TEMP/jars.txt"
-          test -s "$RUNNER_TEMP/jars.txt"
-      - name: Upload isolated Fabric build
-        if: success()
+          shopt -s nullglob
+          jars=(vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-*.jar)
+          release=()
+          for jar in "${jars[@]}"; do
+            case "$jar" in *-sources.jar|*-dev.jar) ;; *) release+=("$jar");; esac
+          done
+          test "${#release[@]}" -eq 1
+          python3 tools/distribution.py package "${release[0]}"
+          git archive --format=zip --output=distribution/build/tflcore-corresponding-source.zip HEAD
+          sha256sum distribution/build/tflcore-corresponding-source.zip > distribution/build/tflcore-corresponding-source.zip.sha256
+          python3 tools/distribution.py mrpack "${release[0]}" distribution/build/tflcore-corresponding-source.zip
+      - name: Upload development candidate (never publish a release automatically)
         uses: actions/upload-artifact@v4
         with:
-          name: trs-client-upstream-fabric-26.3
-          path: vendor/trs-client/fabric/**/build/libs/*.jar
+          name: tflcore-development-fabric-26.3
+          path: distribution/build/
           if-no-files-found: error
           retention-days: 14
-
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tflcore-test-reports
+          path: vendor/trs-client/common/build/test-results/test/
+          if-no-files-found: error
   legacy-1-8-9:
-    name: Verify upstream Forge 1.8.9
+    name: TFL Forge 1.8.9 · separate Java 8 target
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,25 +71,15 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '25'
+          java-version: |
+            8
+            25
       - uses: gradle/actions/setup-gradle@v4
-      # Stonecutter Gradle plugin requires JVM 21+; toolchains still emit Java 8 bytecode.
-      - name: Build Forge 1.8.9 from complete vendored source
+      - name: Build adapted Forge 1.8.9, retaining Java 8 bytecode
         working-directory: vendor/trs-client/legacy
-        run: |
-          chmod +x ./gradlew
-          ./gradlew --no-daemon --stacktrace build -PtrsVersions=1.8.9
-      - name: Show artifacts
-        if: success()
-        shell: bash
-        run: |
-          find vendor/trs-client/legacy -type f -path '*/build/libs/*.jar' -printf '%p (%s bytes)\n' | tee "$RUNNER_TEMP/jars.txt"
-          test -s "$RUNNER_TEMP/jars.txt"
-      - name: Upload isolated legacy build
-        if: success()
-        uses: actions/upload-artifact@v4
+        run: bash gradlew --no-daemon --max-workers=2 build -PtrsVersions=1.8.9
+      - uses: actions/upload-artifact@v4
         with:
-          name: trs-client-upstream-forge-1.8.9
-          path: vendor/trs-client/legacy/**/build/libs/*.jar
+          name: tflcore-development-forge-1.8.9
+          path: vendor/trs-client/legacy/versions/1.8.9/build/libs/tflcore-*.jar
           if-no-files-found: error
-          retention-days: 14

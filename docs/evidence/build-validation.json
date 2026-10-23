@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-23",
+  "qualityChannel": "development",
+  "verifiedImplementationCommit": "41aaf4e6edcf1ae2c3272eb67e5fde08b76f5b63",
+  "minecraftPrimary": "26.3",
+  "minecraftSecondary": "1.8.9",
+  "common": {
+    "tests": 1104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 1102,
+    "skipDetails": [
+      {
+        "class": "dev.theredstonee.trsclient.core.hosting.E4mcLiveTest",
+        "test": "publicLinkEndToEnd()",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: nur mit -Dtrsclient.test.e4mc=true"
+      },
+      {
+        "class": "dev.theredstonee.trsclient.core.net.NetBench",
+        "test": "benchmark()",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: nur mit -Dtrsclient.test.netbench=true"
+      }
+    ]
+  },
+  "forge": {
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 50,
+    "skipDetails": []
+  },
+  "packagingUnitTests": {
+    "tests": 6,
+    "passed": 6
+  },
+  "artifacts": [
+    {
+      "file": "vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar",
+      "sha256": "e30bd248a208f4cec5bdf9a6a0a43391ff8af94f730d3372962165c8d54a4323",
+      "size": 6721150
+    },
+    {
+      "file": "vendor/trs-client/legacy/versions/1.8.9/build/libs/tflcore-forge-1.8.9-0.4.0-dev.1.jar",
+      "sha256": "1b7d89f78d1885c1c3039b65580e417acb0a9a6d011d5d2cf930ab9f5d9ad477",
+      "size": 6573180
+    }
+  ],
+  "nativeValidation": {
+    "backend": "Xvfb + Mesa 25.0.7 Lavapipe/Vulkan 1.4.305, software CPU",
+    "fabricDevMenus": {
+      "exitCode": 0,
+      "screens": [
+        "title",
+        "modules",
+        "zoom settings",
+        "profiles",
+        "dialogs",
+        "pause",
+        "local world"
+      ]
+    },
+    "fabricDevMaps": {
+      "exitCode": 0,
+      "coverage": [
+        "minimap",
+        "waypoints",
+        "world map",
+        "dimensions",
+        "Fair Play",
+        "PNG area/full export verified by runner"
+      ]
+    },
+    "fabricProductionJar": {
+      "exitCode": 0,
+      "harnessBundled": false,
+      "instance": "isolated prod-26.3, TFL + Fabric API",
+      "coverage": [
+        "title",
+        "core menu",
+        "configuration",
+        "credits",
+        "normal Quit Game"
+      ],
+      "export": true,
+      "importApplied": true,
+      "importBackup": true,
+      "resetRestoredDefaults": true,
+      "resetBackup": true,
+      "method": "Real production JAR UI clicks with filesystem assertions in isolated prod-26.3 instance"
+    },
+    "forgeDevMenus": {
+      "exitCode": 0,
+      "captures": 17,
+      "coverage": [
+        "title",
+        "modules",
+        "zoom settings",
+        "profiles",
+        "dialogs",
+        "pause",
+        "local world"
+      ]
+    }
+  },
+  "reproducibility": {
+    "target": "Fabric 26.3",
+    "method": "Forced :fabric:26.3:jar rebuild after the verified production session",
+    "byteIdentical": true,
+    "freshMachineRestorationTested": false
+  },
+  "limitations": [
+    "No exhaustive gameplay or authenticated multiplayer certification",
+    "No real GPU or optimization-mod combination benchmark",
+    "No audio device in cloud production test",
+    "No video decoder/rights-cleared video clip",
+    "Legacy production JAR not launched outside dev",
+    "Legacy pixel offsets/keybinds/presets need manual verification"
+  ]
+}

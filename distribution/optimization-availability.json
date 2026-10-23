@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-23",
+  "source": "https://api.modrinth.com/v2",
+  "bundled": false,
+  "versions": [
+    {
+      "project": "sodium",
+      "projectId": "AANobbMI",
+      "license": "LicenseRef-Polyform-Shield-1.0.0",
+      "version": "mc26.3-0.9.3-beta.1-fabric",
+      "versionId": "g6ju16VJ",
+      "channel": "beta",
+      "minecraft": [
+        "26.3"
+      ],
+      "loaders": [
+        "fabric"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "filename": "sodium-fabric-0.9.3-beta.1+mc26.3.jar",
+          "sha512": "884a1ef0ce0e69d565d41a1359070a8d4f8589a086b565540defdb4741985053077dfd0f2a56898ce60510720a9f95dd8ba220a9a6340b6e0cf5cb12352e2419",
+          "size": 1912496,
+          "url": "https://cdn.modrinth.com/data/AANobbMI/versions/g6ju16VJ/sodium-fabric-0.9.3-beta.1%2Bmc26.3.jar"
+        }
+      ],
+      "verification": "API availability only; not tested in Minecraft with TFL Core"
+    },
+    {
+      "project": "lithium",
+      "projectId": "gvQqBUqZ",
+      "license": "LGPL-3.0-only",
+      "version": "mc26.3-0.26.2-fabric",
+      "versionId": "xS0Q8LSi",
+      "channel": "release",
+      "minecraft": [
+        "26.3"
+      ],
+      "loaders": [
+        "fabric",
+        "quilt"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "filename": "lithium-fabric-0.26.2+mc26.3.jar",
+          "sha512": "4d7fee66132eedc71feab9390b92c95d7058edbdad0fecfac1d836a2950b97a7ca463afbede61c7ef361ce65e1f927ab9e89dde5bf2e0e0ce486afb5c5dbee40",
+          "size": 914543,
+          "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/xS0Q8LSi/lithium-fabric-0.26.2%2Bmc26.3.jar"
+        }
+      ],
+      "verification": "API availability only; not tested in Minecraft with TFL Core"
+    },
+    {
+      "project": "ferrite-core",
+      "projectId": "uXXizFIs",
+      "license": "MIT",
+      "version": "9.0.0-fabric",
+      "versionId": "d5ddUdiB",
+      "channel": "release",
+      "minecraft": [
+        "26.1",
+        "26.1.1",
+        "26.1.2",
+        "26.2",
+        "26.3"
+      ],
+      "loaders": [
+        "fabric"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "filename": "ferritecore-9.0.0-fabric.jar",
+          "sha512": "d81fa97e11784c19d42f89c2f433831d007603dd7193cee45fa177e4a6a9c52b384b198586e04a0f7f63cd996fed713322578bde9a8db57e1188854ae5cbe584",
+          "size": 72677,
+          "url": "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar"
+        }
+      ],
+      "verification": "API availability only; not tested in Minecraft with TFL Core"
+    },
+    {
+      "project": "immediatelyfast",
+      "projectId": "5ZwdcRci",
+      "license": "LGPL-3.0-or-later",
+      "version": "1.17.1+26.3-fabric",
+      "versionId": "3MP9UR23",
+      "channel": "release",
+      "minecraft": [
+        "26.3"
+      ],
+      "loaders": [
+        "fabric",
+        "quilt"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "filename": "ImmediatelyFast-Fabric-1.17.1+26.3.jar",
+          "sha512": "8e139589fd995bce3d485a34d92a07243964212f7ed2e4fc2f6de5b9a74d0f59b03252e7ce40c64e006cf3e21bed5de27b830d33ef048b286e041f6178ad8428",
+          "size": 99586,
+          "url": "https://cdn.modrinth.com/data/5ZwdcRci/versions/3MP9UR23/ImmediatelyFast-Fabric-1.17.1%2B26.3.jar"
+        }
+      ],
+      "verification": "API availability only; not tested in Minecraft with TFL Core"
+    },
+    {
+      "project": "iris",
+      "projectId": "YL57xq9U",
+      "license": "LGPL-3.0-only",
+      "version": "1.11.7+26.3-fabric",
+      "versionId": "vTN4NRGW",
+      "channel": "release",
+      "minecraft": [
+        "26.3"
+      ],
+      "loaders": [
+        "fabric"
+      ],
+      "dependencies": [
+        {
+          "version_id": "bAZQdGpg",
+          "project_id": "AANobbMI",
+          "file_name": null,
+          "dependency_type": "required"
+        }
+      ],
+      "files": [
+        {
+          "filename": "iris-fabric-1.11.7+mc26.3.jar",
+          "sha512": "d8d3312f77fc52a48e4a6cd836fda33669bdebcb4de0b8c0d30adc808b287330a533e0baef355cc1ce6336a26851d9775369a802a4666b7b7a6266af20088f42",
+          "size": 2850938,
+          "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/vTN4NRGW/iris-fabric-1.11.7%2Bmc26.3.jar"
+        }
+      ],
+      "verification": "API availability only; not tested in Minecraft with TFL Core"
+    },
+    {
+      "project": "entityculling",
+      "projectId": "NNAgCjsB",
+      "license": "LicenseRef-tr7zw-Protective-License",
+      "version": "1.11.3",
+      "versionId": "X1g3VhTx",
+      "channel": "release",
+      "minecraft": [
+        "26.3"
+      ],
+      "loaders": [
+        "fabric"
+      ],
+      "dependencies": [
+        {
+          "version_id": null,
+          "project_id": "P7dR8mSH",
+          "file_name": null,
+          "dependency_type": "required"
+        }
+      ],
+      "files": [
+        {
+          "filename": "entityculling-fabric-1.11.3-mc26.3.jar",
+          "sha512": "b6209bb62d72376d3fd284da137ec93a6dd38ebe5fd38ab9190deeade68b5b7f4bf915f4abcb4a807afe18cb9f0b59e11be789d46df6f0e6f64388ed2edc284d",
+          "size": 1508547,
+          "url": "https://cdn.modrinth.com/data/NNAgCjsB/versions/X1g3VhTx/entityculling-fabric-1.11.3-mc26.3.jar"
+        }
+      ],
+      "verification": "API availability only; not tested in Minecraft with TFL Core"
+    }
+  ]
+}

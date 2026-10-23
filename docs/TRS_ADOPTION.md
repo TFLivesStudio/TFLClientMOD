@@ -1,5 +1,9 @@
 # TFL Core — Full TRS Client Mod adoption
 
+**Current candidate:** Operation Modpack Ready now has adapted builds, native smokes and a
+production Fabric JAR smoke. See RELEASE_READINESS.md and TESTING.md. The original gates below
+record the import-stage decisions; use RELEASE_READINESS.md for the current release checklist.
+
 ## Decision and upstream attribution
 
 We will use **the complete TRS Client MOD source tree** as the authoritative functional foundation for TFL Core / TFL Selection, **not** the TRS Launcher application.
@@ -85,3 +89,10 @@ Check Gradle task listings where needed; these are intended commands, **not yet 
 The importer lives at `.github/workflows/adopt-trs-upstream.yml` and runs on changes to itself in branch `adopt/trs-client-foundation`. It copies a pinned upstream snapshot and attempts to commit it using repository Actions permission. If repository policy prevents Actions writes, use a local, controlled sparse checkout to vendor source and push the branch manually.
 
 Do not merge the migration branch as production merely because the source snapshot exists. **At the time of this update, TFL's stable install path still uses the original `tflcore` mod. Both isolated TRS builds pass CI; a unified TFL JAR and in-game tests remain pending.**
+
+## Operation Modpack Ready implementation
+
+The active root build now delegates to adopted common/Fabric; the old root implementation is
+retained only as migration reference. TFL 0.4.0-dev.1 uses loader ID tflcore and the original internal
+resource/package namespaces. See RELEASE_READINESS.md, MIGRATION.md and TESTING.md for current
+results. The original isolated-build evidence above remains historical, distinct from adapted builds.

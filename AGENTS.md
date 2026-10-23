@@ -28,3 +28,13 @@ This branch contains a full snapshot of the independent **TRS Client mod** from 
 - Don't claim the upstream redstone UI already meets the user’s modern GUI requirements: it does not.
 - Use bounded commits, no force push or destructive resets; avoid changing unrelated TFL projects.
 - Publish no release artifact before audited API/branding/license and client integration.
+
+## Operation Modpack Ready — active TFL distribution
+
+The root build delegates to the adopted implementation; `src/` is historical migration reference,
+not an active source set. Build current TFL with `vendor/trs-client/gradlew -p vendor/trs-client
+:common:test :fabric:26.3:build -PtrsVersions=26.3`, then `python3 tools/distribution.py package <jar>`.
+The original Java package/resource namespace `trsclient` is deliberate; public loader ID is `tflcore`.
+Do not re-enable TRS services or bundle optimization binaries without a separately approved audit.
+Keep common compatible with Java 8 and Gson 2.2.4 for Forge 1.8.9.
+Read docs/RELEASE_READINESS.md and docs/CONTINUATION.md for actual evidence and open gates.

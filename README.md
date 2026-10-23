@@ -1,106 +1,56 @@
-# TFL Selection · TFL Core
+# TFL Core · TFL Selection
 
-[![Fabric 26.3 Build](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml/badge.svg)](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml)
+Distribución **en desarrollo, 0.4.0-dev.1**, derivada del código completo de TRS Client MOD
+(GPL-3.0-only, © Ohev Tamerin). Las modificaciones TFL son de TFLivesStudio.
+Builds de ambos targets y smokes nativos verificados; véase el informe de limitaciones.
+No es un launcher y no necesita TRS Launcher ni TFL Client para sus funciones offline.
 
-Cliente oficial de Minecraft de **TFLives**, distribuido mediante **TFL Client**.
+El código autoritativo está en `vendor/trs-client/`: `common/` compartido, `fabric/` moderno y
+`legacy/` Forge. El antiguo `src/` de TFL 0.3 queda como referencia para migración y **no se compila**
+en el producto adoptado. No se deben instalar ambos clientes juntos.
 
-## Estado
+## Probar la candidata
 
-**0.3.0-alpha.1 — PROJECT OVERDRIVE (alpha experimental)**
+Entrega local en `distribution/build/`: importa `tflcore-validation.mrpack` en un launcher
+compatible con Modrinth y selecciona Java 25. Para instalación manual, usa una instancia nueva
+con Minecraft 26.3, Fabric Loader 0.19.5, Fabric API 0.161.0+26.3 y un único JAR TFL.
+Abre el menú de módulos con **Right Shift**. No añadas optimizadores durante la primera prueba.
+Consulta [guía de uso](docs/USER_GUIDE.md) e [informe de entrega](docs/DELIVERY.md).
 
-Objetivo: **Minecraft Java 26.3 / Fabric / Java 25**, estrictamente **client-side**. El port a **1.8.9** se trabajará después de validar la versión moderna.
+## Compilar
 
-> **Validación:** esta entrega **compila** (`clean build`), genera el JAR y pasa **51 pruebas JUnit**. **Todavía no se ha ejecutado una partida real de Minecraft con esta versión**; consulta la [matriz de funcionalidades](docs/FEATURE_MATRIX_0.3.md) para ver qué está implementado, qué es parcial y qué falta.
+Con JDK 25:
 
-## Incluido en 0.3.0-alpha.1
-
-### Arquitectura y configuración
-- Sistema de módulos con id estable, categoría, dependencias, orden de activación, detección de ciclos, desactivación en cascada y aislamiento de fallos.
-- Ajustes **schema v2** con secciones tipadas (`ui`, `hud`, `pvp`, `survival`, `perf`, `modules`, `legacy`).
-- Migración v1 → v2 con copia de seguridad, conservación de claves desconocidas y protección contra archivos de esquema futuro (solo lectura).
-- Guardado **debounced** y atómico; nunca se escribe en disco por frame. Exportación/importación limitada al directorio `config`, con límite de 1 MiB y validación de esquema.
-- Sin telemetría, conexiones propias, cuentas, tokens ni descarga de código. `telemetryConsent` se fuerza a `false` al normalizar.
-
-### Interfaz
-- Menú principal TFL Selection con tarjetas de modo, selector de perfil, estado del Core y fondo animado de bajo coste.
-- Temas **BLUE, MIDNIGHT, FROST, EMBER, MONO** y acentos **DEFAULT, CYAN, VIOLET, AMBER, LIME, ROSE**.
-- Modo de alto contraste, transparencia reducida, movimiento reducido y duración de transición configurable.
-- Pantalla de ajustes con seis pestañas (General, Apariencia, HUD, Juego, Teclas, Avanzado), búsqueda y paginación de widgets, reinicio en dos pasos, importación/exportación y diagnóstico.
-- Editor de HUD: arrastrar, imán a cuadrícula, anclas, escala, fondo, reinicio de posición y previsualización de widgets desactivados.
-- Botón de ajustes del Core en el menú de pausa y acceso rápido con **Right Shift**.
-- Textos en **inglés, español de España y español de México** (168 claves por archivo).
-
-### HUD (19 widgets)
-FPS, frametime (media + p95), coordenadas (con conversión Nether), dirección, bioma, reloj local, hora del mundo, CPS izquierdo/derecho, keystrokes (WASD, salto, agacharse, sprint), ping, estado de movimiento, velocidad, armadura con durabilidad, efectos de pociones, objeto en mano con cantidad/duración, bloque apuntado, chunk/dimensión, brújula de waypoint y resumen de rendimiento.
-
-Cada widget tiene intervalo de refresco propio, ancla, desplazamiento, escala, fondo y opacidad persistidos. Todo el HUD se dibuja en **un único elemento Fabric**, con modo streamer y opción de ocultarse mientras hay una pantalla abierta.
-
-### Gameplay
-- **Crosshair personalizado** (5 estilos, color, escala, ocultar en tercera persona) mediante el registro público de HUD de Fabric, sin mixin.
-- **Toggle sprint** que refleja una pulsación normal de la tecla de sprint; no envía paquetes ni automatiza el juego.
-- **Zoom** con FOV configurable, suavizado opcional y restauración exacta del valor original.
-- **Waypoints** locales por mundo/servidor y dimensión, con marcador de muerte (máximo 32), waypoints manuales (máximo 256) y guía de brújula/distancia en el HUD.
-- Perfiles **PVP, SURVIVAL, BUILDER, EXPLORATION, MINIMAL** y detección automática; solo afectan a módulos y widgets de TFL Core.
-
-### Rendimiento y diagnóstico
-- Muestreo de frames con media, mínimo, máximo, **p50/p95/p99** y memoria; el benchmark es una captura temporizada explícita, no una promesa de FPS.
-- Detección de mods cargados y matriz de compatibilidad informativa.
-- Comandos de cliente `/tflcore diag|hud|profile|waypoint|bench|export`.
-- Fallos de módulos aislados y visibles en diagnóstico; el cliente sigue funcionando.
-
-## Requisitos
-
-- Minecraft Java **26.3**
-- Fabric Loader **0.19.5** o superior
-- **Fabric API** para 26.3
-- **Java 25**
-
-## Instalación
-
-1. Prepara una instalación de Minecraft 26.3 con Fabric Loader y Fabric API.
-2. Copia el JAR de distribución (`tflcore-0.3.0-alpha.1.jar`) en `mods/`.
-3. Inicia el juego con Java 25 y comprueba que TFL Core aparece en la lista de mods.
-4. Pulsa **Right Shift** para abrir los ajustes del Core.
-
-No instales el `-sources.jar` ni el `-dev.jar` como mod.
-
-## Compilación
-
-Windows:
-
-```powershell
-$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-25.0.4.101-hotspot"
-.\gradlew.bat clean build
+```sh
+./gradlew build
+# Equivalente directo (Gradle 9.5.1 fijado por el proyecto adoptado):
+cd vendor/trs-client
+./gradlew --no-daemon --max-workers=2 :common:test :fabric:26.3:build -PtrsVersions=26.3
 ```
 
-Linux/macOS:
+JAR: `vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar`.
+No instalar el sources JAR. Dependencias de la candidata: Minecraft **26.3**, Java **25**,
+Fabric Loader **0.19.5**, Fabric API **0.161.0+26.3**. Los optimizadores son externos y opcionales.
 
-```bash
-./gradlew clean build
+Forge 1.8.9 es un build independiente, con Java 8 como toolchain/bytecode y JDK 25 para Gradle:
+
+```sh
+./gradlew legacyBuild
 ```
 
-Los artefactos quedan en `build/libs/`. GitHub Actions publica el JAR normal en cada compilación satisfactoria.
+## Distribución y estado
 
-## Documentación
+```sh
+python3 -m unittest discover -s tools -p 'test_*.py'
+python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar
+python3 tools/distribution.py check-instance /ruta/instancia/mods
+```
 
-- [Guía de usuario 0.3](docs/USER_GUIDE_0.3.md)
-- [Arquitectura](docs/ARCHITECTURE.md)
-- [Matriz de funcionalidades 0.3](docs/FEATURE_MATRIX_0.3.md)
-- [Pruebas 0.3](docs/TESTING_0.3.md)
-- [Roadmap](docs/ROADMAP.md)
-- [Misión 0.3](docs/MISSION_0.3_OVERDRIVE.md)
-- [Changelog](CHANGELOG.md)
+El empaquetador inspecciona el JAR real, exige informes de pruebas sin fallos, genera SHA-256 y
+un manifiesto local; **no publica una release ni certifica una partida**. Consultar
+[estado de distribución](docs/RELEASE_READINESS.md), [pruebas](docs/TESTING.md),
+[integración de modpacks](docs/MODPACK_INTEGRATION.md), [migración](docs/MIGRATION.md),
+[compatibilidad](docs/COMPATIBILITY.md) y [licencias](docs/LICENSES_AND_ATTRIBUTION.md).
 
-## Limitaciones conocidas de esta alpha
-
-- **Sin validación en partida**: no se ha confirmado en un cliente real el reemplazo del título, el editor de HUD, el zoom, la restauración del sprint, los waypoints ni el layout a escalas GUI pequeñas.
-- No hay escenas 3D, skins, minimapa, combos, indicador de cooldown de ataque, resaltado de bloques, contador de área, herramientas de inventario ni integración con Discord/launcher.
-- El HUD no tiene todavía layouts independientes por perfil; los perfiles cambian el conjunto de widgets, no su posición.
-- La opacidad de fondo por widget se guarda y renderiza, pero solo se edita a mano en el JSON; el modo compacto solo lo interpreta el widget de coordenadas. El editor expone escala y fondo.
-- En alturas GUI muy pequeñas (< 300 px) algunas pestañas de ajustes pueden requerir una resolución mayor; el HUD y el menú tienen modo compacto.
-- El CPS se muestrea a partir del estado de los botones al ritmo de frames, por lo que puede subestimar clics en equipos con FPS muy bajos.
-- No se publican comparativas de FPS porque todavía no existen mediciones reproducibles en partida.
-
-## Privacidad
-
-TFL Core no incluye telemetría, analítica, publicidad, cuentas, sockets, peticiones HTTP propias, tokens ni ejecución de código remoto. La configuración y los waypoints se guardan únicamente en el directorio local de configuración de Minecraft.
+El fondo incluido es una imagen estática original. El controlador expone un contrato de vídeo
+asíncrono con fallback; no se entrega un decodificador ni se afirma reproducción de vídeo.
