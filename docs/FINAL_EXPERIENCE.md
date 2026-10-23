@@ -106,3 +106,12 @@ ZIP explícito correspondiente al commit de esta entrega.
     resolución/idiomas y servidores reales. Forge requiere más paridad visual antes de RC.
 21. **Recomendación:** feature freeze de dev.2 y QA interno con instancia nueva, pruebas por módulo
     y logs reproducibles. Release preliminar autorizada; mantener stable/main protegidos.
+
+## Canal de publicación
+
+La sesión pudo crear el borrador por API, pero uploads.github.com devolvió HTTP 401.
+La publicación se completa mediante el token oficial de Actions: ambos jobs deben pasar,
+se comprueba commit/fuentes/árbol limpio y se suben ambos targets antes de publicar la prerelease.
+Solo un push con el marcador explícito de dev.2 habilita ese job; no hay publicación stable
+automática ni sobreescritura de releases ya publicadas. Los hashes adjuntos al release son
+autoritativos para sus builds CI; validation.json registra los artefactos probados localmente.

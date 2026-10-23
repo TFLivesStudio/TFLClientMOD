@@ -83,3 +83,78 @@ jobs:
           name: tflcore-development-forge-1.8.9
           path: vendor/trs-client/legacy/versions/1.8.9/build/libs/tflcore-*.jar
           if-no-files-found: error
+  publish-requested-prerelease:
+    name: Publish explicitly requested development prerelease
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/adopt/trs-client-foundation' &&
+      startsWith(github.event.head_commit.message, 'release: publish v0.4.0-dev.2 prerelease')
+    needs: [fabric-26-3, legacy-1-8-9]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: v0.4.0-dev.2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: tflcore-development-fabric-26.3
+          path: release
+      - uses: actions/download-artifact@v4
+        with:
+          name: tflcore-development-forge-1.8.9
+          path: legacy-artifacts
+      - name: Assemble both installable targets and corresponding source
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          legacy=(legacy-artifacts/tflcore-forge-1.8.9-0.4.0-dev.2.jar)
+          test "${#legacy[@]}" -eq 1
+          cp "${legacy[0]}" release/
+          mv release/tflcore-corresponding-source.zip release/tfl-client-0.4.0-dev.2-corresponding-source.zip
+          rm -f release/tflcore-corresponding-source.zip.sha256
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path('release')
+          manifest=json.loads((root/'tflcore-build.json').read_text())
+          if manifest['source']['commit']!=os.environ['GITHUB_SHA'] or manifest['source']['workingTreeModified']:
+              raise SystemExit('Release requires the exact committed source and a clean build tree')
+          jars=sorted(root.glob('*.jar'))
+          if len(jars)!=2 or any(p.name.endswith(('-sources.jar','-dev.jar')) for p in jars):
+              raise SystemExit('Expected exactly two installable targets')
+          with zipfile.ZipFile(root/'tfl-client-0.4.0-dev.2-corresponding-source.zip') as archive:
+              if archive.testzip() is not None: raise SystemExit('Source ZIP corrupt')
+              for name in ['COPYING','vendor/trs-client/licenses/Nunito-OFL.txt','docs/FINAL_EXPERIENCE.md']:
+                  if name not in archive.namelist(): raise SystemExit('Missing corresponding source/license')
+          records=[];sums=[]
+          for path in sorted(root.iterdir()):
+              if path.suffix not in ('.jar','.zip','.mrpack'):continue
+              digest=hashlib.sha256(path.read_bytes()).hexdigest()
+              line=digest+'  '+path.name+'\n';sums.append(line)
+              (root/(path.name+'.sha256')).write_text(line)
+              records.append({'file':path.name,'sha256':digest,'size':path.stat().st_size})
+          (root/'SHA256SUMS.txt').write_text(''.join(sums))
+          (root/'delivery-index.json').write_text(json.dumps({'version':'0.4.0-dev.2','channel':'development','sourceCommit':os.environ['GITHUB_SHA'],'artifacts':records},indent=2)+'\n')
+          PY
+      - name: Upload assets to draft, then publish as prerelease
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --json isDraft > /tmp/tfl-release-state.json; then
+            python3 -c 'import json; assert json.load(open("/tmp/tfl-release-state.json"))["isDraft"], "Refusing to overwrite an already published release"'
+          else
+            gh release create "$RELEASE_TAG" --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'TFL Client 0.4.0-dev.2 · Fabric 26.3 + Forge 1.8.9' --notes-file distribution/release-notes-v0.4.0-dev.2.md
+          fi
+          gh release edit "$RELEASE_TAG" --target "$GITHUB_SHA" --prerelease --latest=false --notes-file distribution/release-notes-v0.4.0-dev.2.md
+          gh release upload "$RELEASE_TAG" release/* --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
+          gh release view "$RELEASE_TAG" --json url,isDraft,isPrerelease,assets
