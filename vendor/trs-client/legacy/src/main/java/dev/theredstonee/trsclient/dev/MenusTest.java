@@ -64,6 +64,29 @@ public final class MenusTest {
 		list.add(new net.minecraft.client.gui.GuiButton(4711, s.width - 98 - 5, 5, 98, 20, "Set version"));
 	}
 
+    private static void checkOfflineBindings(Minecraft mc) {
+        try {
+            Class<?> helper=dev.theredstonee.trsclient.menus.LegacyKeySearch.class;
+            java.lang.reflect.Method field=helper.getDeclaredMethod("fieldOfType",Object.class,String.class);
+            java.lang.reflect.Method array=helper.getDeclaredMethod("arrayField",Object.class);
+            java.lang.reflect.Method key=helper.getDeclaredMethod("keyOf",Object.class);
+            field.setAccessible(true);array.setAccessible(true);key.setAccessible(true);
+            Object list=field.invoke(null,mc.currentScreen,"GuiKeyBindingList");
+            if(list==null)throw new IllegalStateException("Native key list missing");
+            java.lang.reflect.Field entries=(java.lang.reflect.Field)array.invoke(null,list);
+            if(entries==null)throw new IllegalStateException("Native key entries missing");
+            for(Object row:(Object[])entries.get(list)) {
+                net.minecraft.client.settings.KeyBinding binding=(net.minecraft.client.settings.KeyBinding)key.invoke(null,row);
+                if(binding!=null&&!dev.theredstonee.trsclient.core.keys.KeyVisibility.visible(binding.getKeyDescription()))throw new IllegalStateException("Backend-only binding visible");
+            }
+            int registered=0;
+            for(net.minecraft.client.settings.KeyBinding binding:mc.gameSettings.keyBindings)
+                if(!dev.theredstonee.trsclient.core.keys.KeyVisibility.visible(binding.getKeyDescription()))registered++;
+            if(registered!=5)throw new IllegalStateException("Registered backend bindings lost: "+registered);
+            TrsClient.LOGGER.info("[Autotest] Offline controls assertions passed: hidden rows, five registered assignments preserved");
+        }catch(ReflectiveOperationException e){throw new IllegalStateException(e);}
+    }
+
 	private void addServerTick(Minecraft mc) {
 		GuiScreen screen = mc.currentScreen;
 		switch (phase) {
@@ -207,12 +230,16 @@ public final class MenusTest {
 				phase++;
 				wait = 10;
 				return;
-			case 3:
-				shot(mc, "options");
-				mc.displayGuiScreen(new GuiVideoSettings(screen, mc.gameSettings));
-				phase++;
-				wait = 10;
-				return;
+            case 3:
+                shot(mc,"options");
+                mc.displayGuiScreen(new net.minecraft.client.gui.GuiControls(screen,mc.gameSettings));
+                phase=93;wait=15;return;
+            case 93:
+                checkOfflineBindings(mc);
+                shot(mc,"options-controls");
+                mc.displayGuiScreen(new GuiVideoSettings(new GuiOptions(new TrsTitleScreen(),mc.gameSettings),mc.gameSettings));
+                phase=4;wait=10;return;
+
 			case 4:
 				shot(mc, "options-video");
 				mc.displayGuiScreen(Mc.worldSelectScreen(new TrsTitleScreen()));
@@ -221,8 +248,8 @@ public final class MenusTest {
 				return;
 			case 5:
 				shot(mc, "worlds");
-				mc.displayGuiScreen(MenuScreens.friends(new TrsTitleScreen()));
-				phase++;
+				mc.displayGuiScreen(MenuScreens.clips(new TrsTitleScreen()));
+				phase=9;
 				wait = 10;
 				return;
 			case 6: {

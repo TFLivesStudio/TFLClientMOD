@@ -414,6 +414,8 @@ def prodFabricApi = configurations.detachedConfiguration(
 		dependencies.create("net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"))
 prodFabricApi.transitive = false
 tasks.register('runProdClient', TrsProdClientTask) {
+	// A launcher task must execute again after quitting, even when inputs are unchanged.
+	outputs.upToDateWhen { false }
 	group = 'fabric'
 	description = 'Startet das Spiel wie beim Spieler: fertige Mod-JAR + Fabric API, ohne Dev-Umgebung.'
 	mods.from(modJar)

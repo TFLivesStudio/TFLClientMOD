@@ -496,7 +496,7 @@ public final class HudEditor extends UiScreen {
 		List<HudItem> out = new ArrayList<HudItem>();
 		List<HudItem> all = host.hudItems();
 		for (int i = 0; i < all.size(); i++) {
-			if (all.get(i).module().isEnabled()) out.add(all.get(i));
+			if (all.get(i).module().isEnabled() && all.get(i).module().available()) out.add(all.get(i));
 		}
 		return out;
 	}

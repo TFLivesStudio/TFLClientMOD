@@ -365,12 +365,16 @@ public final class LegacyMenus {
 			FontRenderer font = Mc.font();
 			for (GuiButton b : list) {
 				if (!b.visible) continue;
+                // Native sliders own their thumb rendering: keep that visible until a dedicated adapter exists.
+                if(b instanceof net.minecraft.client.gui.GuiOptionSlider) continue;
 				int x = x(b);
 				int y = y(b);
 				int w = b.width;
 				int h = height(b);
 				boolean hover = mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h;
-				if(s instanceof GuiIngameMenu && b.id==4)
+				// Clear the old rectangular sprite underneath the antialiased corners.
+                c.fill(x,y,x+w,y+h,s instanceof GuiIngameMenu?0xFF101A2A:dev.theredstonee.trsclient.core.ui.Theme.get().background);
+                if(s instanceof GuiIngameMenu && b.id==4)
                     dev.theredstonee.trsclient.core.ui.SelectionStyle.button(c,x,y,w,h,true,hover);
                 else MenuSkin.button(c, x, y, w, h, hover, b.enabled);
 				String icon = icons.get(b);
