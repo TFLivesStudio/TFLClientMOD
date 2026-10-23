@@ -41,3 +41,7 @@ Fuente oficial de googlefonts/nunito, SIL OFL 1.1. SHA del commit y del TTF vari
 con fontTools, sin editar contornos. Licencia y procedencia se incluyen en ambos JAR. Los seis
 emotes locales reutilizan tracks de animación distribuidos como código GPL en el snapshot;
 no se descargan medios, compras, permisos de cuenta ni cosméticos privados.
+
+## Iconos de interfaz dev.3
+
+Lucide 0.468.0, commit `f12b0de177fbc2a6795e99be065887e72b237123`: ISC y porciones Feather MIT. Avisos completos en `vendor/trs-client/licenses/Lucide-LICENSE.txt`, incluidos en ambos JAR. SVG y hashes en `vendor/trs-client/artwork/lucide/`; atlas de 122 iconos generado con `tools/generate_ui_icons.py`. La rasterización ocurre al preparar los assets, no durante el juego.

@@ -15,8 +15,8 @@ Instala Fabric Loader 0.19.5 para Minecraft 26.3 y usa Java 25. Copia Fabric API
 JAR del TFL 0.3 anterior o de TRS Client. Puedes usar el detector de instancias de
 `tools/distribution.py check-instance` antes de arrancar.
 
-El título TFL Selection permite abrir mundos, multijugador, opciones, TFL Core y salir.
-Tab/flechas recorren los botones y Enter activa la opción; se mantiene el retorno al título vanilla.
+El título TFL Client permite abrir mundos, multijugador, opciones, ajustes del cliente y salir.
+Tab/flechas recorren las acciones y Enter activa la opción. El menú TFL es único; para recuperación técnica arranca con el argumento JVM `-Dtflcore.safeMode=true` y retíralo después.
 Right Shift abre el menú de módulos. Busca módulos por nombre y revisa sus ajustes.
 Configuration permite exportar snapshots, importar `config/tflcore/tfl-import.json` y restablecer
 módulos/HUD con doble confirmación y backup. HUD Editor y Profiles conservan el sistema adoptado de TRS. Zoom predeterminado: V
@@ -36,5 +36,7 @@ estático cuando falta el archivo local; consulta LOCAL_VIDEO.md. Desactivar ani
 Guarda una copia de `config/`, `options.txt` y mundos antes de actualizar. Si aparece solo lectura,
 consulta logs y la guía de migración; no borres información para silenciar el aviso.
 
-En dev.2, G abre seis emotes locales sin cuenta ni red. Solo los ve tu cliente. Movimiento,
+G abre seis emotes locales sin cuenta ni red. Solo los ve tu cliente. Movimiento,
 agacharse o atacar cancela la animación; el modo de cámara se restaura al terminar.
+
+En HUD Editor, Presets crea un perfil nuevo sin sobrescribir los existentes. Minimal, PvP, Survival, Builder y Exploration son puntos de partida; Custom copia el actual. Tab selecciona un elemento, flechas desplazan 1 píxel y Shift+flechas 10. Undo/Redo mantiene hasta 40 estados durante la sesión; las guías y avisos de colisión ayudan a colocar elementos. No se cambian perfiles automáticamente al elegir un preset.

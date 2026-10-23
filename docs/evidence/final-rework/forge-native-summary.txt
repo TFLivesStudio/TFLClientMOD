@@ -1,0 +1,20 @@
+[22:53:28] [main/INFO] (TFL Client) [Autotest] aktiv
+[22:53:40] [main/INFO] (TFL Client) [Autotest] Menüs: Bild selection-title (Hintergrund Ø 0 µs)
+[22:53:41] [main/INFO] (TFL Client) [Autotest] Menüs: Bild tfl-core (Hintergrund Ø 0 µs)
+[22:53:42] [main/INFO] (TFL Client) [Autotest] Menüs: Bild tfl-zoom-settings (Hintergrund Ø 0 µs)
+[22:53:44] [main/INFO] (TFL Client) [Autotest] Menüs: Bild tfl-profiles (Hintergrund Ø 0 µs)
+[22:53:46] [main/INFO] (TFL Client) [Autotest] Menüs: Bild multiplayer (Hintergrund Ø 150 µs)
+[22:53:46] [main/INFO] (TFL Client) [Autotest] Menüs: Bild direct-connect (Hintergrund Ø 183 µs)
+[22:53:47] [main/INFO] (TFL Client) [Autotest] Menüs: Bild add-server (Hintergrund Ø 191 µs)
+[22:53:47] [main/INFO] (TFL Client) [Autotest] Menüs: Bild delete-server (Hintergrund Ø 144 µs)
+[22:53:48] [main/INFO] (TFL Client) [Autotest] Menüs: Bild options (Hintergrund Ø 135 µs)
+[22:53:49] [main/INFO] (TFL Client) [Autotest] Offline controls assertions passed: hidden rows, five registered assignments preserved
+[22:53:49] [main/INFO] (TFL Client) [Autotest] Menüs: Bild options-controls (Hintergrund Ø 135 µs)
+[22:53:50] [main/INFO] (TFL Client) [Autotest] Menüs: Bild options-video (Hintergrund Ø 165 µs)
+[22:53:51] [main/INFO] (TFL Client) [Autotest] Menüs: Bild worlds (Hintergrund Ø 94 µs)
+[22:53:52] [main/INFO] (TFL Client) [Autotest] Menüs: Bild clips (Hintergrund Ø 94 µs)
+[22:54:06] [main/INFO] (TFL Client) [Autotest] Menüs: Bild pause (Hintergrund Ø 54 µs)
+[22:54:07] [main/INFO] (TFL Client) [Autotest] Menüs: Bild serverinfo (Hintergrund Ø 54 µs)
+[22:54:07] [main/INFO] (TFL Client) [Autotest] Menüs: Bild options-ingame (Hintergrund Ø 84 µs)
+[22:54:07] [main/INFO] (TFL Client) [Autotest] Menüs: fertig
+BUILD SUCCESSFUL in 1m 43s

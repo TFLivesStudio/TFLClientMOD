@@ -88,7 +88,7 @@ jobs:
     if: >-
       github.event_name == 'push' &&
       github.ref == 'refs/heads/adopt/trs-client-foundation' &&
-      startsWith(github.event.head_commit.message, 'release: publish v0.4.0-dev.2 prerelease')
+      startsWith(github.event.head_commit.message, 'release: publish v0.4.0-dev.3 prerelease')
     needs: [fabric-26-3, legacy-1-8-9]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -98,7 +98,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      RELEASE_TAG: v0.4.0-dev.2
+      RELEASE_TAG: v0.4.0-dev.3
     steps:
       - uses: actions/checkout@v4
         with:
@@ -116,10 +116,10 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob
-          legacy=(legacy-artifacts/tflcore-forge-1.8.9-0.4.0-dev.2.jar)
+          legacy=(legacy-artifacts/tflcore-forge-1.8.9-0.4.0-dev.3.jar)
           test "${#legacy[@]}" -eq 1
           cp "${legacy[0]}" release/
-          mv release/tflcore-corresponding-source.zip release/tfl-client-0.4.0-dev.2-corresponding-source.zip
+          mv release/tflcore-corresponding-source.zip release/tfl-client-0.4.0-dev.3-corresponding-source.zip
           rm -f release/tflcore-corresponding-source.zip.sha256
           python3 - <<'PY'
           import hashlib,json,os,zipfile
@@ -131,10 +131,19 @@ jobs:
           jars=sorted(root.glob('*.jar'))
           if len(jars)!=2 or any(p.name.endswith(('-sources.jar','-dev.jar')) for p in jars):
               raise SystemExit('Expected exactly two installable targets')
-          with zipfile.ZipFile(root/'tfl-client-0.4.0-dev.2-corresponding-source.zip') as archive:
+          with zipfile.ZipFile(root/'tfl-client-0.4.0-dev.3-corresponding-source.zip') as archive:
               if archive.testzip() is not None: raise SystemExit('Source ZIP corrupt')
-              for name in ['COPYING','vendor/trs-client/licenses/Nunito-OFL.txt','docs/FINAL_EXPERIENCE.md']:
+              for name in ['COPYING','vendor/trs-client/licenses/Nunito-OFL.txt','docs/FINAL_REWORK.md','distribution/module-audit.json','vendor/trs-client/artwork/lucide/manifest.json','vendor/trs-client/licenses/Lucide-LICENSE.txt']:
                   if name not in archive.namelist(): raise SystemExit('Missing corresponding source/license')
+          for path in jars:
+              with zipfile.ZipFile(path) as binary:
+                  for name in ['META-INF/licenses/Nunito-OFL.txt','META-INF/licenses/Lucide-LICENSE.txt','assets/trsclient/textures/ui/icons.png']:
+                      if name not in binary.namelist(): raise SystemExit('Binary missing UI resource/license: '+name)
+          with zipfile.ZipFile(root/'tfl-client-0.4.0-dev.3-validation.zip','w',zipfile.ZIP_DEFLATED) as evidence:
+              for path in sorted(Path('docs/evidence/final-rework').rglob('*')):
+                  if path.is_file():evidence.write(path,str(path))
+              for path in [Path('docs/FINAL_REWORK.md'),Path('docs/MODULE_CERTIFICATION.md'),Path('distribution/module-audit.json')]:
+                  evidence.write(path,str(path))
           records=[];sums=[]
           for path in sorted(root.iterdir()):
               if path.suffix not in ('.jar','.zip','.mrpack'):continue
@@ -143,7 +152,7 @@ jobs:
               (root/(path.name+'.sha256')).write_text(line)
               records.append({'file':path.name,'sha256':digest,'size':path.stat().st_size})
           (root/'SHA256SUMS.txt').write_text(''.join(sums))
-          (root/'delivery-index.json').write_text(json.dumps({'version':'0.4.0-dev.2','channel':'development','sourceCommit':os.environ['GITHUB_SHA'],'artifacts':records},indent=2)+'\n')
+          (root/'delivery-index.json').write_text(json.dumps({'version':'0.4.0-dev.3','channel':'development','sourceCommit':os.environ['GITHUB_SHA'],'artifacts':records},indent=2)+'\n')
           PY
       - name: Upload assets to draft, then publish as prerelease
         shell: bash
@@ -152,9 +161,9 @@ jobs:
           if gh release view "$RELEASE_TAG" --json isDraft > /tmp/tfl-release-state.json; then
             python3 -c 'import json; assert json.load(open("/tmp/tfl-release-state.json"))["isDraft"], "Refusing to overwrite an already published release"'
           else
-            gh release create "$RELEASE_TAG" --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'TFL Client 0.4.0-dev.2 · Fabric 26.3 + Forge 1.8.9' --notes-file distribution/release-notes-v0.4.0-dev.2.md
+            gh release create "$RELEASE_TAG" --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'TFL Client 0.4.0-dev.3 · Fabric 26.3 + Forge 1.8.9' --notes-file distribution/release-notes-v0.4.0-dev.3.md
           fi
-          gh release edit "$RELEASE_TAG" --target "$GITHUB_SHA" --prerelease --latest=false --notes-file distribution/release-notes-v0.4.0-dev.2.md
+          gh release edit "$RELEASE_TAG" --target "$GITHUB_SHA" --prerelease --latest=false --notes-file distribution/release-notes-v0.4.0-dev.3.md
           gh release upload "$RELEASE_TAG" release/* --clobber
           gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
           gh release view "$RELEASE_TAG" --json url,isDraft,isPrerelease,assets

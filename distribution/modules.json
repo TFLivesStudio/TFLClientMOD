@@ -427,15 +427,7 @@
       "hud": false,
       "defaultEnabled": true,
       "classification": "registered; offline logic covered where tests exist; in-game verification pending",
-      "settings": [
-        "pause",
-        "pauseButtons",
-        "multiplayer",
-        "loading",
-        "options",
-        "worlds",
-        "errors"
-      ]
+      "settings": []
     },
     {
       "id": "oldAnimations",

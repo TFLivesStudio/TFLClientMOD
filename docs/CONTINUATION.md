@@ -1,3 +1,5 @@
+Estado actual: [Native Rework 0.4.0-dev.3](FINAL_REWORK.md). La evidencia siguiente conserva el historial de las candidatas previas.
+
 # Continuación concreta
 
 Último commit de implementación verificado: `16b999e` (TFL identity/offline/config/Selection).
@@ -40,12 +42,12 @@ cd /workspace/TFLClientMOD
 ./gradlew --no-daemon legacyBuild
 python3 -m unittest discover -s tools -p 'test_*.py'
 python3 tools/scan_secrets.py
-python3 tools/distribution.py verify vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar
+python3 tools/distribution.py verify vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.3.jar
 # Solo con todos los cambios comprometidos:
 mkdir -p distribution/build
 git archive --format=zip --output=distribution/build/tflcore-corresponding-source.zip HEAD
-python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar
-python3 tools/distribution.py mrpack distribution/build/tflcore-fabric-26.3-0.4.0-dev.2.jar distribution/build/tflcore-corresponding-source.zip
+python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.3.jar
+python3 tools/distribution.py mrpack distribution/build/tflcore-fabric-26.3-0.4.0-dev.3.jar distribution/build/tflcore-corresponding-source.zip
 ```
 
 Para repetir el smoke legacy: iniciar Xvfb de la carpeta .cloud-setup/tools/xvfb con DISPLAY propio,

@@ -1,0 +1,903 @@
+{
+  "schemaVersion": 1,
+  "minecraft": "26.3",
+  "evidenceKind": "native-fabric-development-client",
+  "scope": "state-toggle smoke, rendered frames, selected screen lifecycle, disk config roundtrip and waypoint CRUD; not gameplay certification",
+  "fullyCertifiedModules": 0,
+  "startedEpochMs": 1792794585767,
+  "status": "smoke-complete",
+  "modules": [
+    {
+      "id": "fps",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "cps",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "keystrokes",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "ping",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "armor",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "effects",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "coords",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "clock",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "memory",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "server",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "packs",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "toggleSprint",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "toggleSneak",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "reach",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "combo",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "speed",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "minimap",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "worldMap",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "crosshair",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "hitColor",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "freelook",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "zoom",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "fullbright",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "autorefill",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "titleScreen",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "fixed-infrastructure-settings-only",
+      "activation": "always active by design; state toggling skipped"
+    },
+    {
+      "id": "menuStyle",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "fixed-infrastructure-settings-only",
+      "activation": "always active by design; state toggling skipped"
+    },
+    {
+      "id": "oldAnimations",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "lowFire",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "shieldPosition",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "blockOutline",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "hitboxes",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "noHurtCam",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "chat",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "autoGg",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "textHotkeys",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "waypoints",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "trsOnline",
+      "available": false,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "skipped-unavailable-or-disabled-service"
+    },
+    {
+      "id": "capePhysics",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "colors",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "emotes",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "redstoneSignal",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "redstoneOverlay",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "redstoneClock",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "clips",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "skipped-unavailable-or-disabled-service"
+    },
+    {
+      "id": "fpsBoost",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "dynamicFps",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "borderlessFullscreen",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "entityCulling",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "particles",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "worldDetails",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "builtinOptimizations",
+      "available": false,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "skipped-unavailable-or-disabled-service"
+    },
+    {
+      "id": "netOptimize",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "lowLatency",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "fastConnect",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "social",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "skipped-unavailable-or-disabled-service"
+    },
+    {
+      "id": "chatMentions",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "chatHeads",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "chatFilter",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "autoReconnect",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "queueAlerts",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "scoreboard",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "tabPing",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "bossBar",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "titles",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "warnings",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "itemCounter",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "hitFeedback",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "streamerMode",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "tooltips",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "serverProfiles",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "panorama",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "screenshots",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "keySearch",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "hungerOverlay",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "circuitLibrary",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "notes",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "pinnedNote",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "cinematic",
+      "available": true,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "activation": "state-pass",
+      "enabledFrames": "survived-8-client-ticks; visual correctness unasserted",
+      "deactivation": "state-pass",
+      "restoration": "pass",
+      "status": "state-smoke-complete"
+    },
+    {
+      "id": "halloween",
+      "available": false,
+      "fullyCertified": false,
+      "gameplay": "untested: activating state does not exercise all hooks or input actions",
+      "status": "skipped-unavailable-or-disabled-service"
+    }
+  ],
+  "checks": [
+    {
+      "name": "worldLoaded",
+      "passed": true,
+      "detail": "integrated world and player present"
+    },
+    {
+      "name": "configDiskRoundtrip",
+      "passed": true,
+      "detail": "ConfigStore.save -> file -> Gson decode -> registry.apply; restart not tested"
+    },
+    {
+      "name": "waypointDiskCreate",
+      "passed": true,
+      "detail": "unique temporary waypoint name found after independent file load"
+    },
+    {
+      "name": "TrsMenuScreen",
+      "passed": true,
+      "detail": "screen survived 15 ticks; screenshot requested; input/visual QA remains manual"
+    },
+    {
+      "name": "HudEditorScreen",
+      "passed": true,
+      "detail": "screen survived 15 ticks; screenshot requested; input/visual QA remains manual"
+    },
+    {
+      "name": "CrosshairEditorScreen",
+      "passed": true,
+      "detail": "screen survived 15 ticks; screenshot requested; input/visual QA remains manual"
+    },
+    {
+      "name": "WaypointListScreen",
+      "passed": true,
+      "detail": "screen survived 15 ticks; screenshot requested; input/visual QA remains manual"
+    },
+    {
+      "name": "waypointDiskRemove",
+      "passed": true,
+      "detail": "temporary waypoint absent after independent disk load"
+    },
+    {
+      "name": "finalRegistryRestore",
+      "passed": true,
+      "detail": "all registry and config parts restored"
+    }
+  ],
+  "elapsedMs": 108638,
+  "candidateRelation": "State smoke preceded the final recording-availability guard. Gameplay is not certified. Final capability policy is covered by HudAvailabilityTest and production screenshots."
+}

@@ -1,3 +1,5 @@
+Estado actual: [Native Rework 0.4.0-dev.3](FINAL_REWORK.md). La evidencia siguiente conserva el historial de las candidatas previas.
+
 # Pruebas de Operation Modpack Ready
 
 Se separan cuatro evidencias: build upstream importado, build TFL adaptado, lógica automatizada

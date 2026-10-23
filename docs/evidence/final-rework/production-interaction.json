@@ -1,0 +1,17 @@
+{
+  "productionJarNoDevHarness": true,
+  "keyboardMovePersisted": true,
+  "undoRestoredPriorSavedLayout": true,
+  "fpsDisabledOnMenuClose": true,
+  "sameLayoutAfterRealRestart": true,
+  "restartOffStateVisuallyVerified": "production-restart-fps-off.png",
+  "nativeViewport": "640x480 physical; screenshot recorded",
+  "sourceOfChecks": "XTest input against actual JAR; JSON read after normal menu close; two normal game exits",
+  "excludedAttempts": "One prematurely started second process was terminated; one cached Gradle invocation did not launch the game. Neither counts as a successful restart. runProdClient now disables up-to-date skipping.",
+  "explicitPresetCreatedWithoutOverwriting": "Native Minimal creation kept Standard with FPS disabled and saved offset",
+  "recordingPreviewRegression": "Earlier screenshots suffixed before-availability-fix reproduce the defect. Actual registry availability is now gated, with a rendering and keyboard-selection regression test.",
+  "finalRegistryCapabilityAndRenderVerified": true,
+  "finalStandardProfileRetainedRecordingEnabledFlagButHidesUnavailablePreview": true,
+  "finalStandardProfileFpsStillDisabled": true,
+  "finalScreenshot": "production-hud-640x480.png"
+}

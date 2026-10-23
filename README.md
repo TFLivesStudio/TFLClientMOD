@@ -1,8 +1,8 @@
 # TFL Client
 
-Distribución **en desarrollo, 0.4.0-dev.2**, derivada del código completo de TRS Client MOD
+Distribución **en desarrollo, 0.4.0-dev.3**, derivada del código completo de TRS Client MOD
 (GPL-3.0-only, © Ohev Tamerin). Las modificaciones TFL son de TFLivesStudio.
-Builds de ambos targets y smokes nativos verificados; véase el informe de limitaciones.
+Builds de ambos targets y smokes nativos verificados; véase [el informe actual](docs/FINAL_REWORK.md).
 No es un launcher y no necesita TRS Launcher ni TFL Client para sus funciones offline.
 
 El código autoritativo está en `vendor/trs-client/`: `common/` compartido, `fabric/` moderno y
@@ -28,7 +28,7 @@ cd vendor/trs-client
 ./gradlew --no-daemon --max-workers=2 :common:test :fabric:26.3:build -PtrsVersions=26.3
 ```
 
-JAR: `vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar`.
+JAR: `vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.3.jar`.
 No instalar el sources JAR. Dependencias de la candidata: Minecraft **26.3**, Java **25**,
 Fabric Loader **0.19.5**, Fabric API **0.161.0+26.3**. Los optimizadores son externos y opcionales.
 
@@ -42,7 +42,7 @@ Forge 1.8.9 es un build independiente, con Java 8 como toolchain/bytecode y JDK 
 
 ```sh
 python3 -m unittest discover -s tools -p 'test_*.py'
-python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar
+python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.3.jar
 python3 tools/distribution.py check-instance /ruta/instancia/mods
 ```
 

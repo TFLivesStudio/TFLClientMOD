@@ -1,0 +1,51 @@
+[22:39:43] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-round – Tick Ø 3237 µs, Minimap zeichnen Ø 186515 µs, 408 Chunks abgetastet, 4 Texturen, 25 hochgeladen
+[22:39:43] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-square-rotated – Tick Ø 2285 µs, Minimap zeichnen Ø 177292 µs, 482 Chunks abgetastet, 4 Texturen, 28 hochgeladen
+[22:39:45] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-square – Tick Ø 1972 µs, Minimap zeichnen Ø 144715 µs, 561 Chunks abgetastet, 4 Texturen, 33 hochgeladen
+[22:39:46] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-close – Tick Ø 1339 µs, Minimap zeichnen Ø 113934 µs, 602 Chunks abgetastet, 4 Texturen, 39 hochgeladen
+[22:39:48] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-far – Tick Ø 403 µs, Minimap zeichnen Ø 84278 µs, 611 Chunks abgetastet, 6 Texturen, 41 hochgeladen
+[22:39:50] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild worldmap – Tick Ø 1194 µs, Minimap zeichnen Ø 84278 µs, 642 Chunks abgetastet, 6 Texturen, 41 hochgeladen
+[22:39:53] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild worldmap-far – Tick Ø 1196 µs, Minimap zeichnen Ø 84278 µs, 773 Chunks abgetastet, 6 Texturen, 55 hochgeladen
+[22:39:54] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild worldmap-menu – Tick Ø 349 µs, Minimap zeichnen Ø 84278 µs, 773 Chunks abgetastet, 6 Texturen, 57 hochgeladen
+[22:39:55] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild worldmap-dialog – Tick Ø 268 µs, Minimap zeichnen Ø 84278 µs, 798 Chunks abgetastet, 6 Texturen, 57 hochgeladen
+[22:40:01] [Render thread/INFO] (TFL Client) [Autotest] Karten: Höhlenansicht aktiv: true, Auto-Zoom drinnen: 1 Stufe(n) näher
+[22:40:01] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-cave – Tick Ø 934 µs, Minimap zeichnen Ø 501 µs, 1328 Chunks abgetastet, 10 Texturen, 88 hochgeladen
+[22:40:02] [Render thread/INFO] (TFL Client) [Autotest] Karten: Fair Play: Höhle false
+[22:40:02] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-fairplay – Tick Ø 437 µs, Minimap zeichnen Ø 250 µs, 1496 Chunks abgetastet, 10 Texturen, 91 hochgeladen
+[22:40:11] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap-final – Tick Ø 243 µs, Minimap zeichnen Ø 309 µs, 1692 Chunks abgetastet, 8 Texturen, 93 hochgeladen
+[22:40:11] [Render thread/INFO] (TFL Client) [Autotest] Karten: Messung: Tick Ø 243 µs, Minimap zeichnen Ø 309 µs
+[22:40:18] [Render thread/INFO] (TFL Client) [Autotest] Karten: Texturfarben: 62 Texturen gemittelt, im Hintergrund noch: false
+[22:40:18] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-edge-heads – Tick Ø 300 µs, Minimap zeichnen Ø 395 µs, 1781 Chunks abgetastet, 4 Texturen, 93 hochgeladen
+[22:40:18] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-edge-square – Tick Ø 495 µs, Minimap zeichnen Ø 482 µs, 1863 Chunks abgetastet, 4 Texturen, 93 hochgeladen
+[22:40:19] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-symbols – Tick Ø 392 µs, Minimap zeichnen Ø 479 µs, 1888 Chunks abgetastet, 4 Texturen, 94 hochgeladen
+[22:40:24] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-vanilla-colors – Tick Ø 124 µs, Minimap zeichnen Ø 335 µs, 2107 Chunks abgetastet, 4 Texturen, 112 hochgeladen
+[22:40:29] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-texture-colors – Tick Ø 101 µs, Minimap zeichnen Ø 384 µs, 2326 Chunks abgetastet, 4 Texturen, 127 hochgeladen
+[22:40:29] [Render thread/INFO] (TFL Client) [Autotest] Karten: Farbunterschied Vanilla → Texturfarben (80 Blöcke um den Spieler): 20081 Pixel verglichen, 96.4 % geändert, Ø 18.4 je Kanal
+[22:40:33] [Render thread/INFO] (TFL Client) [Autotest] Karten: Auto-Zoom schnell: jetzt 2, höchstens 2 Stufe(n) heraus, Ziel 0.5 px/Block (eingestellt 2)
+[22:40:33] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-autozoom-fast – Tick Ø 1262 µs, Minimap zeichnen Ø 632 µs, 2396 Chunks abgetastet, 6 Texturen, 139 hochgeladen
+[22:40:38] [Render thread/INFO] (TFL Client) [Autotest] Karten: Auto-Zoom nach dem Anhalten: 0 Stufe(n) heraus, Ziel 2.0 px/Block – OK
+[22:40:38] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild minimap2-autozoom-back – Tick Ø 130 µs, Minimap zeichnen Ø 237 µs, 2526 Chunks abgetastet, 6 Texturen, 141 hochgeladen
+[22:40:38] [Render thread/INFO] (TFL Client) [Autotest] Karten: Messung Minimap 2: Tick Ø 130 µs, Minimap zeichnen Ø 237 µs
+[22:40:39] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild menu-minimap – Tick Ø 131 µs, Minimap zeichnen Ø 237 µs, 2545 Chunks abgetastet, 6 Texturen, 141 hochgeladen
+[22:40:40] [Render thread/INFO] (TFL Client) [Autotest] Karten: Bild menu-worldmap – Tick Ø 628 µs, Minimap zeichnen Ø 237 µs, 2566 Chunks abgetastet, 6 Texturen, 141 hochgeladen
+[22:40:50] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: im Nether: minecraft:the_nether, Höhlenansicht true
+[22:40:50] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-nether-minimap – 8 Texturen, 197 hochgeladen, 0 Ladeaufträge übersprungen
+[22:40:54] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: zurück in minecraft:overworld
+[22:40:56] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-list – 6 Texturen, 213 hochgeladen, 0 Ladeaufträge übersprungen
+[22:40:56] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Wegpunkt-Liste: 8 Einträge
+[22:40:57] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-search – 6 Texturen, 213 hochgeladen, 0 Ladeaufträge übersprungen
+[22:40:57] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Suche „bas“: 1 Treffer (erwartet 1)
+[22:40:58] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: stufenlos zoomen: 2.00 → 3.91 px/Block, Punkt unter der Maus um 0.000 Blöcke verschoben (erwartet ≈ 0)
+[22:40:58] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-zoom – 6 Texturen, 218 hochgeladen, 0 Ladeaufträge übersprungen
+[22:41:01] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-far – 6 Texturen, 232 hochgeladen, 0 Ladeaufträge übersprungen
+[22:41:01] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: weit (0.1 px/Block): Kachelstufe 2 (erwartet 2)
+[22:41:01] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Dimensionen: [minecraft:overworld, minecraft:the_nether]
+[22:41:01] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Nether ansehen: true
+[22:41:05] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-nether – 10 Texturen, 236 hochgeladen, 0 Ladeaufträge übersprungen
+[22:41:05] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Ansicht jetzt: minecraft:the_nether (andere Dimension: true)
+[22:41:07] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Export Ausschnitt gestartet: STARTED
+[22:41:08] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Export Ausschnitt: DONE, Datei /workspace/TFLClientMOD/vendor/trs-client/run/screenshots/trs-map_trs-maps-26.3_overworld_2026-10-23_22.41.07.png, vorhanden true (64551 Bytes), 428×197 px, 1 Blöcke/px, 40 ms
+[22:41:08] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Hinweis über der Leiste: [Map saved in screenshots, trs-map_trs-maps-26.3_overworld_2026-10-23_22.41.07.png]
+[22:41:08] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Bild worldmap2-export – 6 Texturen, 240 hochgeladen, 0 Ladeaufträge übersprungen
+[22:41:08] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Export ganz gestartet: STARTED
+[22:41:08] [Render thread/INFO] (TFL Client) [Autotest] Karten: Weltkarte 2: Export ganz: DONE, Datei /workspace/TFLClientMOD/vendor/trs-client/run/screenshots/trs-map_trs-maps-26.3_overworld_2026-10-23_22.41.08.png, vorhanden true (70452 Bytes), 384×256 px, 1 Blöcke/px, 23 ms
+BUILD SUCCESSFUL in 2m 32s

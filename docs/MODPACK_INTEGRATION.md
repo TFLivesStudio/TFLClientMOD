@@ -27,8 +27,8 @@ conservar backup y ruta de rollback. No reemplazar `config/`, mundos, mapas, not
 con defaults del pack. Ejecutar la migración mediante el mod al primer arranque.
 
 Los canales definidos son development, beta, release-candidate y stable. Cambiar de canal requiere
-un proceso de validación y revisión; los builds ordinarios no publican releases. El job de publicación dev.2 exige un push con
-el marcador explícito `release: publish v0.4.0-dev.2 prerelease`, ambos builds aprobados y un
+un proceso de validación y revisión; los builds ordinarios no publican releases. El job de publicación dev.3 exige un push con
+el marcador explícito `release: publish v0.4.0-dev.3 prerelease`, ambos builds aprobados y un
 borrador aún sin publicar. Usa el token de Actions, adjunta fuentes/hashes y solo publica prerelease;
 rechaza sobrescribir una release publicada.
 Para una publicación futura, crear metadatos de release separados con URL real, hash, fuente

@@ -51,7 +51,8 @@
           "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/xS0Q8LSi/lithium-fabric-0.26.2%2Bmc26.3.jar"
         }
       ],
-      "verification": "API availability only; not tested in Minecraft with TFL Core"
+      "verification": "Native TFL dev.3 incremental smoke on software renderer: 10 option destinations + 2 keybinding checks; maps/dimensions/PNG export completed. No FPS improvement or full pack certification claimed.",
+      "evidence": "docs/evidence/final-rework/screen-smoke-lithium.json; lithium-maps-summary.txt"
     },
     {
       "project": "ferrite-core",

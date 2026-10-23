@@ -1,3 +1,5 @@
+Estado actual: [Native Rework 0.4.0-dev.3](FINAL_REWORK.md). La evidencia siguiente conserva el historial de las candidatas previas.
+
 # Release readiness — historial dev.1
 
 **Estado vigente dev.2:** [FINAL_EXPERIENCE.md](FINAL_EXPERIENCE.md). Release preliminar autorizada para pruebas internas de ambos targets. Nunito, emotes locales y decoder Motion JPEG sustituyen los pendientes equivalentes de este registro; la certificación completa y el clip cinematográfico siguen abiertos.

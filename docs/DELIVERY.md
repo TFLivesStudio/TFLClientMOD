@@ -1,3 +1,5 @@
+Estado actual: [Native Rework 0.4.0-dev.3](FINAL_REWORK.md). La evidencia siguiente conserva el historial de las candidatas previas.
+
 # Entrega de desarrollo · 0.4.0-dev.1
 
 1. **Estado general:** candidata instalable para pruebas internas. No stable ni RC; la misión completa conserva los bloqueos de [RELEASE_READINESS.md](RELEASE_READINESS.md).

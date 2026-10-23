@@ -1,0 +1,66 @@
+{
+  "scope": "native option navigation and rendered frames; no exhaustive interaction certification",
+  "elapsedMs": 30561,
+  "results": [
+    {
+      "destination": "options.video",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.VideoSettingsScreen"
+    },
+    {
+      "destination": "options.sounds",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.SoundOptionsScreen"
+    },
+    {
+      "destination": "options.controls",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.controls.ControlsScreen"
+    },
+    {
+      "destination": "options.controls/controls.keybinds",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.controls.KeyBindsScreen"
+    },
+    {
+      "destination": "offlineBindingsHidden",
+      "passed": true,
+      "detail": "visible key-list rows only; registered mappings preserved"
+    },
+    {
+      "destination": "offlineBindingsPreserved",
+      "passed": true,
+      "detail": "all five mappings remain registered for preference persistence"
+    },
+    {
+      "destination": "options.controls/options.mouse_settings",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.MouseSettingsScreen"
+    },
+    {
+      "destination": "options.language",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.LanguageSelectScreen"
+    },
+    {
+      "destination": "options.resourcepack",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.packs.PackSelectionScreen"
+    },
+    {
+      "destination": "options.accessibility",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.AccessibilityOptionsScreen"
+    },
+    {
+      "destination": "options.chat",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.ChatOptionsScreen"
+    },
+    {
+      "destination": "options.skinCustomisation",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.SkinCustomizationScreen"
+    }
+  ]
+}
