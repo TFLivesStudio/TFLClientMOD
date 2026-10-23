@@ -1,0 +1,78 @@
+name: Validate adopted TRS Client source
+
+on:
+  push:
+    branches: [adopt/trs-client-foundation]
+    paths:
+      - '.github/workflows/verify-trs-adoption.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fabric-26-3:
+    name: Verify upstream Fabric 26.3
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Fabric 26.3 from complete vendored source
+        working-directory: vendor/trs-client
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --stacktrace :fabric:26.3:build -PtrsVersions=26.3
+      - name: Show artifacts
+        if: success()
+        shell: bash
+        run: |
+          find vendor/trs-client/fabric -type f -path '*/build/libs/*.jar' -printf '%p (%s bytes)\n' | tee "$RUNNER_TEMP/jars.txt"
+          test -s "$RUNNER_TEMP/jars.txt"
+      - name: Upload isolated Fabric build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trs-client-upstream-fabric-26.3
+          path: vendor/trs-client/fabric/**/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
+
+  legacy-1-8-9:
+    name: Verify upstream Forge 1.8.9
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Forge 1.8.9 from complete vendored source
+        working-directory: vendor/trs-client/legacy
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --stacktrace build -PtrsVersions=1.8.9
+      - name: Show artifacts
+        if: success()
+        shell: bash
+        run: |
+          find vendor/trs-client/legacy -type f -path '*/build/libs/*.jar' -printf '%p (%s bytes)\n' | tee "$RUNNER_TEMP/jars.txt"
+          test -s "$RUNNER_TEMP/jars.txt"
+      - name: Upload isolated legacy build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trs-client-upstream-forge-1.8.9
+          path: vendor/trs-client/legacy/**/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
