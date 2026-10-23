@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-23",
+  "channel": "development",
+  "implementationCommit": "16b999e6ebb56f999d8e63c6edaf6deb7ec64f29",
+  "common": {
+    "tests": 1111,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 1109
+  },
+  "forge": {
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 50
+  },
+  "packagingTests": {
+    "passed": 6
+  },
+  "artifacts": [
+    {
+      "file": "vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar",
+      "sha256": "7e7e6ffc7e777a0f6bc65177016dbad3b13a09cba700e9c58104130cbb927122",
+      "size": 6918540,
+      "classMajor": 69
+    },
+    {
+      "file": "vendor/trs-client/legacy/versions/1.8.9/build/libs/tflcore-forge-1.8.9-0.4.0-dev.2.jar",
+      "sha256": "713d96af4c1073c84f21134a02c4158511962a4a95c05c1e87e47437516de0a4",
+      "size": 6769085,
+      "classMajor": 52
+    }
+  ],
+  "native": {
+    "fabricDevMenus": {
+      "completed": true,
+      "localEmoteWheelPlayCancelCameraAssertionsPassed": true,
+      "networkStreamConnected": false,
+      "latestPauseLayoutInspected": true
+    },
+    "forgeDevMenus": {
+      "completed": true,
+      "nunitoAtlasInspected": true
+    },
+    "fabricProduction": {
+      "completed": true,
+      "freshGameDirectory": "run/prod-26.3-dev2-first-run",
+      "reachedTitleWithoutOnboarding": true,
+      "optionsAndSlidersInspected": true,
+      "quitNormally": true,
+      "harnessBundled": false,
+      "audioAvailable": false,
+      "authenticationTested": false
+    },
+    "renderer": "software Xvfb/Lavapipe; legacy Mesa/OpenGL"
+  },
+  "video": {
+    "codec": "baseline Motion JPEG, 24 fps",
+    "parserResizeLoopWorkerTestsPassed": true,
+    "cinematicClipIncluded": false,
+    "nativeVideoUploadTested": false,
+    "hardwareBenchmarkDone": false
+  },
+  "launcher": {
+    "commit": "b06fee1",
+    "pullRequest": "https://github.com/TFLivesStudio/TFLClient/pull/12",
+    "svelteErrors": 0,
+    "svelteWarnings": 7,
+    "viteBuildPassed": true,
+    "desktopRuntimeTested": false
+  },
+  "remaining": [
+    "exhaustive 79-module gameplay/HUD/editor/migrations QA",
+    "authenticated multiplayer and audio",
+    "GPU/resolution/optimizer combinations and performance",
+    "final cinematic video asset and renderer upload benchmark",
+    "complete legacy visual parity"
+  ]
+}

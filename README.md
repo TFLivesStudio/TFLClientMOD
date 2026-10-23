@@ -1,6 +1,6 @@
-# TFL Core · TFL Selection
+# TFL Client
 
-Distribución **en desarrollo, 0.4.0-dev.1**, derivada del código completo de TRS Client MOD
+Distribución **en desarrollo, 0.4.0-dev.2**, derivada del código completo de TRS Client MOD
 (GPL-3.0-only, © Ohev Tamerin). Las modificaciones TFL son de TFLivesStudio.
 Builds de ambos targets y smokes nativos verificados; véase el informe de limitaciones.
 No es un launcher y no necesita TRS Launcher ni TFL Client para sus funciones offline.
@@ -28,7 +28,7 @@ cd vendor/trs-client
 ./gradlew --no-daemon --max-workers=2 :common:test :fabric:26.3:build -PtrsVersions=26.3
 ```
 
-JAR: `vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar`.
+JAR: `vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar`.
 No instalar el sources JAR. Dependencias de la candidata: Minecraft **26.3**, Java **25**,
 Fabric Loader **0.19.5**, Fabric API **0.161.0+26.3**. Los optimizadores son externos y opcionales.
 
@@ -42,7 +42,7 @@ Forge 1.8.9 es un build independiente, con Java 8 como toolchain/bytecode y JDK 
 
 ```sh
 python3 -m unittest discover -s tools -p 'test_*.py'
-python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar
+python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar
 python3 tools/distribution.py check-instance /ruta/instancia/mods
 ```
 
@@ -52,5 +52,5 @@ un manifiesto local; **no publica una release ni certifica una partida**. Consul
 [integración de modpacks](docs/MODPACK_INTEGRATION.md), [migración](docs/MIGRATION.md),
 [compatibilidad](docs/COMPATIBILITY.md) y [licencias](docs/LICENSES_AND_ATTRIBUTION.md).
 
-El fondo incluido es una imagen estática original. El controlador expone un contrato de vídeo
-asíncrono con fallback; no se entrega un decodificador ni se afirma reproducción de vídeo.
+El fondo incluido es una imagen estática original. El reproductor local Motion JPEG decodifica en worker y conserva el fallback; no se entrega
+un clip cinematográfico. Consulta [vídeo local](docs/LOCAL_VIDEO.md).

@@ -1,4 +1,6 @@
-# Release readiness — 0.4.0-dev.1
+# Release readiness — historial dev.1
+
+**Estado vigente dev.2:** [FINAL_EXPERIENCE.md](FINAL_EXPERIENCE.md). Release preliminar autorizada para pruebas internas de ambos targets. Nunito, emotes locales y decoder Motion JPEG sustituyen los pendientes equivalentes de este registro; la certificación completa y el clip cinematográfico siguen abiertos.
 
 **Estado: candidata de desarrollo para validación interna. No beta, RC ni stable.**
 La misión todavía no cumple su definición completa de terminado y no se recomienda fusionar a main.

@@ -1,15 +1,22 @@
 # Continuación concreta
 
-Último commit de implementación verificado: `41aaf4e` (TFL identity/offline/config/Selection).
+Último commit de implementación verificado: `16b999e` (TFL identity/offline/config/Selection).
 Rama: `adopt/trs-client-foundation`; main no se modifica ni fusiona. El commit posterior añade
 herramientas, CI, fuentes de evidencia y documentación de distribución.
 
 ## Estado
 
-Builds adaptados Fabric 26.3 y Forge 1.8.9 aprobados. Common: 1102 passed + 2 skipped;
+Builds adaptados Fabric 26.3 y Forge 1.8.9 aprobados. Common: 1109 passed + 2 skipped;
 legacy: 50 passed; packaging: 6 passed. Artefactos y source ZIP se generan en
 `distribution/build/` (ignorado). Hay capturas reales Forge en docs/evidence/forge-1.8.9,
 y previews Canvas/Java2D separadas. Hay smokes nativos Fabric de menús/mapas y operaciones del JAR de producción con Vulkan/Lavapipe.
+
+## Estado dev.2
+
+Leer FINAL_EXPERIENCE.md. Release preliminar de ambos targets autorizada por el usuario. Nunito,
+emotes locales y decoder Motion JPEG implementados; existen capturas nuevas en
+evidence/final-experience. Launcher PR #12 separado. Mantener congelado el alcance de dev.2
+y cerrar QA antes de RC. El reporte nuevo de pruebas está en evidence/final-experience/validation.json.
 
 ## Próxima acción principal
 
@@ -33,12 +40,12 @@ cd /workspace/TFLClientMOD
 ./gradlew --no-daemon legacyBuild
 python3 -m unittest discover -s tools -p 'test_*.py'
 python3 tools/scan_secrets.py
-python3 tools/distribution.py verify vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar
+python3 tools/distribution.py verify vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar
 # Solo con todos los cambios comprometidos:
 mkdir -p distribution/build
 git archive --format=zip --output=distribution/build/tflcore-corresponding-source.zip HEAD
-python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.1.jar
-python3 tools/distribution.py mrpack distribution/build/tflcore-fabric-26.3-0.4.0-dev.1.jar distribution/build/tflcore-corresponding-source.zip
+python3 tools/distribution.py package vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-dev.2.jar
+python3 tools/distribution.py mrpack distribution/build/tflcore-fabric-26.3-0.4.0-dev.2.jar distribution/build/tflcore-corresponding-source.zip
 ```
 
 Para repetir el smoke legacy: iniciar Xvfb de la carpeta .cloud-setup/tools/xvfb con DISPLAY propio,

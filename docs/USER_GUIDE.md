@@ -31,7 +31,10 @@ servidor, especialmente para freelook y personalizaciones visuales.
 Los servicios TRS, friends, hosting, sincronización, cuentas y grabación mediante launcher están
 inhabilitados. No necesitas iniciar sesión en TFLives. Las capturas F2 de Minecraft son locales.
 El fondo tiene cinco modos expuestos en el módulo de título; los modos de vídeo usan el fallback
-estático porque esta candidata no incluye decodificador. Desactivar animación impone estático.
+estático cuando falta el archivo local; consulta LOCAL_VIDEO.md. Desactivar animación impone estático.
 
 Guarda una copia de `config/`, `options.txt` y mundos antes de actualizar. Si aparece solo lectura,
 consulta logs y la guía de migración; no borres información para silenciar el aviso.
+
+En dev.2, G abre seis emotes locales sin cuenta ni red. Solo los ve tu cliente. Movimiento,
+agacharse o atacar cancela la animación; el modo de cámara se restaura al terminar.

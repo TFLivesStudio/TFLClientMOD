@@ -1,4 +1,6 @@
-# Fondo del menú y reproducción pendiente
+# Fondo del menú — registro histórico dev.1
+
+**Actualización dev.2:** existe un decoder real local Motion JPEG en worker. Ver [LOCAL_VIDEO.md](LOCAL_VIDEO.md). El texto siguiente documenta el estado anterior; sigue pendiente el clip cinematográfico final y su benchmark.
 
 Incluido: PNG original de agujero negro, 1672×941, disco azul/blanco, cargado como textura de
 recursos. No se denomina vídeo ni se anuncian 1080p de reproducción. El archivo está en

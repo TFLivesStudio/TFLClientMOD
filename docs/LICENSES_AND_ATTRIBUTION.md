@@ -33,3 +33,11 @@ No se cambia la visibilidad del repositorio privado. El ZIP se entrega directame
 del binario (por ejemplo junto al artefacto o dentro del pack de validación). Si se publica después
 una release, ese canal debe ofrecer también la fuente correspondiente y los avisos. Revisar la
 integridad de esta entrega antes de cualquier distribución pública.
+
+## Nunito en dev.2
+
+Fuente oficial de googlefonts/nunito, SIL OFL 1.1. SHA del commit y del TTF variable en
+`vendor/trs-client/licenses/Nunito-PROVENANCE.txt`. Se generan instancias estáticas 400/600/800
+con fontTools, sin editar contornos. Licencia y procedencia se incluyen en ambos JAR. Los seis
+emotes locales reutilizan tracks de animación distribuidos como código GPL en el snapshot;
+no se descargan medios, compras, permisos de cuenta ni cosméticos privados.

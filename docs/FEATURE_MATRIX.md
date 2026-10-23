@@ -46,7 +46,7 @@ no certifican todos los adaptadores/mixins. No se eliminan módulos offline para
 | trsOnline | MISC | No | Off | TRS/backend desactivado |
 | capePhysics | MISC | No | On | Registrado; validación completa pendiente |
 | colors | WORLD | No | Off | Registrado; validación completa pendiente |
-| emotes | MISC | No | On | TRS/backend desactivado |
+| emotes | MISC | No | On | Seis emotes locales; tests y smoke nativo Fabric (rueda, reproducción, cancelación, cámara); sin sincronización |
 | redstoneSignal | REDSTONE | Sí | On | Registrado; validación completa pendiente |
 | redstoneOverlay | REDSTONE | No | Off | Registrado; validación completa pendiente |
 | redstoneClock | REDSTONE | Sí | On | Registrado; validación completa pendiente |

@@ -80,3 +80,16 @@ Las previews `software-previews/` son Java2D/Canvas y **no son capturas de Minec
 - [ ] Un optimizador cada vez; luego combinación completa con shader si corresponde.
 - [ ] Medir arranque, RAM y frametimes; no atribuir ganancias sin comparación reproducible.
 - [ ] Fuente correspondiente, licencias, hash, instalación limpia y canales antes de distribuir.
+
+## Actualización Final Experience dev.2
+
+Ver FINAL_EXPERIENCE.md y evidence/final-experience/validation.json. Nuevos tests de emotes
+locales sin objeto online, cámara al salir, parser MJPEG con marcador en APP, streams truncados,
+aspect ratio y loop en worker sin contexto gráfico. Common: 1111/1109 passed/2 skipped.
+Se repitieron smokes Fabric/Forge y se amplió Fabric con assertions reales de emote/cámara.
+La primera instancia de producción nueva aún mostraba el onboarding: Options.load retornaba
+antes del TAIL si no había options.txt. Se inyecta en todos los RETURN y al final del constructor;
+otra carpeta nueva llegó directamente al título y guardó tutorialStep:none/onboardAccessibility:false.
+El JAR final se cerró por Quit Game con BUILD SUCCESSFUL. Audio y autenticación siguen sin
+validarse. Un fallo intermitente ShareTest (closed en lugar de not_allowed al cerrar el servidor
+falso) no se ocultó: se repitió la suite completa al corregir los cambios de branding y pasó.
