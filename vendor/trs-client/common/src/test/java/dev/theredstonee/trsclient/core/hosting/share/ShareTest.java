@@ -400,10 +400,12 @@ class ShareTest {
 		}
 
 		// Nicht angenommen â†’ abgewiesen.
+        ByteArrayOutputStream forbidden = new ByteArrayOutputStream();
 		try (FileClient fc = connect(server, "fremd", mc)) {
 			FileClient.FileException ex = assertThrows(FileClient.FileException.class,
-					() -> fc.fetch(FileChannel.KIND_MOD, e.sha256, e.size, SharedContent.MAX_HOST_FILE, null, new ByteArrayOutputStream(), null));
-			assertEquals("not_allowed", ex.code);
+                    () -> fc.fetch(FileChannel.KIND_MOD, e.sha256, e.size, SharedContent.MAX_HOST_FILE, null, forbidden, null));
+            assertTrue("not_allowed".equals(ex.code) || "closed".equals(ex.code), "unauthorized guest must be rejected: " + ex.code);
+            assertEquals(0, forbidden.size(), "unauthorized guest must never receive file bytes");
 		}
 
 		// Datei nach der Freigabe geÃ¤ndert â†’ nicht mehr geliefert.
@@ -416,10 +418,14 @@ class ShareTest {
 
 		// Teilen aus â†’ nichts mehr.
 		server.stop();
+        ByteArrayOutputStream denied = new ByteArrayOutputStream();
 		try (FileClient fc = connect(server, "gast", mc)) {
 			FileClient.FileException ex = assertThrows(FileClient.FileException.class,
-					() -> fc.fetch(FileChannel.KIND_MOD, e.sha256, e.size, SharedContent.MAX_HOST_FILE, null, new ByteArrayOutputStream(), null));
-			assertEquals("not_allowed", ex.code);
+                    () -> fc.fetch(FileChannel.KIND_MOD, e.sha256, e.size, SharedContent.MAX_HOST_FILE, null, denied, null));
+            // The host rejects immediately after MAGIC. Its close may reach the client before GET is written.
+            // Both documented denial paths are valid; neither may expose any file bytes.
+            assertTrue("not_allowed".equals(ex.code) || "closed".equals(ex.code), "stopped sharing must reject the request: " + ex.code);
+            assertEquals(0, denied.size(), "stopped sharing must never return file bytes");
 		}
 	}
 
