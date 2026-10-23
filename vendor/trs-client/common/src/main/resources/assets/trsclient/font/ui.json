@@ -1,1 +1,14 @@
-{"providers":[{"type":"ttf","file":"trsclient:font/inter.ttf","shift":[0,0],"size":10,"oversample":2}]}
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "trsclient:inter.ttf",
+      "shift": [
+        0,
+        0
+      ],
+      "size": 10,
+      "oversample": 2
+    }
+  ]
+}
