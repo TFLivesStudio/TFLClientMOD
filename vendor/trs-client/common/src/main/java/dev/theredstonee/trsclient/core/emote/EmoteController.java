@@ -49,6 +49,7 @@ public final class EmoteController {
 
 	private final TrsModules modules;
 	private final TrsOnline online;
+    private final boolean local;
 	private final EmotePlayback playback = new EmotePlayback();
 	private final EmoteRig rig = new EmoteRig();
 	private final float[] frame = new float[Channel.COUNT];
@@ -63,12 +64,14 @@ public final class EmoteController {
 	private String lastError;
 
 	public EmoteController(TrsModules modules, TrsOnline online) {
-		this.modules = modules;
-		this.online = online;
+		this(modules, online, false);
+    }
+    public EmoteController(TrsModules modules, TrsOnline online, boolean local) {
+        this.modules=modules; this.online=online; this.local=local;
 	}
 
 	private boolean enabled() {
-		return modules.emotes.isEnabled() && modules.trsOnline.isEnabled();
+		return modules.emotes.isEnabled() && (local || modules.trsOnline.isEnabled());
 	}
 
 	/**
@@ -78,23 +81,23 @@ public final class EmoteController {
 	 */
 	public void tick(long now, List<EmotePlayback.Mover> movers, Camera camera) {
 		boolean on = enabled();
-		online.wantEmotes(on, on && modules.emoteOthers.get());
+		if (!local) online.wantEmotes(on, on && modules.emoteOthers.get());
 		self = null;
 		if (movers != null) {
 			for (EmotePlayback.Mover m : movers) {
 				if (m.self) self = m.uuid;
 			}
 		}
-		for (PlayerEvent e : online.pollEmoteEvents()) receive(e, now);
+		if (!local) for (PlayerEvent e : online.pollEmoteEvents()) receive(e, now);
 		if (!on) playback.clear();
-		else if (!modules.emoteOthers.get()) playback.retainOnly(self);
+		else if (local || !modules.emoteOthers.get()) playback.retainOnly(self);
 		playback.tick(now, movers);
 		if (camera != null) updateCamera(now, camera);
 	}
 
 	/** Ein Emote-Ereignis aus dem Stream (eigene UUID = Echo des eigenen Emotes). */
 	void receive(PlayerEvent e, long now) {
-		if (!enabled() || e == null || !"emote".equals(e.type)) return;
+		if (local || !enabled() || e == null || !"emote".equals(e.type)) return;
 		EmoteDef def = Emotes.byId(e.emote);
 		if (def == null) return; // unbekannte IDs ignorieren (API.md §12)
 		String own = online.ownUuid();
@@ -116,6 +119,7 @@ public final class EmoteController {
 
 	/** Zustand für das Rad (Hinweis statt Emotes, wenn nicht spielbar). */
 	public State state() {
+        if (local) return enabled() ? State.READY : State.OFF_MODULE;
 		if (!online.launcherEnabled()) return State.OFF_LAUNCHER;
 		if (!modules.trsOnline.isEnabled()) return State.OFF_MODULE;
 		switch (online.status()) {
@@ -138,16 +142,17 @@ public final class EmoteController {
 
 	/** Das Rad wurde geöffnet: veraltete Liste neu holen. */
 	public void wheelOpened(long now) {
-		if (enabled()) online.refreshEmotes(now, LIST_MAX_AGE_MS);
+		if (!local && enabled()) online.refreshEmotes(now, LIST_MAX_AGE_MS);
 	}
 
 	/** Alle Emotes, die das Rad zeigt (feste Reihenfolge wie in der API). */
 	public List<EmoteDef> all() {
-		return Emotes.ALL;
+		return local ? Emotes.LOCAL : Emotes.ALL;
 	}
 
 	/** Darf dieses Emote abgespielt werden (laut API freigeschaltet)? */
 	public boolean unlocked(String id) {
+        if (local) return Emotes.LOCAL.contains(Emotes.byId(id));
 		List<String> ids = online.unlockedEmotes();
 		return ids != null && ids.contains(id);
 	}
@@ -163,11 +168,13 @@ public final class EmoteController {
 		if (def == null || !enabled() || state() != State.READY) return Result.UNAVAILABLE;
 		if (!unlocked(id)) return Result.LOCKED;
 		if (cooldownLeft(now) > 0) return Result.COOLDOWN;
+        if (local && self == null) return Result.UNAVAILABLE;
 		lastPlay = now;
 		lastPlayId = id;
 		final UUID me = self;
 		if (me != null) playback.start(me, def, def.durationMs(), now);
-		online.playEmote(id, new TrsOnline.PlayCallback() {
+		if (local) return Result.PLAYED;
+        online.playEmote(id, new TrsOnline.PlayCallback() {
 			@Override
 			public void done(int durationMs, ApiException error) {
 				if (error == null) return;

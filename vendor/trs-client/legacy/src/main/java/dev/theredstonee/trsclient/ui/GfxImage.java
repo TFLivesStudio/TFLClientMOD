@@ -25,7 +25,11 @@ public final class GfxImage {
 	/** Textur-Ausschnitt (u, v, w×h Texel) ins Rechteck (0, 0)–(w, h), eingefärbt mit ARGB. */
 	public static void blit(TextureRef t, float u, float v, int w, int h, int argb) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture((ResourceLocation) t.id);
-		GlStateManager.enableBlend();
+		if(t.id.toString().contains("nunito-font")) {
+            org.lwjgl.opengl.GL11.glTexParameteri(3553,10241,9729);
+            org.lwjgl.opengl.GL11.glTexParameteri(3553,10240,9729);
+        }
+        GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.enableAlpha();
 		GlStateManager.color(((argb >> 16) & 0xFF) / 255f, ((argb >> 8) & 0xFF) / 255f, (argb & 0xFF) / 255f,

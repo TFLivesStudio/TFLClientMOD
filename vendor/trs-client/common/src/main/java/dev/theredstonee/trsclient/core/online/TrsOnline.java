@@ -936,7 +936,7 @@ public final class TrsOnline {
 		if (now - lastError < 60_000L) return;
 		lastError = now;
 		StackTraceElement[] st = e.getStackTrace();
-		platform.log("TRS Client: Fehler in den Online-Funktionen ignoriert: " + e
+		platform.log("TFL Client: Fehler in den Online-Funktionen ignoriert: " + e
 				+ (st.length > 0 ? " bei " + st[0] : ""));
 	}
 

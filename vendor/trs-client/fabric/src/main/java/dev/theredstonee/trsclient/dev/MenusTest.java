@@ -217,7 +217,7 @@ public final class MenusTest {
 				return;
             case 1:
                 if (!(screen instanceof TrsTitleScreen)) throw new IllegalStateException("TFL title missing");
-                if (((TrsTitleScreen)screen).title().buttonRect("trsMenu") == null) throw new IllegalStateException("TFL Core action missing");
+                if (((TrsTitleScreen)screen).title().buttonRect("trsMenu") == null) throw new IllegalStateException("TFL Client action missing");
                 shot(mc,"selection-title");
                 Mc.setScreen(new dev.theredstonee.trsclient.screen.TrsMenuScreen(new TrsTitleScreen()));
                 phase=90;wait=20;return;
@@ -411,9 +411,28 @@ public final class MenusTest {
 				phase++;
 				wait = 15;
 				return;
-			case 23:
-				shot(mc, "options-ingame");
-				log("fertig");
+            case 23:
+                shot(mc,"options-ingame");
+                TrsClient.get().modules().trsOnline.setEnabled(false);
+                TrsClient.get().modules().emotes.setEnabled(true);
+                TrsClient.get().modules().emoteCamera.set(dev.theredstonee.trsclient.core.module.TrsModules.EmoteCamera.FRONT);
+                dev.theredstonee.trsclient.online.EmoteHooks.CAMERA.set(0);
+                dev.theredstonee.trsclient.screen.EmoteWheelScreen wheel=new dev.theredstonee.trsclient.screen.EmoteWheelScreen();
+                Mc.setScreen(wheel);wheel.wheel().hover("winken");phase++;wait=10;return;
+            case 24:
+                shot(mc,"emote-local-wheel");
+                ((dev.theredstonee.trsclient.screen.EmoteWheelScreen)Mc.screen()).wheel().confirmNow();phase++;wait=10;return;
+            case 25:
+                if(!dev.theredstonee.trsclient.online.EmoteHooks.emotes().selfPlaying(System.currentTimeMillis()))throw new IllegalStateException("Local emote did not play");
+                if(dev.theredstonee.trsclient.online.EmoteHooks.CAMERA.get()!=2)throw new IllegalStateException("Local emote camera not set");
+                if(dev.theredstonee.trsclient.online.EmoteHooks.eventsConnected())throw new IllegalStateException("Unexpected online stream");
+                shot(mc,"emote-local-wave");
+                dev.theredstonee.trsclient.online.EmoteHooks.emotes().onAttack(System.currentTimeMillis());phase++;wait=8;return;
+            case 26:
+                if(dev.theredstonee.trsclient.online.EmoteHooks.emotes().selfPlaying(System.currentTimeMillis()))throw new IllegalStateException("Local emote did not cancel");
+                if(dev.theredstonee.trsclient.online.EmoteHooks.CAMERA.get()!=0)throw new IllegalStateException("Local camera not restored");
+                log("Local emote play/cancel/camera assertions passed; network disabled");
+                log("fertig");
 				cleanup();
 				phase++;
 				mc.stop();

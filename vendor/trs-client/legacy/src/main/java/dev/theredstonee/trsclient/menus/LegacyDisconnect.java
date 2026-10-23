@@ -136,7 +136,7 @@ public final class LegacyDisconnect {
 		String reason = reasonOf(s);
 		if (!reason.isEmpty()) sb.append(reason).append('\n');
 		if (target != null) sb.append("Server: ").append(target.serverIP).append('\n');
-		sb.append("TRS Client");
+		sb.append("TFL Client");
 		Mc.setClipboard(sb.toString());
 		if (copy != null) copy.displayString = I18n.tr("disconnect.copied");
 	}

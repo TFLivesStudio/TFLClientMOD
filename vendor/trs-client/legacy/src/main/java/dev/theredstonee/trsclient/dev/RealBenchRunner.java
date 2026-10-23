@@ -55,7 +55,7 @@ public final class RealBenchRunner {
 		if (!Boolean.getBoolean("trsclient.autotest") || !"realbench".equals(System.getProperty("trsclient.autotest.only"))) return false;
 		RealBenchRunner runner = new RealBenchRunner();
 		MinecraftForge.EVENT_BUS.register(runner);
-		TrsClient.LOGGER.info("[RealBench] aktiv ({})", runner.vanilla ? "Vanilla – TRS Client aus" : "TRS Client");
+		TrsClient.LOGGER.info("[RealBench] aktiv ({})", runner.vanilla ? "Vanilla – TFL Client aus" : "TFL Client");
 		return true;
 	}
 
@@ -242,7 +242,7 @@ public final class RealBenchRunner {
 			public String setup() {
 				GameSettings s = mc.gameSettings;
 				return String.format(Locale.ROOT, "MC %s, %s, Sichtweite %d, Grafik %d, VSync %s, Max. Bildrate %s, Seed %d", mcVersion,
-						vanilla ? "Vanilla (TRS aus)" : "TRS Client", s.renderDistanceChunks, s.fancyGraphics ? 1 : 0,
+						vanilla ? "Vanilla (TRS aus)" : "TFL Client", s.renderDistanceChunks, s.fancyGraphics ? 1 : 0,
 						s.enableVsync ? "an" : "aus", s.limitFramerate >= 260 ? "unbegrenzt" : String.valueOf(s.limitFramerate), seed);
 			}
 

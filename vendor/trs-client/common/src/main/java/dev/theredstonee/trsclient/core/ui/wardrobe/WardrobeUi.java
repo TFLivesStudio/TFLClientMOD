@@ -685,10 +685,8 @@ public final class WardrobeUi extends UiScreen {
 		c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
 		int lx = px + PAD + 2;
 		int ly = py + (HEADER_H - PixelFont.HEIGHT * 2) / 2;
-		List<int[]> rects = PixelFont.rects("TRS");
-		int light = ColorMath.lerp(t.accent, 0xFFFFFFFF, 0.3f);
-		for (int[] r : rects) c.fill(lx + r[0] * 2, ly + r[1] * 2, lx + r[2] * 2, ly + r[3] * 2, r[1] == 0 ? light : t.accent);
-		int titleX = lx + PixelFont.width("TRS") * 2 + 5;
+        c.strongText("TFL Client",lx,py+(HEADER_H-c.lineHeight())/2,t.text);
+        int titleX=lx+c.textWidth("TFL Client")+12;
 		int closeSize = 16;
 		int closeX = px + pw - PAD - closeSize;
 		String title = I18n.tr(editing ? "wardrobe.editor.title" : "wardrobe.title");

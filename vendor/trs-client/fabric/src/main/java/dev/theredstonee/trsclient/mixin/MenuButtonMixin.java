@@ -40,6 +40,11 @@ public abstract class MenuButtonMixin {
 		AbstractWidget w = (AbstractWidget) (Object) this;
 		if (VanillaMenus.drawButton(this, Gfx.of(g), w.getX(), w.getY(), w.getWidth(), w.getHeight(), w.isHoveredOrFocused(), w.active)) ci.cancel();
 	}
+    @Inject(method="extractDefaultLabel",at=@At("HEAD"),require=1)
+    private void tfl$label(net.minecraft.client.gui.ActiveTextCollector collector,CallbackInfo ci) {
+        VanillaMenus.prepareLabel(this);
+    }
+
 	*///?} elif >=1.21.11 {
 	/*@Inject(method = "renderDefaultSprite(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"), cancellable = true, require = 1)
 	private void trsclient$sprite(GuiGraphics g, CallbackInfo ci) {

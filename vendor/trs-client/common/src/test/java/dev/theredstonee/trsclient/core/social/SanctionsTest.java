@@ -453,7 +453,7 @@ class SanctionsTest {
 		social.loginBanned(body);
 		social.tick(now, null, null, null, false);
 		assertNotNull(social.banned());
-		assertEquals("TRS account banned", social.toasts().visible(now).get(0).title);
+		assertEquals("Online account unavailable", social.toasts().visible(now).get(0).title);
 		assertEquals(9, social.sanctions().activeOf("account_ban", now).id);
 		assertTrue(social.sanctionAccess(now));
 		assertFalse(social.appealTokenExpired(now));

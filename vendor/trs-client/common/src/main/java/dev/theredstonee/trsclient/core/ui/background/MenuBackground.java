@@ -6,8 +6,8 @@ import dev.theredstonee.trsclient.core.module.ChoiceSetting;
 /** Local-media-only background controller. No decoder/download is silently installed. */
 public final class MenuBackground implements AutoCloseable {
     public enum Mode implements ChoiceSetting.Option {
-        HIGH("1080p video (static fallback)",1920,1080,30), BALANCED("Balanced (static fallback)",1280,720,24),
-        PERFORMANCE("Performance (static fallback)",854,480,15), STATIC("Static image",0,0,0), OFF("Disabled",0,0,0);
+        HIGH("Quality · local video",1920,1080,30), BALANCED("Balanced · local video",1280,720,24),
+        PERFORMANCE("Performance · local video",854,480,15), STATIC("Static image",0,0,0), OFF("Disabled",0,0,0);
         private final String label; public final int width,height,fps;
         Mode(String label,int width,int height,int fps){this.label=label;this.width=width;this.height=height;this.fps=fps;}
         public String label(){return label;}

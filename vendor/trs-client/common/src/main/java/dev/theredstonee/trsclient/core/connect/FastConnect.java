@@ -118,7 +118,7 @@ public final class FastConnect {
 		ConnectHints h = hints;
 		String join = h == null ? null : h.join();
 		if (join == null) return;
-		info("Fast connect: the TRS Launcher reports a join to " + join + " - preparing");
+		info("Fast connect: the external launcher reports a join to " + join + " - preparing");
 		// Java 8 ohne Haken am Verbindungsaufbau: die Adressen des Launchers sofort in Javas Speicher.
 		primeJvm(join);
 		prefetch(join);
@@ -170,7 +170,7 @@ public final class FastConnect {
 		ConnectHints h = hints;
 		if (h == null) return;
 		int n = h.refresh(CACHE);
-		if (n > 0) info("Fast connect: " + n + " server(s) pre-resolved by the TRS Launcher");
+		if (n > 0) info("Fast connect: " + n + " server(s) pre-resolved by the external launcher");
 	}
 
 	// --- Auflösen (Mixin in ServerNameResolver / ServerAddress) ---

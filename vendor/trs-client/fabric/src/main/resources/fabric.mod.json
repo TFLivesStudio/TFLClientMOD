@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "tflcore",
 	"version": "${version}",
-	"name": "TFL Core",
-	"description": "TFL Selection: offline client utilities, HUD, maps and gameplay customization. Derived from TRS Client.",
+	"name": "TFL Client",
+	"description": "TFL Client: offline client utilities, HUD, maps and gameplay customization. Derived from TRS Client.",
 	"authors": [
 		"theredstonee (original TRS Client)", "TFLivesStudio (TFL modifications)"
 	],

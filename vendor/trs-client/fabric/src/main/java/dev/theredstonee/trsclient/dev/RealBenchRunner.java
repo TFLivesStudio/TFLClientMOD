@@ -44,7 +44,7 @@ public final class RealBenchRunner {
 		if (!Boolean.getBoolean("trsclient.autotest") || !"realbench".equals(System.getProperty("trsclient.autotest.only"))) return false;
 		RealBenchRunner runner = new RealBenchRunner();
 		ClientTickEvents.END_CLIENT_TICK.register(runner::tick);
-		TrsClient.LOGGER.info("[RealBench] aktiv ({})", runner.vanilla ? "Vanilla – TRS Client aus" : "TRS Client");
+		TrsClient.LOGGER.info("[RealBench] aktiv ({})", runner.vanilla ? "Vanilla – TFL Client aus" : "TFL Client");
 		return true;
 	}
 
@@ -212,7 +212,7 @@ public final class RealBenchRunner {
 				PerfOptions o = new PerfOptions();
 				int max = o.get(GameOptions.Opt.MAX_FPS);
 				return String.format(Locale.ROOT, "MC %s, %s, Sichtweite %d, Grafik %d, VSync %s, Max. Bildrate %s, Seed %d",
-						AutoTest.MC_VERSION, vanilla ? "Vanilla (TRS aus)" : "TRS Client", o.get(GameOptions.Opt.VIEW_DISTANCE),
+						AutoTest.MC_VERSION, vanilla ? "Vanilla (TRS aus)" : "TFL Client", o.get(GameOptions.Opt.VIEW_DISTANCE),
 						o.get(GameOptions.Opt.GRAPHICS), o.get(GameOptions.Opt.VSYNC) == 1 ? "an" : "aus",
 						max >= GameOptions.UNLIMITED_FPS ? "unbegrenzt" : String.valueOf(max), seed);
 			}

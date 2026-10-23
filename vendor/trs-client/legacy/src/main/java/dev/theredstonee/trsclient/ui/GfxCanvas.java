@@ -18,6 +18,7 @@ public final class GfxCanvas implements Canvas {
 	}
 
 	private Gfx g;
+    private final NunitoFont nunito=new NunitoFont();
 	private FontRenderer font;
 
 	private GfxCanvas() {
@@ -46,12 +47,12 @@ public final class GfxCanvas implements Canvas {
 
 	@Override
 	public void text(String text, int x, int y, int argb, boolean shadow) {
-		g.text(font, text, x, y, argb, shadow);
+		if(nunito.ready())nunito.draw(this,text,x,y,argb);else g.text(font,text,x,y,argb,shadow);
 	}
 
 	@Override
 	public int textWidth(String text) {
-		return font.getStringWidth(text);
+		return nunito.ready()?nunito.width(text):font.getStringWidth(text);
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public final class GfxCanvas implements Canvas {
 
 	@Override
 	public String clip(String text, int maxWidth) {
-		return font.trimStringToWidth(text, Math.max(0, maxWidth));
+		int end=text.length();while(end>0&&textWidth(text.substring(0,end))>Math.max(0,maxWidth))end--;return text.substring(0,end);
 	}
 
 	/** Bis 1.12.2 zeichnet Minecraft Text sofort – hier ist nichts zu tun. */

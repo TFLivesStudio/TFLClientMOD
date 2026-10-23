@@ -134,12 +134,12 @@ public final class LocalSkin {
 						}
 						deliver(gen, skin, isSlim, cape, true);
 					} catch (IOException | RuntimeException e) {
-						log.accept("TRS Client: Skin-Cache nicht schreibbar (" + e.getMessage() + ")");
+						log.accept("TFL Client: Skin-Cache nicht schreibbar (" + e.getMessage() + ")");
 					}
 				}
 			});
 		} catch (RuntimeException e) {
-			log.accept("TRS Client: Skin-Aktualisierung abgelehnt");
+			log.accept("TFL Client: Skin-Aktualisierung abgelehnt");
 		}
 	}
 
@@ -294,7 +294,7 @@ public final class LocalSkin {
 				deliver(gen, Files.readAllBytes(skinFile), slim, cape, !online);
 			}
 		} catch (IOException | RuntimeException e) {
-			log.accept("TRS Client: Skin-Cache nicht lesbar (" + e.getMessage() + ")");
+			log.accept("TFL Client: Skin-Cache nicht lesbar (" + e.getMessage() + ")");
 		}
 		if (!online) {
 			finish(gen);
@@ -325,7 +325,7 @@ public final class LocalSkin {
 			}
 			deliver(gen, skin, profile.slim, cape, true);
 		} catch (IOException | RuntimeException e) {
-			log.accept("TRS Client: eigener Skin nicht ladbar (" + e.getMessage() + ")");
+			log.accept("TFL Client: eigener Skin nicht ladbar (" + e.getMessage() + ")");
 			finish(gen);
 		}
 	}

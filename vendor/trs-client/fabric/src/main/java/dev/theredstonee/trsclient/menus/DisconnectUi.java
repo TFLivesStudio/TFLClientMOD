@@ -172,7 +172,7 @@ public final class DisconnectUi {
 		if (!reason.isEmpty()) sb.append(reason).append('\n');
 		ServerData t = target;
 		if (t != null) sb.append("Server: ").append(t.ip).append('\n');
-		sb.append("TRS Client");
+		sb.append("TFL Client");
 		Mc.setClipboard(sb.toString());
 		if (copy != null) VanillaMenus.setMessage(copy, I18n.tr("disconnect.copied"));
 	}

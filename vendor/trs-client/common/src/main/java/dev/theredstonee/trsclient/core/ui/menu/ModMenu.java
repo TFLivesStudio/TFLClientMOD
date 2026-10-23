@@ -452,8 +452,8 @@ public final class ModMenu extends UiScreen {
 		c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
         int lx=px+PAD;
         int ly=py+(HEADER_H-c.lineHeight())/2;
-        c.text("TFL Core",lx,ly,t.text,false);
-        int clientX=lx+c.textWidth("TFL Core")+8;
+        c.text("TFL Client",lx,ly,t.text,false);
+        int clientX=lx+c.textWidth("TFL Client")+8;
         String client="Selection";
         if(pw>420)c.text(client,clientX,ly,t.textDim,false);
 
@@ -500,7 +500,7 @@ public final class ModMenu extends UiScreen {
 
 		// „Hilfe“ ohne Browser: Adresse zwischen Schriftzug und Suchfeld zeigen (zum Abtippen).
 		if (docsFailed != null && System.currentTimeMillis() < docsFailedUntil) {
-			int nx = lx + c.textWidth("TFL Core Selection") + 12;
+			int nx = lx + c.textWidth("TFL Client Selection") + 12;
 			if (searchX - 8 - nx > 24) {
 				Paint.textClipped(c, I18n.tr("bugreport.done.openFailed", docsFailed), nx, py + (HEADER_H - 8) / 2,
 						searchX - 8 - nx, DOCS_WARN, false);
@@ -544,9 +544,9 @@ public final class ModMenu extends UiScreen {
     }
 
     private void aboutPage(Canvas c,int x,int y,int w,int h) {
-        String[] paragraphs={"TFL Core / TFL Selection", "Derived from TRS Client MOD", "Copyright 2026 Ohev Tamerin (Theredstonee)",
+        String[] paragraphs={"TFL Client", "Derived from TRS Client MOD", "Copyright 2026 Ohev Tamerin (Theredstonee)",
             "TFL modifications: TFLivesStudio, 2026", "Code: GPL-3.0-only. Chat Heads: dzwdz, MPL-2.0.",
-            "Inter typeface: SIL Open Font License 1.1.", "Offline core. TRS services and launcher IPC disabled.",
+            "Nunito / Inter: SIL Open Font License 1.1.", "Offline core. TRS services and launcher IPC disabled.",
             "Development build. No stable or in-game certification.", "Video decoder unavailable; static background included.",
             "Source package: tflcore-corresponding-source.zip", "Guides: docs/USER_GUIDE.md and docs/MIGRATION.md", "Licenses: docs/LICENSES_AND_ATTRIBUTION.md"};
         java.util.List<String> lines=new java.util.ArrayList<>();

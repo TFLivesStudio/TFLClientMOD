@@ -1,4 +1,4 @@
-name: TFL Core adopted distribution
+name: TFL Client adopted distribution
 on:
   push:
     branches: [adopt/trs-client-foundation, main]

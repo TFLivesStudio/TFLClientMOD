@@ -1,8 +1,8 @@
 [
 	{
 		"modid": "tflcore",
-		"name": "TFL Core",
-		"description": "TFL Selection, derived from TRS Client: HUD (FPS, CPS, Tastenanzeige, Ping, Rüstung, Effekte, Koordinaten, Uhrzeit, Speicher, Server, Packs), Zoom, Fullbright, Fadenkreuz, Toggle-Sprint/-Schleichen, Freelook, Startbildschirm und ein eigenes Menü (Rechte Umschalttaste).",
+		"name": "TFL Client",
+		"description": "TFL Client, derived from TRS Client: HUD (FPS, CPS, Tastenanzeige, Ping, Rüstung, Effekte, Koordinaten, Uhrzeit, Speicher, Server, Packs), Zoom, Fullbright, Fadenkreuz, Toggle-Sprint/-Schleichen, Freelook, Startbildschirm und ein eigenes Menü (Rechte Umschalttaste).",
 		"version": "${version}",
 		"mcversion": "${minecraft}",
 		"url": "https://github.com/theredstonee/TRS-Launcher",

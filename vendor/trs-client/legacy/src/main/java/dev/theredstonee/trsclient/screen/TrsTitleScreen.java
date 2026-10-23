@@ -22,7 +22,7 @@ public final class TrsTitleScreen extends TrsUiScreen {
 	}
 
 	private TrsTitleScreen(Host host) {
-		super("TFL Selection", new TitleUi(host));
+		super("TFL Client", new TitleUi(host));
 		host.screen = this;
 		this.title = (TitleUi) ui();
 	}
@@ -55,7 +55,7 @@ public final class TrsTitleScreen extends TrsUiScreen {
 
 	/** Ziele der Knöpfe. */
 	private static final class Host implements TitleHost {
-		private final String versionLine = "Minecraft " + Mc.version() + " · Forge · TFL Core " + TrsClient.get().version();
+		private final String versionLine = "Minecraft " + Mc.version() + " · Forge · TFL Client " + TrsClient.get().version();
 		TrsTitleScreen screen;
 
 		@Override

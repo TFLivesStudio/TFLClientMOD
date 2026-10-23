@@ -23,7 +23,7 @@ public interface TitleHost {
 	/** Vanilla-Titelbildschirm öffnen. */
 	void classicTitle();
 
-	/** Fußzeile links, z. B. "Minecraft 1.21.1 · TRS Client 0.3.0". */
+	/** Fußzeile links, z. B. "Minecraft 1.21.1 · TFL Client 0.3.0". */
 	String versionLine();
 
 	void playClick();

@@ -407,10 +407,8 @@ public final class ScreenshotEditorUi extends UiScreen {
 		if (hv) tooltip = I18n.tr("screenshots.editor.saveHint");
 		// Mitte: TRS + Dateiname
 		int lx = 5 + bw + 8;
-		List<int[]> rects = PixelFont.rects("TRS");
-		int ly = (HEADER_H - PixelFont.HEIGHT) / 2;
-		for (int[] r : rects) c.fill(lx + r[0], ly + r[1], lx + r[2], ly + r[3], t.accent);
-		lx += PixelFont.width("TRS") + 6;
+        c.strongText("TFL Client",lx,(HEADER_H-c.lineHeight())/2,t.accent);
+        lx+=c.textWidth("TFL Client")+8;
 		String title = fileName + (dirty() ? " *" : "");
 		Paint.textClipped(c, title, lx, 9, vx - 8 - lx, t.text, false);
 	}
@@ -1241,7 +1239,7 @@ public final class ScreenshotEditorUi extends UiScreen {
 		history.push(s.withShape(new Shape.Rect(w * 0.1f, h * 0.1f, w * 0.45f, h * 0.45f, COLORS[0], strokeSize()))
 				.withShape(new Shape.Arrow(w * 0.8f, h * 0.8f, w * 0.5f, h * 0.5f, COLORS[2], strokeSize()))
 				.withShape(new Shape.Pixelate(w * 0.55f, h * 0.1f, w * 0.9f, h * 0.35f, blockSize()))
-				.withShape(new Shape.Text(w * 0.1f, h * 0.6f, "TRS Client", COLORS[6], textSize(), 0))
+				.withShape(new Shape.Text(w * 0.1f, h * 0.6f, "TFL Client", COLORS[6], textSize(), 0))
 				.withShape(new Shape.Pen(new float[]{w * 0.1f, h * 0.9f, w * 0.2f, h * 0.8f, w * 0.3f, h * 0.9f}, COLORS[4], strokeSize())));
 	}
 

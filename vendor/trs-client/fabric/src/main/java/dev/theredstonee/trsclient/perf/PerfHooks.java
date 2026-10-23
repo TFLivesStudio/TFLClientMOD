@@ -102,7 +102,7 @@ public final class PerfHooks {
 				if (i > 0) sb.append(", ");
 				sb.append(compat.detected().get(i).displayName());
 			}
-			log.accept("Leistungs-Mods erkannt: " + sb + " – deren Funktionen bleiben im TRS Client aus");
+			log.accept("Leistungs-Mods erkannt: " + sb + " – deren Funktionen bleiben im TFL Client aus");
 		}
 	}
 

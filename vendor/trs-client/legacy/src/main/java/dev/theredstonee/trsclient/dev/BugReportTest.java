@@ -96,7 +96,7 @@ public final class BugReportTest {
 			case 1:
 				br.title.setText("Minimap flackert im Nether");
 				br.description.setText("Wenn ich im Nether über Lava fliege, flackert die Minimap jede Sekunde kurz schwarz.\n"
-						+ "Passiert nur mit Höhlenansicht an. Ohne TRS Client kein Flackern.");
+						+ "Passiert nur mit Höhlenansicht an. Ohne TFL Client kein Flackern.");
 				br.includeLog = true;
 				br.includeScreenshot = true;
 				br.requestOpen();

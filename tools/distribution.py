@@ -36,7 +36,7 @@ def inspect_jar(path):
     with zipfile.ZipFile(path) as jar:
         names = set(jar.namelist())
         meta = json.loads(jar.read('fabric.mod.json'))
-        if meta.get('id') != 'tflcore' or meta.get('name') != 'TFL Core':
+        if meta.get('id') != 'tflcore' or meta.get('name') != 'TFL Client':
             raise ValueError('Incorrect TFL loader identity')
         if meta.get('environment') != 'client' or meta.get('license') != 'GPL-3.0-only':
             raise ValueError('Incorrect environment/license')
@@ -50,14 +50,15 @@ def inspect_jar(path):
         if meta.get('jars'):
             raise ValueError('Default TFL artifact must not bundle unaudited optimization binaries')
         required = {'LICENSE_trsclient', 'META-INF/TFL-NOTICE.txt', 'META-INF/chat-heads-MPL-2.0.txt',
-                    'META-INF/licenses/Inter-OFL.txt', 'assets/trsclient/font/inter.ttf',
+                    'META-INF/licenses/Inter-OFL.txt', 'assets/trsclient/font/nunito-regular.ttf', 'assets/trsclient/font/nunito-semibold.ttf', 'assets/trsclient/font/nunito-bold.ttf', 'META-INF/licenses/Nunito-OFL.txt',
                     'assets/trsclient/font/ui.json', 'assets/trsclient/textures/menu/black-hole.png',
                     'trsclient.mixins.json', 'dev/theredstonee/trsclient/TrsClient.class'}
         if missing := required - names:
             raise ValueError('Missing runtime resources/notices: ' + ', '.join(sorted(missing)))
         if any(n.startswith('online/tflives/tflcore/') or n.startswith('dev/theredstonee/trsclient/dev/') or n.startswith('org/junit/') or n.endswith('.key') for n in names):
             raise ValueError('Old implementation/test/private-key material in distribution')
-        validate_ttf_resources(names, json.loads(jar.read('assets/trsclient/font/ui.json')))
+        for face in ('ui','ui-semibold','ui-bold'):
+            validate_ttf_resources(names, json.loads(jar.read('assets/trsclient/font/' + face + '.json')))
         for entries in meta['entrypoints'].values():
             for entry in entries:
                 if entry.replace('.', '/') + '.class' not in names:
@@ -143,7 +144,7 @@ def make_mrpack(jar, source, output):
     api = json.loads((ROOT / 'distribution/fabric-api.json').read_text())
     index = {
         'formatVersion': 1, 'game': 'minecraft', 'versionId': meta['version'] + '-local',
-        'name': 'TFL Core development validation',
+        'name': 'TFL Client development validation',
         'summary': 'Local development pack; not certified for stable distribution.',
         'files': [{'path': 'mods/' + api['file'], 'hashes': api['hashes'],
                    'env': {'client': 'required', 'server': 'unsupported'},

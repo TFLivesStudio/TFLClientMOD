@@ -24,19 +24,20 @@ public final class GfxCanvas implements Canvas {
     // Native Minecraft font provider; no browser or separate font renderer.
     //? if >=1.16 {
     private final java.util.Map<String,net.minecraft.network.chat.Component> styledText = new java.util.LinkedHashMap<>();
-    private net.minecraft.network.chat.Component selectionText(String value) {
-        net.minecraft.network.chat.Component cached=styledText.get(value);
+    private net.minecraft.network.chat.Component selectionText(String value) {return selectionText(value,"ui");}
+    private net.minecraft.network.chat.Component selectionText(String value,String face) {
+        net.minecraft.network.chat.Component cached=styledText.get(face+"\n"+value);
         if(cached!=null)return cached;
         //? if >=1.19 {
         net.minecraft.network.chat.MutableComponent component=net.minecraft.network.chat.Component.literal(value);
         //?} else
         /*net.minecraft.network.chat.MutableComponent component=new net.minecraft.network.chat.TextComponent(value);*/
         //? if >=1.21.9 {
-        /*component.withStyle(style -> style.withFont(new net.minecraft.network.chat.FontDescription.Resource(dev.theredstonee.trsclient.TrsClient.id("ui"))));
+        /*component.withStyle(style -> style.withFont(new net.minecraft.network.chat.FontDescription.Resource(dev.theredstonee.trsclient.TrsClient.id(face))));
         *///?} else
-        component.withStyle(style -> style.withFont(dev.theredstonee.trsclient.TrsClient.id("ui")));
+        component.withStyle(style -> style.withFont(dev.theredstonee.trsclient.TrsClient.id(face)));
         if(styledText.size()>=512)styledText.clear();
-        styledText.put(value,component);
+        styledText.put(face+"\n"+value,component);
         return component;
     }
     //?}
@@ -81,6 +82,14 @@ public final class GfxCanvas implements Canvas {
         /*g.text(font,text,x,y,argb,shadow);*/
 		pending = true;
 	}
+
+    @Override public void strongText(String text,int x,int y,int color) {
+        //? if >=1.16 {
+        g.text(font,selectionText(text,"ui-bold"),x,y,color,false);
+        //?} else
+        /*text(text,x,y,color,false);*/
+        pending=true;
+    }
 
 	@Override
 	public int textWidth(String text) {

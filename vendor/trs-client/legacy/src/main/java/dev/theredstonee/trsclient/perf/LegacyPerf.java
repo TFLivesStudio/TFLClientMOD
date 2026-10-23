@@ -118,7 +118,7 @@ public final class LegacyPerf implements GameOptions {
 		p.perf = new Performance(modules, compat);
 		LegacyLatency.init(modules);
 		GpuInfo.adapters();
-		if (!compat.detected().isEmpty()) p.log.accept("Leistungs-Mods erkannt: " + compat.detected() + " – deren Funktionen bleiben im TRS Client aus");
+		if (!compat.detected().isEmpty()) p.log.accept("Leistungs-Mods erkannt: " + compat.detected() + " – deren Funktionen bleiben im TFL Client aus");
 	}
 
 	public Performance performance() {

@@ -489,7 +489,7 @@ public final class TrsModules {
 		keystrokes = registry.register(new HudModule("keystrokes", "Keystrokes", "WASD, mouse buttons and space bar", true,
 				new HudPosition(HudAnchor.BOTTOM_RIGHT, -0.005, -0.08)));
 		ping = registry.register(new HudModule("ping", "Ping", "Round-trip time to the server with jitter and a small history "
-				+ "graph (not in singleplayer). From Minecraft 1.20.2 the TRS Client measures it itself with a ping request "
+				+ "graph (not in singleplayer). From Minecraft 1.20.2 the TFL Client measures it itself with a ping request "
 				+ "every few seconds (the same request as the F3 network graph); before that it shows the value the server "
 				+ "reports in the player list.", true,
 				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.14)));
@@ -596,8 +596,7 @@ public final class TrsModules {
 				"Color grading of the game image: saturation, contrast, brightness, vibrance and color temperature. "
 						+ "The HUD and menus stay untouched.", false));
 		emotes = registry.register(new Module("emotes", "Emotes",
-				"Hold G for the emote wheel, point with the mouse and release to play the emote. Other TRS players "
-						+ "see it too. Uses the TRS Online Features; only unlocked emotes can be played.",
+				"Hold G to choose a local emote. Release to play; move, sneak or attack to cancel. No account or service required. Other clients do not receive these animations.",
 				true));
 		redstoneSignal = registry.register(new HudModule("redstoneSignal", "Signal Strength",
 				"Look at dust, repeaters, comparators, pistons, lamps, levers and more: shows the block, its signal "
@@ -612,7 +611,7 @@ public final class TrsModules {
 						+ "length in redstone ticks, plus a small oscilloscope.", true,
 				new HudPosition(HudAnchor.CENTER, 0.2, 0.16)));
 		clips = registry.register(new HudModule("clips", "Clips & Recording",
-				"Save the last seconds as a clip (F9) or start and stop a recording (F10) – the TRS Launcher records "
+				"Save the last seconds as a clip (F9) or start and stop a recording (F10) – the external launcher records "
 						+ "the game window, nothing leaves your PC. Turn it on in the launcher under Settings → Clips. "
 						+ "Shows a red dot while recording and a message when a clip is saved.", true,
 				new HudPosition(HudAnchor.CENTER_RIGHT, -0.005, -0.2)));
@@ -679,9 +678,9 @@ public final class TrsModules {
 						+ "(water, lava, fire). Only what works cleanly in this version.", false));
 
 		builtinOptimizations = registry.register(new Module("builtinOptimizations", "Built-in Optimizations",
-				"Free performance mods built into the TRS Client (Lithium, FerriteCore, ImmediatelyFast, ModernFix, "
+				"Free performance mods built into the TFL Client (Lithium, FerriteCore, ImmediatelyFast, ModernFix, "
 						+ "BadOptimizations – where available for this version). Your own newer versions take priority. "
-						+ "Switching off takes effect at the next start through the TRS Launcher.", true));
+						+ "Switching off takes effect at the next start through the external launcher.", true));
 
 		redstoneSignal.icon("strength").category(Category.REDSTONE);
 		redstoneOverlay.icon("digits").category(Category.REDSTONE);

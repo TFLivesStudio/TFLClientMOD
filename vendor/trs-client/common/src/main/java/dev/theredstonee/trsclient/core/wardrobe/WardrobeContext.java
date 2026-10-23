@@ -82,6 +82,6 @@ public final class WardrobeContext implements WardrobeService.Platform {
 
 	@Override
 	public void log(String message) {
-		System.out.println("[TRS Client] " + message);
+		System.out.println("[TFL Client] " + message);
 	}
 }

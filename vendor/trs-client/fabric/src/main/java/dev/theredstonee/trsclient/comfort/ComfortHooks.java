@@ -353,6 +353,6 @@ public final class ComfortHooks {
 		long now = System.currentTimeMillis();
 		if (now - errorLogged < 60_000) return;
 		errorLogged = now;
-		System.err.println("[TRS Client] Komfort (" + where + "): " + e);
+		System.err.println("[TFL Client] Komfort (" + where + "): " + e);
 	}
 }

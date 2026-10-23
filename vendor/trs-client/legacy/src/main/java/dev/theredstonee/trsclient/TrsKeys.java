@@ -4,7 +4,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
-/** Tastenbelegungen – erscheinen in den Steuerungs-Optionen unter "TRS Client". */
+/** Tastenbelegungen – erscheinen in den Steuerungs-Optionen unter "TFL Client". */
 public final class TrsKeys {
 	public static final String CATEGORY = "key.categories.trsclient";
 

@@ -1,6 +1,6 @@
-key.categories.trsclient=TRS Client
-key.category.trsclient.main=TRS Client
-key.trsclient.menu=TRS menüsünü aç
+key.categories.trsclient=TFL Client
+key.category.trsclient.main=TFL Client
+key.trsclient.menu=TFL Client menüsünü aç
 key.trsclient.zoom=Yakınlaştır (basılı tut)
 key.trsclient.fullbright=Fullbright aç/kapat
 key.trsclient.gammaCycle=Cycle gamma

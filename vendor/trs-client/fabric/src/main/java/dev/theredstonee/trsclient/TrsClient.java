@@ -50,9 +50,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 public final class TrsClient implements ClientModInitializer {
 	public static final String MOD_ID = "tflcore";
 	//? if >=1.17 {
-	public static final Logger LOGGER = LoggerFactory.getLogger("TFL Core");
+	public static final Logger LOGGER = LoggerFactory.getLogger("TFL Client");
 	//?} else
-	//public static final Logger LOGGER = LogManager.getLogger("TFL Core");
+	//public static final Logger LOGGER = LogManager.getLogger("TFL Client");
 
 	private static TrsClient instance;
 
@@ -92,7 +92,7 @@ public final class TrsClient implements ClientModInitializer {
 		instance = this;
 		// Benchmark „Vanilla“ (-PtrsBenchVanilla): TRS Client bleibt ganz aus, nur der Messablauf läuft.
 		if (Boolean.getBoolean("trsclient.bench.vanilla")) {
-			LOGGER.info("TRS Client aus (Benchmark Vanilla)");
+			LOGGER.info("TFL Client aus (Benchmark Vanilla)");
 
             dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 			return;
@@ -100,6 +100,7 @@ public final class TrsClient implements ClientModInitializer {
 		// Farben des Launchers (config/trsclient/launcher-theme.json) – fehlt sie, gilt das Standard-Thema.
 		Theme.loadFrom(FabricLoader.getInstance().getConfigDir());
 		dev.theredstonee.trsclient.core.i18n.I18n.init(FabricLoader.getInstance().getConfigDir());
+        dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().install(new dev.theredstonee.trsclient.core.ui.background.LocalMjpegPlayer(FabricLoader.getInstance().getConfigDir().resolve("tflcore/menu.mjpeg")));
 		dev.theredstonee.trsclient.core.clips.Clips.init(FabricLoader.getInstance().getConfigDir());
 		// Grafik-Modus „Schön“/„Max FPS“ (config/trsclient/fps-mode.json).
 		dev.theredstonee.trsclient.core.perf.FpsConfigMode.init(FabricLoader.getInstance().getConfigDir());
@@ -180,7 +181,7 @@ public final class TrsClient implements ClientModInitializer {
 				.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse(null));
 		dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 
-		LOGGER.info("TFL Core {} initialisiert – {} Module, Config {} ({})",
+		LOGGER.info("TFL Client {} initialisiert – {} Module, Config {} ({})",
 				version, modules.registry.all().size(), status, config.file());
 	}
 
@@ -255,6 +256,11 @@ public final class TrsClient implements ClientModInitializer {
 
 	private void onTick(Minecraft mc) {
 		migrateKeys(mc);
+        //? if >=26.3 {
+        /*if(mc.options!=null) {
+            mc.options.tutorialStep=net.minecraft.client.tutorial.TutorialSteps.NONE;
+        }
+        *///?}
 		dev.theredstonee.trsclient.menus.KeySearchUi.poll();
 		// Touch-Modus (mobile Engine): feste Overlay-Tasten + Bildschirmtastatur; sonst nichts.
 		dev.theredstonee.trsclient.touch.TouchHooks.tick();

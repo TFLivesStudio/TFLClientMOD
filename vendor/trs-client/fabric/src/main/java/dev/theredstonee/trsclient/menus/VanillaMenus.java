@@ -247,6 +247,14 @@ public final class VanillaMenus {
 				@Override
 				public void run() {
 					MenuSkin.background(c, w, h, world, header, footer);
+                    //? if >=26.3 {
+                    /*if(k==MenuStyle.Kind.PAUSE) {
+                        int pw=Math.max(108,Math.min(278,w-154));
+                        dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(c,16,16,pw,h-32,0xED101A2A,0xFF26374E);
+                        c.text("TFL Client",30,29,0xFFF1F5FC,false);
+                        c.text("Paused",30,45,0xFF93A5BE,false);
+                    }
+                    *///?}
 					//? if <1.20.5 {
 					/*for (int[] l : lists) MenuSkin.listWell(c, l[0], l[1], l[2], l[3], world);
 					*///?}
@@ -490,11 +498,25 @@ public final class VanillaMenus {
 	 * Aus dem Knopf-Mixin: Fläche im Redstone-Stil zeichnen, wenn der offene Bildschirm gestylt ist.
 	 * Rückgabe true = Vanilla-Fläche nicht zeichnen.
 	 */
-	public static boolean drawButton(Object widget, Gfx g, int x, int y, int w, int h, boolean hover, boolean active) {
+	private static final Map<Object,Component> TFL_LABELS=new WeakHashMap<>();
+    public static void prepareLabel(Object widget) {
+        if(!styled(Mc.screen()))return;
+            //? if >=26.3 {
+        /*if(widget instanceof AbstractWidget) {
+                AbstractWidget b=(AbstractWidget)widget;
+                if(TFL_LABELS.get(b)!=b.getMessage()) {
+                    Component label=b.getMessage().copy().withStyle(style->style.withFont(new net.minecraft.network.chat.FontDescription.Resource(dev.theredstonee.trsclient.TrsClient.id("ui-semibold"))));
+                    b.setMessage(label);TFL_LABELS.put(b,label);
+                }
+            }
+            *///?}
+    }
+    public static boolean drawButton(Object widget, Gfx g, int x, int y, int w, int h, boolean hover, boolean active) {
 		if (!styled(Mc.screen())) return false;
 		try {
 			Canvas c = canvas(g);
 			MenuSkin.button(c, x, y, w, h, hover, active);
+            prepareLabel(widget);
 			String icon = ICONS.get(widget);
 			if (icon != null) {
 				MenuSkin.buttonIcon(c, x, y, h, icon, active);
@@ -592,7 +614,10 @@ public final class VanillaMenus {
 					if (child instanceof AbstractSelectionList) plainList((AbstractSelectionList<?>) child);
 				}
 			}
-			if (k == MenuStyle.Kind.PAUSE && s instanceof PauseScreen && MenuStyle.pauseButtons() && !s.children().isEmpty()) pauseButtons(s, host);
+			//? if >=26.3 {
+            /*if(k==MenuStyle.Kind.PAUSE && MenuStyle.enabled(k)) layoutPause(s);
+            *///?}
+            if (k == MenuStyle.Kind.PAUSE && s instanceof PauseScreen && MenuStyle.pauseButtons() && !s.children().isEmpty()) pauseButtons(s, host);
 			if (k == MenuStyle.Kind.PAUSE && s instanceof PauseScreen && !s.children().isEmpty()) hostingButtons(s, host);
 			if (k == MenuStyle.Kind.MULTIPLAYER && s instanceof JoinMultiplayerScreen) joinButton(s, host);
 			if (k == MenuStyle.Kind.MULTIPLAYER && MenuStyle.enabled(k) && s instanceof JoinMultiplayerScreen) {
@@ -658,6 +683,23 @@ public final class VanillaMenus {
 		/*b.setMessage(text);*/
 	}
 
+    //? if >=26.3 {
+    /*private static void layoutPause(Screen s) {
+        java.util.List<AbstractWidget> controls=new java.util.ArrayList<>(), icons=new java.util.ArrayList<>();
+        for(GuiEventListener entry:s.children()) if(entry instanceof AbstractWidget && !ICONS.containsKey(entry)) {
+            AbstractWidget b=(AbstractWidget)entry;
+            if(entry instanceof net.minecraft.client.gui.components.AbstractButton) {
+                if(b.getWidth()<=30||b.getMessage().getString().trim().isEmpty())icons.add(b);else controls.add(b);
+            } else if(b.getMessage().getString().equals(s.getTitle().getString())) b.visible=false;
+        }
+        controls.sort(java.util.Comparator.comparingInt(AbstractWidget::getY).thenComparingInt(AbstractWidget::getX));
+        int count=controls.size(), w=Math.max(80,Math.min(250,s.width-182));
+        int gap=5, height=Math.min(24,Math.max(12,(s.height-112)/Math.max(1,count)-gap));
+        for(int i=0;i<count;i++) { AbstractWidget b=controls.get(i);b.setRectangle(w,height,30,64+i*(height+gap)); }
+        for(int i=0;i<icons.size();i++)icons.get(i).setRectangle(20,20,30+i*26,s.height-44);
+    }
+    *///?}
+
 	/** Knöpfe Garderobe, Konten, Clips, Freunde, Server-Info links neben dem Pausenmenü. */
 	static void pauseButtons(final Screen s, WidgetHost host) {
 		int free = (s.width - 204) / 2 - 12;
@@ -674,7 +716,10 @@ public final class VanillaMenus {
 		int count = ids.length;
 		int y = Math.max(8, s.height / 2 - (count * (h + gap)) / 2);
 		int x = 8;
-		String[] icons = {"gear", "image", "info"};
+        //? if >=26.3 {
+        /*x=Math.max(16,s.width-w-16);
+        *///?}
+        String[] icons = {"gear", "image", "info"};
 		for (int i = 0; i < ids.length; i++) {
 			final String id = ids[i];
 			Object b = button(x, y, w, h, labels ? I18n.tr("menus.pause." + id) : "", new Runnable() {

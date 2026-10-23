@@ -486,7 +486,7 @@ public final class AutoTest {
 				modules.chat.setEnabled(true);
 				modules.chatTimestamps.set(true);
 				modules.chatStack.set(true);
-				chat(mc, "TRS Client: Chat-Test");
+				chat(mc, "TFL Client: Chat-Test");
 				chat(mc, "Wiederholte Nachricht");
 				chat(mc, "Wiederholte Nachricht");
 				chat(mc, "Wiederholte Nachricht");
@@ -500,7 +500,7 @@ public final class AutoTest {
 				modules.autoGgDelay.set(0.5);
 				modules.textHotkeys.setEnabled(true);
 				modules.hotkeyTexts[0].set("Text-Hotkey 1 (TRS-Autotest)");
-				chat(mc, "Winner: TRS Client");
+				chat(mc, "Winner: TFL Client");
 				TrsClient.get().chat().onHotkey(0);
 				next(30);
 				break;

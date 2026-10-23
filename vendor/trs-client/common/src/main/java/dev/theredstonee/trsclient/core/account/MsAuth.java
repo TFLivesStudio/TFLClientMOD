@@ -416,7 +416,7 @@ public final class MsAuth {
 		return out;
 	}
 
-	private static final String PAGE_HEAD = "<!doctype html><html><meta charset=\"utf-8\"><title>TRS Client</title>"
+	private static final String PAGE_HEAD = "<!doctype html><html><meta charset=\"utf-8\"><title>TFL Client</title>"
 			+ "<body style=\"font-family:Segoe UI,sans-serif;background:#0b0c0f;color:#f2f4f8;display:grid;place-items:center;"
 			+ "height:100vh;margin:0\"><div style=\"text-align:center\">";
 	static final String DONE_PAGE = PAGE_HEAD + "<h1 style=\"font-size:20px\">Sign-in complete &middot; Anmeldung abgeschlossen</h1>"

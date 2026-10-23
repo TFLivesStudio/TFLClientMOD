@@ -71,7 +71,7 @@ public final class ColorPass {
 			applied++;
 		} catch (Exception e) {
 			failed = true;
-			TrsClient.LOGGER.warn("TRS Client: color grading switched off (" + e + ")");
+			TrsClient.LOGGER.warn("TFL Client: color grading switched off (" + e + ")");
 			release();
 		}
 	}

@@ -29,7 +29,7 @@ public final class TrsTitleScreen extends TrsUiScreen {
 	}
 
 	private TrsTitleScreen(Host host) {
-		super("TFL Selection", new TitleUi(host));
+		super("TFL Client", new TitleUi(host));
 		host.screen = this;
 		this.title = (TitleUi) ui();
 	}
@@ -76,7 +76,7 @@ public final class TrsTitleScreen extends TrsUiScreen {
 					.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("?");
 			String trsVersion = FabricLoader.getInstance().getModContainer(TrsClient.MOD_ID)
 					.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("?");
-			versionLine = "Minecraft " + mcVersion + " · TFL Core " + trsVersion;
+			versionLine = "Minecraft " + mcVersion + " · TFL Client " + trsVersion;
 		}
 
 		@Override

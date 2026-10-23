@@ -15,6 +15,7 @@ import static dev.theredstonee.trsclient.core.emote.Channel.*;
 public final class Emotes {
 	private static final Map<String, EmoteDef> BY_ID = new LinkedHashMap<>();
 	public static final List<EmoteDef> ALL;
+    public static final List<EmoteDef> LOCAL;
 
 	static {
 		List<EmoteDef> all = new ArrayList<>();
@@ -212,6 +213,9 @@ public final class Emotes {
 
 		for (EmoteDef d : all) BY_ID.put(d.id(), d);
 		ALL = Collections.unmodifiableList(all);
+        List<EmoteDef> local=new ArrayList<>();
+        for(String id:new String[]{"winken","klatschen","jubeln","verbeugen","schulterzucken","daumen_hoch"}) local.add(BY_ID.get(id));
+        LOCAL=Collections.unmodifiableList(local);
 	}
 
 	private Emotes() {

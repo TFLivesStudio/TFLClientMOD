@@ -64,7 +64,7 @@ class MenuRailTest {
         I18n.use("en");ModMenu menu=new ModMenu(new FakeHost());RecordingCanvas c=new RecordingCanvas();
         render(menu,c,new int[]{960,540});int[] help=c.visible(I18n.tr("menu.docs"));assertNotNull(help);
         assertTrue(menu.mouseClicked(help[0]+2,help[1]+2,0));render(menu,c,new int[]{960,540});
-        assertNotNull(c.visible("TFL Core / TFL Selection"));
+        assertNotNull(c.visible("TFL Client"));
         assertNotNull(c.visible("Code: GPL-3.0-only. Chat Heads: dzwdz, MPL-2.0."));
     }
 

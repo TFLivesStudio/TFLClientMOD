@@ -588,7 +588,7 @@
     },
     {
       "id": "trsOnline",
-      "name": "TRS Online Features",
+      "name": "Online services",
       "category": "MISC",
       "hud": false,
       "defaultEnabled": false,

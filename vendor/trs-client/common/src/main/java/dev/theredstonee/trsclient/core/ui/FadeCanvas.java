@@ -48,6 +48,7 @@ public final class FadeCanvas implements Canvas {
 		delegate.text(text, x, y, c, shadow);
 	}
 
+    @Override public void strongText(String text,int x,int y,int argb) { int c=color(argb);if((c>>>24)>=8)delegate.strongText(text,x,y,c); }
 	@Override
 	public int textWidth(String text) {
 		return delegate.textWidth(text);

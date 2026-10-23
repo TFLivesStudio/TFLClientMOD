@@ -1,6 +1,6 @@
 package dev.theredstonee.trsclient.core.ui;
 
-/** Shared native TFL Selection primitives. Original TFL modifications, GPL-3.0-only. */
+/** Shared native TFL Client primitives. Original TFL modifications, GPL-3.0-only. */
 public final class SelectionStyle {
     public static final int SPACE = 8;
     public static final int RADIUS = 5;
@@ -9,6 +9,10 @@ public final class SelectionStyle {
     /** Bounded scanline rounded rectangle; no textures, allocations or GL state changes. */
     public static void rounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         if(w<=0||h<=0||(color>>>24)==0) return;
+        c.push(); c.scale(0.25f);
+        try { drawRounded(c,x*4,y*4,w*4,h*4,radius*4,color); } finally { c.pop(); }
+    }
+    private static void drawRounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         int r=Math.max(0,Math.min(radius,Math.min(w,h)/2));
         if(r==0) {c.fill(x,y,x+w,y+h,color);return;}
         c.fill(x,y+r,x+w,y+h-r,color);

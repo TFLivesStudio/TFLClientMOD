@@ -156,7 +156,7 @@ public final class MenuSkin {
 
 	/** „TRS“ in der Pixelschrift, glühend; {@code scale} = Pixel je Schriftpunkt. */
 	public static void logo(Canvas c, int x, int y, int scale, float alpha) {
-        c.text("TFL Core",x,y,ColorMath.withAlpha(Theme.get().text,Math.round(255*ColorMath.clamp01(alpha))),false);
+        c.text("TFL Client",x,y,ColorMath.withAlpha(Theme.get().text,Math.round(255*ColorMath.clamp01(alpha))),false);
 	}
 
 	/** Eingelassene Mulde hinter einer Liste (Server, Welten, Optionen). */
@@ -428,7 +428,7 @@ public final class MenuSkin {
 		int[] layout = loadingLayout(height, avoidTop, avoidBottom);
 		int top = layout[0];
 		int scale = layout[1];
-		int logoW = PixelFont.width("TRS") * scale;
+		int logoW = c.textWidth("TFL Client");
 		int blockH = loadingBlockHeight(scale);
 		// Panel hinter dem Inhalt, damit Text auf der Schaltung lesbar bleibt.
 		int pw = Math.min(width - 16, Math.max(220, Math.max(c.textWidth(title), c.textWidth(detail == null ? "" : detail)) + 40));
@@ -524,42 +524,25 @@ public final class MenuSkin {
 	public static void resourceOverlay(Canvas raw, int width, int height, float progress, float alpha) {
 		if (alpha <= 0.004f) return;
 		Canvas c = FadeCanvas.of(raw, Math.min(1f, alpha));
-		Theme t = Theme.get();
-		int cell = 32;
-		if (t.halloween) {
-			halloweenResources(c, width, height, progress);
-			return;
-		}
-		if (t.winter) {
-			// Winternacht: Nachtblau mit Eisfliesen und leise fallenden Schneeflocken.
-			c.fill(0, 0, width, height, 0xFF0D1424);
-			for (int x = cell / 2; x < width; x += cell) c.fill(x, 0, x + 1, height, 0x0CBFE3FF);
-			for (int y = cell / 2; y < height; y += cell) c.fill(0, y, width, y + 1, 0x0CBFE3FF);
-			float drift = seconds() * 6f;
-			for (int i = 0; i < 40; i++) {
-				int fx = Math.floorMod(i * 97 + (int) (drift * (0.4f + (i % 3) * 0.3f)), Math.max(1, width));
-				int fy = Math.floorMod(i * 57 + (int) (drift * (1f + (i % 3))), Math.max(1, height));
-				int size = i % 7 == 0 ? 2 : 1;
-				c.fill(fx, fy, fx + size, fy + size, i % 3 == 0 ? 0xC0F4F9FF : 0x709FB4D6);
-			}
-		} else {
-			c.fill(0, 0, width, height, 0xFF120D0E);
-			// Gitter aus unbestromtem Staub, sehr dezent.
-			for (int x = cell / 2; x < width; x += cell) c.fill(x, 0, x + 1, height, 0x10FF3020);
-			for (int y = cell / 2; y < height; y += cell) c.fill(0, y, width, y + 1, 0x10FF3020);
-		}
-		int scale = Math.max(2, Math.min(6, width / 110));
-		String word = "TRS CLIENT";
-		int w = PixelFont.width(word) * scale;
-		int x = (width - w) / 2;
-		int y = height / 2 - PixelFont.HEIGHT * scale - 6;
-		List<int[]> rects = PixelFont.rects(word);
-		int glow = ColorMath.withAlpha(t.glow, 46);
-		for (int[] r : rects) c.fill(x + r[0] * scale - 1, y + r[1] * scale - 1, x + r[2] * scale + 1, y + r[3] * scale + 1, glow);
-		int light = ColorMath.lerp(t.accent, 0xFFFFFFFF, 0.3f);
-		for (int[] r : rects) c.fill(x + r[0] * scale, y + r[1] * scale, x + r[2] * scale, y + r[3] * scale, r[1] == 0 ? light : t.accent);
-		if (t.winter) TitleUi.snowCaps(c, rects, x, y, scale);
-		lamps(c, width / 2, height / 2 + 14, Math.min(width - 40, 220), progress, seconds());
+        Theme t=Theme.get();
+        c.fill(0,0,width,height,0xFF080D18);
+        int w=Math.max(24,Math.min(220,width-40)), x=(width-w)/2, y=height/2;
+        try {
+            c.push();
+            try {c.translate(width/2f-c.textWidth("TFL Client"),y-38);c.scale(2);c.text("TFL Client",0,0,t.text,false);}
+            finally {c.pop();}
+            String label="Loading resources";
+            c.text(label,(width-c.textWidth(label))/2,y-12,t.textDim,false);
+        } catch (RuntimeException | LinkageError unavailableBeforeFonts) { }
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,x,y+10,w,3,1,t.border);
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,x,y+10,Math.round(w*Math.max(0,Math.min(1,progress))),3,1,t.accent);
+        // Orbit motif differs from the retained redstone world-loading animation.
+        float time=seconds();
+        for(int i=0;i<3;i++) {
+            double a=time*2+i*Math.PI*2/3;
+            int dx=(int)(Math.cos(a)*9),dy=(int)(Math.sin(a)*4);
+            dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,width/2+dx-1,y+29+dy-1,3,3,1,t.accent);
+        }
 	}
 
 	/**
@@ -592,7 +575,7 @@ public final class MenuSkin {
 		}
 		c.fill(0, height * 93 / 100, width, height, 0xFF08070E);
 		int scale = Math.max(2, Math.min(6, width / 110));
-		String word = "TRS CLIENT";
+		String word = "TFL CLIENT";
 		int w = PixelFont.width(word) * scale;
 		int x = (width - w) / 2;
 		int y = height / 2 - PixelFont.HEIGHT * scale - 6;

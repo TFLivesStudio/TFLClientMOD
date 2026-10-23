@@ -15,6 +15,7 @@ public interface Canvas {
 
 	/** Breite des Textes in GUI-Pixeln. */
 	int textWidth(String text);
+    default void strongText(String text,int x,int y,int argb) { text(text,x,y,argb,false); }
 
 	/** Zeilenhöhe der Schrift (Vanilla: 9). */
 	int lineHeight();

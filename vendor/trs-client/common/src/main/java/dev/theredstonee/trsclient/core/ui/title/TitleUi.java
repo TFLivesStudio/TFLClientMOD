@@ -395,24 +395,25 @@ public final class TitleUi extends UiScreen {
         TrsModules configured=IntroGate.modules();
         if(configured!=null) dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().setMode(host.animated()?configured.menuBackground.get():dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC);
         dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().draw(FadeCanvas.unwrap(raw),width,height,sceneEnabled);
-        int bw=Math.max(80,Math.min(240,width-24));
-        int rowHeight=height<190?16:22;
-        int gap=height<190?3:6;
-        int rowsY=height<190?32:Math.max(70,(height-100)/2);
-        int left=(width-bw)/2;
-        for(Lamp l:lamps) {
-            int row="singleplayer".equals(l.id)?0:"multiplayer".equals(l.id)?1:("options".equals(l.id)||"trsMenu".equals(l.id))?2:3;
-            boolean half=row==2||(row==3&&host.hasMods());
-            l.w=half?(bw-6)/2:bw;l.h=rowHeight;l.x=left+(l.right?bw-l.w:0);l.y=rowsY+row*(rowHeight+gap);
+        int left=Math.max(12,Math.min(48,width/14));
+        int bw=Math.max(80,Math.min(192,width-left*2));
+        int rowHeight=Math.max(8,Math.min(24,(height-(height<190?23:64)-20)/Math.max(1,lamps.size())-(height<190?2:5)));
+        int gap=height<190?2:5;
+        int rowsY=height<190?23:Math.max(64,(height-(lamps.size()*(rowHeight+gap)))/2);
+        for(int i=0;i<lamps.size();i++) {
+            Lamp l=lamps.get(i);l.w=bw;l.h=rowHeight;l.x=left;l.y=rowsY+i*(rowHeight+gap);
         }
-        // Online account/friend/launcher controls are absent; local clips remain in the core menu.
         side.clear();accW=0;figureShown=false;
-        int headingY=Math.max(12,rowsY-48);
-        float headingScale=height<190?1.3f:2f;
-        c.push();c.translate((width-c.textWidth("TFL Selection")*headingScale)/2f,headingY);c.scale(headingScale);
-        c.text("TFL Selection",0,0,t.text,false);c.pop();
-        String subtitle="TFL Core · Minecraft";
-        if(height>=190)c.text(subtitle,(width-c.textWidth(subtitle))/2,headingY+25,t.textDim,false);
+        // One left navigation rail; the black hole retains the rest of the canvas.
+        for(int x=0;x<width/2;x+=4) {
+            int opacity=Math.max(0,170-x*340/Math.max(1,width));
+            c.fill(x,0,Math.min(x+4,width/2),height,(opacity<<24)|0x060B14);
+        }
+        int headingY=height<190?7:Math.max(16,rowsY-40);
+        float headingScale=height<190?1.2f:1.8f;
+        c.push();c.translate(left,headingY);c.scale(headingScale);
+        c.strongText("TFL Client",0,0,t.text);c.pop();
+        if(height>=190)c.text("0.4.0-dev.2",left,headingY+23,t.textDim,false);
         update(dt,mouseX,mouseY);
         for(int i=0;i<lamps.size();i++) {
             Lamp l=lamps.get(i);
@@ -420,12 +421,12 @@ public final class TitleUi extends UiScreen {
 
             boolean hover=mouseX>=l.x&&mouseX<l.x+l.w&&mouseY>=l.y&&mouseY<l.y+l.h;
             dev.theredstonee.trsclient.core.ui.SelectionStyle.button(c,l.x,l.y,l.w,l.h,i==0,hover||focus==i);
-            String label="trsMenu".equals(l.id)?"TFL Core":l.label;
+            String label="trsMenu".equals(l.id)?"Client settings":l.label;
             label=c.clip(label,Math.max(0,l.w-12));
-            c.text(label,l.x+(l.w-c.textWidth(label))/2,l.y+(l.h-c.lineHeight())/2,t.text,false);
+            c.text(label,l.x+12,l.y+(l.h-c.lineHeight())/2,t.text,false);
             final int index=i;hits.add(l.x,l.y,l.w,l.h,()->activate(index));
         }
-        String footer=c.clip(host.versionLine().replace("TRS Client","TFL Core"),Math.max(0,width-24));
+        String footer=c.clip(host.versionLine().replace("TFL Client","TFL Client"),Math.max(0,width-24));
         if(height>=190)c.text(footer,12,height-13,t.textDim,false);
         String classicLabel=c.clip(classic,Math.max(0,width/2-12));
         int classicY=height<190?height-12:height-26;

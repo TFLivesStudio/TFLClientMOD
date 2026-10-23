@@ -201,3 +201,5 @@ tasks.withType(Jar).configureEach {
 tasks.withType(Jar).configureEach {
     if (!archiveClassifier.getOrElse('').equals('sources')) exclude 'dev/theredstonee/trsclient/dev/**'
 }
+
+tasks.named('jar') { from(rootProject.file('../licenses/Nunito-OFL.txt')) { into 'META-INF/licenses' }; from(rootProject.file('../licenses/Nunito-PROVENANCE.txt')) { into 'META-INF/licenses' } }

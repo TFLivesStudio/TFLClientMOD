@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Kleine 5×7-Pixelschrift für den "TRS Client"-Schriftzug des Startbildschirms
+ * Kleine 5×7-Pixelschrift für den "TFL Client"-Schriftzug des Startbildschirms
  * (im Code gezeichnet, keine fremden Grafiken). Liefert Rechtecke in Pixel-Einheiten.
  */
 public final class PixelFont {

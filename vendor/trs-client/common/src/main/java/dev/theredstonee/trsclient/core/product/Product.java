@@ -3,8 +3,8 @@ package dev.theredstonee.trsclient.core.product;
 /** TFL modifications, 2026. Internal upstream packages/resource IDs remain compatible. */
 public final class Product {
     public static final String ID = "tflcore";
-    public static final String NAME = "TFL Core";
-    public static final String SELECTION = "TFL Selection";
+    public static final String NAME = "TFL Client";
+    public static final String SELECTION = "TFL Client";
     public static final String CONFIG = "tflcore/client.json";
     public static final String WAYPOINTS = "tflcore/waypoints.json";
     private Product() {}
@@ -23,6 +23,6 @@ public final class Product {
         catch (IllegalArgumentException e) { throw new java.io.IOException("Invalid service URL", e); }
     }
     public static void requireOnlineServices() throws java.io.IOException {
-        throw new java.io.IOException("Online services are unavailable in TFL Core; offline features remain available");
+        throw new java.io.IOException("Online services are unavailable in TFL Client; offline features remain available");
     }
 }

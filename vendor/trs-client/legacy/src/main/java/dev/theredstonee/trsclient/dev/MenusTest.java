@@ -154,7 +154,7 @@ public final class MenusTest {
 				return;
             case 1:
                 if (!(screen instanceof TrsTitleScreen)) throw new IllegalStateException("TFL title did not replace vanilla");
-                if (((TrsTitleScreen)screen).titleUi().buttonRect("trsMenu") == null) throw new IllegalStateException("TFL Core title action missing");
+                if (((TrsTitleScreen)screen).titleUi().buttonRect("trsMenu") == null) throw new IllegalStateException("TFL Client title action missing");
                 shot(mc,"selection-title");
                 mc.displayGuiScreen(new dev.theredstonee.trsclient.screen.TrsMenuScreen(new TrsTitleScreen()));
                 phase=90;wait=20;return;

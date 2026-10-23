@@ -1,6 +1,6 @@
-key.categories.trsclient=TRS Client
-key.category.trsclient.main=TRS Client
-key.trsclient.menu=Abrir menu TRS
+key.categories.trsclient=TFL Client
+key.category.trsclient.main=TFL Client
+key.trsclient.menu=Abrir menu TFL Client
 key.trsclient.zoom=Zoom (segurar)
 key.trsclient.fullbright=Alternar fullbright
 key.trsclient.gammaCycle=Cycle gamma

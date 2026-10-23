@@ -80,7 +80,7 @@ public final class CinematicModules {
 						+ "view and field of view) and play the path back smoothly. While it plays, the camera leaves your "
 						+ "character, the HUD hides and the launcher can record. Paths are saved per world and server. "
 						+ "Freecam lets the camera fly freely (WASD, space, sneak, scroll for speed) while your character "
-						+ "stays put – set keyframes from there. Bind the keys under Controls → TRS Client.", true));
+						+ "stays put – set keyframes from there. Bind the keys under Controls → TFL Client.", true));
 		addKey = cinematic.add(new KeySetting("addKey", "Add keyframe"));
 		playKey = cinematic.add(new KeySetting("playKey", "Play / stop"));
 		removeKey = cinematic.add(new KeySetting("removeKey", "Remove last keyframe"));
@@ -94,7 +94,7 @@ public final class CinematicModules {
 		smoothing = cinematic.add(new ChoiceSetting<>("smoothing", "Curve", Smoothing.class, Smoothing.SMOOTH));
 		ease = cinematic.add(new BoolSetting("ease", "Start and stop gently", true));
 		hideHud = cinematic.add(new BoolSetting("hideHud", "Hide HUD while playing", true));
-		record = cinematic.add(new BoolSetting("record", "Record with the TRS Launcher while playing", false));
+		record = cinematic.add(new BoolSetting("record", "Record with the external launcher while playing", false));
 		preview = cinematic.add(new BoolSetting("preview", "Show the path while editing", true));
 		cinematic.icon("camera").category(Category.MISC);
 	}

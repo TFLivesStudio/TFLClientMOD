@@ -66,7 +66,7 @@ import java.util.List;
  * langsamere Maus über einen eigenen {@link MouseHelper}, Fullbright über einen kurzzeitig ersetzten
  * Gamma-Wert nur während der Lightmap-Berechnung, TRS-Startbildschirm über {@link GuiOpenEvent}.
  */
-@Mod(modid = TrsClient.MOD_ID, name = "TFL Core", version = BuildInfo.VERSION, useMetadata = true, clientSideOnly = true,
+@Mod(modid = TrsClient.MOD_ID, name = "TFL Client", version = BuildInfo.VERSION, useMetadata = true, clientSideOnly = true,
 		acceptedMinecraftVersions = BuildInfo.ACCEPTED_MINECRAFT)
 public final class TrsClient {
 	/** Suche in der Tastenbelegung (Steuerung); öffentlich für den Autotest. */
@@ -76,7 +76,7 @@ public final class TrsClient {
 	/** Kontowechsel (Spiel-Thread über den Client-Tick). */
 	static dev.theredstonee.trsclient.core.account.LegacySessionSwap accountSwap;
 	public static final String MOD_ID = "tflcore";
-	public static final Logger LOGGER = LogManager.getLogger("TFL Core");
+	public static final Logger LOGGER = LogManager.getLogger("TFL Client");
 
 	private static TrsClient instance;
 
@@ -150,6 +150,7 @@ public final class TrsClient {
 		// Farben des Launchers (config/trsclient/launcher-theme.json) – fehlt sie, gilt das Standard-Thema.
 		dev.theredstonee.trsclient.core.ui.Theme.loadFrom(event.getModConfigurationDirectory().toPath());
 		dev.theredstonee.trsclient.core.i18n.I18n.init(event.getModConfigurationDirectory().toPath());
+        dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().install(new dev.theredstonee.trsclient.core.ui.background.LocalMjpegPlayer(event.getModConfigurationDirectory().toPath().resolve("tflcore/menu.mjpeg")));
 		dev.theredstonee.trsclient.core.clips.Clips.init(event.getModConfigurationDirectory().toPath());
 		// Konten: Wechsel ohne Neustart (mit TRS Launcher dessen Konten, sonst eigene Anmeldung je Instanz).
 		accountSwap = new dev.theredstonee.trsclient.core.account.LegacySessionSwap(() -> Minecraft.getMinecraft(),
@@ -190,7 +191,7 @@ public final class TrsClient {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		if (BENCH_VANILLA) {
-			LOGGER.info("TRS Client aus (Benchmark Vanilla)");
+			LOGGER.info("TFL Client aus (Benchmark Vanilla)");
 
             dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 			return;
@@ -232,11 +233,11 @@ public final class TrsClient {
 		dev.theredstonee.trsclient.render.LegacyShield.install(modules);
 		dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 		// Legacy-Forge hat kein "Client stoppt"-Ereignis – beim Beenden trotzdem speichern.
-		Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig, "TRS Client config save"));
+		Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig, "TFL Client config save"));
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			if (dev.theredstonee.trsclient.core.map.MapEngine.get() != null) dev.theredstonee.trsclient.core.map.MapEngine.get().shutdown();
 			if (dev.theredstonee.trsclient.core.notes.Notes.get() != null) dev.theredstonee.trsclient.core.notes.Notes.get().save();
-		}, "TRS Client map save"));
+		}, "TFL Client map save"));
 	}
 
 	/** Sozial-Benachrichtigungen (Toasts): Ton, Vollbild, Name der Schnelltaste. */
@@ -320,7 +321,7 @@ public final class TrsClient {
 		boolean ownMouse = mc.mouseHelper != null && mc.mouseHelper.getClass() == MouseHelper.class;
 		if (ownMouse) mc.mouseHelper = new ZoomMouseHelper(this);
 		else LOGGER.warn("MouseHelper ist bereits ersetzt ({}) – Zoom verlangsamt die Maus nicht, kein Freelook", mc.mouseHelper);
-		LOGGER.info("TFL Core {} initialisiert (Minecraft {}) – {} Module, Forge-Events registriert, Maus-Hook {}",
+		LOGGER.info("TFL Client {} initialisiert (Minecraft {}) – {} Module, Forge-Events registriert, Maus-Hook {}",
 				version, Mc.version(), modules.registry.all().size(), ownMouse ? "aktiv" : "inaktiv");
 	}
 

@@ -8,7 +8,7 @@ import net.minecraft.client.KeyMapping;
 *///?} else
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
-/** Tastenbelegungen – erscheinen in den Steuerungs-Optionen unter "TRS Client". */
+/** Tastenbelegungen – erscheinen in den Steuerungs-Optionen unter "TFL Client". */
 public final class TrsKeys {
 	// Kategorie: bis 1.21.8 ein Übersetzungsschlüssel, ab 1.21.9 ein registrierter Datensatz
 	// (Anzeigename dann über "key.category.trsclient.main").

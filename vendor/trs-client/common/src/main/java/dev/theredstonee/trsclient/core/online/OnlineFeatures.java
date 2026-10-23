@@ -58,7 +58,7 @@ public final class OnlineFeatures<T> {
 		this.online = online;
 		this.textures = new CapeTextures<>(backend, online::loadCape);
 		this.cosmetics = new dev.theredstonee.trsclient.core.cosmetic.v2.CosmeticAssets<>(backend, online::loadCosmetic);
-		this.emotes = new dev.theredstonee.trsclient.core.emote.EmoteController(modules, online);
+		this.emotes = new dev.theredstonee.trsclient.core.emote.EmoteController(modules, online, !dev.theredstonee.trsclient.core.product.Product.onlineServices());
 		this.fanSymbols = new dev.theredstonee.trsclient.core.creator.FanSymbols<>(backend, online::loadSymbol);
 		this.eventBadges = new dev.theredstonee.trsclient.core.creator.EventBadges<>(backend, online::loadBadge);
 		this.localSkin = localSkin;
