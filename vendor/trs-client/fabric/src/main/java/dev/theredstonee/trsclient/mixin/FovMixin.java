@@ -2,7 +2,7 @@ package dev.theredstonee.trsclient.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.theredstonee.trsclient.TrsClient;
-import dev.theredstonee.trsclient.dev.HookStats;
+import dev.theredstonee.trsclient.perf.HookStats;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.client.Camera;

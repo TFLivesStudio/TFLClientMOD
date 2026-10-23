@@ -121,6 +121,14 @@ class TflReadinessTest {
             Path backup=paths.filter(p->p.getFileName().toString().contains(".pre-reset-")).findFirst().get();assertArrayEquals(before,Files.readAllBytes(backup));
         }
     }
+    @Test void installedClientDoesNotLinkToMissingDevelopmentHarness() {
+        String previous=System.getProperty("trsclient.autotest");System.clearProperty("trsclient.autotest");
+        try {
+            assertDoesNotThrow(DevelopmentHooks::install);
+            System.setProperty("trsclient.autotest","true");
+            assertThrows(IllegalStateException.class,DevelopmentHooks::install);
+        } finally {if(previous==null)System.clearProperty("trsclient.autotest");else System.setProperty("trsclient.autotest",previous);}
+    }
     static class NoopCanvas implements Canvas {
         public void fill(int a,int b,int c,int d,int color){} public void text(String s,int x,int y,int c,boolean shadow){}
         public int textWidth(String s){return s.length()*5;}public int lineHeight(){return 9;}public String clip(String s,int w){return s.substring(0,Math.min(s.length(),Math.max(0,w/5)));}

@@ -10,7 +10,6 @@ import dev.theredstonee.trsclient.core.input.ToggleState;
 import dev.theredstonee.trsclient.core.module.TrsModules;
 import dev.theredstonee.trsclient.core.ui.Theme;
 import dev.theredstonee.trsclient.core.zoom.ZoomState;
-import dev.theredstonee.trsclient.dev.AutoTest;
 import dev.theredstonee.trsclient.feature.PvpFeatures;
 import dev.theredstonee.trsclient.hud.HudManager;
 import dev.theredstonee.trsclient.screen.TrsMenuScreen;
@@ -95,11 +94,7 @@ public final class TrsClient implements ClientModInitializer {
 		if (Boolean.getBoolean("trsclient.bench.vanilla")) {
 			LOGGER.info("TRS Client aus (Benchmark Vanilla)");
 
-        // Development harness is not shipped in the installable artifact.
-        if (Boolean.getBoolean("trsclient.autotest")) {
-            try { Class.forName("dev.theredstonee.trsclient.dev.AutoTest").getMethod("installIfRequested").invoke(null); }
-            catch (ReflectiveOperationException e) { LOGGER.warn("Development harness unavailable", e); }
-        }
+            dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 			return;
 		}
 		// Farben des Launchers (config/trsclient/launcher-theme.json) – fehlt sie, gilt das Standard-Thema.
@@ -183,7 +178,7 @@ public final class TrsClient implements ClientModInitializer {
 		// Eingebaute Optimierungen (Jar-in-Jar): welche Fassung lädt Fabric gerade?
 		dev.theredstonee.trsclient.core.perf.BundledMods.setLoaded(id -> FabricLoader.getInstance().getModContainer(id)
 				.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse(null));
-		AutoTest.installIfRequested();
+		dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 
 		LOGGER.info("TFL Core {} initialisiert – {} Module, Config {} ({})",
 				version, modules.registry.all().size(), status, config.file());

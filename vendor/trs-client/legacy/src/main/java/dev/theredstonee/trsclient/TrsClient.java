@@ -9,8 +9,7 @@ import dev.theredstonee.trsclient.core.input.ToggleState;
 import dev.theredstonee.trsclient.core.module.Module;
 import dev.theredstonee.trsclient.core.module.TrsModules;
 import dev.theredstonee.trsclient.core.zoom.ZoomState;
-import dev.theredstonee.trsclient.dev.AutoTest;
-import dev.theredstonee.trsclient.dev.HookStats;
+import dev.theredstonee.trsclient.perf.HookStats;
 import dev.theredstonee.trsclient.feature.ChatFeatures;
 import dev.theredstonee.trsclient.feature.PvpFeatures;
 import dev.theredstonee.trsclient.feature.Waypoints;
@@ -193,11 +192,7 @@ public final class TrsClient {
 		if (BENCH_VANILLA) {
 			LOGGER.info("TRS Client aus (Benchmark Vanilla)");
 
-        // Development harness is not shipped in the installable artifact.
-        if (Boolean.getBoolean("trsclient.autotest")) {
-            try { Class.forName("dev.theredstonee.trsclient.dev.AutoTest").getMethod("installIfRequested").invoke(null); }
-            catch (ReflectiveOperationException e) { LOGGER.warn("Development harness unavailable", e); }
-        }
+            dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 			return;
 		}
 		TrsKeys.register();
@@ -235,7 +230,7 @@ public final class TrsClient {
 		MinecraftForge.EVENT_BUS.register(dev.theredstonee.trsclient.net.NetHooks.get());
 		// Schild-Position (ab 1.10.2): Schild-Hand der 1. Person selbst zeichnen.
 		dev.theredstonee.trsclient.render.LegacyShield.install(modules);
-		AutoTest.installIfRequested();
+		dev.theredstonee.trsclient.core.product.DevelopmentHooks.install();
 		// Legacy-Forge hat kein "Client stoppt"-Ereignis – beim Beenden trotzdem speichern.
 		Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig, "TRS Client config save"));
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

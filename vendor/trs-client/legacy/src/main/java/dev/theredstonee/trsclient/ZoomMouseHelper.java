@@ -3,7 +3,7 @@ package dev.theredstonee.trsclient;
 import dev.theredstonee.trsclient.compat.Mc;
 import dev.theredstonee.trsclient.core.camera.FreelookState;
 import dev.theredstonee.trsclient.core.input.MouseScaler;
-import dev.theredstonee.trsclient.dev.HookStats;
+import dev.theredstonee.trsclient.perf.HookStats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MouseHelper;
 

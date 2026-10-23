@@ -1,5 +1,7 @@
 package dev.theredstonee.trsclient.dev;
 
+import dev.theredstonee.trsclient.perf.HookStats;
+
 import dev.theredstonee.trsclient.compat.Mc;
 import dev.theredstonee.trsclient.core.module.HudModule;
 import dev.theredstonee.trsclient.core.module.Module;

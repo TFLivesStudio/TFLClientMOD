@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.theredstonee.trsclient.TrsClient;
 import dev.theredstonee.trsclient.core.camera.FreelookState;
-import dev.theredstonee.trsclient.dev.HookStats;
+import dev.theredstonee.trsclient.perf.HookStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.player.LocalPlayer;

@@ -1,4 +1,4 @@
-package dev.theredstonee.trsclient.dev;
+package dev.theredstonee.trsclient.perf;
 
 /** Einfache Aufrufzähler der Hooks (Nachweis im Autotest, praktisch kostenlos). */
 public final class HookStats {
