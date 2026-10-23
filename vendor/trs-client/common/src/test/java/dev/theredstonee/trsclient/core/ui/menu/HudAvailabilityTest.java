@@ -11,7 +11,7 @@ class HudAvailabilityTest {
     @Test void unavailableRecordingPreviewIsNeitherDrawnNorKeyboardSelected() {
         MenuRailTest.FakeHost delegate=new MenuRailTest.FakeHost();
         final HudModule clips=delegate.modules().clips,fps=delegate.modules().fps;
-        clips.setEnabled(true);clips.availableWhen(()->false);fps.setEnabled(true);
+        clips.setEnabled(true);assertFalse(clips.available(),"Offline recording capability must be unavailable in the actual registry");fps.setEnabled(true);
         MenuHost host=(MenuHost)Proxy.newProxyInstance(MenuHost.class.getClassLoader(),new Class<?>[]{MenuHost.class},(p,m,args)->
             m.getName().equals("hudItems")?Arrays.asList(item(clips,"BACKENDREC"),item(fps,"LOCALFPS")):m.invoke(delegate,args));
         HudEditor editor=new HudEditor(host);MenuRailTest.RecordingCanvas canvas=new MenuRailTest.RecordingCanvas();

@@ -622,6 +622,9 @@ public final class TrsModules {
 						+ "Shows a red dot while recording and a message when a clip is saved.", true,
 				new HudPosition(HudAnchor.CENTER_RIGHT, -0.005, -0.2)));
 
+        // The recording module needs a backend; local screenshot navigation is independent.
+        clips.availableWhen(() -> dev.theredstonee.trsclient.core.product.Product.onlineServices());
+
 		fps.icon("gauge");
 		cps.icon("mouse").category(Category.PVP);
 		keystrokes.icon("keyboard").category(Category.PVP);
