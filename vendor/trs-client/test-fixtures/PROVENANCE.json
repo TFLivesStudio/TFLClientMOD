@@ -1,0 +1,216 @@
+{
+  "upstream": "theredstonee/TRS-Launcher",
+  "commit": "c52087ddb6b73b9d1287ef6d7f9d31010fcb5702",
+  "subtree": "data/circuits",
+  "license": "GPL-3.0-only",
+  "verifiedGitBlobs": [
+    {
+      "path": "data/circuits/and_gate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dac41c8d1192bc1f68e304df1b6f009594de1f37",
+      "size": 1529,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/dac41c8d1192bc1f68e304df1b6f009594de1f37"
+    },
+    {
+      "path": "data/circuits/auto_smelter.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6cc30e6caa0591fc59b1d675981f19aeb0c12dbf",
+      "size": 1178,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/6cc30e6caa0591fc59b1d675981f19aeb0c12dbf"
+    },
+    {
+      "path": "data/circuits/comparator_clock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1b1d16d777be1420687791ff99ad04d4ecbfa8d",
+      "size": 1727,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/c1b1d16d777be1420687791ff99ad04d4ecbfa8d"
+    },
+    {
+      "path": "data/circuits/comparator_fill.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ea4a15fd7f44a553a1e8518731d5f0c75f0f1c7",
+      "size": 1847,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/4ea4a15fd7f44a553a1e8518731d5f0c75f0f1c7"
+    },
+    {
+      "path": "data/circuits/d_latch.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09e1399ef1e43c50609c114a10c1c1278ef063e0",
+      "size": 1949,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/09e1399ef1e43c50609c114a10c1c1278ef063e0"
+    },
+    {
+      "path": "data/circuits/edge_observer.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9430221cfe45446093d23f04f201f849b6613742",
+      "size": 1414,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/9430221cfe45446093d23f04f201f849b6613742"
+    },
+    {
+      "path": "data/circuits/falling_edge.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dfb0820f5569e6257798566d9bc97a06890f87d5",
+      "size": 1655,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/dfb0820f5569e6257798566d9bc97a06890f87d5"
+    },
+    {
+      "path": "data/circuits/hidden_stairs.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ca8ce20b8cfd58ee094138bf3f5db1a5ed61428",
+      "size": 1710,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/8ca8ce20b8cfd58ee094138bf3f5db1a5ed61428"
+    },
+    {
+      "path": "data/circuits/index.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc753ca7c7d9aea707bdbbaf6a0e9bfcfa905992",
+      "size": 468,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/cc753ca7c7d9aea707bdbbaf6a0e9bfcfa905992"
+    },
+    {
+      "path": "data/circuits/item_elevator.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e2e239278d77250144b03f4c583706543c70a2f",
+      "size": 1853,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/3e2e239278d77250144b03f4c583706543c70a2f"
+    },
+    {
+      "path": "data/circuits/item_filter.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53ebd9051d4dc341dd90f4eeaa6164af7c1cf818",
+      "size": 2698,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/53ebd9051d4dc341dd90f4eeaa6164af7c1cf818"
+    },
+    {
+      "path": "data/circuits/monoflop.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5fb9b4441c5385019b519a8886529c067dbf3055",
+      "size": 1791,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/5fb9b4441c5385019b519a8886529c067dbf3055"
+    },
+    {
+      "path": "data/circuits/night_light.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ea67545aafff1cdda95a2e2eda93fe5efc78b3b",
+      "size": 1287,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/4ea67545aafff1cdda95a2e2eda93fe5efc78b3b"
+    },
+    {
+      "path": "data/circuits/not_gate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc82c30005042b606623167a31279e0267762047",
+      "size": 1290,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/bc82c30005042b606623167a31279e0267762047"
+    },
+    {
+      "path": "data/circuits/observer_clock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac058b102e41cb019b5a3002046d467a29e837f8",
+      "size": 1676,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/ac058b102e41cb019b5a3002046d467a29e837f8"
+    },
+    {
+      "path": "data/circuits/or_gate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f697c14b59d7d6df7649e590686a40d8431f0929",
+      "size": 1149,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/f697c14b59d7d6df7649e590686a40d8431f0929"
+    },
+    {
+      "path": "data/circuits/piston_door_2x2.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5095c736591610d8e2821d49701f7f8dbb7d9cc",
+      "size": 1999,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/a5095c736591610d8e2821d49701f7f8dbb7d9cc"
+    },
+    {
+      "path": "data/circuits/pulse_extender.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c5ed58cc94c736d8659223b0a409c6be62caa37",
+      "size": 1644,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/5c5ed58cc94c736d8659223b0a409c6be62caa37"
+    },
+    {
+      "path": "data/circuits/repeater_chain.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca0a23116cb3e0c9f91a02379f9bc07c53c50bd8",
+      "size": 1342,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/ca0a23116cb3e0c9f91a02379f9bc07c53c50bd8"
+    },
+    {
+      "path": "data/circuits/repeater_clock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ddc942611da255b4308f33cabd1dbe1ca4b5e7f7",
+      "size": 1561,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/ddc942611da255b4308f33cabd1dbe1ca4b5e7f7"
+    },
+    {
+      "path": "data/circuits/rs_latch.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "93786682f1eea9aaa5308c5c9c76320e8fc2a479",
+      "size": 1914,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/93786682f1eea9aaa5308c5c9c76320e8fc2a479"
+    },
+    {
+      "path": "data/circuits/sugarcane_observer.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f3459831dc8a2a0d7b915f685bca91cebd31f94",
+      "size": 1826,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/6f3459831dc8a2a0d7b915f685bca91cebd31f94"
+    },
+    {
+      "path": "data/circuits/t_flipflop.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cafebc5fc18a47dcaa6cd0965a44c73be474106f",
+      "size": 2122,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/cafebc5fc18a47dcaa6cd0965a44c73be474106f"
+    },
+    {
+      "path": "data/circuits/t_flipflop_copper.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "895a20f849e1ac55e6fd24ffb1f09e015c06e513",
+      "size": 1462,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/895a20f849e1ac55e6fd24ffb1f09e015c06e513"
+    },
+    {
+      "path": "data/circuits/torch_tower.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09ced094e2a62bb0232d2a22a743fbe34c3a63ea",
+      "size": 1589,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/09ced094e2a62bb0232d2a22a743fbe34c3a63ea"
+    },
+    {
+      "path": "data/circuits/xor_gate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2fc7d150d254a8de0abf09350d8c5a98fa8bb26",
+      "size": 1652,
+      "url": "https://api.github.com/repos/theredstonee/TRS-Launcher/git/blobs/e2fc7d150d254a8de0abf09350d8c5a98fa8bb26"
+    }
+  ]
+}

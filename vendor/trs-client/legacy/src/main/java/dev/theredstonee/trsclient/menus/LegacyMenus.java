@@ -58,8 +58,8 @@ import java.util.WeakHashMap;
 public final class LegacyMenus {
 	/** Knopf-IDs der TRS-Knöpfe im Pausenmenü (weit weg von Vanilla- und üblichen Mod-IDs). */
 	static final int FIRST_ID = 73_101;
-	static final String[] IDS = {"wardrobe", "accounts", "clips", "friends", "serverInfo"};
-	static final String[] ICONS = {"shirt", "profile", "image", "friends", "info"};
+	static final String[] IDS = dev.theredstonee.trsclient.core.product.Product.pauseEntries();
+	static final String[] ICONS = {"gear", "image", "info"};
 	/** Welt-Hosting: „Welt hosten“ (Pause), „Öffentlichen Link deaktivieren“ (Pause), „Mit Code beitreten“ (Mehrspieler). */
 	static final int HOST_ID = 73_120;
 	static final int LINK_ID = 73_121;
@@ -600,6 +600,7 @@ public final class LegacyMenus {
 	}
 
 	static GuiScreen open(GuiScreen parent, String id) {
+        if ("core".equals(id)) return new dev.theredstonee.trsclient.screen.TrsMenuScreen(parent);
 		if ("wardrobe".equals(id)) return MenuScreens.wardrobe(parent);
 		if ("accounts".equals(id)) return AccountsScreen.available() ? AccountsScreen.create(parent) : null;
 		if ("clips".equals(id)) return MenuScreens.clips(parent);

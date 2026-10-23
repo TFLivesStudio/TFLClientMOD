@@ -67,7 +67,7 @@ import java.util.List;
  * langsamere Maus über einen eigenen {@link MouseHelper}, Fullbright über einen kurzzeitig ersetzten
  * Gamma-Wert nur während der Lightmap-Berechnung, TRS-Startbildschirm über {@link GuiOpenEvent}.
  */
-@Mod(modid = TrsClient.MOD_ID, name = "TRS Client", version = BuildInfo.VERSION, useMetadata = true, clientSideOnly = true,
+@Mod(modid = TrsClient.MOD_ID, name = "TFL Core", version = BuildInfo.VERSION, useMetadata = true, clientSideOnly = true,
 		acceptedMinecraftVersions = BuildInfo.ACCEPTED_MINECRAFT)
 public final class TrsClient {
 	/** Suche in der Tastenbelegung (Steuerung); öffentlich für den Autotest. */
@@ -76,8 +76,8 @@ public final class TrsClient {
 	public static final dev.theredstonee.trsclient.menus.LegacyDisconnect disconnect = new dev.theredstonee.trsclient.menus.LegacyDisconnect();
 	/** Kontowechsel (Spiel-Thread über den Client-Tick). */
 	static dev.theredstonee.trsclient.core.account.LegacySessionSwap accountSwap;
-	public static final String MOD_ID = "trsclient";
-	public static final Logger LOGGER = LogManager.getLogger("TRS Client");
+	public static final String MOD_ID = "tflcore";
+	public static final Logger LOGGER = LogManager.getLogger("TFL Core");
 
 	private static TrsClient instance;
 
@@ -147,23 +147,22 @@ public final class TrsClient {
 		version = event.getModMetadata().version;
 		// Benchmark „Vanilla“ (-PtrsBenchVanilla): TRS Client bleibt ganz aus, nur der Messablauf läuft (siehe init).
 		if (BENCH_VANILLA) return;
-		File file = new File(event.getModConfigurationDirectory(), "trsclient.json");
+		File file = new File(event.getModConfigurationDirectory(), dev.theredstonee.trsclient.core.product.Product.CONFIG);
 		// Farben des Launchers (config/trsclient/launcher-theme.json) – fehlt sie, gilt das Standard-Thema.
-		dev.theredstonee.trsclient.core.ui.Theme.loadFrom(file.getParentFile().toPath());
-		dev.theredstonee.trsclient.core.i18n.I18n.init(file.getParentFile().toPath());
-		dev.theredstonee.trsclient.core.clips.Clips.init(file.getParentFile().toPath());
+		dev.theredstonee.trsclient.core.ui.Theme.loadFrom(event.getModConfigurationDirectory().toPath());
+		dev.theredstonee.trsclient.core.i18n.I18n.init(event.getModConfigurationDirectory().toPath());
+		dev.theredstonee.trsclient.core.clips.Clips.init(event.getModConfigurationDirectory().toPath());
 		// Konten: Wechsel ohne Neustart (mit TRS Launcher dessen Konten, sonst eigene Anmeldung je Instanz).
 		accountSwap = new dev.theredstonee.trsclient.core.account.LegacySessionSwap(() -> Minecraft.getMinecraft(),
 				net.minecraft.util.Session.class, () -> {
 					net.minecraft.util.Session s = Minecraft.getMinecraft().getSession();
 					return s == null ? null : new dev.theredstonee.trsclient.core.account.SessionData(s.getPlayerID(), s.getUsername(), s.getToken(), null);
-				}, () -> Mc.world() != null, file.getParentFile().toPath(), "TRS-Client/" + version + " (Minecraft " + Mc.version() + "; forge)", message -> LOGGER.info(message));
+				}, () -> Mc.world() != null, event.getModConfigurationDirectory().toPath(), "TRS-Client/" + version + " (Minecraft " + Mc.version() + "; forge)", message -> LOGGER.info(message));
 		dev.theredstonee.trsclient.core.account.AccountManager.init(accountSwap);
 		// Bug melden (TRS-Menü): Mod-Liste, Log und Screenshots aus dem Spielordner, Senden über die TRS API.
-		dev.theredstonee.trsclient.core.bugreport.BugReports.init(file.getParentFile().toPath(), version, Mc.version(), "forge");
+		dev.theredstonee.trsclient.core.bugreport.BugReports.init(event.getModConfigurationDirectory().toPath(), version, Mc.version(), "forge");
 		// Grafik-Modus „Schön“/„Max FPS“ (config/trsclient/fps-mode.json).
-		dev.theredstonee.trsclient.core.perf.FpsConfigMode.init(file.getParentFile().toPath());
-		initWaypoints(event.getModConfigurationDirectory());
+		dev.theredstonee.trsclient.core.perf.FpsConfigMode.init(event.getModConfigurationDirectory().toPath());
 		// Karten (Minimap + Weltkarte): Kartenspeicher unter config/trsclient/maps.
 		dev.theredstonee.trsclient.core.map.MapEngine.init(modules, event.getModConfigurationDirectory().toPath());
 		// Notizen je Welt (config/trsclient/notes): Seite im TRS-Menü, Taste, angeheftete Notiz im HUD.
@@ -172,8 +171,10 @@ public final class TrsClient {
 		dev.theredstonee.trsclient.cinematic.LegacyCinematic.init(modules, event.getModConfigurationDirectory().toPath());
 		config = new ConfigStore(file.toPath());
 		ConfigStore.Status status = config.load(modules.registry);
+		initWaypoints(event.getModConfigurationDirectory());
 		// Menü-Stil für Vanilla-Menüs (Pause, Serverliste, Laden, Optionen, Welten).
 		dev.theredstonee.trsclient.core.menus.MenuStyle.install(modules);
+		if (status == ConfigStore.Status.READ_ONLY) LOGGER.warn("TFL configuration is read-only: {}", config.loadProblem());
 		if (status == ConfigStore.Status.RECOVERED) {
 			LOGGER.warn("Config war beschädigt – Standardwerte geladen, Sicherung: {}", config.brokenFile());
 		}
@@ -191,7 +192,12 @@ public final class TrsClient {
 	public void init(FMLInitializationEvent event) {
 		if (BENCH_VANILLA) {
 			LOGGER.info("TRS Client aus (Benchmark Vanilla)");
-			AutoTest.installIfRequested();
+
+        // Development harness is not shipped in the installable artifact.
+        if (Boolean.getBoolean("trsclient.autotest")) {
+            try { Class.forName("dev.theredstonee.trsclient.dev.AutoTest").getMethod("installIfRequested").invoke(null); }
+            catch (ReflectiveOperationException e) { LOGGER.warn("Development harness unavailable", e); }
+        }
 			return;
 		}
 		TrsKeys.register();
@@ -308,7 +314,7 @@ public final class TrsClient {
 
 	/** Wegpunkt-Datei neben der Config (erst hier, weil das Verzeichnis aus preInit kommt). */
 	private void initWaypoints(File configDir) {
-		waypoints = new Waypoints(modules, new File(configDir, "trsclient-waypoints.json").toPath());
+		waypoints = new Waypoints(modules, new File(configDir, dev.theredstonee.trsclient.core.product.Product.WAYPOINTS).toPath());
 	}
 
 	@Mod.EventHandler
@@ -319,7 +325,7 @@ public final class TrsClient {
 		boolean ownMouse = mc.mouseHelper != null && mc.mouseHelper.getClass() == MouseHelper.class;
 		if (ownMouse) mc.mouseHelper = new ZoomMouseHelper(this);
 		else LOGGER.warn("MouseHelper ist bereits ersetzt ({}) – Zoom verlangsamt die Maus nicht, kein Freelook", mc.mouseHelper);
-		LOGGER.info("TRS Client {} initialisiert (Minecraft {}) – {} Module, Forge-Events registriert, Maus-Hook {}",
+		LOGGER.info("TFL Core {} initialisiert (Minecraft {}) – {} Module, Forge-Events registriert, Maus-Hook {}",
 				version, Mc.version(), modules.registry.all().size(), ownMouse ? "aktiv" : "inaktiv");
 	}
 

@@ -67,7 +67,13 @@ public final class OnlineFeatures<T> {
 	/** Standard-Aufbau: Konfiguration aus {@code configDir}, HTTP über HttpURLConnection. */
 	public static <T> OnlineFeatures<T> create(TrsModules modules, Path configDir, OnlinePlatform platform,
 			String modVersion, CapeTextures.Backend<T> backend) {
-		String userAgent = "TRS-Client/" + modVersion + " (Minecraft " + platform.minecraftVersion() + "; " + platform.loader() + ")";
+		if (!dev.theredstonee.trsclient.core.product.Product.onlineServices()) {
+            TrsOnline offline = new TrsOnline(new OnlineConfig(false, OnlineConfig.DEFAULT_API, OnlineConfig.DEFAULT_SESSION),
+                    platform, request -> { throw new java.io.IOException("TFL services disabled"); },
+                    configDir.resolve("tflcore/capes"));
+            return new OnlineFeatures<>(modules, offline, backend);
+        }
+        String userAgent = "TRS-Client/" + modVersion + " (Minecraft " + platform.minecraftVersion() + "; " + platform.loader() + ")";
 		java.util.concurrent.ThreadPoolExecutor skinWorker = new java.util.concurrent.ThreadPoolExecutor(1, 1, 30,
 				java.util.concurrent.TimeUnit.SECONDS, new java.util.concurrent.ArrayBlockingQueue<Runnable>(4), r -> {
 					Thread t = new Thread(r, "TRS-Skin");

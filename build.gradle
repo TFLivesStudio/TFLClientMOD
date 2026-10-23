@@ -1,40 +1,15 @@
-plugins {
-    id 'net.fabricmc.fabric-loom' version "${loom_version}"
-}
+// The adopted TRS implementation is authoritative. The old src/ tree is retained only as
+// migration reference; it is not a source set and can never enter this build's artifacts.
+plugins { id 'base' }
 
-loom {
-    splitEnvironmentSourceSets()
-    mods {
-        "tflcore" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
+def adopted = layout.projectDirectory.dir('vendor/trs-client')
+tasks.register('verifyAdoptedFabric', Exec) {
+    workingDir adopted
+    commandLine 'bash', 'gradlew', '--no-daemon', '--max-workers=2', ':common:test', ':fabric:26.3:build', '-PtrsVersions=26.3'
 }
-
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    testImplementation "org.junit.jupiter:junit-jupiter:5.12.2"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-}
-
-processResources {
-    def modVersion = project.version.toString()
-    inputs.property "version", modVersion
-    filesMatching("fabric.mod.json") {
-        expand "version": modVersion
-    }
-}
-
-tasks.named("test", Test) {
-    useJUnitPlatform()
-}
-
-tasks.withType(JavaCompile).configureEach { options.release = 25 }
-java {
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+tasks.register('test') { dependsOn 'verifyAdoptedFabric' }
+tasks.named('check') { dependsOn 'verifyAdoptedFabric' }
+tasks.register('legacyBuild', Exec) {
+    workingDir adopted.dir('legacy')
+    commandLine 'bash', 'gradlew', '--no-daemon', '--max-workers=2', 'build', '-PtrsVersions=1.8.9'
 }

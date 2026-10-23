@@ -23,15 +23,23 @@ public final class ConfigStore {
 	public enum Status {
 		/** Datei gelesen. */
 		LOADED,
+		/** Unsupported future data or failed import: never write this file. */
+		READ_ONLY,
 		/** Keine Datei vorhanden – Standardwerte. */
 		CREATED,
 		/** Datei war unlesbar/kaputt – Standardwerte, Original gesichert. */
 		RECOVERED
 	}
 
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+	private static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
 
 	private final Path file;
+    private boolean readOnly;
+    private String loadProblem;
+    private com.google.gson.JsonObject preserved = new com.google.gson.JsonObject();
+    public boolean isReadOnly() { return readOnly; }
+    public String loadProblem() { return loadProblem; }
+
 	/** Zuletzt geladene Config des Spiels (für Dienste ohne direkten Zugriff, z. B. den Client-Sync). */
 	private static volatile ConfigStore active;
 	private volatile Listener listener;
@@ -77,22 +85,42 @@ public final class ConfigStore {
 	/** Lädt die Config in die Module und legt sie bei Bedarf (neu) an. */
 	public Status load(ModuleRegistry registry) {
 		Status status;
-		TrsConfig config = null;
+        try { TflMigration.prepare(file); }
+        catch (IOException | RuntimeException e) {
+            readOnly = true; loadProblem = "Import blocked: " + e.getMessage();
+            registry.apply(new TrsConfig()); active = this; return Status.READ_ONLY;
+        }
+        TrsConfig config = null;
 		if (!Files.exists(file)) {
 			status = Status.CREATED;
 		} else {
 			try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-				config = GSON.fromJson(reader, TrsConfig.class);
+				if (Files.size(file) > TflMigration.MAX_BYTES) {
+                    readOnly = true; loadProblem = "Configuration exceeds 1 MiB";
+                    registry.apply(new TrsConfig()); active = this; return Status.READ_ONLY;
+                }
+                com.google.gson.JsonElement tree = new com.google.gson.JsonParser().parse(reader);
+                if (!tree.isJsonObject()) throw new JsonParseException("Expected object");
+                preserved = tree.getAsJsonObject();
+                if (preserved.has("configVersion") && preserved.get("configVersion").getAsDouble() > TrsConfig.CURRENT_VERSION) {
+                    readOnly = true; loadProblem = "Future configuration version";
+                    registry.apply(new TrsConfig()); active = this; return Status.READ_ONLY;
+                }
+                if (preserved.has("modules") && !preserved.get("modules").isJsonNull() && !preserved.get("modules").isJsonObject()) throw new JsonParseException("Module config must be an object");
+                config = GSON.fromJson(tree, TrsConfig.class);
 				status = config == null ? Status.RECOVERED : Status.LOADED;
 			} catch (JsonParseException | IllegalStateException | ClassCastException | IOException e) {
 				status = Status.RECOVERED;
 				config = null;
 			}
-			if (status == Status.RECOVERED) backupBroken();
+			if (status == Status.RECOVERED) {
+                preserved = new com.google.gson.JsonObject();
+                if (!backupBroken()) { readOnly = true; loadProblem = "Cannot back up corrupt configuration"; }
+            }
 		}
 		registry.apply(config != null ? config : new TrsConfig());
 		active = this;
-		if (status != Status.LOADED) {
+		if (status != Status.LOADED && !readOnly) {
 			try {
 				save(registry);
 			} catch (IOException ignored) {
@@ -199,13 +227,16 @@ public final class ConfigStore {
 
 	/** Schreibt {@code config}, außer ein neuerer Stand ist schon geschrieben. */
 	private void write(TrsConfig config, long seq) throws IOException {
+        if (readOnly) throw new IOException(loadProblem == null ? "Read-only configuration" : loadProblem);
 		synchronized (writeLock) {
 			if (seq <= writtenSeq) return;
 			Path dir = file.toAbsolutePath().getParent();
 			if (dir != null) Files.createDirectories(dir);
-			Path tmp = file.resolveSibling(file.getFileName() + ".tmp");
+			String encoded = GSON.toJson(merge(preserved, GSON.toJsonTree(config).getAsJsonObject()));
+            if (encoded.getBytes(StandardCharsets.UTF_8).length > TflMigration.MAX_BYTES) throw new IOException("Configuration exceeds 1 MiB; previous file preserved");
+            Path tmp = file.resolveSibling(file.getFileName() + ".tmp");
 			try (Writer writer = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
-				GSON.toJson(config, writer);
+				writer.write(encoded);
 			}
 			try {
 				Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
@@ -216,11 +247,67 @@ public final class ConfigStore {
 		}
 	}
 
-	private void backupBroken() {
-		try {
-			Files.move(file, brokenFile(), StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException ignored) {
-			// Sicherung ist nur Komfort; Standardwerte gelten trotzdem.
-		}
-	}
+    private boolean backupBroken() {
+        try {
+            Path backup = Files.exists(brokenFile()) ? file.resolveSibling(file.getFileName() + ".broken-" + java.util.UUID.randomUUID()) : brokenFile();
+            Files.copy(file, backup);
+            return true;
+        } catch (IOException e) { return false; }
+    }
+
+    /** Preserve unknown keys and unmapped legacy data on every save/downgrade. */
+    private static com.google.gson.JsonObject merge(com.google.gson.JsonObject base, com.google.gson.JsonObject current) {
+        com.google.gson.JsonObject out = new com.google.gson.JsonParser().parse(base.toString()).getAsJsonObject();
+        for (java.util.Map.Entry<String, com.google.gson.JsonElement> e : current.entrySet()) {
+            com.google.gson.JsonElement previous = out.get(e.getKey());
+            out.add(e.getKey(), previous != null && previous.isJsonObject() && e.getValue().isJsonObject()
+                ? merge(previous.getAsJsonObject(), e.getValue().getAsJsonObject()) : e.getValue());
+        }
+        return out;
+    }
+
+    private Path transferFile(String name) throws IOException {
+        if (name == null || !name.matches("[A-Za-z0-9_-]{1,64}\\.json") || name.equals(file.getFileName().toString()))
+            throw new IOException("Use a separate JSON filename in the configuration directory");
+        Path dir = file.toAbsolutePath().getParent();
+        Path candidate = dir.resolve(name);
+        if (Files.isSymbolicLink(candidate)) throw new IOException("Symbolic links are not valid imports/exports");
+        return candidate;
+    }
+
+    public void exportTo(String name, ModuleRegistry registry) throws IOException {
+        if (readOnly) throw new IOException("Cannot export unsupported configuration");
+        Path out = transferFile(name);
+        Files.createDirectories(out.getParent());
+        Files.write(out, GSON.toJson(merge(preserved, GSON.toJsonTree(registry.capture()).getAsJsonObject())).getBytes(StandardCharsets.UTF_8),
+            java.nio.file.StandardOpenOption.CREATE_NEW);
+    }
+
+    public void resetToDefaults(ModuleRegistry registry) throws IOException {
+        if (readOnly) throw new IOException("Read-only configuration");
+        flush();
+        TrsConfig before = registry.capture();
+        if (Files.exists(file)) Files.copy(file, file.resolveSibling(file.getFileName() + ".pre-reset-" + java.util.UUID.randomUUID() + ".bak"));
+        try { registry.apply(new TrsConfig()); save(registry); }
+        catch (IOException | RuntimeException e) { registry.apply(before); throw new IOException("Reset rolled back", e); }
+    }
+
+    public void importFrom(String name, ModuleRegistry registry) throws IOException {
+        if (readOnly) throw new IOException("Read-only configuration");
+        flush();
+        com.google.gson.JsonObject raw = TflMigration.read(transferFile(name));
+        if (raw.has("modules") && !raw.get("modules").isJsonObject()) throw new IOException("Import modules must be an object");
+        int version;
+        try { version = raw.has("configVersion") ? raw.get("configVersion").getAsInt() : 1; }
+        catch (RuntimeException e) { throw new IOException("Invalid import version", e); }
+        if (version < 1 || version > TrsConfig.CURRENT_VERSION) throw new IOException("Unsupported import version");
+        TrsConfig incoming;
+        try { incoming = GSON.fromJson(raw, TrsConfig.class); }
+        catch (RuntimeException e) { throw new IOException("Invalid import", e); }
+        TrsConfig before = registry.capture();
+        com.google.gson.JsonObject previous = preserved;
+        if (Files.exists(file)) Files.copy(file, file.resolveSibling(file.getFileName() + ".pre-import-" + java.util.UUID.randomUUID() + ".bak"));
+        try { registry.apply(incoming); preserved = raw; save(registry); }
+        catch (IOException | RuntimeException e) { registry.apply(before); preserved = previous; throw new IOException("Import rolled back", e); }
+    }
 }

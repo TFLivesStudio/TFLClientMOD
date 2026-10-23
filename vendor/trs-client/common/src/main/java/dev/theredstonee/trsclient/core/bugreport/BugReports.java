@@ -188,6 +188,7 @@ public final class BugReports {
 
 	/** Beim Start je Loader (nach {@code AccountManager.init}); {@code configDir} = {@code config}-Ordner der Instanz. */
 	public static synchronized BugReports init(Path configDir, String modVersion, String mcVersion, String loader) {
+		if (!dev.theredstonee.trsclient.core.product.Product.onlineServices()) return null;
 		if (instance == null) {
 			ThreadPoolExecutor ex = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(16), r -> {
 				Thread t = new Thread(r, "TRS-Bugreport");

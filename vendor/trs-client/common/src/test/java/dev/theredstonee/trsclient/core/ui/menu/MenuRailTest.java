@@ -35,7 +35,7 @@ class MenuRailTest {
 			// Unterkante des Menüfensters (wie ModMenu: bis 86 % der Höhe, 16 px Rand).
 			int ph = Math.min(size[1] - 16, Math.max(Math.min(264, size[1] - 16), Math.min(470, Math.round(size[1] * 0.86f))));
 			int bottom = (size[1] - ph) / 2 + ph;
-			String label = I18n.tr("menu.bugReport");
+			String label = I18n.tr("menu.packs");
 			// Bis ganz nach unten scrollen (über der Leiste), der letzte Eintrag muss dann sichtbar im Fenster liegen.
 			int[] seen = null;
 			for (int i = 0; i < 40 && seen == null; i++) {
@@ -54,10 +54,19 @@ class MenuRailTest {
 			assertTrue(menu.mouseClicked(seen[0] + 2, seen[1] + 3, 0));
 			c.clear();
 			render(menu, c, size);
-			assertNotNull(BugReportPage.current(), "Seite geöffnet bei " + size[0] + "×" + size[1]);
+			assertTrue(host.packsOpened, "Local resource packs action remains reachable");
+            assertTrue(BugReports.get() == null, "Remote bug reporting stays disabled");
 			menu.requestClose();
 		}
 	}
+
+    @Test void helpShowsLocalCreditsWithoutLaunchingABrowser() {
+        I18n.use("en");ModMenu menu=new ModMenu(new FakeHost());RecordingCanvas c=new RecordingCanvas();
+        render(menu,c,new int[]{960,540});int[] help=c.visible(I18n.tr("menu.docs"));assertNotNull(help);
+        assertTrue(menu.mouseClicked(help[0]+2,help[1]+2,0));render(menu,c,new int[]{960,540});
+        assertNotNull(c.visible("TFL Core / TFL Selection"));
+        assertNotNull(c.visible("Code: GPL-3.0-only. Chat Heads: dzwdz, MPL-2.0."));
+    }
 
 	private static void render(ModMenu menu, RecordingCanvas c, int[] size) {
 		// Einblenden abwarten (fast durchsichtiger Text wird nicht gezeichnet).
@@ -174,6 +183,7 @@ class MenuRailTest {
 	/** Host mit allen Leisten-Einträgen (Packs, Konten, Garderobe, Sozial, Clips). */
 	static final class FakeHost implements MenuHost {
 		private final TrsModules modules = new TrsModules();
+        boolean packsOpened;
 
 		@Override
 		public TrsModules modules() {
@@ -198,6 +208,7 @@ class MenuRailTest {
 
 		@Override
 		public void openPacks() {
+            packsOpened=true;
 		}
 
 		@Override
@@ -282,7 +293,7 @@ class MenuRailTest {
 		ModMenu menu = new ModMenu(new FakeHost());
 		RecordingCanvas c = new RecordingCanvas();
 		render(menu, c, new int[]{960, 540});
-		assertNotNull(c.visible(I18n.tr("menu.bugReport")), "ohne Scrollen sichtbar");
+		assertNotNull(c.visible(I18n.tr("menu.packs")), "ohne Scrollen sichtbar");
 		assertNotNull(c.visible(I18n.tr("menu.all")));
 		assertNotNull(c.visible(I18n.tr("menu.docs")), "Hilfe ohne Scrollen sichtbar");
 	}

@@ -157,57 +157,25 @@ class RedstoneUiTest {
 
 	@Test
 	void sidebarAndFigureAdaptToTheWindow() {
-		FakeHost host = new FakeHost();
-		TitleUi ui = new TitleUi(host);
-		// 854×480 mit GUI-Größe 1: volle Leiste, Figur
-		ui.render(new CountingCanvas(), 854, 480, -1, -1);
-		assertEquals(TitleUi.SIDE_FULL, ui.sideMode());
-		assertTrue(ui.figureShown());
-		assertTrue(ui.buttonRect("wardrobe") != null);
-		// Minecraft-Standard 854×480 mit GUI 2 = 427×240: Symbole, Figur bleibt
-		ui.render(new CountingCanvas(), 427, 240, -1, -1);
-		assertEquals(TitleUi.SIDE_ICONS, ui.sideMode());
-		assertTrue(ui.figureShown());
-		// Sehr schmal (GUI 4): Symbolzeile oben, keine Figur, kein Konto-Knopf
-		ui.render(new CountingCanvas(), 213, 120, -1, -1);
-		assertEquals(TitleUi.SIDE_ROW, ui.sideMode());
-		assertFalse(ui.figureShown());
-		assertTrue(ui.buttonRect("wardrobe") == null);
-		// Die Leiste liegt nie auf den Knöpfen der Mitte
-		ui.render(new CountingCanvas(), 427, 240, -1, -1);
-		int[] quit = ui.buttonRect("quit");
-		for (String id : new String[]{"accounts", "friends", "clips", "trsSettings"}) {
-			int[] r = ui.buttonRect(id);
-			assertTrue(r != null, id);
-			assertTrue(r[0] >= quit[0] + quit[2] + 10, id + " überlappt die Mitte");
-		}
-		// Garderobe-Knopf unter der Figur: links neben der Mitte und breit genug für „Garderobe“ mit Symbol
-		int[] single = ui.buttonRect("singleplayer");
-		int[] wardrobe = ui.buttonRect("wardrobe");
-		assertTrue(wardrobe != null && wardrobe[0] + wardrobe[2] + 10 <= single[0], "Garderobe überlappt die Mitte");
-		assertTrue(wardrobe[2] - 18 >= new CountingCanvas().textWidth("Wardrobe"), "Garderobe-Knopf nur " + wardrobe[2] + " px");
+        FakeHost host=new FakeHost();TitleUi ui=new TitleUi(host);
+        for(int[] size:new int[][]{{854,480},{427,240},{213,120},{320,200}}) {
+            ui.render(new CountingCanvas(),size[0],size[1],-1,-1);
+            assertFalse(ui.figureShown());
+            assertTrue(ui.buttonRect("accounts")==null);assertTrue(ui.buttonRect("friends")==null);
+            for(String id:new String[]{"singleplayer","multiplayer","options","trsMenu","quit"}) {
+                int[] r=ui.buttonRect(id);assertTrue(r!=null,id);
+                assertTrue(r[0]>=0&&r[1]>=0&&r[0]+r[2]<=size[0]&&r[1]+r[3]<=size[1],id+" outside viewport");
+            }
+        }
 	}
 
 	@Test
 	void missingAreasSayComingSoonAndSettingsOpenTheMenu() {
-		FakeHost host = new FakeHost();
-		TitleUi ui = new TitleUi(host);
-		CountingCanvas canvas = new CountingCanvas();
-		ui.render(canvas, W, H, -1, -1);
-		int[] r = ui.buttonRect("wardrobe");
-		assertTrue(ui.mouseClicked(r[0] + 2, r[1] + 2, 0));
-		renderUntil(ui, canvas, () -> ui.toast() != null);
-		assertEquals("Coming soon: Wardrobe", ui.toast());
-		r = ui.buttonRect("trsSettings");
-		ui.mouseClicked(r[0] + 2, r[1] + 2, 0);
-		renderUntil(ui, canvas, () -> host.trsMenu > 0);
-		assertEquals(1, host.trsMenu);
-		// Konten in der Seitenleiste (noch nicht da) → Hinweis
-		host.narrated.clear();
-		r = ui.buttonRect("accounts");
-		ui.mouseClicked(r[0] + 2, r[1] + 2, 0);
-		renderUntil(ui, canvas, () -> !host.narrated.isEmpty());
-		assertEquals("Coming soon: Accounts", host.narrated.get(0));
+        FakeHost host=new FakeHost();TitleUi ui=new TitleUi(host);CountingCanvas canvas=new CountingCanvas();
+        ui.render(canvas,W,H,-1,-1);assertTrue(ui.buttonRect("wardrobe")==null);assertTrue(ui.buttonRect("accounts")==null);
+        int[] r=ui.buttonRect("trsMenu");assertTrue(ui.mouseClicked(r[0]+2,r[1]+2,0));
+        renderUntil(ui,canvas,()->host.trsMenu>0);assertEquals(1,host.trsMenu);
+        assertTrue(ui.toast()==null,"Offline controls do not advertise unavailable services");
 	}
 
 	private static void renderUntil(TitleUi ui, CountingCanvas canvas, java.util.function.BooleanSupplier done) {

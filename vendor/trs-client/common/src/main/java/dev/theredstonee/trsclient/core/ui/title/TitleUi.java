@@ -321,7 +321,7 @@ public final class TitleUi extends UiScreen {
 		if (frames == 0) return null;
 		for (int i = 0; i < lamps.size(); i++) {
 			Lamp l = lamps.get(i);
-			if (l.id.equals(label) || l.label.equals(label)) return new int[]{l.x, l.y, l.w, BTN_H};
+			if (l.id.equals(label) || l.label.equals(label)) return new int[]{l.x, l.y, l.w, l.h};
 		}
 		for (Lamp l : side) {
 			if (l.id.equals(label) || l.label.equals(label)) return new int[]{l.x, l.y, l.w, l.h};
@@ -388,116 +388,53 @@ public final class TitleUi extends UiScreen {
 
 	@Override
 	protected void draw(Canvas raw, int width, int height, int mouseX, int mouseY, float dt) {
-		long start = System.nanoTime();
-		introCheck();
-		offerCheck();
-		Theme t = Theme.get();
-		boolean animated = host.animated();
-		float time = animated ? (System.nanoTime() - EPOCH) / 1_000_000_000f : 1.35f;
-		boolean compact = height < 300;
-		lastHeight = height;
+        long start=System.nanoTime();
+        Theme t=Theme.get();
+        lastHeight=height;
+        Canvas c=FadeCanvas.of(raw,alpha());
+        TrsModules configured=IntroGate.modules();
+        if(configured!=null) dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().setMode(host.animated()?configured.menuBackground.get():dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC);
+        dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().draw(FadeCanvas.unwrap(raw),width,height,sceneEnabled);
+        int bw=Math.max(80,Math.min(240,width-24));
+        int rowHeight=height<190?16:22;
+        int gap=height<190?3:6;
+        int rowsY=height<190?32:Math.max(70,(height-100)/2);
+        int left=(width-bw)/2;
+        for(Lamp l:lamps) {
+            int row="singleplayer".equals(l.id)?0:"multiplayer".equals(l.id)?1:("options".equals(l.id)||"trsMenu".equals(l.id))?2:3;
+            boolean half=row==2||(row==3&&host.hasMods());
+            l.w=half?(bw-6)/2:bw;l.h=rowHeight;l.x=left+(l.right?bw-l.w:0);l.y=rowsY+row*(rowHeight+gap);
+        }
+        // Online account/friend/launcher controls are absent; local clips remain in the core menu.
+        side.clear();accW=0;figureShown=false;
+        int headingY=Math.max(12,rowsY-48);
+        float headingScale=height<190?1.3f:2f;
+        c.push();c.translate((width-c.textWidth("TFL Selection")*headingScale)/2f,headingY);c.scale(headingScale);
+        c.text("TFL Selection",0,0,t.text,false);c.pop();
+        String subtitle="TFL Core · Minecraft";
+        if(height>=190)c.text(subtitle,(width-c.textWidth(subtitle))/2,headingY+25,t.textDim,false);
+        update(dt,mouseX,mouseY);
+        for(int i=0;i<lamps.size();i++) {
+            Lamp l=lamps.get(i);
+            // Preserve two-column routing at normal sizes, full-width on very narrow windows.
 
-		// Maße: Schriftzug, Untertitel, vier Knopfzeilen – als Block senkrecht zentriert.
-		int big = compact ? 5 : (height >= 440 ? 9 : 8);
-		int small = compact ? 2 : 3;
-		int logoH = PixelFont.HEIGHT * big;
-		int subH = PixelFont.HEIGHT * small;
-		int gapA = compact ? 6 : 10;
-		int gapB = compact ? 12 : 20;
-		int buttonsH = 4 * BTN_H + 3 * GAP;
-		int blockH = logoH + gapA + subH + gapB + buttonsH;
-		int top = Math.max(compact ? 8 : 14, (height - 14 - blockH) / 2);
-		int colX = (width - BTN_W) / 2;
-		int rowsY = top + logoH + gapA + subH + gapB;
-		layout(colX, rowsY);
-
-		reserved[0][0] = colX - 22;
-		reserved[0][1] = top - 8;
-		reserved[0][2] = colX + BTN_W + 22;
-		reserved[0][3] = rowsY + buttonsH + 6;
-		reserved[1][0] = 0;
-		reserved[1][1] = height - 14;
-		reserved[1][2] = width;
-		reserved[1][3] = height;
-		Canvas bg = FadeCanvas.unwrap(raw);
-		int[] panel = leftPanel(bg, width, height, colX);
-		layoutSide(bg, width, height, colX);
-		int[] sb = sideBounds();
-		setReserved(2, panel);
-		setReserved(3, sb);
-
-		if (t.halloween) {
-			// Halloween: die Mondnacht (Standbild ohne Animation), leichter Schleier zu den Rändern wie .veil.
-			if (sceneEnabled) NightScene.shared().draw(bg, width, height, animated);
-			else bg.fill(0, 0, width, height, HalloweenPalette.NIGHT);
-		} else if (t.winter) {
-			if (sceneEnabled) WinterScene.shared().draw(bg, width, height, animated);
-			else bg.fill(0, 0, width, height, t.background);
-		} else if (sceneEnabled) {
-			scene.draw(bg, width, height, time, reserved);
-		} else {
-			bg.fill(0, 0, width, height, 0xFF18181C);
-		}
-		int plate = plateColor(t);
-		readingPlate(bg, colX - 26, top - 6, BTN_W + 52, rowsY + buttonsH + 6 - (top - 6), plate);
-		if (panel != null) readingPlate(bg, panel[0], panel[1], panel[2] - panel[0], panel[3] - panel[1], plate);
-		if (sb != null && sideMode != SIDE_ROW) readingPlate(bg, sb[0], sb[1], sb[2] - sb[0], sb[3] - sb[1], plate);
-		// Winternacht: die Fußzeile steht auf dem Schnee – ein Schleier hält sie lesbar.
-		if (t.winter) bg.fill(0, height - 14, width, height, t.light ? 0x70FFFFFF : 0x90060A14);
-		if (t.halloween) bg.fill(0, height - 14, width, height, 0x9007060C);
-
-		Canvas c = FadeCanvas.of(raw, alpha());
-		update(dt, mouseX, mouseY);
-		turntable.tick(dt, animated);
-		if (t.halloween) spider(c, width, top, time, animated);
-		else circuitry(c, t, colX, top, rowsY, time);
-		for (int i = 0; i < lamps.size(); i++) {
-			Lamp l = lamps.get(i);
-			float lit = lampLit(l);
-			int dy = l.flash > 0.45f ? 1 : 0;
-			Redstone.lamp(c, l.x, l.y + dy, l.w, BTN_H, lit, l.flash);
-			String s = c.textWidth(l.label) <= l.w - 10 ? l.label : c.clip(l.label, l.w - 10);
-			labels.add(new Label(s, l.x + (l.w - c.textWidth(s)) / 2, l.y + dy + (BTN_H - 8) / 2, Redstone.lampTextColor(lit), lit < 0.35f));
-			final int index = i;
-			hits.add(l.x, l.y, l.w, BTN_H, new Runnable() {
-				@Override
-				public void run() {
-					activate(index);
-				}
-			});
-		}
-		long modelStart = System.nanoTime();
-		if (panel != null) drawLeft(c, t, panel, mouseX, mouseY, time, animated, dt);
-		float micros = (System.nanoTime() - modelStart) / 1000f;
-		modelFrames++;
-		modelMicros = modelFrames == 1 ? micros : modelMicros + (micros - modelMicros) * 0.05f;
-		drawSide(c, t, width, mouseX, mouseY, time);
-		logo(c, t, width, top, big, small, logoH, gapA, time, animated);
-		footer(c, t, width, height, mouseX, mouseY, dt);
-		for (int i = 0; i < labels.size(); i++) {
-			Label label = labels.get(i);
-			c.text(label.text, label.x, label.y, label.color, label.shadow);
-		}
-		labels.clear();
-		for (int i = 0; i < tooltips.size(); i++) {
-			Label tip = tooltips.get(i);
-			tooltip(c, t, tip.text, tip.x, tip.y, tip.color, tip.shadow ? 1 : 0, width);
-		}
-		tooltips.clear();
-		drawToast(c, t, width, height, dt);
-
-		if (pending >= 0) {
-			pendingIn -= dt;
-			if (pendingIn <= 0) {
-				int run = pending;
-				pending = -1;
-				run(run);
-			}
-		}
-		micros = (System.nanoTime() - start) / 1000f;
-		frames++;
-		uiMicros = frames == 1 ? micros : uiMicros + (micros - uiMicros) * 0.05f;
-		frameMs = frames == 1 ? dt * 1000f : frameMs + (dt * 1000f - frameMs) * 0.05f;
+            boolean hover=mouseX>=l.x&&mouseX<l.x+l.w&&mouseY>=l.y&&mouseY<l.y+l.h;
+            dev.theredstonee.trsclient.core.ui.SelectionStyle.button(c,l.x,l.y,l.w,l.h,i==0,hover||focus==i);
+            String label="trsMenu".equals(l.id)?"TFL Core":l.label;
+            label=c.clip(label,Math.max(0,l.w-12));
+            c.text(label,l.x+(l.w-c.textWidth(label))/2,l.y+(l.h-c.lineHeight())/2,t.text,false);
+            final int index=i;hits.add(l.x,l.y,l.w,l.h,()->activate(index));
+        }
+        String footer=c.clip(host.versionLine().replace("TRS Client","TFL Core"),Math.max(0,width-24));
+        if(height>=190)c.text(footer,12,height-13,t.textDim,false);
+        String classicLabel=c.clip(classic,Math.max(0,width/2-12));
+        int classicY=height<190?height-12:height-26;
+        int linkX=width-c.textWidth(classicLabel)-12;
+        c.text(classicLabel,linkX,classicY,focus==linkIndex()?t.accent:t.textDim,false);
+        hits.add(linkX,classicY-2,c.textWidth(classicLabel),14,()->activate(linkIndex()));
+        if(toastLeft>0&&toast!=null) {toastLeft-=dt;c.text(c.clip(toast,Math.max(0,width-24)),12,12,t.text,false);}
+        if(pending>=0){pendingIn-=dt;if(pendingIn<=0){int action=pending;pending=-1;run(action);}}
+        frames++;frameMs=dt*1000;uiMicros=(System.nanoTime()-start)/1000f;
 	}
 
 	private void setReserved(int index, int[] r) {

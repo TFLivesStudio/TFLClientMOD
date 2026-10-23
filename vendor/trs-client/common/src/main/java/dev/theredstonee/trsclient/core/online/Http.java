@@ -72,6 +72,7 @@ public interface Http {
 
 		@Override
 		public Response send(Request request) throws IOException {
+			dev.theredstonee.trsclient.core.product.Product.requireServiceEndpoint(request.url);
 			// HttpURLConnection kennt kein PATCH (Chat: Nachricht bearbeiten, Gruppe umbenennen).
 			if (request.method.equals("PATCH")) return new RawHttp(userAgent).send(request);
 			HttpURLConnection c = (HttpURLConnection) URI.create(request.url).toURL().openConnection();

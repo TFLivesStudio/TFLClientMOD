@@ -201,7 +201,7 @@ class IntroLogicTest {
 		assertFalse(m.minimap.isEnabled());
 		assertEquals(HudAnchor.CENTER_LEFT, m.combo.position().anchor);
 		assertTrue(ModulePacks.preview(m, ModulePacks.PVP, true, null).isEmpty(), "zweimal anwenden ändert nichts");
-		assertTrue(m.trsOnline.isEnabled(), "Pakete lassen TRS-Online in Ruhe");
+		assertFalse(m.trsOnline.isEnabled(), "Offline TFL policy survives profile application");
 
 		// „NEU“-Stand wird durch Rückgängig nicht zurückgedreht.
 		m.clientState.markIntro(ClientState.FINISHED, "pvp", 1L);

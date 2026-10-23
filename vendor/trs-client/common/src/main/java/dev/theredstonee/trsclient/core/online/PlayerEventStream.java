@@ -275,6 +275,7 @@ public final class PlayerEventStream {
 
 		@Override
 		public Connection open(String url, String token) throws IOException {
+			dev.theredstonee.trsclient.core.product.Product.requireServiceEndpoint(url);
 			final HttpURLConnection c = (HttpURLConnection) URI.create(url).toURL().openConnection();
 			c.setConnectTimeout(Http.CONNECT_TIMEOUT_MS);
 			c.setReadTimeout(READ_TIMEOUT_MS);

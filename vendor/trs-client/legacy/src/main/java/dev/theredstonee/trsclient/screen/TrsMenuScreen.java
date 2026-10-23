@@ -16,7 +16,7 @@ public final class TrsMenuScreen extends TrsUiScreen {
 	}
 
 	private TrsMenuScreen(ModMenu menu) {
-		super("TRS Client", menu);
+		super("TFL Core", menu);
 		this.menu = menu;
 	}
 

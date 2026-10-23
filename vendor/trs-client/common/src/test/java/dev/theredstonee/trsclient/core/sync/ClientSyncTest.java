@@ -61,6 +61,7 @@ class ClientSyncTest {
 			if (existingConfig) Files.write(dir.resolve("trsclient.json"), "{\"configVersion\":2,\"modules\":{\"fps\":{\"enabled\":true}}}".getBytes("UTF-8"));
 			store = new ConfigStore(dir.resolve("trsclient.json"));
 			store.load(modules.registry);
+            modules.trsOnline.setEnabled(true); // Injected FakeSyncServer, not the production service.
 			ClientSync.Online online = new ClientSync.Online() {
 				@Override
 				public boolean consent() {

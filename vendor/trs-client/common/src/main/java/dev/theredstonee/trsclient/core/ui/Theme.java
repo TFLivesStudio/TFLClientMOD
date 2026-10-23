@@ -38,7 +38,7 @@ public final class Theme {
 	public static final String REDSTONE = "redstone";
 	public static final String WINTER = "winter";
 
-	private static Theme current = new Theme("dark", "redstone", 0xFFE0281E, REDSTONE);
+	private static Theme current = new Theme("dark", "lapis", 0xFF3B82F6, REDSTONE);
 	/** Halloween-Variante des aktuellen Themas (zwischengespeichert, solange {@link #current} gleich bleibt). */
 	private static volatile Theme spooky;
 
@@ -311,7 +311,7 @@ public final class Theme {
 	 */
 	public static boolean loadFrom(Path configDir) {
 		if (configDir == null) return false;
-		Path file = configDir.resolve("trsclient").resolve("launcher-theme.json");
+		Path file = configDir.resolve("tflcore").resolve("theme.json");
 		try {
 			if (!Files.isRegularFile(file) || Files.size(file) > MAX_BYTES) return false;
 			try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {

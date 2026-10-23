@@ -89,38 +89,11 @@ public final class MenuSkin {
 	 * @param footerTop obere Kante der Fußleiste (≥ height = keine)
 	 */
 	public static void background(Canvas c, int width, int height, boolean inWorld, int headerH, int footerTop) {
-		long start = System.nanoTime();
-		Theme t = Theme.get();
-		float time = seconds();
-		if (t.halloween) {
-			halloweenBackground(c, width, height, inWorld, headerH, footerTop, time);
-			measure(start);
-			return;
-		}
-		if (inWorld && t.winter) {
-			// Winternacht in der Welt: nachtblauer Schleier, unten Frostschein und eine Frostlinie.
-			c.fill(0, 0, width, height, 0x9A060B16);
-			for (int i = 0; i < 6; i++) {
-				int band = Math.max(4, height / 24);
-				int y2 = height - i * band;
-				c.fill(0, y2 - band, width, y2, ColorMath.withAlpha(t.lampGlow, Math.max(0, 18 - i * 3)));
-			}
-			Redstone.dustH(c, 0, width, height - 2, ColorMath.lerp(t.dustOff, t.dustOn, 0.55f + 0.2f * pulse(time)), 0.4f);
-		} else if (inWorld) {
-			c.fill(0, 0, width, height, 0x9A0A0708);
-			// Glimmen von unten wie bei einer Redstone-Leitung am Boden.
-			for (int i = 0; i < 6; i++) {
-				int band = Math.max(4, height / 24);
-				int y2 = height - i * band;
-				c.fill(0, y2 - band, width, y2, ColorMath.withAlpha(t.glow, Math.max(0, 22 - i * 4)));
-			}
-			Redstone.dustH(c, 0, width, height - 2, ColorMath.lerp(t.dustOff, t.dustOn, 0.55f + 0.2f * pulse(time)), 0.4f);
-		} else {
-			scene(c, width, height, time);
-		}
-		if (headerH > 0) header(c, width, headerH, inWorld);
-		if (footerTop < height) footer(c, width, footerTop, height, inWorld);
-		measure(start);
+        long start=System.nanoTime();Theme t=Theme.get();
+        c.fill(0,0,width,height,inWorld?0xB0080D18:t.background);
+        if(headerH>0)header(c,width,headerH,inWorld);
+        if(footerTop<height)footer(c,width,footerTop,height,inWorld);
+        measure(start);
 	}
 
 	/**
@@ -172,57 +145,18 @@ public final class MenuSkin {
 
 	/** Kopfleiste mit kleinem TRS-Schriftzug links und Staubleitung unten. */
 	public static void header(Canvas c, int width, int h, boolean inWorld) {
-		Theme t = Theme.get();
-		if (t.halloween) {
-			c.fill(0, 0, width, h, inWorld ? 0x8C07060C : 0xD80A0812);
-			c.fill(0, 0, width, 1, 0x40CFD5E3);
-			c.fill(0, h - 1, width, h, 0x803B3358);
-			int lx = 8;
-			int ly = (h - PixelFont.HEIGHT * 2) / 2;
-			logo(c, lx, ly, 2, 1f);
-			HalloweenLook.menuHeader(c, 0, 0, width, h, lx + PixelFont.width("TRS") * 2 + 2, seconds());
-			return;
-		}
-		c.fill(0, 0, width, h, t.winter ? (inWorld ? 0x8C060B16 : 0xD80B1222) : (inWorld ? 0x8C0C0A0B : 0xD8141113));
-		c.fill(0, 0, width, 1, ColorMath.withAlpha(t.winter ? FROST_LIGHT : BEVEL_LIGHT, 0x60));
-		Redstone.dustH(c, 0, width, h - 2, ColorMath.lerp(t.dustOff, t.dustOn, 0.8f), 0.7f);
-		logo(c, 8, (h - PixelFont.HEIGHT * 2) / 2, 2, 1f);
+        Theme t=Theme.get();c.fill(0,0,width,h,inWorld?0xB00D1424:t.surfaceHigh);
+        c.fill(0,h-1,width,h,t.border);logo(c,10,Math.max(2,(h-c.lineHeight())/2),1,1f);
 	}
 
 	/** Fußleiste (Knopfbereich unter einer Liste). */
 	public static void footer(Canvas c, int width, int top, int height, boolean inWorld) {
-		Theme t = Theme.get();
-		if (t.halloween) {
-			c.fill(0, top, width, height, inWorld ? 0x8C07060C : 0xD80A0812);
-			c.fill(0, top, width, top + 1, 0x803B3358);
-			return;
-		}
-		c.fill(0, top, width, height, t.winter ? (inWorld ? 0x8C060B16 : 0xD80B1222) : (inWorld ? 0x8C0C0A0B : 0xD8141113));
-		Redstone.dustH(c, 0, width, top, ColorMath.lerp(t.dustOff, t.dustOn, 0.8f), 0.7f);
+        Theme t=Theme.get();c.fill(0,top,width,height,inWorld?0xB00D1424:t.surfaceHigh);c.fill(0,top,width,top+1,t.border);
 	}
 
 	/** „TRS“ in der Pixelschrift, glühend; {@code scale} = Pixel je Schriftpunkt. */
 	public static void logo(Canvas c, int x, int y, int scale, float alpha) {
-		Theme t = Theme.get();
-		if (t.halloween) {
-			HalloweenLook.silverWord(c, "TRS", x, y, scale, alpha, 1f);
-			return;
-		}
-		List<int[]> rects = PixelFont.rects("TRS");
-		int glow = ColorMath.withAlpha(t.glow, Math.round(40 * alpha));
-		for (int[] r : rects) c.fill(x + r[0] * scale - 1, y + r[1] * scale - 1, x + r[2] * scale + 1, y + r[3] * scale + 1, glow);
-		int light = ColorMath.lerp(t.accent, 0xFFFFFFFF, 0.3f);
-		for (int[] r : rects) {
-			int col = r[1] == 0 ? light : t.accent;
-			c.fill(x + r[0] * scale, y + r[1] * scale, x + r[2] * scale, y + r[3] * scale, ColorMath.fade(col, alpha));
-		}
-		if (t.winter && alpha > 0.5f) {
-			// Schnee auf dem Schriftzug und die kleine Schneeflocke daneben (wie im Launcher).
-			TitleUi.snowCaps(c, rects, x, y, scale);
-			int fx = x + PixelFont.width("TRS") * scale + scale * 2;
-			int px = Math.max(1, scale / 2);
-			Frost.snowflake(c, fx, y + (PixelFont.HEIGHT * scale - 9 * px) / 2, px, 0xFFB8E7FF, Frost.glint(seconds()));
-		}
+        c.text("TFL Core",x,y,ColorMath.withAlpha(Theme.get().text,Math.round(255*ColorMath.clamp01(alpha))),false);
 	}
 
 	/** Eingelassene Mulde hinter einer Liste (Server, Welten, Optionen). */
@@ -242,10 +176,7 @@ public final class MenuSkin {
 
 	/** Trennlinien einer Liste (oben/unten) als Staubleitungen. */
 	public static void listSeparators(Canvas c, int x1, int y1, int x2, int y2) {
-		Theme t = Theme.get();
-		int dust = ColorMath.lerp(t.dustOff, t.dustOn, 0.6f);
-		Redstone.dustH(c, x1, x2, y1 - 2, dust, 0.3f);
-		Redstone.dustH(c, x1, x2, y2, dust, 0.3f);
+        int color=Theme.get().border;c.fill(x1,y1,x2,y1+1,color);c.fill(x1,y2-1,x2,y2,color);
 	}
 
 	// --- Knöpfe ---
@@ -255,30 +186,7 @@ public final class MenuSkin {
 	 * Überfahren glimmt eine Staubleitung, gesperrte Knöpfe sind dunkler.
 	 */
 	public static void button(Canvas c, int x, int y, int w, int h, boolean hover, boolean active) {
-		if (w < 3 || h < 3) return;
-		Theme t = Theme.get();
-		boolean hot = hover && active;
-		if (t.halloween) {
-			HalloweenLook.vanillaButton(c, x, y, w, h, hot, active);
-			return;
-		}
-		if (t.winter) {
-			iceButton(c, t, x, y, w, h, hot, active);
-			return;
-		}
-		int fill = !active ? STONE_OFF : (hot ? STONE_HOVER : STONE);
-		if (hot) Redstone.glow(c, x, y, w, h, t.glow, 0.55f);
-		Redstone.block(c, x, y, w, h, hot ? ColorMath.lerp(EDGE, t.accent, 0.55f) : EDGE);
-		if (h < 5) return;
-		c.fill(x + 1, y + 1, x + w - 1, y + h - 1, fill);
-		c.fill(x + 1, y + 1, x + w - 1, y + 2, active ? ColorMath.lerp(fill, BEVEL_LIGHT, 0.8f) : ColorMath.lerp(fill, BEVEL_LIGHT, 0.3f));
-		c.fill(x + 1, y + h - 2, x + w - 1, y + h - 1, BEVEL_DARK);
-		if (hot) {
-			Redstone.dustH(c, x + 3, x + w - 3, y + h - 4, t.dustOn, 0f);
-		} else if (active && w > 12) {
-			// Unbestromter Staub: dunkles Rot, zeigt den Redstone-Stil auch ohne Maus.
-			c.fill(x + 3, y + h - 4, x + w - 3, y + h - 3, ColorMath.withAlpha(t.dustOff, 0x90));
-		}
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.button(c,x,y,w,h,false,hover&&active);
 	}
 
 	/**

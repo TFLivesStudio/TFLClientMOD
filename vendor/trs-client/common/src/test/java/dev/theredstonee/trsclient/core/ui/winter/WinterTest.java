@@ -69,7 +69,7 @@ class WinterTest {
 
 	@Test
 	void launcherFileCarriesTheDesign(@TempDir Path dir) throws IOException {
-		Path file = dir.resolve("trsclient").resolve("launcher-theme.json");
+		Path file = dir.resolve("tflcore").resolve("theme.json");
 		Files.createDirectories(file.getParent());
 		Files.write(file, ("{\"version\":1,\"theme\":\"oled\",\"accent\":\"ice\",\"accentColor\":\"#2B97D6\",\"language\":\"de\","
 				+ "\"design\":\"winter\",\"event\":\"halloween\"}").getBytes(StandardCharsets.UTF_8));

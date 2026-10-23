@@ -325,6 +325,7 @@ class EmoteOnlineTest {
 		FakeOpener opener = new FakeOpener();
 		TrsOnline online = new TrsOnline(CONFIG, new OnlineTest.Platform(), http, dir, opener);
 		TrsModules modules = new TrsModules();
+        modules.trsOnline.setEnabled(true); // Injected FakeHttp only.
 		EmoteController emotes = new EmoteController(modules, online);
 		UUID self = Uuids.toUuid(OWN);
 		UUID other = Uuids.toUuid(OTHER);
@@ -409,6 +410,7 @@ class EmoteOnlineTest {
 		TrsOnline off = new TrsOnline(new OnlineConfig(false, CONFIG.apiBase(), CONFIG.sessionBase()),
 				new OnlineTest.Platform(), http, dir, new FakeOpener());
 		TrsModules modules = new TrsModules();
+        modules.trsOnline.setEnabled(true); // Injected FakeHttp only.
 		EmoteController emotes = new EmoteController(modules, off);
 		for (int i = 0; i < 10; i++) {
 			off.tick(System.currentTimeMillis(), Collections.<UUID>emptyList(), true);

@@ -35,6 +35,7 @@ public final class RawHttp implements Http {
 
 	@Override
 	public Response send(Request request) throws IOException {
+			dev.theredstonee.trsclient.core.product.Product.requireServiceEndpoint(request.url);
 		URI uri;
 		try {
 			uri = URI.create(request.url);

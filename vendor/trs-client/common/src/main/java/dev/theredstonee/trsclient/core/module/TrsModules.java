@@ -213,6 +213,7 @@ public final class TrsModules {
 	public final NumberSetting hitColorOpacity;
 	/** Startbildschirm: animierte Redstone-Schaltung im Hintergrund (aus = ruhiges Standbild). */
 	public final BoolSetting titleAnimated;
+	public final ChoiceSetting<dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode> menuBackground;
 	public final BoolSetting menuPause;
 	public final BoolSetting menuPauseButtons;
 	public final BoolSetting menuMultiplayer;
@@ -586,7 +587,8 @@ public final class TrsModules {
 		trsOnline = registry.register(new Module("trsOnline", "TRS Online Features",
 				"TRS badges and TRS capes of other players, your own cape and your online status for friends. "
 						+ "Signs in with your Minecraft account, just like joining a server. Only shows that someone uses TRS.",
-				true));
+				false));
+		trsOnline.availableWhen(() -> false);
 		capePhysics = registry.register(new Module("capePhysics", "Cape Physics",
 				"Capes (Mojang, OptiFine, TRS) move like cloth: they swing when you walk, turn, jump and sneak.",
 				true));
@@ -773,6 +775,7 @@ public final class TrsModules {
 		hitColorColor = hitColor.add(new ColorSetting("color", "Color", 0xB07CFF));
 		hitColorOpacity = hitColor.add(new NumberSetting("opacity", "Opacity (%)", 70, 10, 100, 10, ""));
 		titleAnimated = titleScreen.add(new BoolSetting("animated", "Animated background", true));
+        menuBackground=titleScreen.add(new ChoiceSetting<>("backgroundMode","Menu background",dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.class,dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC));
 		// Aussehen (Design Redstone | Winternacht, Farbschema, Akzent) auf den Seiten „Startbildschirm“ und „Menü-Stil“.
 		dev.theredstonee.trsclient.core.intro.LookPanel look = new dev.theredstonee.trsclient.core.intro.LookPanel(this);
 		dev.theredstonee.trsclient.core.ui.menu.ModulePanel.Registry.set(titleScreen, look);

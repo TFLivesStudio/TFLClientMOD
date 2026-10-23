@@ -116,6 +116,7 @@ public final class Relay {
 	}
 
 	static Socket connect(String host, int port) throws IOException {
+			dev.theredstonee.trsclient.core.product.Product.requireServiceHost(host);
 		Socket s = new Socket();
 		try {
 			s.setTcpNoDelay(true);

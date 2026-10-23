@@ -35,15 +35,25 @@ tasks.named('compileJava') {
 // nicht im Mod-Jar (die Bibliothek kommt vom Server), aber im Test-Classpath (Simulation, Validierung).
 sourceSets {
 	test {
-		resources.srcDir '../../data'
+		resources.srcDir '../test-fixtures'
 	}
 }
 
 test {
 	useJUnitPlatform()
+	// Real transport tests are restricted to literal loopback; production defaults remain closed.
+	systemProperty 'tflcore.test.loopback', 'true'
 	// Opt-in-Tests mit Netz (z. B. -Dtrsclient.test.e4mc=true) an die Test-JVM durchreichen.
 	System.properties.findAll { it.key.toString().startsWith('trsclient.test.') }.each { k, v -> systemProperty k, v }
 	testLogging {
 		events 'passed', 'skipped', 'failed'
 	}
+}
+
+// Export actual registry entries for the modpack feature matrix.
+tasks.register('moduleInventory', JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath + configurations.testRuntimeClasspath
+    mainClass = 'dev.theredstonee.trsclient.core.product.ModuleInventory'
+    args rootProject.file('../../distribution/modules.json').absolutePath
 }

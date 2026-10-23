@@ -49,11 +49,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 /** Einstiegspunkt des TRS Clients (nur Client). */
 public final class TrsClient implements ClientModInitializer {
-	public static final String MOD_ID = "trsclient";
+	public static final String MOD_ID = "tflcore";
 	//? if >=1.17 {
-	public static final Logger LOGGER = LoggerFactory.getLogger("TRS Client");
+	public static final Logger LOGGER = LoggerFactory.getLogger("TFL Core");
 	//?} else
-	//public static final Logger LOGGER = LogManager.getLogger("TRS Client");
+	//public static final Logger LOGGER = LogManager.getLogger("TFL Core");
 
 	private static TrsClient instance;
 
@@ -94,7 +94,12 @@ public final class TrsClient implements ClientModInitializer {
 		// Benchmark „Vanilla“ (-PtrsBenchVanilla): TRS Client bleibt ganz aus, nur der Messablauf läuft.
 		if (Boolean.getBoolean("trsclient.bench.vanilla")) {
 			LOGGER.info("TRS Client aus (Benchmark Vanilla)");
-			AutoTest.installIfRequested();
+
+        // Development harness is not shipped in the installable artifact.
+        if (Boolean.getBoolean("trsclient.autotest")) {
+            try { Class.forName("dev.theredstonee.trsclient.dev.AutoTest").getMethod("installIfRequested").invoke(null); }
+            catch (ReflectiveOperationException e) { LOGGER.warn("Development harness unavailable", e); }
+        }
 			return;
 		}
 		// Farben des Launchers (config/trsclient/launcher-theme.json) – fehlt sie, gilt das Standard-Thema.
@@ -103,8 +108,9 @@ public final class TrsClient implements ClientModInitializer {
 		dev.theredstonee.trsclient.core.clips.Clips.init(FabricLoader.getInstance().getConfigDir());
 		// Grafik-Modus „Schön“/„Max FPS“ (config/trsclient/fps-mode.json).
 		dev.theredstonee.trsclient.core.perf.FpsConfigMode.init(FabricLoader.getInstance().getConfigDir());
-		config = new ConfigStore(FabricLoader.getInstance().getConfigDir().resolve("trsclient.json"));
+		config = new ConfigStore(FabricLoader.getInstance().getConfigDir().resolve(dev.theredstonee.trsclient.core.product.Product.CONFIG));
 		ConfigStore.Status status = config.load(modules.registry);
+		if (status == ConfigStore.Status.READ_ONLY) LOGGER.warn("TFL configuration is read-only: {}", config.loadProblem());
 		if (status == ConfigStore.Status.RECOVERED) {
 			LOGGER.warn("Config war beschädigt – Standardwerte geladen, Sicherung: {}", config.brokenFile());
 		}
@@ -141,7 +147,7 @@ public final class TrsClient implements ClientModInitializer {
 		// Kamera-Fahrten (config/trsclient-cinematic.json, Tasten in den Steuerungen).
 		dev.theredstonee.trsclient.cinematic.CinematicHooks.init(modules, FabricLoader.getInstance().getConfigDir());
 		waypoints = new dev.theredstonee.trsclient.feature.Waypoints(modules,
-				FabricLoader.getInstance().getConfigDir().resolve("trsclient-waypoints.json"));
+				FabricLoader.getInstance().getConfigDir().resolve(dev.theredstonee.trsclient.core.product.Product.WAYPOINTS));
 		dev.theredstonee.trsclient.feature.AutoRefillHooks.init(modules);
 		hud = new HudManager(modules);
 		// Kosten-Messung (-Dtrsclient.bench.noHud): HUD gar nicht erst einhängen.
@@ -179,7 +185,7 @@ public final class TrsClient implements ClientModInitializer {
 				.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse(null));
 		AutoTest.installIfRequested();
 
-		LOGGER.info("TRS Client {} initialisiert – {} Module, Config {} ({})",
+		LOGGER.info("TFL Core {} initialisiert – {} Module, Config {} ({})",
 				version, modules.registry.all().size(), status, config.file());
 	}
 
@@ -231,11 +237,11 @@ public final class TrsClient implements ClientModInitializer {
 
 	//? if >=1.21.11 {
 	/*public static Identifier id(String path) {
-		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+		return Identifier.fromNamespaceAndPath("trsclient", path);
 	}
 	*///?} elif >=1.21.6 {
 	/*public static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+		return ResourceLocation.fromNamespaceAndPath("trsclient", path);
 	}
 	*///?}
 

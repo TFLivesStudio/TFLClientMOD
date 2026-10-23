@@ -1,14 +1,14 @@
 {
 	"schemaVersion": 1,
-	"id": "trsclient",
+	"id": "tflcore",
 	"version": "${version}",
-	"name": "TRS Client",
-	"description": "In-Game-Client des TRS Launchers: HUD (FPS, CPS, Tastenanzeige, Ping), Zoom, Fullbright und ein eigenes Menü (Rechte Umschalttaste).",
+	"name": "TFL Core",
+	"description": "TFL Selection: offline client utilities, HUD, maps and gameplay customization. Derived from TRS Client.",
 	"authors": [
-		"theredstonee"
+		"theredstonee (original TRS Client)", "TFLivesStudio (TFL modifications)"
 	],
 	"contact": {
-		"sources": "https://github.com/theredstonee/TRS-Launcher"
+		"sources": "https://github.com/TFLivesStudio/TFLClientMOD"
 	},
 	"license": "GPL-3.0-only",
 	"environment": "client",
@@ -26,6 +26,7 @@
 			"environment": "client"
 		}
 	],
+	"breaks": { "trsclient": "*" },
 	"custom": {
 		"badoptimizations:cache_hooks": {
 			"lightmap": "dev.theredstonee.trsclient.compat.BadOptLightmapHook"

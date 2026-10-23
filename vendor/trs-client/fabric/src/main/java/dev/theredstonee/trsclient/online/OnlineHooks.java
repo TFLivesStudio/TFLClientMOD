@@ -57,7 +57,7 @@ public final class OnlineHooks {
 			Consumer<String> log) {
 		modules = trsModules;
 		// Welt-Hosting (Pausemenü „Welt hosten“, Beitreten per Einladung/Code) – vor den Online-Funktionen anmelden.
-		dev.theredstonee.trsclient.hosting.HostingHooks.install(minecraftVersion, loader, log);
+		if (dev.theredstonee.trsclient.core.product.Product.onlineServices()) dev.theredstonee.trsclient.hosting.HostingHooks.install(minecraftVersion, loader, log);
 		features = OnlineFeatures.create(trsModules, configDir, new Platform(minecraftVersion, loader, log), modVersion,
 				new Textures());
 	}

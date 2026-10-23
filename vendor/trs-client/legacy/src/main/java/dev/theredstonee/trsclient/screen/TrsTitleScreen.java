@@ -22,7 +22,7 @@ public final class TrsTitleScreen extends TrsUiScreen {
 	}
 
 	private TrsTitleScreen(Host host) {
-		super("TRS Client", new TitleUi(host));
+		super("TFL Selection", new TitleUi(host));
 		host.screen = this;
 		this.title = (TitleUi) ui();
 	}
@@ -47,9 +47,15 @@ public final class TrsTitleScreen extends TrsUiScreen {
 		return false;
 	}
 
+    @Override
+    public void onGuiClosed() {
+        dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
+        super.onGuiClosed();
+    }
+
 	/** Ziele der Knöpfe. */
 	private static final class Host implements TitleHost {
-		private final String versionLine = "Minecraft " + Mc.version() + " · Forge · TRS Client " + TrsClient.get().version();
+		private final String versionLine = "Minecraft " + Mc.version() + " · Forge · TFL Core " + TrsClient.get().version();
 		TrsTitleScreen screen;
 
 		@Override

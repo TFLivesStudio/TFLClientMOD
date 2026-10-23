@@ -21,7 +21,7 @@ group = rootProject.maven_group
 version = rootProject.mod_version
 
 base {
-	archivesName = "trsclient-fabric-${mc}"
+	archivesName = "tflcore-fabric-${mc}"
 }
 
 java {
@@ -150,7 +150,7 @@ nestedJars = { File jar, File outDir ->
  * laden (nur beim ersten Mal), SHA-512 prüfen. Liste [{id, name, version, license, source, path, nested}].
  */
 def bundledMods = { ->
-	if (project.hasProperty('trsNoBundledMods')) return []
+	if (!project.hasProperty('tflBundleAuditedMods') || project.hasProperty('trsNoBundledMods')) return []
 	def pin = rootProject.file('fabric/bundled-mods.json')
 	def all = new groovy.json.JsonSlurper().parse(pin, 'UTF-8')
 	def cache = new File(gradle.gradleUserHomeDir, 'caches/trsclient-bundled')
@@ -313,11 +313,11 @@ processResources {
 			mixins      : mixinClasses.collect { "\"${it}\"" }.join(', '),
 			// Abhängig von den einzelnen Fabric-API-Modulen statt "fabric-api": bis ~1.19 hieß die
 			// Fabric API selbst noch "fabric" – die Modul-IDs sind dagegen in allen Versionen gleich.
-			fapiDepends : fapiModules.collect { "\"${it}\": \"*\"" }.join(', '),
+			fapiDepends : (fapiModules.collect { "\"${it}\": \"*\"" } + (mc.toString() == '26.3' ? ["\"fabric-api\": \"${project.fabric_api_version}\""] : [])).join(', '),
 			version     : project.version,
 			minecraft   : mc,
 			java        : "${javaVersion}",
-			loader      : unobfuscated ? '0.18.4' : '0.15.0',
+			loader      : mc.toString() == '26.3' ? rootProject.loader_version : (unobfuscated ? '0.18.4' : '0.15.0'),
 			mixinJava   : "JAVA_${javaVersion >= 21 ? 21 : javaVersion}",
 	]
 	inputs.properties(props)
@@ -430,4 +430,16 @@ abstract class TrsProdClientTask extends net.fabricmc.loom.task.prod.ClientProdu
 		super.configureCommand(spec)
 		if (getJvmArgs().get().contains('-Dtrsclient.autotest=true')) spec.environment('ALSOFT_DRIVERS', 'null')
 	}
+}
+
+// TFL distribution compliance: original license retained and modifications prominently identified.
+tasks.withType(Jar).configureEach {
+    from(rootProject.file('licenses/Inter-OFL.txt')) { into 'META-INF/licenses' }
+    from(rootProject.file('TFL-NOTICE.txt')) { into 'META-INF' }
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.withType(Jar).configureEach {
+    if (!archiveClassifier.getOrElse('').equals('sources')) exclude 'dev/theredstonee/trsclient/dev/**'
 }

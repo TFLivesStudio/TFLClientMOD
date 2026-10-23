@@ -14,7 +14,7 @@ group = maven_group
 version = mod_version
 
 base {
-	archivesName = "trsclient-forge-${mc}"
+	archivesName = "tflcore-forge-${mc}"
 }
 
 java {
@@ -188,4 +188,16 @@ if (project.findProperty('trsBenchOptions') == 'real') {
 			logger.lifecycle("Benchmark: options.txt neu (${dir})")
 		}
 	}
+}
+
+// TFL distribution compliance: original license retained and modifications prominently identified.
+tasks.withType(Jar).configureEach {
+    from(rootProject.file('../licenses/Inter-OFL.txt')) { into 'META-INF/licenses' }
+    from(rootProject.file('../TFL-NOTICE.txt')) { into 'META-INF' }
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.withType(Jar).configureEach {
+    if (!archiveClassifier.getOrElse('').equals('sources')) exclude 'dev/theredstonee/trsclient/dev/**'
 }

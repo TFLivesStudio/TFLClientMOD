@@ -3,4 +3,7 @@ Commit: c52087ddb6b73b9d1287ef6d7f9d31010fcb5702
 Subtree: client-mod/
 License: GPL-3.0-only (see vendor/trs-client/LICENSE)
 
-This is an unmodified source snapshot for migration, not a TFL release.
+This snapshot is now modified for TFL Core. Original upstream provenance above remains fixed.
+Modifications: offline service policy, controlled loader identity, protected configuration import,
+shared Selection UI, static background and distribution checks. See docs/RELEASE_READINESS.md.
+This development branch is not a certified release.

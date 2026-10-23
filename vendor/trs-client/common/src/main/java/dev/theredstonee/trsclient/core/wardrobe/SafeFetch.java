@@ -93,6 +93,7 @@ public final class SafeFetch {
 	static final Connector TLS = new Connector() {
 		@Override
 		public Socket connect(InetAddress address, String host, int port) throws IOException {
+			dev.theredstonee.trsclient.core.product.Product.requireOnlineServices();
 			Socket raw = new Socket();
 			try {
 				raw.connect(new InetSocketAddress(address, port), CONNECT_TIMEOUT_MS);

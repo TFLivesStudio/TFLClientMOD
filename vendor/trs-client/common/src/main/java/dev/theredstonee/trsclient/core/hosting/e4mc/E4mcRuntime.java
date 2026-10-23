@@ -79,6 +79,7 @@ public final class E4mcRuntime {
 
 	/** Neue Tunnel-Instanz (lädt beim ersten Mal herunter). */
 	public static PublicTunnel newTunnel(Path dir, Progress progress) throws Exception {
+        dev.theredstonee.trsclient.core.product.Product.requireOnlineServices();
 		ClassLoader cl = loader;
 		if (cl == null) {
 			synchronized (E4mcRuntime.class) {
@@ -123,6 +124,7 @@ public final class E4mcRuntime {
 
 	/** Jar aus dem Cache oder von Maven Central; SHA-256 muss stimmen. */
 	static Path fetch(Path dir, String artifact, String classifier, String sha256) throws IOException {
+			dev.theredstonee.trsclient.core.product.Product.requireOnlineServices();
 		String file = artifact + "-" + NETTY + (classifier == null ? "" : "-" + classifier) + ".jar";
 		Path target = dir.resolve(file);
 		if (Files.isRegularFile(target) && sha256.equals(sha256(Files.readAllBytes(target)))) return target;

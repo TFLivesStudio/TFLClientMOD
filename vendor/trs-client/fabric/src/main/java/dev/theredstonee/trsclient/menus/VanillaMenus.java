@@ -661,7 +661,7 @@ public final class VanillaMenus {
 	/** Knöpfe Garderobe, Konten, Clips, Freunde, Server-Info links neben dem Pausenmenü. */
 	static void pauseButtons(final Screen s, WidgetHost host) {
 		int free = (s.width - 204) / 2 - 12;
-		String[] ids = {"wardrobe", "accounts", "clips", "friends", "serverInfo"};
+		String[] ids = dev.theredstonee.trsclient.core.product.Product.pauseEntries();
 		int widest = 0;
 		for (String id : ids) widest = Math.max(widest, Mc.mc().font.width(I18n.tr("menus.pause." + id)));
 		// Platz für Symbol links + Text in der Mitte: Text darf das Symbol nicht berühren.
@@ -671,10 +671,10 @@ public final class VanillaMenus {
 		int w = labels ? Math.max(86, Math.min(want, free)) : 20;
 		int h = 20;
 		int gap = 4;
-		int count = 5;
+		int count = ids.length;
 		int y = Math.max(8, s.height / 2 - (count * (h + gap)) / 2);
 		int x = 8;
-		String[] icons = {"shirt", "profile", "image", "friends", "info"};
+		String[] icons = {"gear", "image", "info"};
 		for (int i = 0; i < ids.length; i++) {
 			final String id = ids[i];
 			Object b = button(x, y, w, h, labels ? I18n.tr("menus.pause." + id) : "", new Runnable() {
@@ -708,6 +708,9 @@ public final class VanillaMenus {
 	static void openFromPause(Screen parent, String id) {
 		Screen next;
 		switch (id) {
+            case "core":
+                next = new dev.theredstonee.trsclient.screen.TrsMenuScreen(parent);
+                break;
 			case "wardrobe":
 				next = MenuScreens.wardrobe(parent);
 				break;

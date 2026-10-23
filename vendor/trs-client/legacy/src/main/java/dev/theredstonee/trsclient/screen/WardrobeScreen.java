@@ -22,7 +22,7 @@ public final class WardrobeScreen {
 
 	/** Gibt es die Garderobe (Konfig-Ordner bekannt)? */
 	public static boolean available() {
-		return I18n.configDir() != null;
+		return I18n.configDir() != null && dev.theredstonee.trsclient.online.LegacyOnline.features() != null && dev.theredstonee.trsclient.online.LegacyOnline.features().localSkin() != null;
 	}
 
 	/** Garderobe; {@code parent} = wohin „Schließen“ führt (null = zurück ins Spiel). */

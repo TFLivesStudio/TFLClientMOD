@@ -264,7 +264,7 @@ public final class TrsLink {
 				// ohne Umgebung: nur Protokoll 1
 			}
 			shared = new TrsLink(configDir, value);
-			shared.start();
+			if (dev.theredstonee.trsclient.core.product.Product.onlineServices()) shared.start();
 		}
 		return shared;
 	}
@@ -508,6 +508,7 @@ public final class TrsLink {
 	}
 
 	private Result session(LinkTarget target) {
+		if (!dev.theredstonee.trsclient.core.product.Product.onlineServices() && !dev.theredstonee.trsclient.core.product.Product.testLoopback()) return Result.REFUSED;
 		Socket s = new Socket();
 		boolean greeted = false;
 		sealKey = null;

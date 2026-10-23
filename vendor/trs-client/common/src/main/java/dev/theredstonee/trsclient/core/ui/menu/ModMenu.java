@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public final class ModMenu extends UiScreen {
 	private enum Page {
-		GRID, SETTINGS, PROFILES, PACKS, SERVERS, CIRCUITS, BUG_REPORT, NOTES, HALLOWEEN
+		GRID, SETTINGS, PROFILES, PACKS, SERVERS, CIRCUITS, BUG_REPORT, NOTES, HALLOWEEN, ABOUT, CONFIG
 	}
 
 	private static final int HEADER_H = 30;
@@ -69,6 +69,9 @@ public final class ModMenu extends UiScreen {
 	private String profileError;
 	/** „Hilfe“: Browser ließ sich nicht öffnen – Adresse der Docs steht dann einige Sekunden in der Kopfzeile. */
 	private String docsFailed;
+    private int aboutScroll;
+    private String transferMessage;
+    private boolean resetArmed;
 	private long docsFailedUntil;
 	/** Seitenleiste: Bildlauf, wenn nicht alle Einträge ins Fenster passen (kleine Fenster, große GUI-Skalierung). */
 	private int railScroll;
@@ -394,6 +397,12 @@ public final class ModMenu extends UiScreen {
 			newsOpenFor = null;
 		}
 		switch (page) {
+            case CONFIG:
+                configurationPage(c,cx,cy,cw,ch,mouseX,mouseY);
+                break;
+            case ABOUT:
+                aboutPage(c,cx,cy,cw,ch);
+                break;
 			case SETTINGS:
 				settingsPage(c, cx, cy, cw, ch, mouseX, mouseY, dt);
 				break;
@@ -441,42 +450,12 @@ public final class ModMenu extends UiScreen {
 		Theme t = Theme.get();
 		c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, t.surfaceHigh);
 		c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
-		// Schriftzug: "TRS" in Pixelschrift mit Leuchten, daneben "Client"
-		int lx = px + PAD;
-		int ly = py + (HEADER_H - PixelFont.HEIGHT * 2) / 2;
-		List<int[]> rects = PixelFont.rects("TRS");
-		int glow = ColorMath.withAlpha(t.glow, 40);
-		for (int[] r : rects) c.fill(lx + r[0] * 2 - 1, ly + r[1] * 2 - 1, lx + r[2] * 2 + 1, ly + r[3] * 2 + 1, glow);
-		int light = ColorMath.lerp(t.accent, 0xFFFFFFFF, 0.3f);
-		for (int[] r : rects) c.fill(lx + r[0] * 2, ly + r[1] * 2, lx + r[2] * 2, ly + r[3] * 2, r[1] == 0 ? light : t.accent);
-		String client = I18n.tr("menu.client");
-		int clientX = lx + PixelFont.width("TRS") * 2 + 5;
-		c.text(client, clientX, py + (HEADER_H - 8) / 2, t.textDim, false);
-		if (t.halloween) {
-			// Halloween: Spinnennetz in der Ecke, Blutstropfen an der Kopfkante, Kürbislaterne neben dem Schriftzug.
-			float sec = (System.nanoTime() / 1_000_000L % 100_000L) / 1000f;
-			dev.theredstonee.trsclient.core.ui.halloween.HalloweenLook.menuHeader(c, px + 1, py + 2, pw - 2, HEADER_H - 2,
-					clientX + c.textWidth(client) + 4, sec);
-		}
-		if (t.winter) {
-			// Schnee auf dem Schriftzug, eine Schneeflocke daneben und eine Frostlinie mit Eiskristallen unter dem Kopf.
-			dev.theredstonee.trsclient.core.ui.title.TitleUi.snowCaps(c, rects, lx, ly, 2);
-			float sec = (System.nanoTime() / 1_000_000L % 100_000L) / 1000f;
-			dev.theredstonee.trsclient.core.ui.winter.Frost.snowflake(c, clientX + c.textWidth(client) + 5, py + (HEADER_H - 9) / 2, 1,
-					t.light ? 0xFF2B97D6 : 0xFFB8E7FF, dev.theredstonee.trsclient.core.ui.winter.Frost.glint(sec));
-			int fx2 = px + 1 + Math.round((pw - 2) * 0.45f);
-			int segs = 6;
-			for (int i = 0; i < segs; i++) {
-				int sx = px + 1 + (fx2 - px - 1) * i / segs;
-				int ex = px + 1 + (fx2 - px - 1) * (i + 1) / segs;
-				int a = Math.round(200 * (1f - i / (float) segs));
-				c.fill(sx, py + HEADER_H - 1, ex, py + HEADER_H, ColorMath.withAlpha(t.dustOn, a));
-			}
-			for (int fx = px + 3; fx < fx2 - 2; fx += 14) {
-				float f = 1f - (fx - px) / (float) Math.max(1, fx2 - px);
-				c.fill(fx, py + HEADER_H - 2, fx + 2, py + HEADER_H, ColorMath.withAlpha(0xFFFFFFFF, Math.round(190 * f)));
-			}
-		}
+        int lx=px+PAD;
+        int ly=py+(HEADER_H-c.lineHeight())/2;
+        c.text("TFL Core",lx,ly,t.text,false);
+        int clientX=lx+c.textWidth("TFL Core")+8;
+        String client="Selection";
+        if(pw>420)c.text(client,clientX,ly,t.textDim,false);
 
 		// Schließen
 		int closeSize = 16;
@@ -521,7 +500,7 @@ public final class ModMenu extends UiScreen {
 
 		// „Hilfe“ ohne Browser: Adresse zwischen Schriftzug und Suchfeld zeigen (zum Abtippen).
 		if (docsFailed != null && System.currentTimeMillis() < docsFailedUntil) {
-			int nx = lx + PixelFont.width("TRS") * 2 + 5 + c.textWidth(I18n.tr("menu.client")) + 10;
+			int nx = lx + c.textWidth("TFL Core Selection") + 12;
 			if (searchX - 8 - nx > 24) {
 				Paint.textClipped(c, I18n.tr("bugreport.done.openFailed", docsFailed), nx, py + (HEADER_H - 8) / 2,
 						searchX - 8 - nx, DOCS_WARN, false);
@@ -534,15 +513,56 @@ public final class ModMenu extends UiScreen {
 	private static final int DOCS_WARN = 0xFFF0C050;
 
 	/** Docs (Überblick über den TRS Client) in der Client-Sprache im Browser öffnen. */
-	private void openDocs() {
-		String url = dev.theredstonee.trsclient.core.util.Docs.url(dev.theredstonee.trsclient.core.util.Docs.CLIENT_OVERVIEW);
-		if (dev.theredstonee.trsclient.core.util.Links.open(url)) {
-			docsFailed = null;
-		} else {
-			docsFailed = url;
-			docsFailedUntil = System.currentTimeMillis() + 15000L;
-		}
-	}
+    private void openDocs() { page=Page.ABOUT;aboutScroll=0; }
+
+    private void configurationPage(Canvas c,int x,int y,int w,int h,int mx,int my) {
+        dev.theredstonee.trsclient.core.config.ConfigStore store=dev.theredstonee.trsclient.core.config.ConfigStore.active();
+        c.text(I18n.tr("config.title"),x,y,Theme.get().text,false);
+        if(store==null){c.text(I18n.tr("config.unavailable"),x,y+20,Theme.get().textDim,false);return;}
+        if(store.isReadOnly()) {
+            c.text(c.clip(I18n.tr("config.readOnly"),w),x,y+20,Theme.get().textDim,false);
+            c.text(c.clip(store.loadProblem()==null?"":store.loadProblem(),w),x,y+35,Theme.get().textDim,false);return;
+        }
+        c.text(c.clip(I18n.tr("config.importHint"),w),x,y+17,Theme.get().textDim,false);
+        int buttonW=Math.min(200,w),row=24;
+        String[] labels={I18n.tr("config.export"),I18n.tr("config.import"),I18n.tr(resetArmed?"config.confirmReset":"config.reset")};
+        for(int i=0;i<labels.length;i++) {
+            final int action=i;int by=y+39+i*row;
+            if(by+20>y+h)break;
+            Redstone.button(c,x,by,buttonW,20,labels[i],false,inside(mx,my,x,by,buttonW,20));
+            hits.add(x,by,buttonW,20,()->{
+                try {
+                    if(action==0){resetArmed=false;String name="tfl-export-"+System.currentTimeMillis()+".json";store.exportTo(name,host.modules().registry);transferMessage=I18n.tr("config.exported",name);}
+                    else if(action==1){resetArmed=false;store.importFrom("tfl-import.json",host.modules().registry);transferMessage=I18n.tr("config.imported");}
+                    else if(!resetArmed){resetArmed=true;transferMessage=I18n.tr("config.resetWarning");}
+                    else {store.resetToDefaults(host.modules().registry);resetArmed=false;transferMessage=I18n.tr("config.resetDone");}
+                    host.playClick();
+                } catch(java.io.IOException | RuntimeException e){resetArmed=false;transferMessage=I18n.tr("config.failed",e.getMessage());}
+            });
+        }
+        if(transferMessage!=null&&h>125)c.text(c.clip(transferMessage,w),x,y+118,Theme.get().textDim,false);
+    }
+
+    private void aboutPage(Canvas c,int x,int y,int w,int h) {
+        String[] paragraphs={"TFL Core / TFL Selection", "Derived from TRS Client MOD", "Copyright 2026 Ohev Tamerin (Theredstonee)",
+            "TFL modifications: TFLivesStudio, 2026", "Code: GPL-3.0-only. Chat Heads: dzwdz, MPL-2.0.",
+            "Inter typeface: SIL Open Font License 1.1.", "Offline core. TRS services and launcher IPC disabled.",
+            "Development build. No stable or in-game certification.", "Video decoder unavailable; static background included.",
+            "Source package: tflcore-corresponding-source.zip", "Guides: docs/USER_GUIDE.md and docs/MIGRATION.md", "Licenses: docs/LICENSES_AND_ATTRIBUTION.md"};
+        java.util.List<String> lines=new java.util.ArrayList<>();
+        for(String paragraph:paragraphs) {
+            String line="";
+            for(String word:paragraph.split(" ")) {
+                String next=line.isEmpty()?word:line+" "+word;
+                if(c.textWidth(next)>Math.max(1,w-4)&&!line.isEmpty()){lines.add(line);line=word;}else line=next;
+            }
+            lines.add(line);lines.add("");
+        }
+        int step=c.lineHeight()+3;int max=Math.max(0,lines.size()*step-h);aboutScroll=Math.max(0,Math.min(aboutScroll,max));
+        c.scissor(x,y,x+w,y+h);
+        try {int top=y-aboutScroll;for(String line:lines){if(top+step>y&&top<y+h)c.text(c.clip(line,w),x,top,Theme.get().text,false);top+=step;}}
+        finally {c.noScissor();}
+    }
 
 	private void rail(Canvas c, int x, int y, int w, int h, int mx, int my, float dt) {
 		Theme t = Theme.get();
@@ -552,7 +572,7 @@ public final class ModMenu extends UiScreen {
 		for (Category cat : Category.values()) {
 			if (hasModules(cat)) shownCategories++;
 		}
-		int items = 4 + shownCategories + (host.hasPacks() ? 1 : 0) + (host.hasAccounts() ? 1 : 0)
+		int items = 5 + shownCategories + (host.hasPacks() ? 1 : 0) + (host.hasAccounts() ? 1 : 0)
 				+ (host.hasWardrobe() ? 1 : 0) + (host.hasFriends() ? 1 : 0) + (host.hasClips() ? 1 : 0)
 				+ (dev.theredstonee.trsclient.core.bugreport.BugReports.get() != null ? 1 : 0) + (notesAvailable() ? 1 : 0)
 				+ (HalloweenPage.available() ? 1 : 0)
@@ -715,6 +735,8 @@ public final class ModMenu extends UiScreen {
 			});
 			cy += rowH + gap;
 		}
+        railItem(c,x,cy,w,rowH,"gear",I18n.tr("menu.configuration"),page==Page.CONFIG,mx,my,()->{page=Page.CONFIG;resetArmed=false;transferMessage=null;});
+        cy+=rowH+gap;
 		// Hilfe: Dokumentation auf der Website in der Client-Sprache (Browser; klappt das nicht, steht die Adresse oben).
 		railItem(c, x, cy, w, rowH, "help", I18n.tr("menu.docs"), false, mx, my, NewSince.MENU_DOCS, new Runnable() {
 			@Override
@@ -1388,6 +1410,7 @@ public final class ModMenu extends UiScreen {
 			return true;
 		}
 		if (!inside(mouseX, mouseY, contentRect[0], contentRect[1], contentRect[2], contentRect[3])) return false;
+		if (page == Page.ABOUT) { aboutScroll = Math.max(0, aboutScroll - (int)Math.signum(amount)*24); return true; }
 		if (page == Page.CIRCUITS) return circuitsPage.mouseScrolled(mouseX, mouseY, amount);
 		if (page == Page.BUG_REPORT) return bugPage.mouseScrolled(mouseX, mouseY, amount);
 		if (page == Page.NOTES) return notesPage.mouseScrolled(mouseX, mouseY, amount);

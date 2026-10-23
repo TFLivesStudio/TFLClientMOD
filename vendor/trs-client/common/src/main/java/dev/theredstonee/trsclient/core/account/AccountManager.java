@@ -131,6 +131,7 @@ public final class AccountManager {
 
 	/** Beim Start je Loader (nach {@code Clips.init}, damit die gemeinsame Verbindung steht). */
 	public static synchronized AccountManager init(AccountPlatform platform) {
+		if (!dev.theredstonee.trsclient.core.product.Product.onlineServices()) return null;
 		if (instance == null) {
 			ExecutorService worker = Executors.newSingleThreadExecutor(r -> {
 				Thread t = new Thread(r, "TRS-Accounts");

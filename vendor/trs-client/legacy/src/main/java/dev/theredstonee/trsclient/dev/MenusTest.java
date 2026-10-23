@@ -152,11 +152,25 @@ public final class MenusTest {
 				phase++;
 				wait = 10;
 				return;
-			case 1:
-				mc.displayGuiScreen(new GuiMultiplayer(new TrsTitleScreen()));
-				phase++;
-				wait = 40;
-				return;
+            case 1:
+                if (!(screen instanceof TrsTitleScreen)) throw new IllegalStateException("TFL title did not replace vanilla");
+                if (((TrsTitleScreen)screen).titleUi().buttonRect("trsMenu") == null) throw new IllegalStateException("TFL Core title action missing");
+                shot(mc,"selection-title");
+                mc.displayGuiScreen(new dev.theredstonee.trsclient.screen.TrsMenuScreen(new TrsTitleScreen()));
+                phase=90;wait=20;return;
+            case 90:
+                if (!(screen instanceof dev.theredstonee.trsclient.screen.TrsMenuScreen)) throw new IllegalStateException("TFL module screen missing");
+                shot(mc,"tfl-core");
+                ((dev.theredstonee.trsclient.screen.TrsMenuScreen)screen).select(TrsClient.get().modules().zoom);
+                phase=91;wait=20;return;
+            case 91:
+                shot(mc,"tfl-zoom-settings");
+                ((dev.theredstonee.trsclient.screen.TrsMenuScreen)screen).showProfiles();
+                phase=92;wait=20;return;
+            case 92:
+                shot(mc,"tfl-profiles");
+                mc.displayGuiScreen(new GuiMultiplayer(new TrsTitleScreen()));
+                phase=2;wait=40;return;
 			case 2:
 				// Serverliste → Direkt verbinden → Server hinzufügen → „Server löschen?“ (Formulare, Textfelder, Dialog).
 				if (mpStep == 0) {
