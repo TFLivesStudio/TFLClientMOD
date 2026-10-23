@@ -1,0 +1,169 @@
+name: TFL Client adopted distribution
+on:
+  push:
+    branches: [adopt/trs-client-foundation, main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: tfl-adopted-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  fabric-26-3:
+    name: TFL Fabric 26.3 · tests and distribution audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build adapted implementation and execute common tests
+        working-directory: vendor/trs-client
+        run: bash gradlew --no-daemon --max-workers=2 :common:test :common:moduleInventory :fabric:26.3:build -PtrsVersions=26.3
+      - name: Verify packaging tools and scan source
+        run: |
+          python3 -m unittest discover -s tools -p 'test_*.py'
+          python3 tools/scan_secrets.py
+      - name: Package development build, inspect real metadata, hash and preserve source
+        shell: bash
+        run: |
+          shopt -s nullglob
+          jars=(vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-*.jar)
+          release=()
+          for jar in "${jars[@]}"; do
+            case "$jar" in *-sources.jar|*-dev.jar) ;; *) release+=("$jar");; esac
+          done
+          test "${#release[@]}" -eq 1
+          python3 tools/distribution.py package "${release[0]}"
+          git archive --format=zip --output=distribution/build/tflcore-corresponding-source.zip HEAD
+          sha256sum distribution/build/tflcore-corresponding-source.zip > distribution/build/tflcore-corresponding-source.zip.sha256
+          python3 tools/distribution.py mrpack "${release[0]}" distribution/build/tflcore-corresponding-source.zip
+      - name: Upload development candidate (never publish a release automatically)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tflcore-development-fabric-26.3
+          path: distribution/build/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tflcore-test-reports
+          path: vendor/trs-client/common/build/test-results/test/
+          if-no-files-found: error
+  legacy-1-8-9:
+    name: TFL Forge 1.8.9 · separate Java 8 target
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            25
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build adapted Forge 1.8.9, retaining Java 8 bytecode
+        working-directory: vendor/trs-client/legacy
+        run: bash gradlew --no-daemon --max-workers=2 build -PtrsVersions=1.8.9
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tflcore-development-forge-1.8.9
+          path: vendor/trs-client/legacy/versions/1.8.9/build/libs/tflcore-*.jar
+          if-no-files-found: error
+  publish-requested-prerelease:
+    name: Publish explicitly requested development prerelease
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/adopt/trs-client-foundation' &&
+      startsWith(github.event.head_commit.message, 'release: publish v0.4.0-dev.3 prerelease')
+    needs: [fabric-26-3, legacy-1-8-9]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: v0.4.0-dev.3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: tflcore-development-fabric-26.3
+          path: release
+      - uses: actions/download-artifact@v4
+        with:
+          name: tflcore-development-forge-1.8.9
+          path: legacy-artifacts
+      - name: Assemble both installable targets and corresponding source
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          legacy=(legacy-artifacts/tflcore-forge-1.8.9-0.4.0-dev.3.jar)
+          test "${#legacy[@]}" -eq 1
+          cp "${legacy[0]}" release/
+          mv release/tflcore-corresponding-source.zip release/tfl-client-0.4.0-dev.3-corresponding-source.zip
+          rm -f release/tflcore-corresponding-source.zip.sha256
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          root=Path('release')
+          manifest=json.loads((root/'tflcore-build.json').read_text())
+          if manifest['source']['commit']!=os.environ['GITHUB_SHA'] or manifest['source']['workingTreeModified']:
+              raise SystemExit('Release requires the exact committed source and a clean build tree')
+          jars=sorted(root.glob('*.jar'))
+          if len(jars)!=2 or any(p.name.endswith(('-sources.jar','-dev.jar')) for p in jars):
+              raise SystemExit('Expected exactly two installable targets')
+          with zipfile.ZipFile(root/'tfl-client-0.4.0-dev.3-corresponding-source.zip') as archive:
+              if archive.testzip() is not None: raise SystemExit('Source ZIP corrupt')
+              for name in ['COPYING','vendor/trs-client/licenses/Nunito-OFL.txt','docs/FINAL_REWORK.md','distribution/module-audit.json','vendor/trs-client/artwork/lucide/manifest.json','vendor/trs-client/licenses/Lucide-LICENSE.txt']:
+                  if name not in archive.namelist(): raise SystemExit('Missing corresponding source/license')
+          for path in jars:
+              with zipfile.ZipFile(path) as binary:
+                  for name in ['META-INF/licenses/Nunito-OFL.txt','META-INF/licenses/Lucide-LICENSE.txt','assets/trsclient/textures/ui/icons.png']:
+                      if name not in binary.namelist(): raise SystemExit('Binary missing UI resource/license: '+name)
+          with zipfile.ZipFile(root/'tfl-client-0.4.0-dev.3-validation.zip','w',zipfile.ZIP_DEFLATED) as evidence:
+              for path in sorted(Path('docs/evidence/final-rework').rglob('*')):
+                  if path.is_file():evidence.write(path,str(path))
+              for path in [Path('docs/FINAL_REWORK.md'),Path('docs/MODULE_CERTIFICATION.md'),Path('distribution/module-audit.json')]:
+                  evidence.write(path,str(path))
+          records=[];sums=[]
+          for path in sorted(root.iterdir()):
+              if path.suffix not in ('.jar','.zip','.mrpack'):continue
+              digest=hashlib.sha256(path.read_bytes()).hexdigest()
+              line=digest+'  '+path.name+'\n';sums.append(line)
+              (root/(path.name+'.sha256')).write_text(line)
+              records.append({'file':path.name,'sha256':digest,'size':path.stat().st_size})
+          (root/'SHA256SUMS.txt').write_text(''.join(sums))
+          (root/'delivery-index.json').write_text(json.dumps({'version':'0.4.0-dev.3','channel':'development','sourceCommit':os.environ['GITHUB_SHA'],'artifacts':records},indent=2)+'\n')
+          PY
+      - name: Upload assets to draft, then publish as prerelease
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --json isDraft > /tmp/tfl-release-state.json; then
+            python3 -c 'import json; assert json.load(open("/tmp/tfl-release-state.json"))["isDraft"], "Refusing to overwrite an already published release"'
+          else
+            gh release create "$RELEASE_TAG" --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'TFL Client 0.4.0-dev.3 · Fabric 26.3 + Forge 1.8.9' --notes-file distribution/release-notes-v0.4.0-dev.3.md
+          fi
+          gh release edit "$RELEASE_TAG" --target "$GITHUB_SHA" --prerelease --latest=false --notes-file distribution/release-notes-v0.4.0-dev.3.md
+          gh release upload "$RELEASE_TAG" release/* --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
+          gh release view "$RELEASE_TAG" --json url,isDraft,isPrerelease,assets

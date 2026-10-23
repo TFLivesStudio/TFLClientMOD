@@ -1,36 +1,97 @@
-# TFL Core 0.1.0-SNAPSHOT — first smoke test
+Estado actual: [Native Rework 0.4.0-dev.3](FINAL_REWORK.md). La evidencia siguiente conserva el historial de las candidatas previas.
 
-> **Documento histórico.** La guía vigente es [TESTING_0.3.md](TESTING_0.3.md). La 0.3.0-alpha.1 todavía no se ha validado en partida.
+# Pruebas de Operation Modpack Ready
 
-**Scope:** Minecraft Java **26.3**, **Fabric**, **Java 25**. This is an initial bootstrap, **not** a finished playable custom client.
+Se separan cuatro evidencias: build upstream importado, build TFL adaptado, lógica automatizada
+y ejecución real de Minecraft. El workflow histórico #39906626198 solo demuestra compilación
+upstream; no se usa como certificación de esta versión.
 
-## Obtain a verified build
-1. Sign in to GitHub with access to the private repository.
-2. Open [Actions](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml), choose a **successful** run on `main`.
-3. Download the `TFL-Core-Fabric-26.3-...` artifact from the bottom of the run. Unzip it and use the normal distribution JAR (not sources/dev).
-4. Never install a JAR from a failed run.
+## Comandos y resultados locales
 
-## Install temporarily for testing
-1. Prepare a clean **Fabric 26.3** client installation, with Fabric Loader **0.19.5 or newer** and the **Fabric API** for 26.3.
-2. Move the TFL Core JAR into that instance's `mods/` folder.
-3. Start Minecraft with **Java 25**, confirm TFL Core is listed among loaded mods and open the client main menu.
-4. Exit, inspect `logs/latest.log` for `TFL Core 0.1.0-SNAPSHOT initialized` and for any errors.
+- Raíz: `./gradlew --no-daemon build` delega a common + Fabric 26.3.
+- Directo: desde `vendor/trs-client`, `./gradlew --no-daemon --max-workers=2 :common:test :fabric:26.3:build -PtrsVersions=26.3`.
+- Legacy: desde `vendor/trs-client/legacy`, `./gradlew --no-daemon --max-workers=2 build -PtrsVersions=1.8.9`.
+- Distribución: `python3 -m unittest discover -s tools -p 'test_*.py'`.
+- Artefacto: `python3 tools/distribution.py verify <JAR instalable>`.
 
-## What this build is expected to do
-- Load as a **client-only Fabric mod**.
-- Log initialization.
-- Not require any server-side installation, account synchronization or telemetry.
+Los recuentos finales y hashes están en `docs/evidence/build-validation.json`. Los informes XML
+se encuentran en common/build/test-results/test y legacy/versions/1.8.9/build/test-results/test.
+No se contabilizan pruebas omitidas como aprobadas. La suite upstream contiene dos pruebas
+opt-in para E4mcLiveTest (servicio externo) y NetBench (benchmark de red); se conservan como omitidas con su razón en los XML.
 
-## What this build does NOT do yet
-- No customized main menu, 3D backgrounds, Right Shift settings, HUD widgets, PvP features, or performance profiles.
-- No automatic modpack installation or optimization mod bundle.
-- No Minecraft 1.8.9 support.
+Las nuevas pruebas comprueban bloqueo previo a conexión, destinos loopback del harness,
+default offline, configuración futura en solo lectura, copias previas no destructivas,
+preservación de claves desconocidas, reset de campos conocidos, waypoints server:/sp:,
+conflictos de destino, import/export/traversal, fallback y cierre de decoder, créditos locales,
+layout del título y rechazo de clientes duplicados/metadatos de artefactos.
 
-## Local builds
-Windows: `gradlew.bat clean build`  
-Linux/macOS: `./gradlew clean build`
+Los tests de lógica online que se conservan utilizan servidores falsos/loopback explícito,
+no habilitan endpoints TRS reales. Los 18 fallos iniciales de circuitos se debían a fixtures
+omitidos del upstream padre, recuperados desde el mismo commit y verificados por Git blob ID.
+No se deshabilitaron esas pruebas para conseguir un build verde.
 
-Requires Java 25; Gradle downloads itself via the checked-in Wrapper. The distributable JAR appears in `build/libs/`. Do not install `*-dev.jar` or `*-sources.jar`.
+## Ejecuciones reales
 
-## Bug reporting
-Include Minecraft/Fabric/Fabric API versions, Java version, full crash or latest logs (redact tokens, paths, usernames as needed), steps to reproduce, and whether a clean Fabric profile also fails.
+Se prepararon Xorg dummy/Xvfb y Mesa Lavapipe con paquetes Debian verificados por APT. OpenGL
+no pudo crear el visual GLX solicitado; el primer Vulkan falló por falta de un ICD. Instalar el
+ICD Lavapipe resolvió la preparación: Vulkan 1.4.305 con render software llvmpipe. No se desactivó
+TLS, checksums ni la verificación de paquetes. Instrucciones reutilizables guardadas en el entorno.
+
+Fabric de desarrollo completó `runClient -PtrsAutotest -PtrsAutotestOnly=menus`: título,
+Core, zoom, perfiles, formularios, pausa y mundo local. `-PtrsAutotestOnly=maps` también completó:
+minimapa, waypoints, mundo/dimensiones, zoom del mapa, Fair Play y exportación PNG (archivos
+verificados por el runner). Estas son pruebas de recorrido y algunas assertions, no tests exhaustivos.
+Las pantallas sociales del harness usan datos falsos y no certifican servicios reales.
+
+El primer arranque detectó un recurso Inter mal resuelto (`font/font/inter.ttf`), corregido y
+cubierto ahora por el verificador del JAR. Probar el JAR separado del classpath dev detectó una
+referencia residual a AutoTest: se aisló mediante DevelopmentHooks y se movieron los contadores
+de hooks a perf. El verificador ahora rechaza enlaces a clases dev ausentes. Ambos defectos se
+corrigieron; no se confunde el primer build con la candidata verificada.
+
+El **JAR Fabric de producción** se abrió con `runProdClient` sin harness en `run/prod-26.3`,
+con TFL + API. Se comprobaron título, Core, Configuration y créditos. Los botones reales de
+export/import/reset se ejercitaron con eventos de ratón y assertions del JSON y backups:
+exportó 79 módulos, importó FPS=false, restableció FPS=true y conservó las copias. Se cerró por
+Quit Game y el proceso terminó con BUILD SUCCESSFUL. Capturas `production-*.png` en
+`docs/evidence/fabric-26.3/`. No se certifica con esto la partida completa del JAR ni un servidor.
+
+Forge 1.8.9 completó su smoke de menús/mundo de desarrollo: 17 capturas, título, Core, zoom,
+perfiles, diálogos y pausa. Seis capturas inspeccionadas en `docs/evidence/forge-1.8.9/`.
+No se certifica el JAR Forge fuera del entorno dev. Se observaron advertencias del runtime
+legacy (FML dev, appender/Twitch) y autenticación no disponible, sin impedir completar el recorrido.
+
+Minecraft vanilla emitió errores de autenticación/Realms sin sesión online; en producción también
+faltó un dispositivo OpenAL y el juego desactivó audio. No son servicios TFL habilitados.
+No se probó multijugador autenticado ni audio. Un intento UI se interrumpió por timeout y dejó
+un capturador X11 bloqueado; se cerró ese proceso de prueba y se repitió el flujo completo con éxito.
+Las previews `software-previews/` son Java2D/Canvas y **no son capturas de Minecraft**.
+
+## Checklist indispensable antes de beta/RC
+
+- [x] JAR instalable + dependencias exactas, instancia separada sin harness: arranque/Core/config/cierre.
+- [ ] Partida y multijugador completos con sesión normal y audio.
+- [ ] Título: fondo, Inter, foco/teclado y botones a 1920×1080, 1280×720 y GUI pequeña.
+- [ ] Right Shift: buscar/activar/desactivar módulos, ajustes avanzados, ayuda/créditos y navegación.
+- [ ] Mundo: HUD/editor, anclas, escala, mover/cerrar pantallas, cambio de idioma y pausa.
+- [ ] Zoom, sprint/sneak, crosshair, PvP informativo; comprobar restauración al cerrar/cambiar mundo.
+- [ ] Minimapa/mapa, dimensión, waypoints manuales/de muerte y persistencia entre reinicios.
+- [ ] Servidor: entrar/salir, resource pack aceptado/rechazado, keybinds y límites del servidor.
+- [ ] Migración con configuraciones reales TFL v2/TRS y rollback con copias intactas.
+- [ ] Confirmar que no hay login/sync/friends/hosting/TRS IPC automáticos.
+- [ ] Un optimizador cada vez; luego combinación completa con shader si corresponde.
+- [ ] Medir arranque, RAM y frametimes; no atribuir ganancias sin comparación reproducible.
+- [ ] Fuente correspondiente, licencias, hash, instalación limpia y canales antes de distribuir.
+
+## Actualización Final Experience dev.2
+
+Ver FINAL_EXPERIENCE.md y evidence/final-experience/validation.json. Nuevos tests de emotes
+locales sin objeto online, cámara al salir, parser MJPEG con marcador en APP, streams truncados,
+aspect ratio y loop en worker sin contexto gráfico. Common: 1111/1109 passed/2 skipped.
+Se repitieron smokes Fabric/Forge y se amplió Fabric con assertions reales de emote/cámara.
+La primera instancia de producción nueva aún mostraba el onboarding: Options.load retornaba
+antes del TAIL si no había options.txt. Se inyecta en todos los RETURN y al final del constructor;
+otra carpeta nueva llegó directamente al título y guardó tutorialStep:none/onboardAccessibility:false.
+El JAR final se cerró por Quit Game con BUILD SUCCESSFUL. Audio y autenticación siguen sin
+validarse. Un fallo intermitente ShareTest (closed en lugar de not_allowed al cerrar el servidor
+falso) no se ocultó: se repitió la suite completa al corregir los cambios de branding y pasó.

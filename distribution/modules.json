@@ -1,0 +1,1228 @@
+{
+  "schemaVersion": 1,
+  "implementation": "TRS common registry with TFL modifications",
+  "modules": [
+    {
+      "id": "fps",
+      "name": "FPS",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "cps",
+      "name": "CPS",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "keystrokes",
+      "name": "Keystrokes",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "showCps",
+        "showSpace"
+      ]
+    },
+    {
+      "id": "ping",
+      "name": "Ping",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "jitter",
+        "graph",
+        "details",
+        "interval",
+        "spikeWarning",
+        "spikeThreshold"
+      ]
+    },
+    {
+      "id": "armor",
+      "name": "Armor",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "durability",
+        "percent",
+        "hand",
+        "layout"
+      ]
+    },
+    {
+      "id": "effects",
+      "name": "Potion Effects",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "coords",
+      "name": "Coordinates",
+      "category": "WORLD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "direction",
+        "biome"
+      ]
+    },
+    {
+      "id": "clock",
+      "name": "Clock",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "seconds",
+        "twelveHour"
+      ]
+    },
+    {
+      "id": "memory",
+      "name": "Memory",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "server",
+      "name": "Server Address",
+      "category": "WORLD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "packs",
+      "name": "Active Resource Packs",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "toggleSprint",
+      "name": "Toggle Sprint",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "onlyForward",
+        "remember",
+        "flyBoost",
+        "flyBoostFactor"
+      ]
+    },
+    {
+      "id": "toggleSneak",
+      "name": "Toggle Sneak",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "remember"
+      ]
+    },
+    {
+      "id": "reach",
+      "name": "Reach",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "decimals",
+        "hold"
+      ]
+    },
+    {
+      "id": "combo",
+      "name": "Combo",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "best",
+        "timeout"
+      ]
+    },
+    {
+      "id": "speed",
+      "name": "Speed",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "vertical"
+      ]
+    },
+    {
+      "id": "minimap",
+      "name": "Minimap",
+      "category": "WORLD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "fairPlay",
+        "shape",
+        "size",
+        "zoom",
+        "rotate",
+        "autoZoomSpeed",
+        "autoZoomIndoor",
+        "opacity",
+        "colors",
+        "caveMode",
+        "hideRoof",
+        "showWaypoints",
+        "edgeWaypoints",
+        "showDeath",
+        "showPlayers",
+        "showFriends",
+        "showHostile",
+        "showPassive",
+        "mobIcons",
+        "compass",
+        "coords",
+        "biome",
+        "time"
+      ]
+    },
+    {
+      "id": "worldMap",
+      "name": "World map",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "key",
+        "showWaypoints",
+        "showPlayers",
+        "showHostile",
+        "showPassive",
+        "grid",
+        "cacheSize",
+        "smoothZoom",
+        "inertia",
+        "waypointList",
+        "otherDimensions",
+        "netherCoords",
+        "exportSize"
+      ]
+    },
+    {
+      "id": "crosshair",
+      "name": "Crosshair",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "shape",
+        "color",
+        "size",
+        "gap",
+        "thickness",
+        "outline",
+        "attack"
+      ]
+    },
+    {
+      "id": "hitColor",
+      "name": "Hit Color",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "color",
+        "opacity"
+      ]
+    },
+    {
+      "id": "freelook",
+      "name": "Freelook",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "key",
+        "toggle",
+        "perspective",
+        "servers"
+      ]
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "key",
+        "factor",
+        "smooth",
+        "scroll",
+        "slowMouse",
+        "cinematic"
+      ]
+    },
+    {
+      "id": "fullbright",
+      "name": "Gamma",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "level"
+      ]
+    },
+    {
+      "id": "autorefill",
+      "name": "Auto-Refill",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "titleScreen",
+      "name": "Title Screen",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "animated",
+        "backgroundMode"
+      ]
+    },
+    {
+      "id": "menuStyle",
+      "name": "Menu Style",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "oldAnimations",
+      "name": "1.7 Animations",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "noDip",
+        "blockHit"
+      ]
+    },
+    {
+      "id": "lowFire",
+      "name": "Low Fire",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "height"
+      ]
+    },
+    {
+      "id": "shieldPosition",
+      "name": "Shield Position",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "preset",
+        "normalX",
+        "normalY",
+        "normalZ",
+        "normalRotX",
+        "normalRotY",
+        "normalRotZ",
+        "normalScale",
+        "blockX",
+        "blockY",
+        "blockZ",
+        "blockRotX",
+        "blockRotY",
+        "blockRotZ",
+        "blockScale",
+        "transparent",
+        "opacity"
+      ]
+    },
+    {
+      "id": "blockOutline",
+      "name": "Block Outline",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "color",
+        "opacity",
+        "width"
+      ]
+    },
+    {
+      "id": "hitboxes",
+      "name": "Hitboxes",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "color"
+      ]
+    },
+    {
+      "id": "noHurtCam",
+      "name": "No Hurt Cam",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "chat",
+      "name": "Chat Improvements",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "timestamps",
+        "timestampSeconds",
+        "stack",
+        "copy",
+        "coordLinks",
+        "timestampTwelveHour",
+        "history",
+        "copyMode"
+      ]
+    },
+    {
+      "id": "autoGg",
+      "name": "Auto GG",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "text",
+        "delay",
+        "triggers",
+        "presets"
+      ]
+    },
+    {
+      "id": "textHotkeys",
+      "name": "Text Hotkeys",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "text1",
+        "key1",
+        "text2",
+        "key2",
+        "text3",
+        "key3",
+        "text4",
+        "key4"
+      ]
+    },
+    {
+      "id": "waypoints",
+      "name": "Waypoints",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "addKey",
+        "listKey",
+        "beam",
+        "distance",
+        "death",
+        "range"
+      ]
+    },
+    {
+      "id": "trsOnline",
+      "name": "Online services",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "TRS backend dependent; service integration disabled",
+      "settings": [
+        "badgeTab",
+        "badgeNametag",
+        "fanSymbolNametag",
+        "fanSymbolTab",
+        "capes",
+        "cosmetics",
+        "sync"
+      ]
+    },
+    {
+      "id": "capePhysics",
+      "name": "Cape Physics",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "style",
+        "windMode",
+        "wind",
+        "movement",
+        "gravity",
+        "height",
+        "stiffness",
+        "detail",
+        "scope"
+      ]
+    },
+    {
+      "id": "colors",
+      "name": "Colors",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "saturation",
+        "contrast",
+        "brightness",
+        "vibrance",
+        "temperature"
+      ]
+    },
+    {
+      "id": "emotes",
+      "name": "Emotes",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "TRS backend dependent; service integration disabled",
+      "settings": [
+        "camera",
+        "others"
+      ]
+    },
+    {
+      "id": "redstoneSignal",
+      "name": "Signal Strength",
+      "category": "REDSTONE",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "name",
+        "bar",
+        "details"
+      ]
+    },
+    {
+      "id": "redstoneOverlay",
+      "name": "Signal Overlay",
+      "category": "REDSTONE",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "radius",
+        "visibleOnly",
+        "zero"
+      ]
+    },
+    {
+      "id": "redstoneClock",
+      "name": "Clock Meter",
+      "category": "REDSTONE",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "window",
+        "scope",
+        "keep"
+      ]
+    },
+    {
+      "id": "clips",
+      "name": "Clips \u0026 Recording",
+      "category": "MISC",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "TRS launcher IPC dependent; recording integration disabled; local screenshots retained",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "bufferIcon"
+      ]
+    },
+    {
+      "id": "fpsBoost",
+      "name": "FPS Boost",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "dynamicFps",
+      "name": "Dynamic FPS",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "unfocused",
+        "minimized",
+        "afkLimit",
+        "afkMinutes",
+        "quieter",
+        "volume"
+      ]
+    },
+    {
+      "id": "borderlessFullscreen",
+      "name": "Borderless Fullscreen",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "entityCulling",
+      "name": "Entity Culling",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "occlusion",
+        "entities",
+        "players",
+        "blockEntities",
+        "nameTags",
+        "items",
+        "frames"
+      ]
+    },
+    {
+      "id": "particles",
+      "name": "Particles",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "limit",
+        "amount",
+        "explosions",
+        "rain",
+        "smoke"
+      ]
+    },
+    {
+      "id": "worldDetails",
+      "name": "World Details",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "sky",
+        "stars",
+        "fog",
+        "weather",
+        "animations"
+      ]
+    },
+    {
+      "id": "builtinOptimizations",
+      "name": "Built-in Optimizations",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "netOptimize",
+      "name": "Network Optimization",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "lowLatency",
+      "name": "Low Input Latency",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "mode",
+        "latePoll"
+      ]
+    },
+    {
+      "id": "fastConnect",
+      "name": "Fast Connect",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "preResolve",
+        "fastSwitch",
+        "prePacks"
+      ]
+    },
+    {
+      "id": "social",
+      "name": "Social",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "TRS backend dependent; service integration disabled",
+      "settings": [
+        "toasts",
+        "corner",
+        "duration",
+        "sound",
+        "dnd",
+        "dndFullscreen",
+        "toastMessages",
+        "toastInvites",
+        "toastRequests",
+        "toastOnline",
+        "hostingDirect"
+      ]
+    },
+    {
+      "id": "chatMentions",
+      "name": "Mentions",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "ownName",
+        "words",
+        "color",
+        "bold",
+        "sound",
+        "soundType",
+        "volume"
+      ]
+    },
+    {
+      "id": "chatHeads",
+      "name": "Chat Heads",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "hat"
+      ]
+    },
+    {
+      "id": "chatFilter",
+      "name": "Chat Filter",
+      "category": "CHAT",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "words"
+      ]
+    },
+    {
+      "id": "autoReconnect",
+      "name": "Auto Reconnect",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "delay",
+        "attempts",
+        "mode",
+        "never"
+      ]
+    },
+    {
+      "id": "queueAlerts",
+      "name": "Queue \u0026 Alerts",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "position",
+        "patterns",
+        "mention",
+        "death",
+        "kick",
+        "sound",
+        "flash"
+      ]
+    },
+    {
+      "id": "scoreboard",
+      "name": "Scoreboard",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "hideNumbers",
+        "title"
+      ]
+    },
+    {
+      "id": "tabPing",
+      "name": "Tab List Ping",
+      "category": "HUD",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "colors"
+      ]
+    },
+    {
+      "id": "bossBar",
+      "name": "Boss Bar",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "titles",
+      "name": "Titles",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale"
+      ]
+    },
+    {
+      "id": "warnings",
+      "name": "Warnings",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "armor",
+        "tools",
+        "durability",
+        "hunger",
+        "hungerLevel",
+        "health",
+        "healthLevel",
+        "inventory",
+        "sound",
+        "cooldown",
+        "deathCompass"
+      ]
+    },
+    {
+      "id": "itemCounter",
+      "name": "Item Counter",
+      "category": "PVP",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "arrows",
+        "totems",
+        "healing",
+        "splash",
+        "gapples",
+        "pearls",
+        "blocks",
+        "hideEmpty",
+        "layout",
+        "totemPops"
+      ]
+    },
+    {
+      "id": "hitFeedback",
+      "name": "Hit Feedback",
+      "category": "PVP",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "marker",
+        "markerColor",
+        "markerSize",
+        "markerTime",
+        "particles",
+        "sound",
+        "volume"
+      ]
+    },
+    {
+      "id": "streamerMode",
+      "name": "Streamer Mode",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "name",
+        "others",
+        "hideIp",
+        "key"
+      ]
+    },
+    {
+      "id": "tooltips",
+      "name": "Better Tooltips",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "shulker",
+        "map",
+        "mapSize",
+        "durability",
+        "food",
+        "enchants",
+        "enchantsShift"
+      ]
+    },
+    {
+      "id": "serverProfiles",
+      "name": "Server Profiles",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "notify"
+      ]
+    },
+    {
+      "id": "panorama",
+      "name": "Panorama Screenshots",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "format"
+      ]
+    },
+    {
+      "id": "screenshots",
+      "name": "Screenshot Tools",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "toast",
+        "seconds",
+        "chatActions",
+        "replaceEssential"
+      ]
+    },
+    {
+      "id": "keySearch",
+      "name": "Key Binding Search",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": []
+    },
+    {
+      "id": "hungerOverlay",
+      "name": "Hunger Overlay",
+      "category": "HUD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "saturation",
+        "heldFood",
+        "health",
+        "exhaustion"
+      ]
+    },
+    {
+      "id": "circuitLibrary",
+      "name": "Circuit Library",
+      "category": "REDSTONE",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "labels",
+        "opacity",
+        "hideCorrect",
+        "rotateKey",
+        "confirmKey",
+        "layerUpKey",
+        "layerDownKey",
+        "hideKey",
+        "openKey"
+      ]
+    },
+    {
+      "id": "notes",
+      "name": "World Notes",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "key",
+        "sync"
+      ]
+    },
+    {
+      "id": "pinnedNote",
+      "name": "Pinned Note",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": false,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "lines",
+        "width"
+      ]
+    },
+    {
+      "id": "cinematic",
+      "name": "Camera Paths",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "addKey",
+        "playKey",
+        "removeKey",
+        "clearKey",
+        "freecamKey",
+        "freecamSpeed",
+        "freecamFairPlay",
+        "timing",
+        "seconds",
+        "smoothing",
+        "ease",
+        "hideHud",
+        "record",
+        "preview"
+      ]
+    },
+    {
+      "id": "halloween",
+      "name": "Halloween",
+      "category": "MISC",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "hits",
+        "ghostTrail",
+        "others",
+        "jumpscares",
+        "spookySounds"
+      ]
+    }
+  ]
+}

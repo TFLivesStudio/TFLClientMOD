@@ -1,0 +1,4 @@
+Nunito by Vernon Adams, Cyreal, Jacques Le Bailly; SIL OFL 1.1.
+Official source: https://github.com/googlefonts/nunito/tree/8c6a9bb9732545b9ed53f29ec5e1ab0ff53c4e6f
+Variable SHA-256: bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207
+Static 400/600/800 instances made with fontTools.varLib.instancer; no outline edits.

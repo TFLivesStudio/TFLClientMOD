@@ -1,0 +1,22 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "trsclient:nunito-regular.ttf",
+      "shift": [
+        0,
+        0
+      ],
+      "size": 10,
+      "oversample": 4
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:include/space"
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:include/unifont"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "common": {
+    "tests": 1128,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "forge1.8.9": {
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

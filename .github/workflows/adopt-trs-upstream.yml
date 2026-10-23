@@ -1,0 +1,70 @@
+name: Vendor TRS Client from pinned upstream
+
+on:
+  push:
+    branches: [adopt/trs-client-foundation]
+    paths:
+      - '.github/workflows/adopt-trs-upstream.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trs-vendor-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    name: Copy complete pinned client-mod source, without running upstream code
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Clone pinned upstream client-mod using sparse checkout
+        shell: bash
+        env:
+          UPSTREAM_COMMIT: c52087ddb6b73b9d1287ef6d7f9d31010fcb5702
+        run: |
+          set -euo pipefail
+          git clone --quiet --filter=blob:none --depth=1 --sparse \
+            https://github.com/theredstonee/TRS-Launcher.git "$RUNNER_TEMP/trs-upstream"
+          git -C "$RUNNER_TEMP/trs-upstream" sparse-checkout set client-mod
+          git -C "$RUNNER_TEMP/trs-upstream" fetch --quiet --depth 1 origin "$UPSTREAM_COMMIT"
+          git -C "$RUNNER_TEMP/trs-upstream" checkout --quiet --detach "$UPSTREAM_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/trs-upstream" rev-parse HEAD)" = "$UPSTREAM_COMMIT"
+          test -f "$RUNNER_TEMP/trs-upstream/client-mod/LICENSE"
+          test -f "$RUNNER_TEMP/trs-upstream/client-mod/fabric/versions/26.3/gradle.properties"
+          test -f "$RUNNER_TEMP/trs-upstream/client-mod/legacy/versions/1.8.9/gradle.properties"
+          grep -q "GNU GENERAL PUBLIC LICENSE" "$RUNNER_TEMP/trs-upstream/client-mod/LICENSE"
+          mkdir -p vendor/trs-client
+          rsync -a --delete \
+            --exclude '__pycache__/' --exclude '*.pyc' \
+            "$RUNNER_TEMP/trs-upstream/client-mod/" vendor/trs-client/
+          cp "$RUNNER_TEMP/trs-upstream/NOTICE" vendor/TRS-UPSTREAM-NOTICE.txt
+          printf 'Upstream: https://github.com/theredstonee/TRS-Launcher\nCommit: %s\nSubtree: client-mod/\nLicense: GPL-3.0-only (see vendor/trs-client/LICENSE)\n\nThis is an unmodified source snapshot for migration, not a TFL release.\n' \
+            "$UPSTREAM_COMMIT" > vendor/TRS-UPSTREAM.txt
+          FILE_COUNT=$(find vendor/trs-client -type f | wc -l)
+          test "$FILE_COUNT" -ge 2000
+          echo "Imported $FILE_COUNT files from upstream."
+          echo "### TRS Client source import" >> "$GITHUB_STEP_SUMMARY"
+          echo "Pinned SHA: $UPSTREAM_COMMIT" >> "$GITHUB_STEP_SUMMARY"
+          echo "Imported files: $FILE_COUNT" >> "$GITHUB_STEP_SUMMARY"
+          echo "Upstream code was not executed by this import step." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit source snapshot to migration branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "TFL Migration Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor/trs-client vendor/TRS-UPSTREAM.txt vendor/TRS-UPSTREAM-NOTICE.txt
+          if git diff --cached --quiet; then
+            echo "Already imported."
+            exit 0
+          fi
+          git commit -m "vendor: import GPL-3.0 TRS Client at c52087ddb6b7"
+          git push origin HEAD:adopt/trs-client-foundation

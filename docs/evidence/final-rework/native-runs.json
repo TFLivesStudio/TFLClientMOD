@@ -1,0 +1,66 @@
+{
+  "environment": {
+    "display": "Xvfb :89",
+    "renderer": "Mesa Lavapipe (software Vulkan) for Fabric; software Mesa OpenGL for Forge",
+    "physicalGpu": false,
+    "authenticatedRemoteServer": false
+  },
+  "runs": [
+    {
+      "target": "Fabric 26.3",
+      "mode": "menus",
+      "status": "completed",
+      "exitCode": 0,
+      "log": ".cloud-setup/dev3-native-menus.log",
+      "scope": "native views, local world, resource reload, one local emote play/cancel/camera/network assertions"
+    },
+    {
+      "target": "Fabric 26.3",
+      "mode": "certification",
+      "status": "smoke-complete",
+      "exitCode": 0,
+      "result": "module-certification-26.3.json",
+      "scope": "79 registry entries, state checks, disk CRUD, selected screens; no complete gameplay certification"
+    },
+    {
+      "target": "Forge 1.8.9",
+      "mode": "menus",
+      "status": "completed",
+      "exitCode": 0,
+      "scope": "native views, controls policy + five registered mappings asserted, local world, refined Nunito pause labels and normal close"
+    },
+    {
+      "target": "Fabric 26.3 + Lithium 0.26.2",
+      "mode": "screens",
+      "status": "completed",
+      "exitCode": 0,
+      "result": "screen-smoke-lithium.json",
+      "assertions": 12
+    },
+    {
+      "target": "Fabric 26.3 + Lithium 0.26.2",
+      "mode": "maps",
+      "status": "completed",
+      "exitCode": 0,
+      "scope": "minimap/world map variants, dimension changes, autozoom logs and two actual PNG exports; software renderer only",
+      "evidence": "lithium-maps-summary.txt"
+    },
+    {
+      "target": "Fabric 26.3 installable JAR + API only",
+      "mode": "production",
+      "status": "two-normal-sessions-completed",
+      "firstExitCode": 0,
+      "restartExitCode": 0,
+      "evidence": "production-interaction.json",
+      "scope": "fresh title, native Core/HUD input, undo, menu-close persistence, real restart, 640x480 view; no dev harness"
+    },
+    {
+      "target": "final Fabric installable JAR + API only",
+      "mode": "production-capability-final",
+      "status": "completed",
+      "exitCode": 0,
+      "evidence": "production-hud-640x480.png",
+      "scope": "Standard profile restored after explicit Minimal creation; unavailable recording preview absent despite preserved enabled flag; normal close"
+    }
+  ]
+}

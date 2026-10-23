@@ -1,0 +1,56 @@
+{
+  "scope": "native option navigation and rendered frames; no exhaustive interaction certification",
+  "elapsedMs": 29153,
+  "results": [
+    {
+      "destination": "options.video",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.VideoSettingsScreen"
+    },
+    {
+      "destination": "options.sounds",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.SoundOptionsScreen"
+    },
+    {
+      "destination": "options.controls",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.controls.ControlsScreen"
+    },
+    {
+      "destination": "options.controls/controls.keybinds",
+      "passed": false,
+      "detail": "button not found: Key Binds..."
+    },
+    {
+      "destination": "options.controls/options.mouse_settings",
+      "passed": false,
+      "detail": "button not found: Mouse Settings..."
+    },
+    {
+      "destination": "options.language",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.LanguageSelectScreen"
+    },
+    {
+      "destination": "options.resourcepack",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.packs.PackSelectionScreen"
+    },
+    {
+      "destination": "options.accessibility",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.AccessibilityOptionsScreen"
+    },
+    {
+      "destination": "options.chat",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.ChatOptionsScreen"
+    },
+    {
+      "destination": "options.skinCustomisation",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.SkinCustomizationScreen"
+    }
+  ]
+}

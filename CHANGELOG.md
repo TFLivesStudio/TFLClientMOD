@@ -64,3 +64,22 @@ Todas las fechas usan el formato AAAA-MM-DD. Las versiones alpha pueden cambiar 
 - En alturas GUI < 300 px algunas pestañas de ajustes pueden recortarse.
 - El CPS depende del ritmo de frames.
 - No hay mediciones de rendimiento publicadas.
+
+## 0.4.0-dev.1 — Operation Modpack Ready (development only)
+
+- Adopt TRS common/Fabric/legacy as the only active build; retain original TFL sources as migration reference.
+- Use loader ID tflcore with explicit conflict against original trsclient, retaining internal resource namespaces.
+- Disable TRS/backend/account/launcher integrations; retain offline cape physics and client modules.
+- Protect future configurations, preserve unknown keys, back up and import TFL schema v2/TRS data into separate paths.
+- Introduce shared Selection controls, native Inter on Fabric and a static original black-hole menu background.
+- Add distribution verification, hashes, real registry/dependency inventories and a local mrpack packager.
+- Add migration/privacy/fallback/packaging tests and correct omitted pinned circuit test fixtures.
+- No stable release, no video decoder and no claim of full in-game or optimization-pack certification.
+
+## 0.4.0-dev.2 — TFL Client Final Experience
+
+- Identidad pública TFL Client, Nunito local (Fabric nativo y atlas Forge) y navegación izquierda.
+- Geometría más fina, sliders/pausa Fabric, recarga de recursos y primer inicio sin introducción redundante.
+- Seis emotes locales independientes, cancelación/cámara y pruebas reales.
+- Reproductor local Motion JPEG en worker, sin audio/descargas; clip cinematográfico final pendiente.
+- Release preliminar de ambos targets con fuentes y hashes; sin merge a main ni certificación stable.

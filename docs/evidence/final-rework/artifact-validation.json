@@ -1,0 +1,21 @@
+{
+  "kind": "local-final-candidate; published hashes are in release delivery-index.json",
+  "artifacts": [
+    {
+      "target": "fabric26.3",
+      "file": "tflcore-fabric-26.3-0.4.0-dev.3.jar",
+      "sha256": "8b0a8026d83eeebc27b3ec5d85f9c0a8c05317cccb1210c954baf7a65ac31a54",
+      "size": 7033863,
+      "classMajor": 69,
+      "developmentHarnessClasses": 0
+    },
+    {
+      "target": "forge1.8.9",
+      "file": "tflcore-forge-1.8.9-0.4.0-dev.3.jar",
+      "sha256": "526ddcc5c83f14b8146a75068692f84ae2874467b509ec8d27ffa4ab8a951042",
+      "size": 6882365,
+      "classMajor": 52,
+      "developmentHarnessClasses": 0
+    }
+  ]
+}

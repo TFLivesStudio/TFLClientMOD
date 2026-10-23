@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "tflcore",
+	"version": "${version}",
+	"name": "TFL Client",
+	"description": "TFL Client: offline client utilities, HUD, maps and gameplay customization. Derived from TRS Client.",
+	"authors": [
+		"theredstonee (original TRS Client)", "TFLivesStudio (TFL modifications)"
+	],
+	"contact": {
+		"sources": "https://github.com/TFLivesStudio/TFLClientMOD"
+	},
+	"license": "GPL-3.0-only",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.theredstonee.trsclient.TrsClient"
+		],
+		"preLaunch": [
+			"dev.theredstonee.trsclient.TrsPreLaunch"
+		]
+	},
+	"mixins": [
+		{
+			"config": "trsclient.mixins.json",
+			"environment": "client"
+		}
+	],
+	"breaks": { "trsclient": "*" },
+	"custom": {
+		"badoptimizations:cache_hooks": {
+			"lightmap": "dev.theredstonee.trsclient.compat.BadOptLightmapHook"
+		}
+	},
+	"depends": {
+		"fabricloader": ">=${loader}",
+		"minecraft": "${minecraft}",
+		"java": ">=${java}",
+		${fapiDepends}
+	}
+}

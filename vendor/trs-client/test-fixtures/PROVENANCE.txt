@@ -1,0 +1,1 @@
+Test-only circuit data from TRS-Launcher/data/circuits at c52087ddb6b73b9d1287ef6d7f9d31010fcb5702. GPL-3.0-only, Ohev Tamerin. All 26 Git blob IDs checked against the pinned upstream tree. Not bundled in mod JARs.
