@@ -261,7 +261,7 @@ if (stonecutter.eval(mc, '<1.19.4')) mixinClasses << 'LoadingScreenMixin'
 // Sozial-Toasts über Vanilla-Menüs: bis 1.19.3 nach dem Bildschirm im GameRenderer (ab 1.19.4 über MenuScreenMixin).
 if (stonecutter.eval(mc, '<1.19.4')) mixinClasses << 'ScreenToastMixin'
 if (stonecutter.eval(mc, '>=26.1')) mixinClasses << 'PauseBackgroundMixin'
-if (stonecutter.eval(mc, '>=26.3')) mixinClasses.addAll(['ClientSliderMixin','ClientFirstRunMixin','ClientTitleMixin'])
+if (stonecutter.eval(mc, '>=26.3')) mixinClasses.addAll(['ClientSliderMixin','ClientFirstRunMixin','ClientTitleMixin','ClientMenuFontMixin'])
 // Leistung: Dynamische FPS/FPS-Messung, Partikel, Entity-Culling, Welt-Details (alle require = 0).
 mixinClasses += ['FramePaceMixin', 'WindowMixin', 'ParticleLimitMixin', 'EntityCullMixin', 'BlockEntityCullMixin', 'NameTagCullMixin',
 		'LivingNameTagCullMixin', 'TextureAnimationMixin', 'SkyMixin', 'StarsMixin']
@@ -446,3 +446,6 @@ tasks.withType(Jar).configureEach {
 }
 
 tasks.named('jar') { from(rootProject.file('licenses/Nunito-OFL.txt')) { into 'META-INF/licenses' }; from(rootProject.file('licenses/Nunito-PROVENANCE.txt')) { into 'META-INF/licenses' } }
+
+// Lucide SVG-derived UI atlas: original ISC/MIT notices accompany every binary.
+tasks.withType(Jar).configureEach { from(rootProject.file('licenses/Lucide-LICENSE.txt')) { into 'META-INF/licenses' } }

@@ -18,19 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /** Menü-Stil: Schalter je Menü, angeheftete Server (Adressen, Reihenfolge, Speichern). */
 class MenusLogicTest {
 	@Test
-	void styleSwitchesPerMenu() {
-		TrsModules modules = new TrsModules();
-		MenuStyle.install(modules);
-		assertTrue(MenuStyle.enabled(MenuStyle.Kind.PAUSE), "Standard: an");
-		assertTrue(MenuStyle.pauseButtons());
-		modules.menuMultiplayer.set(false);
-		assertFalse(MenuStyle.enabled(MenuStyle.Kind.MULTIPLAYER), "einzeln klassisch");
-		assertTrue(MenuStyle.enabled(MenuStyle.Kind.OPTIONS));
-		modules.menuStyle.setEnabled(false);
-		for (MenuStyle.Kind k : MenuStyle.Kind.values()) assertFalse(MenuStyle.enabled(k), "Modul aus = alles klassisch");
-		assertFalse(MenuStyle.pauseButtons());
-		assertFalse(MenuStyle.enabled(null));
-	}
+	void inheritedClassicPreferencesCannotDisableClientNavigation() {
+        TrsModules modules=new TrsModules();MenuStyle.install(modules);
+        modules.menuMultiplayer.set(false);modules.menuStyle.setEnabled(false);modules.titleScreen.setEnabled(false);
+        for(MenuStyle.Kind k:MenuStyle.Kind.values())assertTrue(MenuStyle.enabled(k));
+        assertTrue(MenuStyle.pauseButtons());assertTrue(modules.titleScreen.isEnabled());
+        assertFalse(modules.titleScreen.userToggleable());assertFalse(modules.menuStyle.userToggleable());
+        assertFalse(MenuStyle.enabled(null));
+        System.setProperty("tflcore.safeMode","true");
+        try { for(MenuStyle.Kind k:MenuStyle.Kind.values())assertFalse(MenuStyle.enabled(k));assertFalse(MenuStyle.pauseButtons()); }
+        finally { System.clearProperty("tflcore.safeMode"); }
+    }
 
 	@Test
 	void dialogsFollowTheirOpener() {

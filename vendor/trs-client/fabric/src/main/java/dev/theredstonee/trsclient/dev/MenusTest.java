@@ -279,8 +279,8 @@ public final class MenusTest {
 				return;
 			case 5:
 				shot(mc, "worlds");
-				Mc.setScreen(MenuScreens.friends(new TrsTitleScreen()));
-				phase++;
+				Mc.setScreen(MenuScreens.clips(new TrsTitleScreen()));
+				phase = 10;
 				wait = 10;
 				return;
 			case 6: {
@@ -475,7 +475,7 @@ public final class MenusTest {
 		/*return new net.minecraft.client.gui.screens.ConfirmScreen(b -> { }, new net.minecraft.network.chat.TranslatableComponent("selectServer.deleteQuestion"), new net.minecraft.network.chat.TranslatableComponent("selectServer.deleteWarning", "TRS Testserver"));*/
 	}
 
-	private static Screen options(Screen parent, Minecraft mc) {
+	static Screen options(Screen parent, Minecraft mc) {
 		//? if >=26.1 && <26.3 {
 		/*return new OptionsScreen(parent, mc.options, false);
 		*///?} else

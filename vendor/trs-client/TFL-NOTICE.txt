@@ -1,8 +1,10 @@
-TFL Core / TFL Selection is a modified distribution of TRS Client MOD.
+TFL Client is a modified distribution of TRS Client MOD.
 Original TRS Client: Copyright (C) 2026 Ohev Tamerin (Theredstonee).
 TFL modifications: Copyright (C) 2026 TFLivesStudio; modified 2026-10-23.
 Code license: GPL-3.0-only. Original notices and MPL-2.0 Chat Heads headers remain applicable.
-Inter typeface: SIL Open Font License 1.1, see META-INF/licenses/Inter-OFL.txt.
+Nunito and Inter typefaces: SIL Open Font License 1.1. See META-INF/licenses/Nunito-OFL.txt,
+Nunito-PROVENANCE.txt and Inter-OFL.txt.
+Lucide UI icons (pinned 0.468.0): ISC/MIT notices in META-INF/licenses/Lucide-LICENSE.txt.
 Internal dev.theredstonee packages and trsclient resource namespaces are retained for compatibility;
 they are not an indication of an approved TRS Launcher/backend integration.
 For every distributed binary, provide the complete corresponding source and build instructions

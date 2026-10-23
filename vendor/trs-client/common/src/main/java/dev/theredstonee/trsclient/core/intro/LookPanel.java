@@ -24,11 +24,7 @@ public final class LookPanel implements ModulePanel {
 	@Override
 	public int draw(Canvas c, Hits hits, int x, int y, int w, int mouseX, int mouseY, final Runnable click) {
 		Theme t = Theme.get();
-		c.text(c.clip(I18n.tr("look.design"), w), x, y, t.text, false);
-		int ny = Paint.paragraph(c, I18n.tr("look.design." + t.designName + ".hint"), x, y + 11, Math.min(w, 360), 10, t.textDim);
-		ny += 3;
-		ny += LookPicker.drawDesigns(c, hits, modules, x, ny, Math.min(w, 304), mouseX, mouseY, click) + 8;
-
+		int ny = y;
 		c.text(c.clip(I18n.tr("intro.theme"), w), x, ny, t.text, false);
 		ny += 11;
 		int gap = 4;
@@ -78,7 +74,7 @@ public final class LookPanel implements ModulePanel {
 			});
 		}
 		ny += bh + 6;
-		ny = Paint.paragraph(c, I18n.tr("look.design.note"), x, ny, Math.min(w, 360), 10, t.textDim);
+
 		return ny + 6;
 	}
 

@@ -9,8 +9,7 @@ public final class SelectionStyle {
     /** Bounded scanline rounded rectangle; no textures, allocations or GL state changes. */
     public static void rounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         if(w<=0||h<=0||(color>>>24)==0) return;
-        c.push(); c.scale(0.25f);
-        try { drawRounded(c,x*4,y*4,w*4,h*4,radius*4,color); } finally { c.pop(); }
+        drawRounded(c,x,y,w,h,radius,color);
     }
     private static void drawRounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         int r=Math.max(0,Math.min(radius,Math.min(w,h)/2));
@@ -18,9 +17,17 @@ public final class SelectionStyle {
         c.fill(x,y+r,x+w,y+h-r,color);
         for(int row=0;row<r;row++) {
             double dy=r-row-0.5;
-            int inset=(int)Math.ceil(r-Math.sqrt(r*r-dy*dy));
-            c.fill(x+inset,y+row,x+w-inset,y+row+1,color);
-            c.fill(x+inset,y+h-row-1,x+w-inset,y+h-row,color);
+            double edge=r-Math.sqrt(r*r-dy*dy);
+            int inset=(int)Math.floor(edge);
+            int alpha=(int)Math.round((color>>>24)*(1-(edge-inset)));
+            int fringe=(color&0xFFFFFF)|(alpha<<24);
+            // Fractional boundary coverage, rather than opaque staircase edges.
+            c.fill(x+inset+1,y+row,x+w-inset-1,y+row+1,color);
+            c.fill(x+inset,y+row,x+inset+1,y+row+1,fringe);
+            c.fill(x+w-inset-1,y+row,x+w-inset,y+row+1,fringe);
+            c.fill(x+inset+1,y+h-row-1,x+w-inset-1,y+h-row,color);
+            c.fill(x+inset,y+h-row-1,x+inset+1,y+h-row,fringe);
+            c.fill(x+w-inset-1,y+h-row-1,x+w-inset,y+h-row,fringe);
         }
     }
     public static void panel(Canvas c,int x,int y,int w,int h,int fill,int border) {

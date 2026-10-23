@@ -2,6 +2,8 @@ package dev.theredstonee.trsclient.core.ui.menu;
 
 import dev.theredstonee.trsclient.core.i18n.I18n;
 import dev.theredstonee.trsclient.core.hud.HudLayout;
+import dev.theredstonee.trsclient.core.hud.HudHistory;
+import dev.theredstonee.trsclient.core.hud.HudPresets;
 import dev.theredstonee.trsclient.core.hud.HudProfiles;
 import dev.theredstonee.trsclient.core.hud.HudSnap;
 import dev.theredstonee.trsclient.core.module.HudModule;
@@ -39,6 +41,10 @@ public final class HudEditor extends UiScreen {
 
 	private final MenuHost host;
 	private final SettingsPanel panel = new SettingsPanel();
+	private final HudHistory history;
+	private boolean showPresets;
+	private boolean safeZones = true;
+	private String presetError;
 
 	private HudItem dragging;
 	private HudItem selected;
@@ -50,6 +56,7 @@ public final class HudEditor extends UiScreen {
 
 	public HudEditor(MenuHost host) {
 		this.host = host;
+		this.history = new HudHistory(host.modules().registry);
 		panel.setKeyLabel(new SettingsPanel.KeyLabel() {
 			@Override
 			public String label(String keyName) {
@@ -88,6 +95,13 @@ public final class HudEditor extends UiScreen {
 		}
 
 		if (TouchMode.enabled()) safeArea(c, t, width, height);
+        if (safeZones) {
+            Redstone.frame(c, 8, 8, Math.max(0, width - 16), Math.max(0, height - 16), ColorMath.withAlpha(t.textDim, 40));
+            // Vanilla hotbar reserve is advisory: layouts may intentionally use this area.
+            int hotbarW = Math.min(190, width);
+            Redstone.frame(c, (width - hotbarW) / 2, Math.max(0, height - 24), hotbarW, 24,
+                    ColorMath.withAlpha(t.textDim, 65));
+        }
 
 		List<HudItem> items = enabled();
 		HudItem hovered = dragging != null ? dragging : itemAt(mouseX, mouseY, width, height);
@@ -99,7 +113,13 @@ public final class HudEditor extends UiScreen {
 			c.scale(item.module().scale.getFloat());
 			item.draw(c);
 			c.pop();
-			int color = item == dragging ? t.dustOn : (item == selected ? t.lampOn : (item == hovered ? 0xE0FFFFFF : 0x60FFFFFF));
+			boolean collision = false;
+            if (item == selected || item == dragging) {
+                for (HudItem other : items) {
+                    if (other != item && HudLayout.overlaps(b, bounds(other, width, height))) collision = true;
+                }
+            }
+            int color = collision ? 0xFFE0AA67 : item == dragging ? t.dustOn : (item == selected ? t.lampOn : (item == hovered ? 0xE0FFFFFF : 0x60FFFFFF));
 			if (item == dragging || item == selected) Redstone.glow(c, b[0] - 2, b[1] - 2, b[2] + 4, b[3] + 4, item == dragging ? t.glow : t.lampGlow, 0.6f);
 			Redstone.frame(c, b[0] - 2, b[1] - 2, b[2] + 4, b[3] + 4, color);
 			if (TouchMode.enabled()) handles(c, b, item == dragging || item == selected ? t.dustOn : 0xA0FFFFFF);
@@ -121,6 +141,7 @@ public final class HudEditor extends UiScreen {
 		c.raise(300f);
 		topBar(c, width, mouseX, mouseY);
 		if (dragging == null) hint(c, width, height);
+		tools(c, width, height, mouseX, mouseY);
 		panelIn = Anim.approach(panelIn, selected != null ? 1f : 0f, dt, 0.07f);
 		if (panelIn > 0.02f) sidePanel(c, width, height, mouseX, mouseY);
 		c.pop();
@@ -149,14 +170,23 @@ public final class HudEditor extends UiScreen {
 		final HudProfiles profiles = host.modules().profiles;
 		String label = I18n.tr("editor.profile", profiles.activeName());
 		int pw = Math.min(150, c.textWidth(label) + 16);
-		int px = 22 + c.textWidth(title) + 12;
-		boolean pHover = inside(mx, my, px, by, pw, bh);
-		Paint.button(c, px, by, pw, bh, label, false, pHover);
-		hits.add(px, by, pw, bh, new Runnable() {
+        int px = 22 + c.textWidth(title) + 12;
+        int py = by;
+        int actionReserve = Math.max(58,c.textWidth(I18n.tr("common.done"))+16)
+                + Math.max(58,c.textWidth(I18n.tr("editor.menu"))+16) + 28;
+        if(px+pw>width-actionReserve) {
+            px=8;py=top+bh+8;h=py+bh+5;barHeight=h;
+            c.fill(0,top+bh+5,width,h,ColorMath.withAlpha(t.surfaceHigh,235));
+            c.fill(0,h-1,width,h,t.border);
+        }
+        boolean pHover=inside(mx,my,px,py,pw,bh);
+        Paint.button(c,px,py,pw,bh,label,false,pHover);
+		hits.add(px, py, pw, bh, new Runnable() {
 			@Override
 			public void run() {
 				host.playClick();
 				profiles.cycle();
+				history.clear();
 				selected = null;
 			}
 		});
@@ -206,10 +236,77 @@ public final class HudEditor extends UiScreen {
 
 	}
 
+    private void tools(Canvas c, int width, int height, int mx, int my) {
+        int y = barHeight + 5;
+        tool(c, 8, y, 56, I18n.trOr("editor.presets", "Presets"), true, mx, my, new Runnable() {
+            public void run() { showPresets = !showPresets; if (showPresets) selected = null; }
+        });
+        tool(c, 68, y, 40, I18n.trOr("editor.undo", "Undo"), history.canUndo(), mx, my, new Runnable() {
+            public void run() { history.undo(); }
+        });
+        tool(c, 112, y, 40, I18n.trOr("editor.redo", "Redo"), history.canRedo(), mx, my, new Runnable() {
+            public void run() { history.redo(); }
+        });
+        if (width >= 230) tool(c, 156, y, 66, safeZones ? I18n.trOr("editor.guidesOn", "Guides: on") : I18n.trOr("editor.guidesOff", "Guides: off"), true, mx, my, new Runnable() {
+            public void run() { safeZones = !safeZones; }
+        });
+        if (!showPresets) return;
+        int columns = Math.max(1, Math.min(3, (width - 16) / 84));
+        int rows = (HudPresets.Preset.values().length + columns - 1) / columns;
+        int pw = columns * 84 + 8;
+        Redstone.window(c, 8, y + 21, pw, rows * 22 + 30);
+        hits.add(8, y + 21, pw, rows * 22 + 30, new Runnable() { public void run() { } });
+        int index = 0;
+        for (final HudPresets.Preset preset : HudPresets.Preset.values()) {
+            tool(c, 12 + (index % columns) * 84, y + 26 + (index / columns) * 22, 80,
+                    preset.label, host.modules().profiles.canCreate(), mx, my, new Runnable() {
+                public void run() {
+                    presetError = HudPresets.create(host.modules().profiles, host.modules().registry, preset);
+                    if (presetError == null) {
+                        selected = null;
+                        if (preset != HudPresets.Preset.CUSTOM) arrangePreset();
+                        history.clear();
+                        showPresets = false;
+                        host.save();
+                    }
+                }
+            });
+            index++;
+        }
+        String note = presetError == null ? (host.modules().profiles.canCreate() ? I18n.trOr("editor.presetCreates", "Creates a new profile") : I18n.trOr("editor.profileLimit", "Profile limit reached")) : presetError;
+        Paint.textClipped(c, note, 16, y + 29 + rows * 22, pw - 16, Theme.get().textDim, false);
+    }
+
+    /** Reuse the existing collision solver only after an explicit preset action. */
+    private void arrangePreset() {
+        if (lastWidth <= 0 || lastHeight <= 0) return;
+        List<HudItem> items = enabled();
+        List<int[]> rects = new ArrayList<int[]>();
+        for (HudItem item : items) rects.add(bounds(item, lastWidth, lastHeight));
+        List<int[]> zones = new ArrayList<int[]>();
+        zones.add(new int[]{lastWidth / 2 - 24, lastHeight / 2 - 24, 48, 48});
+        zones.add(new int[]{Math.max(0, (lastWidth - 190) / 2), Math.max(0, lastHeight - 24), Math.min(190, lastWidth), 24});
+        SafeArea.Insets in = TouchMode.insetsGui();
+        int[][] placed = TouchLayout.place(rects, lastWidth, lastHeight, zones,
+                new SafeArea.Insets(Math.max(8, in.left), Math.max(barHeight + 27, in.top), Math.max(8, in.right), Math.max(8, in.bottom)));
+        for (int i = 0; i < items.size(); i++) {
+            int[] b = rects.get(i);
+            items.get(i).module().position().set(HudLayout.fromPixels(placed[i][0], placed[i][1], b[2], b[3], lastWidth, lastHeight));
+        }
+    }
+
+    private void tool(Canvas c, int x, int y, int w, String label, final boolean enabled, int mx, int my, final Runnable action) {
+        Paint.button(c, x, y, w, 18, label, false, enabled && inside(mx, my, x, y, w, 18));
+        if (!enabled) c.fill(x, y, x + w, y + 18, ColorMath.withAlpha(Theme.get().background, 110));
+        hits.add(x, y, w, 18, new Runnable() {
+            public void run() { if (enabled) { host.playClick(); action.run(); } }
+        });
+    }
+
 	/** Bedienhinweis unten in der Mitte (weicht keinem Knopf der Leiste). */
 	private static void hint(Canvas c, int width, int height) {
 		Theme t = Theme.get();
-		String hint = I18n.tr(TouchMode.enabled() ? "editor.hintTouch" : "editor.hint");
+		String hint = TouchMode.enabled() ? I18n.tr("editor.hintTouch") : I18n.trOr("editor.precisionHint", "Tab: select / Arrows: 1 px / Shift: 10 px or free drag / Right click: reset");
 		String text = c.textWidth(hint) + 16 <= width ? hint : c.clip(hint, width - 24) + "…";
 		int tw = c.textWidth(text);
 		int x = (width - tw) / 2 - 7;
@@ -232,7 +329,7 @@ public final class HudEditor extends UiScreen {
 
 		int h = 40 + panel.height(settings) + 22;
 		int x = width - PANEL_W - 8 - TouchMode.insetsGui().right + Math.round((1 - Anim.easeOut(panelIn)) * 20);
-		int y = Math.min(barHeight + 12, Math.max(barHeight + 8, height - h - 8));
+		int y = barHeight + 30;
 		Redstone.window(c, x, y, PANEL_W, h);
 
 		Redstone.iconWell(c, x + 6, y + 5, 1, module.icon(), t.dustOn, 1f);
@@ -258,6 +355,7 @@ public final class HudEditor extends UiScreen {
 			public void run() {
 				host.playClick();
 				resetTarget.resetLayout();
+				history.commit();
 			}
 		});
 	}
@@ -270,6 +368,7 @@ public final class HudEditor extends UiScreen {
 			HudItem item = itemAt(mouseX, mouseY, lastWidth, lastHeight);
 			if (item != null) {
 				item.module().resetLayout();
+				history.commit();
 				return true;
 			}
 		}
@@ -321,7 +420,9 @@ public final class HudEditor extends UiScreen {
 		dragging = null;
 		guideX = HudSnap.NO_GUIDE;
 		guideY = HudSnap.NO_GUIDE;
-		return super.mouseReleased(mouseX, mouseY, button) || was;
+		boolean released = super.mouseReleased(mouseX, mouseY, button);
+		history.commit();
+		return released || was;
 	}
 
 	@Override
@@ -329,9 +430,10 @@ public final class HudEditor extends UiScreen {
 		// Über der Leiste oder dem Einstellungsfeld ändert das Mausrad nichts am Element darunter.
 		if (hits.hovers(mouseX, mouseY)) return false;
 		HudItem item = itemAt(mouseX, mouseY, lastWidth, lastHeight);
-		if (item == null) return false;
+		if (item == null || amount == 0) return false;
 		item.module().scale.nudge(amount > 0 ? 1 : -1);
 		selected = item;
+		history.commit();
 		return true;
 	}
 
@@ -344,6 +446,26 @@ public final class HudEditor extends UiScreen {
 	@Override
 	public boolean keyPressed(int rawKey, UiKey key, boolean shift) {
 		if (panel.captureKey(rawKey, key, host)) return true;
+        if (key == UiKey.TAB) {
+            List<HudItem> items = enabled();
+            if (!items.isEmpty()) {
+                int index = items.indexOf(selected);
+                selected = items.get((index + (shift ? items.size() - 1 : 1) + items.size()) % items.size());
+            }
+            return true;
+        }
+        if (selected != null && dragging == null) {
+            int dx = key == UiKey.LEFT ? -1 : key == UiKey.RIGHT ? 1 : 0;
+            int dy = key == UiKey.UP ? -1 : key == UiKey.DOWN ? 1 : 0;
+            if (dx != 0 || dy != 0) {
+                int[] b = bounds(selected, lastWidth, lastHeight);
+                HudSnap.Result next = HudSnap.clampOnly(b[0] + dx * (shift ? 10 : 1), b[1] + dy * (shift ? 10 : 1),
+                        b[2], b[3], lastWidth, lastHeight);
+                selected.module().position().set(HudLayout.fromPixels(next.x, next.y, b[2], b[3], lastWidth, lastHeight));
+                history.commit();
+                return true;
+            }
+        }
 		if (key == UiKey.ESCAPE) {
 			if (panel.collapse()) return true;
 			if (selected != null) {
@@ -469,7 +591,8 @@ public final class HudEditor extends UiScreen {
 			if (TouchLayout.PROFILE_NAME.equalsIgnoreCase(profiles.name(i))) existing = i;
 		}
 		if (existing >= 0) profiles.switchTo(existing);
-		else profiles.create(TouchLayout.PROFILE_NAME);
+        else if (profiles.create(TouchLayout.PROFILE_NAME) != null) return;
+        history.clear();
 		selected = null;
 		int w = lastWidth;
 		int h = lastHeight;
@@ -489,6 +612,7 @@ public final class HudEditor extends UiScreen {
 			int[] r = rects.get(i);
 			items.get(i).module().position().set(HudLayout.fromPixels(placed[i][0], placed[i][1], r[2], r[3], w, h));
 		}
+		history.commit();
 		host.save();
 	}
 

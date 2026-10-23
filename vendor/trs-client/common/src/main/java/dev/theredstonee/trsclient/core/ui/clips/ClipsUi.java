@@ -1,6 +1,7 @@
 package dev.theredstonee.trsclient.core.ui.clips;
 
 import dev.theredstonee.trsclient.core.module.TrsModules;
+import dev.theredstonee.trsclient.core.product.Product;
 import dev.theredstonee.trsclient.core.clips.ClipLibrary;
 import dev.theredstonee.trsclient.core.clips.ClipNotice;
 import dev.theredstonee.trsclient.core.clips.ClipPreview;
@@ -222,10 +223,14 @@ public final class ClipsUi extends WindowUi {
 				I18n.tr("clips.filter.screenshots", listing.count(ClipLibrary.Type.SCREENSHOT))};
 		int tabsRight = x;
 		int tx = x;
+        int tabY = y;
 		for (int i = 0; i < 3; i++) {
+            // A local file is useful even without a recorder; an empty video tab is not.
+            if (i == 1 && !Product.onlineServices() && listing.count(ClipLibrary.Type.CLIP) == 0) continue;
 			final Filter f = Filter.values()[i];
-			int tw = c.textWidth(labels[i]) + 12;
-			tab(c, tx, y, tw, 16, labels[i], filter == f, mx, my, new Runnable() {
+			int tw = Math.min(w - 24, c.textWidth(labels[i]) + 12);
+            if (tx > x && tx + tw > x + w - 24) { tx = x; tabY += 20; }
+			tab(c, tx, tabY, tw, 16, labels[i], filter == f, mx, my, new Runnable() {
 				@Override
 				public void run() {
 					filter = f;
@@ -235,15 +240,16 @@ public final class ClipsUi extends WindowUi {
 				}
 			});
 			// Neu: Clip-Vorschau im Spiel – Schild am Reiter „Clips“, bis die erste Vorschau offen war.
-			if (f == Filter.CLIPS && isNew(NewSince.CLIPS_PREVIEW)) NewBadge.draw(c, tx + tw - NewBadge.width(c) + 3, y - 6);
+			if (f == Filter.CLIPS && isNew(NewSince.CLIPS_PREVIEW)) NewBadge.draw(c, tx + tw - NewBadge.width(c) + 3, tabY - 6);
 			tx += tw + 3;
 			tabsRight = tx;
 		}
 		// Favoriten (Bildschirmfotos mit Herz)
 		{
 			String label = I18n.tr("clips.filter.favorites", favoriteCount(listing));
-			int tw = c.textWidth(label) + 12;
-			tab(c, tx, y, tw, 16, label, filter == Filter.FAVORITES, mx, my, new Runnable() {
+			int tw = Math.min(w - 24, c.textWidth(label) + 12);
+            if (tx > x && tx + tw > x + w - 24) { tx = x; tabY += 20; }
+			tab(c, tx, tabY, tw, 16, label, filter == Filter.FAVORITES, mx, my, new Runnable() {
 				@Override
 				public void run() {
 					filter = Filter.FAVORITES;
@@ -253,15 +259,16 @@ public final class ClipsUi extends WindowUi {
 					seen(NewSince.SCREENSHOTS_FAVORITES);
 				}
 			});
-			if (isNew(NewSince.SCREENSHOTS_FAVORITES)) NewBadge.draw(c, tx + tw - NewBadge.width(c) + 3, y - 6);
+			if (isNew(NewSince.SCREENSHOTS_FAVORITES)) NewBadge.draw(c, tx + tw - NewBadge.width(c) + 3, tabY - 6);
 			tx += tw + 3;
 			tabsRight = tx;
 		}
-		// Meine geteilten Bilder (Links)
-		{
+		// Shared links require an approved backend.
+		if (Product.onlineServices()) {
 			String label = I18n.tr("clips.filter.shared");
-			int tw = c.textWidth(label) + 12;
-			tab(c, tx, y, tw, 16, label, filter == Filter.SHARED, mx, my, new Runnable() {
+			int tw = Math.min(w - 24, c.textWidth(label) + 12);
+            if (tx > x && tx + tw > x + w - 24) { tx = x; tabY += 20; }
+			tab(c, tx, tabY, tw, 16, label, filter == Filter.SHARED, mx, my, new Runnable() {
 				@Override
 				public void run() {
 					filter = Filter.SHARED;
@@ -272,7 +279,7 @@ public final class ClipsUi extends WindowUi {
 					loadShares();
 				}
 			});
-			if (isNew(NewSince.CLIPS_SHARE)) NewBadge.draw(c, tx + tw - NewBadge.width(c) + 3, y - 6);
+			if (isNew(NewSince.CLIPS_SHARE)) NewBadge.draw(c, tx + tw - NewBadge.width(c) + 3, tabY - 6);
 			tx += tw + 3;
 			tabsRight = tx;
 		}
@@ -288,7 +295,7 @@ public final class ClipsUi extends WindowUi {
 			}
 		});
 		right = fx - 4;
-		if (st.offersEnable()) {
+		if (Product.onlineServices() && st.offersEnable()) {
 			// Clips sind aus: statt Aufnahme/Clip ein deutlicher „Jetzt einschalten“ (Hinweis zur Aufnahme darunter).
 			String label = I18n.tr("clips.enable.button");
 			int ew = Math.min(140, c.textWidth(label) + 16);
@@ -301,7 +308,7 @@ public final class ClipsUi extends WindowUi {
 					}
 				});
 			}
-		} else {
+		} else if (Product.onlineServices() && st.connected) {
 			// Aufnahme – immer klickbar: geht es gerade nicht, sagt die Meldung darunter warum.
 			String recLabel = st.recording ? I18n.tr("clips.stop", clock(st.recordingMillis(now))) : I18n.tr("clips.record");
 			int rw = Math.min(110, c.textWidth(recLabel) + 26);
@@ -327,7 +334,7 @@ public final class ClipsUi extends WindowUi {
 				});
 			}
 		}
-		int cy = y + 21;
+		int cy = tabY + 21;
 
 		// Zustand der Verbindung / Meldung (die neueste gewinnt)
 		String line;
@@ -342,6 +349,8 @@ public final class ClipsUi extends WindowUi {
 		} else if (localNotice) {
 			line = notice;
 			lineColor = noticeError ? t.dustOn : t.text;
+		} else if (!Product.onlineServices()) {
+            line = I18n.tr("clips.local.hint");
 		} else if (st.offersEnable()) {
 			line = I18n.tr("clips.enable.text", ClipNotice.what(st.audio, st.mic));
 			lineColor = t.text;
@@ -606,7 +615,8 @@ public final class ClipsUi extends WindowUi {
 			});
 			if (isNew(NewSince.SCREENSHOTS_EDITOR)) NewBadge.dot(c, open + 12, by + 2);
 		}
-		// Als Link teilen (mit Beschriftung, damit man es findet)
+		// Sharing is unavailable in the local gallery.
+        if (Product.onlineServices()) {
 		String shareLabel = I18n.tr(sharing ? "clips.share.uploading" : "clips.share.button");
 		int sw = Math.min(130, c.textWidth(shareLabel) + 22);
 		int sx = open - 4 - sw;
@@ -620,6 +630,7 @@ public final class ClipsUi extends WindowUi {
 		Paint.textClipped(c, shareLabel, sx + 15, by + 7, sw - 17, sharing ? t.textDim : t.text, false);
 		if (isNew(NewSince.CLIPS_SHARE)) NewBadge.draw(c, sx + sw - NewBadge.width(c) + 2, by - 6);
 		open = sx;
+        }
 		// Meldung (z. B. „Link kopiert“) auch über der großen Ansicht zeigen
 		if (notice != null && System.currentTimeMillis() - noticeAt < 5_000L) {
 			int nw = Math.min(pw - 20, c.textWidth(notice) + 12);
@@ -652,6 +663,10 @@ public final class ClipsUi extends WindowUi {
 	// --- Clip-Vorschau ------------------------------------------------------------------------------
 
 	private void openClip(int index, ClipLibrary.Entry e) {
+        if (!Product.onlineServices()) {
+            if (!OpenPath.open(e.path)) setNotice(I18n.tr("clips.openFailed"), true);
+            return;
+        }
 		clipView = index;
 		clipPreview.load(e.name);
 		seen(NewSince.CLIPS_PREVIEW);

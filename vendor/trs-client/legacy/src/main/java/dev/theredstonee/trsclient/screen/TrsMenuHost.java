@@ -96,7 +96,7 @@ public final class TrsMenuHost implements MenuHost {
 		net.minecraft.client.Minecraft mc = Mc.mc();
 		if (mc == null || mc.gameSettings == null) return out;
 		for (net.minecraft.client.settings.KeyBinding k : mc.gameSettings.keyBindings) {
-			if (k == null) continue;
+			if (k == null || !dev.theredstonee.trsclient.core.keys.KeyVisibility.visible(k.getKeyDescription())) continue;
 			out.add(new dev.theredstonee.trsclient.core.intro.KeyBind(k.getKeyDescription(),
 					net.minecraft.client.resources.I18n.format(k.getKeyDescription()), TrsKeys.nameOf(k.getKeyCodeDefault()), TrsKeys.link(k)));
 		}

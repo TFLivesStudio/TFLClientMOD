@@ -121,7 +121,7 @@ class RedstoneUiTest {
 		// Rückwärts über den Anfang hinaus landet beim Link am Ende
 		ui.keyPressed(0, UiKey.UP, false);
 		ui.keyPressed(0, UiKey.UP, false);
-		assertEquals("Classic title screen, button", host.narrated.get(host.narrated.size() - 1));
+		assertEquals("Quit Game, button", host.narrated.get(host.narrated.size() - 1));
 		ui.keyPressed(0, UiKey.TAB, false);
 		assertTrue(ui.keyPressed(0, UiKey.ENTER, false));
 		assertEquals(1, host.clicks);

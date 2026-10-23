@@ -1,6 +1,7 @@
 package dev.theredstonee.trsclient.core.ui.menu;
 
 import dev.theredstonee.trsclient.core.hud.HudProfiles;
+import dev.theredstonee.trsclient.core.product.Product;
 import dev.theredstonee.trsclient.core.i18n.I18n;
 import dev.theredstonee.trsclient.core.module.Category;
 import dev.theredstonee.trsclient.core.module.HudModule;
@@ -572,8 +573,8 @@ public final class ModMenu extends UiScreen {
 		for (Category cat : Category.values()) {
 			if (hasModules(cat)) shownCategories++;
 		}
-		int items = 5 + shownCategories + (host.hasPacks() ? 1 : 0) + (host.hasAccounts() ? 1 : 0)
-				+ (host.hasWardrobe() ? 1 : 0) + (host.hasFriends() ? 1 : 0) + (host.hasClips() ? 1 : 0)
+		int items = 5 + shownCategories + (host.hasPacks() ? 1 : 0) + ((Product.onlineServices() && host.hasAccounts()) ? 1 : 0)
+				+ ((Product.onlineServices() && host.hasWardrobe()) ? 1 : 0) + ((Product.onlineServices() && host.hasFriends()) ? 1 : 0) + (host.hasClips() ? 1 : 0)
 				+ (dev.theredstonee.trsclient.core.bugreport.BugReports.get() != null ? 1 : 0) + (notesAvailable() ? 1 : 0)
 				+ (HalloweenPage.available() ? 1 : 0)
 				+ 1; // Hilfe (Docs)
@@ -695,7 +696,7 @@ public final class ModMenu extends UiScreen {
 			});
 			cy += rowH + gap;
 		}
-		if (host.hasAccounts()) {
+		if ((Product.onlineServices() && host.hasAccounts())) {
 			railItem(c, x, cy, w, rowH, "accounts", I18n.tr("menu.accounts"), false, mx, my, NewSince.MENU_ACCOUNTS, new Runnable() {
 				@Override
 				public void run() {
@@ -705,7 +706,7 @@ public final class ModMenu extends UiScreen {
 			});
 			cy += rowH + gap;
 		}
-		if (host.hasWardrobe()) {
+		if ((Product.onlineServices() && host.hasWardrobe())) {
 			railItem(c, x, cy, w, rowH, "shirt", I18n.tr("menu.wardrobe"), false, mx, my, NewSince.MENU_WARDROBE, new Runnable() {
 				@Override
 				public void run() {
@@ -715,7 +716,7 @@ public final class ModMenu extends UiScreen {
 			});
 			cy += rowH + gap;
 		}
-		if (host.hasFriends()) {
+		if ((Product.onlineServices() && host.hasFriends())) {
 			railItem(c, x, cy, w, rowH, "friends", I18n.tr("menu.friends"), false, mx, my, NewSince.MENU_SOCIAL, new Runnable() {
 				@Override
 				public void run() {
@@ -945,7 +946,7 @@ public final class ModMenu extends UiScreen {
 		int tx = x + w - tw - 8;
 		int ty = y + 10;
 		boolean toggleHover = inside(mx, my, tx - 3, ty - 3, tw + 6, 18);
-		Paint.toggle(c, tx, ty, tw, 12, progress, toggleHover);
+		if (m.userToggleable()) Paint.toggle(c, tx, ty, tw, 12, progress, toggleHover);
 
 		// Name ungekürzt: notfalls in zwei Zeilen.
 		boolean gear = !m.settings().isEmpty();
@@ -970,7 +971,7 @@ public final class ModMenu extends UiScreen {
 				panel.reset();
 			}
 		});
-		hits.add(tx - 3, ty - 3, tw + 6, 18, new Runnable() {
+		if (m.userToggleable()) hits.add(tx - 3, ty - 3, tw + 6, 18, new Runnable() {
 			@Override
 			public void run() {
 				host.playClick();
@@ -1027,8 +1028,8 @@ public final class ModMenu extends UiScreen {
 		int tw = 26;
 		int tx = x + w - tw - 2;
 		boolean toggleHover = inside(mx, my, tx - 3, y + 2, tw + 6, 18);
-		Paint.toggle(c, tx, y + 5, tw, 13, progress, toggleHover);
-		hits.add(tx - 3, y + 2, tw + 6, 18, new Runnable() {
+		if (m.userToggleable()) Paint.toggle(c, tx, y + 5, tw, 13, progress, toggleHover);
+		if (m.userToggleable()) hits.add(tx - 3, y + 2, tw + 6, 18, new Runnable() {
 			@Override
 			public void run() {
 				host.playClick();
@@ -1048,7 +1049,7 @@ public final class ModMenu extends UiScreen {
 		int nameX = x + 52;
 		c.text(c.clip(m.name(), resetX - nameX - 6), nameX, y + 4, t.text, false);
 		String state = m.isEnabled() ? I18n.tr("common.enabled") : I18n.tr("common.disabled");
-		c.text(c.clip(state + " · " + m.category().label(), resetX - nameX - 6), nameX, y + 14, m.isEnabled() ? t.dustOn : t.textDim, false);
+		c.text(c.clip((m.userToggleable() ? state + " · " : "") + m.category().label(), resetX - nameX - 6), nameX, y + 14, m.isEnabled() ? t.dustOn : t.textDim, false);
 
 		int top = y + headH + 8;
 		c.fill(x, top - 4, x + w, top - 3, t.border);

@@ -368,19 +368,20 @@ public final class ScreenshotEditorUi extends UiScreen {
 		});
 		// rechts: Teilen ▾, Speichern
 		int right = width - 5;
-		String share = I18n.tr("screenshots.editor.share");
+		String share = I18n.tr(dev.theredstonee.trsclient.core.product.Product.onlineServices() ? "screenshots.editor.share" : "screenshots.action.copy");
 		int sw = c.textWidth(share) + 26;
 		int sx = right - sw;
 		boolean hs = inside(mx, my, sx, 5, sw, 16);
 		Redstone.button(c, sx, 5, sw, 16, "", false, hs || shareMenu);
-		Icons.draw(c, "send", sx + 4, 9 - (hs ? 1 : 0), 1, t.accent);
+		Icons.draw(c, dev.theredstonee.trsclient.core.product.Product.onlineServices() ? "send" : "copy", sx + 4, 9 - (hs ? 1 : 0), 1, t.accent);
 		c.text(share, sx + 14, 9 - (hs ? 1 : 0), t.text, false);
-		Icons.draw(c, "chevronDown", sx + sw - 11, 9, 1, t.textDim);
+		if (dev.theredstonee.trsclient.core.product.Product.onlineServices()) Icons.draw(c, "chevronDown", sx + sw - 11, 9, 1, t.textDim);
 		hits.add(sx, 5, sw, 16, new Runnable() {
 			@Override
 			public void run() {
 				owner.platform().playClick();
-				shareMenu = !shareMenu;
+				if (dev.theredstonee.trsclient.core.product.Product.onlineServices()) shareMenu = !shareMenu;
+                else share(Screenshots.Action.COPY);
 			}
 		});
 		String saveLabel = I18n.tr(saving ? "screenshots.editor.saving" : "screenshots.editor.save");
@@ -743,9 +744,10 @@ public final class ScreenshotEditorUi extends UiScreen {
 	}
 
 	private void shareMenu(Canvas c, Theme t, int width, int mx, int my) {
-		String[] labels = {I18n.tr("screenshots.action.send"), I18n.tr("screenshots.action.copy"), I18n.tr("screenshots.action.link")};
-		String[] icons = {"send", "copy", "link"};
-		final Screenshots.Action[] actions = {Screenshots.Action.SEND, Screenshots.Action.COPY, Screenshots.Action.LINK};
+		boolean service = dev.theredstonee.trsclient.core.product.Product.onlineServices() && owner.platform().online();
+        String[] labels = service ? new String[]{I18n.tr("screenshots.action.send"), I18n.tr("screenshots.action.copy"), I18n.tr("screenshots.action.link")} : new String[]{I18n.tr("screenshots.action.copy")};
+        String[] icons = service ? new String[]{"send", "copy", "link"} : new String[]{"copy"};
+        final Screenshots.Action[] actions = service ? new Screenshots.Action[]{Screenshots.Action.SEND, Screenshots.Action.COPY, Screenshots.Action.LINK} : new Screenshots.Action[]{Screenshots.Action.COPY};
 		int w = 0;
 		for (String l : labels) w = Math.max(w, c.textWidth(l));
 		w += 26;

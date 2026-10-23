@@ -552,10 +552,16 @@ public final class TrsModules {
 						+ "the last arrow or potion, a broken tool. Server-friendly (uses the normal inventory click). "
 						+ "Only in survival/adventure and only while no container is open; paused under Fair Play.", false));
 		titleScreen = registry.register(new Module("titleScreen", "Title Screen",
-				"TRS title screen instead of the vanilla one", true));
+				"TFL Client home and background preferences", true) {
+            @Override public boolean userToggleable() { return false; }
+            @Override public boolean isEnabled() { return true; }
+        });
 		menuStyle = registry.register(new Module("menuStyle", "Menu Style",
 				"TRS look (Redstone or Winter Night) for the pause menu, server list, loading screens, options and world list. All buttons "
-						+ "(also those of other mods) keep working; turn single menus back to the classic look.", true));
+						+ "(also those of other mods) keep working.", true) {
+            @Override public boolean userToggleable() { return false; }
+            @Override public boolean isEnabled() { return true; }
+        });
 		oldAnimations = registry.register(new Module("oldAnimations", "1.7 Animations",
 				"Old hand movements: the hand does not dip during the attack cooldown, "
 						+ "swing animation also while using an item (visual only)", false));
@@ -779,13 +785,13 @@ public final class TrsModules {
 		dev.theredstonee.trsclient.core.intro.LookPanel look = new dev.theredstonee.trsclient.core.intro.LookPanel(this);
 		dev.theredstonee.trsclient.core.ui.menu.ModulePanel.Registry.set(titleScreen, look);
 		dev.theredstonee.trsclient.core.ui.menu.ModulePanel.Registry.set(menuStyle, look);
-		menuPause = menuStyle.add(new BoolSetting("pause", "Pause menu", true));
-		menuPauseButtons = menuStyle.add(new BoolSetting("pauseButtons", "TRS buttons in the pause menu", true));
-		menuMultiplayer = menuStyle.add(new BoolSetting("multiplayer", "Server list", true));
-		menuLoading = menuStyle.add(new BoolSetting("loading", "Loading screens", true));
-		menuOptions = menuStyle.add(new BoolSetting("options", "Options", true));
-		menuWorlds = menuStyle.add(new BoolSetting("worlds", "World list", true));
-		menuErrors = menuStyle.add(new BoolSetting("errors", "Error screens (connection lost, kicked)", true));
+		menuPause = new BoolSetting("pause", "Pause menu", true);
+		menuPauseButtons = new BoolSetting("pauseButtons", "TRS buttons in the pause menu", true);
+		menuMultiplayer = new BoolSetting("multiplayer", "Server list", true);
+		menuLoading = new BoolSetting("loading", "Loading screens", true);
+		menuOptions = new BoolSetting("options", "Options", true);
+		menuWorlds = new BoolSetting("worlds", "World list", true);
+		menuErrors = new BoolSetting("errors", "Error screens (connection lost, kicked)", true);
 
 		reachDecimals = reach.add(new NumberSetting("decimals", "Decimal places", 2, 0, 3, 1, ""));
 		reachHold = reach.add(new NumberSetting("hold", "Display time (s, 0 = always)", 4, 0, 10, 1, ""));

@@ -83,7 +83,7 @@ public final class HudProfiles implements ConfigPart {
 	/** Wechselt zum Profil {@code index}; der aktuelle Zustand wird vorher im aktiven Profil gesichert. */
 	public void switchTo(int index) {
 		if (index < 0 || index >= profiles.size() || index == active) return;
-		profiles.get(active).modules = snapshot();
+		profiles.get(active).modules = snapshotPreserving(profiles.get(active).modules);
 		active = index;
 		applyActive();
 	}
@@ -103,8 +103,8 @@ public final class HudProfiles implements ConfigPart {
 		String clean = clean(name);
 		String error = validate(clean, -1);
 		if (error != null) return error;
-		profiles.get(active).modules = snapshot();
-		profiles.add(new Profile(clean, snapshot()));
+		profiles.get(active).modules = snapshotPreserving(profiles.get(active).modules);
+		profiles.add(new Profile(clean, snapshotPreserving(profiles.get(active).modules)));
 		active = profiles.size() - 1;
 		return null;
 	}
@@ -179,6 +179,18 @@ public final class HudProfiles implements ConfigPart {
 		return map;
 	}
 
+    /** Keep settings belonging to absent mods for a later reinstall or another supported target. */
+    private Map<String, ModuleConfig> snapshotPreserving(Map<String, ModuleConfig> previous) {
+        Map<String, ModuleConfig> result = new LinkedHashMap<String, ModuleConfig>();
+        if (previous != null) {
+            for (Map.Entry<String, ModuleConfig> entry : previous.entrySet()) {
+                if (entry.getKey() != null && entry.getValue() != null) result.put(entry.getKey(), entry.getValue().copy());
+            }
+        }
+        result.putAll(snapshot());
+        return result;
+    }
+
 	/** Wendet das aktive Profil an. Module, die das Profil (noch) nicht kennt, bleiben unverändert. */
 	private void applyActive() {
 		Map<String, ModuleConfig> map = profiles.get(active).modules;
@@ -205,7 +217,7 @@ public final class HudProfiles implements ConfigPart {
 				Map<String, ModuleConfig> modules = new LinkedHashMap<>();
 				if (p.modules != null) {
 					for (Map.Entry<String, ModuleConfig> e : p.modules.entrySet()) {
-						if (e.getKey() != null && e.getValue() != null) modules.put(e.getKey(), e.getValue().normalized());
+						if (e.getKey() != null && e.getValue() != null) modules.put(e.getKey(), e.getValue().copy().normalized());
 					}
 				}
 				profiles.add(new Profile(name, modules));
@@ -218,12 +230,12 @@ public final class HudProfiles implements ConfigPart {
 			active = 0;
 		}
 		// Das aktive Profil entspricht dem Modulzustand (steht in "modules").
-		profiles.get(active).modules = snapshot();
+		profiles.get(active).modules = snapshotPreserving(profiles.get(active).modules);
 	}
 
 	@Override
 	public void write(TrsConfig config) {
-		profiles.get(active).modules = snapshot();
+		profiles.get(active).modules = snapshotPreserving(profiles.get(active).modules);
 		TrsConfig.HudProfiles out = new TrsConfig.HudProfiles();
 		out.active = activeName();
 		for (Profile p : profiles) {

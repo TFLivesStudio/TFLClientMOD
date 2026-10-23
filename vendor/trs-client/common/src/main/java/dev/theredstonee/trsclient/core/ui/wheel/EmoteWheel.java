@@ -11,26 +11,15 @@ import dev.theredstonee.trsclient.core.ui.ColorMath;
 import dev.theredstonee.trsclient.core.ui.FadeCanvas;
 import dev.theredstonee.trsclient.core.ui.Icons;
 import dev.theredstonee.trsclient.core.ui.Paint;
-import dev.theredstonee.trsclient.core.ui.Redstone;
 import dev.theredstonee.trsclient.core.ui.Theme;
+import dev.theredstonee.trsclient.core.ui.SelectionStyle;
 import dev.theredstonee.trsclient.core.ui.UiKey;
 import dev.theredstonee.trsclient.core.ui.UiScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Das Emote-Rad im Redstone-Stil: in der Mitte eine Redstone-Lampe als Nabe, ringsum je Emote eine Lampe mit
- * Pixel-Symbol, dazwischen Redstone-Staub. Die Maus zeigt vom Mittelpunkt aus auf ein Emote (die Leitung dorthin
- * wird bestromt, die Lampe geht an); Loslassen der Rad-Taste spielt es ab. Gesperrte Emotes sind dunkle Steine
- * mit Schloss und lassen sich nicht wählen. Ohne TRS API / Einwilligung zeigt das Rad nur einen Hinweis.
- *
- * <p>Kurz angetippt (Taste schon wieder los, bevor das Rad richtig offen ist) bleibt das Rad offen: dann wählt ein
- * Klick oder ein zweiter Druck auf die Taste, Esc schließt.
- *
- * <p>Touch-Modus: Das Overlay öffnet das Rad (feste Taste, siehe {@code TouchRuntime}); es bleibt offen, ein Finger
- * zeigt auf ein Emote und spielt es beim Loslassen ab (auch Antippen). Loslassen in der Mitte oder außerhalb schließt.
- */
+/** Native local emote picker. Hold and release, click, and touch all use the same radial selection. */
 public final class EmoteWheel extends UiScreen {
 	/** So kurz gedrückt = angetippt (Rad bleibt offen). */
 	static final long TAP_MS = 250;
@@ -263,7 +252,7 @@ public final class EmoteWheel extends UiScreen {
 
 	private void centered(Canvas c, String s, int cx, int y, int argb, int maxWidth) {
 		String clipped = c.textWidth(s) <= maxWidth ? s : c.clip(s, maxWidth);
-		text(clipped, cx - c.textWidth(clipped) / 2, y, argb, true);
+		text(clipped, cx - c.textWidth(clipped) / 2, y, argb, false);
 	}
 
 	private void wheel(Canvas c, Theme t, int width, int height, int mouseX, int mouseY, float dt, long now,
@@ -292,18 +281,12 @@ public final class EmoteWheel extends UiScreen {
 		boolean hoveredUnlocked = hovered >= 0 && emotes.unlocked(defs.get(hovered).id());
 		hubLit = Anim.approach(hubLit, hoveredUnlocked ? 1f : 0.15f, dt, 0.06f);
 
-		// Staubleitungen von der Nabe zu jedem Emote; die gewählte führt Signal.
-		for (int i = 0; i < n; i++) {
-			boolean sel = i == hovered;
-			dust(c, t, centerX, centerY, slotX[i], slotY[i], hub / 2 + 2, s / 2 + 2, sel ? (hoveredUnlocked ? 1f : 0.35f) : 0f);
-		}
-
-		// Nabe: Redstone-Lampe mit Redstone-Symbol.
-		int hx = centerX - hub / 2;
-		int hy = centerY - hub / 2;
-		Redstone.lamp(c, hx, hy, hub, hub, hubLit, 0f);
-		int hpx = Math.max(1, (hub - 10) / 8);
-		Icons.draw(c, "redstone", centerX - hpx * 4, centerY - hpx * 4, hpx, Redstone.lampTextColor(hubLit));
+        // A quiet central anchor keeps the radial arrangement readable without pixel wiring.
+        int hx = centerX - hub / 2;
+        int hy = centerY - hub / 2;
+        SelectionStyle.panel(c, hx, hy, hub, hub, t.surface, ColorMath.lerp(t.border, t.accent, hubLit));
+        int hpx = Math.max(1, (hub - 10) / 8);
+        Icons.draw(c, "wave", centerX - hpx * 4, centerY - hpx * 4, hpx, t.text);
 
 		// Emotes: freigeschaltet = Lampe, gesperrt = dunkler Stein mit Schloss.
 		int px = Math.max(1, (s - 8) / 8);
@@ -315,11 +298,10 @@ public final class EmoteWheel extends UiScreen {
 			int x = slotX[i] - s / 2;
 			int y = slotY[i] - s / 2 - (sel ? 1 : 0);
 			if (unlocked) {
-				Redstone.lamp(c, x, y, s, s, 0.12f + 0.88f * lit[i], 0f);
-				Icons.draw(c, def.icon(), slotX[i] - px * 4, y + (s - px * 8) / 2, px, Redstone.lampTextColor(0.12f + 0.88f * lit[i]));
+				SelectionStyle.panel(c, x, y, s, s, ColorMath.lerp(t.surface, t.accent, lit[i]), ColorMath.lerp(t.border, t.accent, lit[i]));
+				Icons.draw(c, def.icon(), slotX[i] - px * 4, y + (s - px * 8) / 2, px, t.text);
 			} else {
-				if (sel) Redstone.glow(c, x, y, s, s, t.border, 0.8f);
-				Redstone.stone(c, x, y, s, s, sel ? t.surfaceHover : t.surface, t.border);
+				SelectionStyle.panel(c, x, y, s, s, sel ? t.surfaceHover : t.surface, t.border);
 				Icons.draw(c, def.icon(), slotX[i] - px * 4, y + (s - px * 8) / 2, px, ColorMath.withAlpha(t.textDim, 110));
 				Icons.draw(c, "lock", x + s - 9, y + s - 9, 1, t.textDim);
 			}
@@ -351,33 +333,6 @@ public final class EmoteWheel extends UiScreen {
 		}
 	}
 
-	/**
-	 * Staubleitung als Pixelpunkte von der Nabe (Abstand {@code from}) bis vor den Platz (Abstand {@code to}).
-	 * {@code signal} 0 = unbestromt, 1 = volle Stärke (wird zum Emote hin schwächer, wie echter Staub).
-	 */
-	private static void dust(Canvas c, Theme t, int x0, int y0, int x1, int y1, int from, int to, float signal) {
-		double dx = x1 - x0;
-		double dy = y1 - y0;
-		double len = Math.sqrt(dx * dx + dy * dy);
-		if (len < from + to + 2) return;
-		double ux = dx / len;
-		double uy = dy / len;
-		int steps = (int) ((len - from - to) / 3);
-		for (int k = 0; k <= steps; k++) {
-			double d = from + k * 3;
-			int x = (int) Math.round(x0 + ux * d);
-			int y = (int) Math.round(y0 + uy * d);
-			if (signal > 0.02f) {
-				int level = 15 - Math.round(6f * k / Math.max(1, steps));
-				int col = ColorMath.lerp(t.dustOff, t.dust(level), signal);
-				c.fill(x - 2, y - 2, x + 2, y + 2, ColorMath.withAlpha(t.glow, Math.round(34 * signal)));
-				c.fill(x - 1, y - 1, x + 1, y + 1, col);
-			} else {
-				c.fill(x - 1, y - 1, x + 1, y + 1, ColorMath.withAlpha(t.dustOff, 200));
-			}
-		}
-	}
-
 	/** Kein Rad möglich (Einwilligung, Konto, Verbindung): kleines Fenster mit Hinweis. */
 	private void hint(Canvas c, Theme t, int width, int height, EmoteController.State state) {
 		String message;
@@ -406,10 +361,10 @@ public final class EmoteWheel extends UiScreen {
 		int h = 44 + lines.size() * 10;
 		int x = centerX - w / 2;
 		int y = centerY - h / 2 + Math.round((1 - Anim.easeOut(open)) * 10);
-		Redstone.window(c, x, y, w, h);
-		Redstone.lamp(c, x + 8, y + 7, 14, 14, state == EmoteController.State.CONNECTING ? 0.5f : 0f, 0f);
+		SelectionStyle.panel(c, x, y, w, h, t.surface, t.border);
+		Icons.draw(c, "wave", x + 11, y + 10, 1, t.accent);
 		text(I18n.tr("wheel.title"), x + 28, y + 10, t.text, false);
-		Redstone.dustH(c, x + 8, x + w - 8, y + 26, t.dustOff, 0f);
+		c.fill(x + 10, y + 26, x + w - 10, y + 27, t.border);
 		for (int i = 0; i < lines.size(); i++) text(lines.get(i), x + 10, y + 33 + i * 10, t.textDim, false);
 	}
 }

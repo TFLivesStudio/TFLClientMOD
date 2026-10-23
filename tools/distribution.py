@@ -52,6 +52,7 @@ def inspect_jar(path):
         required = {'LICENSE_trsclient', 'META-INF/TFL-NOTICE.txt', 'META-INF/chat-heads-MPL-2.0.txt',
                     'META-INF/licenses/Inter-OFL.txt', 'assets/trsclient/font/nunito-regular.ttf', 'assets/trsclient/font/nunito-semibold.ttf', 'assets/trsclient/font/nunito-bold.ttf', 'META-INF/licenses/Nunito-OFL.txt',
                     'assets/trsclient/font/ui.json', 'assets/trsclient/textures/menu/black-hole.png',
+                    'assets/trsclient/textures/ui/icons.png', 'META-INF/licenses/Lucide-LICENSE.txt',
                     'trsclient.mixins.json', 'dev/theredstonee/trsclient/TrsClient.class'}
         if missing := required - names:
             raise ValueError('Missing runtime resources/notices: ' + ', '.join(sorted(missing)))

@@ -52,8 +52,9 @@ public final class HudSnap {
 	public static Result snap(int x, int y, int w, int h, int screenW, int screenH, List<int[]> others, int distance) {
 		int[] rx = axis(x, w, screenW, others, distance, true);
 		int[] ry = axis(y, h, screenH, others, distance, false);
-		return new Result(HudLayout.clamp(rx[0], 0, Math.max(0, screenW - w)),
-				HudLayout.clamp(ry[0], 0, Math.max(0, screenH - h)), rx[1], ry[1]);
+		int cx = HudLayout.clamp(rx[0], 0, Math.max(0, screenW - w));
+        int cy = HudLayout.clamp(ry[0], 0, Math.max(0, screenH - h));
+        return new Result(cx, cy, cx == rx[0] ? rx[1] : NO_GUIDE, cy == ry[0] ? ry[1] : NO_GUIDE);
 	}
 
 	/** Position ohne Einrasten, nur auf den Bildschirm begrenzt (Shift im Editor). */
@@ -91,14 +92,18 @@ public final class HudSnap {
 		if (others != null) {
 			for (int i = 0; i < others.size(); i++) {
 				int[] o = others.get(i);
+                if (o == null || o.length < 4 || o[2] <= 0 || o[3] <= 0) continue;
 				int oPos = horizontal ? o[0] : o[1];
 				int oSize = horizontal ? o[2] : o[3];
 				int[][] targets = {
 						{oPos, oPos},
 						{oPos + oSize - size, oPos + oSize},
 						{oPos + (oSize - size) / 2, oPos + oSize / 2},
+                        {oPos + oSize + 4, oPos + oSize},
+                        {oPos - size - 4, oPos},
 				};
 				for (int t = 0; t < targets.length; t++) {
+					if (targets[t][0] < 0 || targets[t][0] > Math.max(0, screen - size)) continue;
 					int delta = Math.abs(pos - targets[t][0]);
 					if (delta < bestDelta) {
 						bestDelta = delta;

@@ -714,11 +714,12 @@ public final class TrsClient {
 			vanillaTitleOnce = false;
 			return;
 		}
-		if (modules.titleScreen.isEnabled()) Mc.setOpenedGui(event, new TrsTitleScreen());
+		if (!dev.theredstonee.trsclient.core.product.Product.safeMode()) Mc.setOpenedGui(event, new TrsTitleScreen());
 	}
 
 	/** Öffnet einmalig den Vanilla-Titelbildschirm. */
 	public void openVanillaTitle() {
+		if (!dev.theredstonee.trsclient.core.product.Product.safeMode()) return;
 		vanillaTitleOnce = true;
 		Mc.setScreen(new GuiMainMenu());
 	}

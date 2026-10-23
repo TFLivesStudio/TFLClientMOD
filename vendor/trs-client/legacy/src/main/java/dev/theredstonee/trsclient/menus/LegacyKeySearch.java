@@ -3,6 +3,7 @@ package dev.theredstonee.trsclient.menus;
 import dev.theredstonee.trsclient.compat.Mc;
 import dev.theredstonee.trsclient.core.i18n.I18n;
 import dev.theredstonee.trsclient.core.keys.KeySearch;
+import dev.theredstonee.trsclient.core.keys.KeyVisibility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -76,7 +77,8 @@ public final class LegacyKeySearch {
 		list = null;
 		box = null;
 		capturing = false;
-		if (!(s instanceof GuiControls) || !KeySearch.enabled()) return;
+		if (!(s instanceof GuiControls)) return;
+        if (!KeySearch.enabled()) query = "";
 		try {
 			Object l = fieldOfType(s, "GuiKeyBindingList");
 			if (l == null) return;
@@ -86,6 +88,8 @@ public final class LegacyKeySearch {
 			list = l;
 			entriesField = f;
 			originalEntries = f.get(l);
+            // Filter UI rows only; preserve GameSettings bindings and loaded assignments.
+            if (!KeySearch.enabled()) { apply(); return; }
 			FontRenderer font = Mc.font();
 			String captureLabel = I18n.tr("keysearch.captureShort");
 			int buttonW = font.getStringWidth(captureLabel) + 12;
@@ -96,7 +100,7 @@ public final class LegacyKeySearch {
 			box.setText(query);
 			captureButton = new GuiButton(CAPTURE_ID, 6 + w + 4, 2, buttonW, 15, captureLabel);
 			buttonList(event).add(captureButton);
-			if (!query.isEmpty()) apply();
+			apply();
 		} catch (RuntimeException | IllegalAccessException | LinkageError e) {
 			screen = null;
 			list = null;
@@ -205,7 +209,7 @@ public final class LegacyKeySearch {
 			KeyBinding kb = keyOf(o);
 			if (kb != null) entries.add(entry(kb, o));
 		}
-		List<KeySearch.Entry> hits = KeySearch.filter(entries, query);
+		List<KeySearch.Entry> hits = KeySearch.filter(KeyVisibility.visibleEntries(entries), query);
 		Set<Object> keep = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
 		for (KeySearch.Entry e : hits) keep.add(e.handle);
 		List<Object> out = new ArrayList<Object>();

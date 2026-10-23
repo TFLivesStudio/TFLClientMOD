@@ -2543,5 +2543,15 @@
   "config.imported": "Snapshot imported; backup preserved",
   "config.resetWarning": "Click again to reset module/HUD settings. Backup kept.",
   "config.resetDone": "Module settings reset; previous file backed up",
-  "config.failed": "Operation failed: {0}"
+  "config.failed": "Operation failed: {0}",
+  "editor.presets": "Presets",
+  "editor.undo": "Undo",
+  "editor.redo": "Redo",
+  "editor.guidesOn": "Guides: on",
+  "editor.guidesOff": "Guides: off",
+  "editor.presetCreates": "Creates a new profile",
+  "editor.profileLimit": "Profile limit reached",
+  "editor.precisionHint": "Tab: select / Arrows: 1 px / Shift: 10 px or free drag / Right click: reset",
+  "clips.local.hint": "Saved on this device · F2 takes a screenshot",
+  "title.clientSettings": "Client settings"
 }

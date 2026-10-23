@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.theredstonee.trsclient.compat.Mc;
 import dev.theredstonee.trsclient.core.i18n.I18n;
 import dev.theredstonee.trsclient.core.keys.KeySearch;
+import dev.theredstonee.trsclient.core.keys.KeyVisibility;
 import dev.theredstonee.trsclient.mixin.KeySearchListInvoker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.components.AbstractSelectionList;
@@ -52,7 +53,7 @@ public final class KeySearchUi {
 		original = null;
 		box = null;
 		capturing = false;
-		if (!KeySearch.enabled()) return;
+		if (!KeySearch.enabled()) query = "";
 		try {
 			AbstractSelectionList<?> found = null;
 			for (GuiEventListener child : s.children()) {
@@ -65,8 +66,9 @@ public final class KeySearchUi {
 			screen = s;
 			list = found;
 			original = new ArrayList<Object>(found.children());
-			addWidgets(s, host);
-			if (!query.isEmpty()) apply();
+			if (KeySearch.enabled()) addWidgets(s, host);
+            // Product capability filtering applies even when search is disabled or empty.
+            apply();
 		} catch (RuntimeException | LinkageError e) {
 			// Ohne Suche weiter – die Tastenbelegung selbst bleibt unberührt.
 			screen = null;
@@ -148,7 +150,7 @@ public final class KeySearchUi {
 			KeyMapping km = keyOf(o);
 			if (km != null) entries.add(entry(km, o));
 		}
-		List<KeySearch.Entry> hits = KeySearch.filter(entries, query);
+		List<KeySearch.Entry> hits = KeySearch.filter(KeyVisibility.visibleEntries(entries), query);
 		Set<Object> keep = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
 		for (KeySearch.Entry e : hits) keep.add(e.handle);
 		List<Object> out = new ArrayList<Object>();

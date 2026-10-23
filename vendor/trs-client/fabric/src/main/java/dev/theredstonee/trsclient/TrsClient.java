@@ -222,11 +222,12 @@ public final class TrsClient implements ClientModInitializer {
 			vanillaTitleOnce = false;
 			return screen;
 		}
-		return modules.titleScreen.isEnabled() ? new TrsTitleScreen() : screen;
+		return dev.theredstonee.trsclient.core.product.Product.safeMode() ? screen : new TrsTitleScreen();
 	}
 
 	/** Öffnet einmalig den Vanilla-Titelbildschirm. */
 	public void openVanillaTitle() {
+		if (!dev.theredstonee.trsclient.core.product.Product.safeMode()) return;
 		vanillaTitleOnce = true;
 		Mc.setScreen(new TitleScreen());
 	}

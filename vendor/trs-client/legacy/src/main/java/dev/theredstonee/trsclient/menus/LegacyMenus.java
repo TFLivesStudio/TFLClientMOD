@@ -95,7 +95,7 @@ public final class LegacyMenus {
 	// --- Einordnen ---
 
 	MenuStyle.Kind kind(GuiScreen s) {
-		if (s == null) return null;
+		if (s == null || !s.getClass().getName().startsWith("net.minecraft.")) return null;
 		if (dialog(s)) return dialogKind(s);
 		if (s instanceof GuiIngameMenu || s instanceof GuiShareToLan) return MenuStyle.Kind.PAUSE;
 		if (s instanceof GuiMultiplayer || serverForm(s)) return MenuStyle.Kind.MULTIPLAYER;
@@ -250,7 +250,7 @@ public final class LegacyMenus {
 		if (k == null) return;
 		buttons.put(s, list);
 		try {
-			if (k == MenuStyle.Kind.PAUSE && s instanceof GuiIngameMenu && MenuStyle.pauseButtons()) pauseButtons(s, list);
+			if (k == MenuStyle.Kind.PAUSE && s instanceof GuiIngameMenu && MenuStyle.pauseButtons()) { layoutPause(s,list); pauseButtons(s, list); }
 		} catch (RuntimeException e) {
 			// Menü bleibt dann klassisch.
 		}
@@ -303,6 +303,10 @@ public final class LegacyMenus {
 			boolean world = Mc.world() != null;
 			int header = k == MenuStyle.Kind.PAUSE || k == MenuStyle.Kind.ERROR || dialog(s) ? 0 : MenuSkin.HEADER;
 			MenuSkin.background(c, s.width, s.height, world, header, s.height);
+            if(s instanceof GuiIngameMenu) {
+                dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(c,16,16,s.width-32,s.height-32,0xED101A2A,0xFF26374E);
+                c.strongText("TFL Client",30,30,0xFFF1F5FC);
+            }
 			List<GuiTextField> fields = textFields(s);
 			if (serverForm(s)) {
 				restoreFields();
@@ -350,6 +354,12 @@ public final class LegacyMenus {
 				listFrame(s, c, k);
 				if (k == MenuStyle.Kind.MULTIPLAYER && s instanceof GuiMultiplayer) updatePingTest((GuiMultiplayer) s);
 			}
+            if(s instanceof GuiIngameMenu) {
+                // Cover the original pixel heading after native drawing; mechanics and callbacks stay native.
+                c.fill(18,18,s.width-18,58,0xFF101A2A);
+                c.strongText("TFL Client",30,28,0xFFF1F5FC);
+                c.text(net.minecraft.client.resources.I18n.format("menu.game"),30,44,0xFF93A5BE,false);
+            }
 			List<GuiButton> list = buttons.get(s);
 			if (list == null) return;
 			FontRenderer font = Mc.font();
@@ -360,7 +370,9 @@ public final class LegacyMenus {
 				int w = b.width;
 				int h = height(b);
 				boolean hover = mouseX >= x && mouseY >= y && mouseX < x + w && mouseY < y + h;
-				MenuSkin.button(c, x, y, w, h, hover, b.enabled);
+				if(s instanceof GuiIngameMenu && b.id==4)
+                    dev.theredstonee.trsclient.core.ui.SelectionStyle.button(c,x,y,w,h,true,hover);
+                else MenuSkin.button(c, x, y, w, h, hover, b.enabled);
 				String icon = icons.get(b);
 				if (icon != null) {
 					MenuSkin.buttonIcon(c, x, y, h, icon, b.enabled);
@@ -377,10 +389,10 @@ public final class LegacyMenus {
 				String label = b.displayString == null ? "" : b.displayString;
 				int left = icon != null ? 17 : 3;
 				int room = icon != null ? w - left - 3 : w - 6;
-				if (font.getStringWidth(label) > room) label = font.trimStringToWidth(label, room);
-				int color = !b.enabled ? 0xFFA0A0A0 : (hover ? 0xFFFFFFA0 : 0xFFE0E0E0);
-				float lx = icon != null ? x + left : x + (w - font.getStringWidth(label)) / 2f;
-				font.drawStringWithShadow(label, lx, y + (h - 8) / 2f, color);
+                label=c.clip(label,Math.max(0,room));
+                int color=b.enabled?0xFFF1F5FC:0xFF8090A4;
+                int lx=icon!=null?x+left:x+(w-c.textWidth(label))/2;
+                c.text(label,lx,y+(h-c.lineHeight())/2,color,false);
 			}
 		} catch (RuntimeException e) {
 			// klassisch weiter
@@ -405,27 +417,28 @@ public final class LegacyMenus {
 
 	// --- TRS-Knöpfe im Pausenmenü ---
 
-	void pauseButtons(GuiScreen s, List<GuiButton> list) {
-		int free = (s.width - 204) / 2 - 12;
-		FontRenderer font = Mc.font();
-		int widest = 0;
-		for (String id : IDS) widest = Math.max(widest, font.getStringWidth(I18n.tr("menus.pause." + id)));
-		// Beschriftung steht hier links neben dem Symbol (selbst gezeichnet) – braucht weniger Platz als mittig.
-		int want = widest + 24;
-		boolean labels = free >= Math.min(want, 150);
-		if (free < 22) return;
-		int w = labels ? Math.min(Math.max(want, 86), free) : 20;
-		int h = 20;
-		int gap = 4;
-		int y = Math.max(8, s.height / 2 - (IDS.length * (h + gap)) / 2);
-		for (int i = 0; i < IDS.length; i++) {
-			GuiButton b = new GuiButton(FIRST_ID + i, 8, y, w, h, labels ? I18n.tr("menus.pause." + IDS[i]) : "");
-			b.enabled = available(IDS[i], s);
-			icons.put(b, ICONS[i]);
-			list.add(b);
-			y += h + gap;
-		}
-	}
+    void layoutPause(GuiScreen s,List<GuiButton> list) {
+        int width=Math.max(72,s.width-180),cell=(width-6)/2,index=0;
+        for(GuiButton b:list) {
+            int bx=30,by;
+            if(b.id==4){by=64;b.width=width;}
+            else if(b.id==1){by=s.height-52;b.width=width;}
+            else {bx+=index%2*(cell+6);by=96+index/2*24;b.width=cell;index++;}
+            //? if >=1.11 {
+            /*b.x=bx;b.y=by;
+            *///?} else {
+            b.xPosition=bx;b.yPosition=by;
+            //?}
+        }
+    }
+    void pauseButtons(GuiScreen s, List<GuiButton> list) {
+        int y=64;
+        for(int i=0;i<IDS.length;i++) {
+            if(!available(IDS[i],s))continue;
+            GuiButton b=new GuiButton(FIRST_ID+i,s.width-138,y,108,20,I18n.tr("menus.pause."+IDS[i]));
+            b.enabled=available(IDS[i],s);icons.put(b,ICONS[i]);list.add(b);y+=24;
+        }
+    }
 
 	/** Pausemenü: „Welt hosten“ unten links; bei öffentlichem Link darüber „Deaktivieren“ + Abzeichen. */
 	void hostingButtons(GuiScreen s, List<GuiButton> list) {

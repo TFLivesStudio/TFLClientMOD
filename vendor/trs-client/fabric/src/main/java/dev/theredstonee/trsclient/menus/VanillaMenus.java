@@ -81,7 +81,7 @@ public final class VanillaMenus {
 
 	/** Art des Menüs oder null. */
 	public static MenuStyle.Kind kind(Screen s) {
-		if (s == null) return null;
+		if (s == null || !s.getClass().getName().startsWith("net.minecraft.")) return null;
 		if (dialog(s)) return dialogKind(s);
 		if (s instanceof PauseScreen || lanScreen(s)) return MenuStyle.Kind.PAUSE;
 		if (s instanceof JoinMultiplayerScreen || serverForm(s) || multiplayerNotice(s)) return MenuStyle.Kind.MULTIPLAYER;
@@ -249,10 +249,9 @@ public final class VanillaMenus {
 					MenuSkin.background(c, w, h, world, header, footer);
                     //? if >=26.3 {
                     /*if(k==MenuStyle.Kind.PAUSE) {
-                        int pw=Math.max(108,Math.min(278,w-154));
-                        dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(c,16,16,pw,h-32,0xED101A2A,0xFF26374E);
-                        c.text("TFL Client",30,29,0xFFF1F5FC,false);
-                        c.text("Paused",30,45,0xFF93A5BE,false);
+                        dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(c,16,16,w-32,h-32,0xED101A2A,0xFF26374E);
+                        c.strongText("TFL Client",30,28,0xFFF1F5FC);
+                        c.text(s.getTitle().getString(),30,44,0xFF93A5BE,false);
                     }
                     *///?}
 					//? if <1.20.5 {
@@ -502,7 +501,7 @@ public final class VanillaMenus {
     public static void prepareLabel(Object widget) {
         if(!styled(Mc.screen()))return;
             //? if >=26.3 {
-        /*if(widget instanceof AbstractWidget) {
+        /*if(widget instanceof AbstractWidget && !Mc.mc().options.forceUnicodeFont().get()) {
                 AbstractWidget b=(AbstractWidget)widget;
                 if(TFL_LABELS.get(b)!=b.getMessage()) {
                     Component label=b.getMessage().copy().withStyle(style->style.withFont(new net.minecraft.network.chat.FontDescription.Resource(dev.theredstonee.trsclient.TrsClient.id("ui-semibold"))));
@@ -515,7 +514,10 @@ public final class VanillaMenus {
 		if (!styled(Mc.screen())) return false;
 		try {
 			Canvas c = canvas(g);
-			MenuSkin.button(c, x, y, w, h, hover, active);
+			if (Mc.screen() instanceof PauseScreen && widget instanceof AbstractWidget
+                    && ((AbstractWidget)widget).getMessage().getString().equals(Component.translatable("menu.returnToGame").getString()))
+                dev.theredstonee.trsclient.core.ui.SelectionStyle.button(c,x,y,w,h,true,hover);
+            else MenuSkin.button(c, x, y, w, h, hover, active);
             prepareLabel(widget);
 			String icon = ICONS.get(widget);
 			if (icon != null) {
@@ -616,6 +618,7 @@ public final class VanillaMenus {
 			}
 			//? if >=26.3 {
             /*if(k==MenuStyle.Kind.PAUSE && MenuStyle.enabled(k)) layoutPause(s);
+            if(s.getClass()==OptionsScreen.class && MenuStyle.enabled(k)) layoutOptions(s);
             *///?}
             if (k == MenuStyle.Kind.PAUSE && s instanceof PauseScreen && MenuStyle.pauseButtons() && !s.children().isEmpty()) pauseButtons(s, host);
 			if (k == MenuStyle.Kind.PAUSE && s instanceof PauseScreen && !s.children().isEmpty()) hostingButtons(s, host);
@@ -684,19 +687,48 @@ public final class VanillaMenus {
 	}
 
     //? if >=26.3 {
+    /*private static void layoutOptions(Screen s) {
+        java.util.List<AbstractWidget> controls=new java.util.ArrayList<>();
+        AbstractWidget done=null;
+        String doneLabel=Component.translatable("gui.done").getString();
+        for(GuiEventListener child:s.children())if(child instanceof AbstractWidget) {
+            AbstractWidget b=(AbstractWidget)child;
+            if(b instanceof net.minecraft.client.gui.components.AbstractButton || b instanceof net.minecraft.client.gui.components.AbstractSliderButton) {
+                if(b.getMessage().getString().equals(doneLabel))done=b;else controls.add(b);
+            }
+        }
+        controls.sort(java.util.Comparator.comparingInt(AbstractWidget::getY).thenComparingInt(AbstractWidget::getX));
+        int width=Math.min(560,s.width-48),left=(s.width-width)/2,columns=s.width>=720?3:2;
+        int cell=(width-(columns-1)*8)/columns,rows=(controls.size()+columns-1)/columns;
+        int step=Math.min(30,Math.max(20,(s.height-96)/Math.max(1,rows)));
+        for(int i=0;i<controls.size();i++)controls.get(i).setRectangle(cell,step-5,left+(i%columns)*(cell+8),52+(i/columns)*step);
+        if(done!=null)done.setRectangle(Math.min(160,width),22,left+width-Math.min(160,width),s.height-34);
+    }
+    *///?}
+    //? if >=26.3 {
     /*private static void layoutPause(Screen s) {
         java.util.List<AbstractWidget> controls=new java.util.ArrayList<>(), icons=new java.util.ArrayList<>();
+        AbstractWidget resume=null,leave=null;
+        String resumeLabel=Component.translatable("menu.returnToGame").getString();
+        String leaveLabel=Component.translatable("menu.returnToMenu").getString();
+        String disconnectLabel=Component.translatable("menu.disconnect").getString();
         for(GuiEventListener entry:s.children()) if(entry instanceof AbstractWidget && !ICONS.containsKey(entry)) {
             AbstractWidget b=(AbstractWidget)entry;
             if(entry instanceof net.minecraft.client.gui.components.AbstractButton) {
-                if(b.getWidth()<=30||b.getMessage().getString().trim().isEmpty())icons.add(b);else controls.add(b);
+                String label=b.getMessage().getString();
+                if(label.equals(resumeLabel))resume=b;
+                else if(label.equals(leaveLabel)||label.equals(disconnectLabel))leave=b;
+                else if(b.getWidth()<=30||label.trim().isEmpty())icons.add(b);
+                else controls.add(b);
             } else if(b.getMessage().getString().equals(s.getTitle().getString())) b.visible=false;
         }
         controls.sort(java.util.Comparator.comparingInt(AbstractWidget::getY).thenComparingInt(AbstractWidget::getX));
-        int count=controls.size(), w=Math.max(80,Math.min(250,s.width-182));
-        int gap=5, height=Math.min(24,Math.max(12,(s.height-112)/Math.max(1,count)-gap));
-        for(int i=0;i<count;i++) { AbstractWidget b=controls.get(i);b.setRectangle(w,height,30,64+i*(height+gap)); }
-        for(int i=0;i<icons.size();i++)icons.get(i).setRectangle(20,20,30+i*26,s.height-44);
+        int left=30, width=Math.max(72,s.width-180), cell=(width-6)/2;
+        if(resume!=null)resume.setRectangle(width,24,left,64);
+        int step=Math.min(25,Math.max(17,(s.height-144)/Math.max(1,(controls.size()+1)/2)));
+        for(int i=0;i<controls.size();i++)controls.get(i).setRectangle(cell,step-4,left+(i%2)*(cell+6),96+(i/2)*step);
+        if(leave!=null)leave.setRectangle(width,20,left,s.height-52);
+        for(int i=0;i<icons.size();i++)icons.get(i).setRectangle(18,18,s.width-144+i*23,s.height-50);
     }
     *///?}
 
@@ -717,11 +749,12 @@ public final class VanillaMenus {
 		int y = Math.max(8, s.height / 2 - (count * (h + gap)) / 2);
 		int x = 8;
         //? if >=26.3 {
-        /*x=Math.max(16,s.width-w-16);
+        /*w=108;labels=true;x=Math.max(16,s.width-w-30);y=64;
         *///?}
         String[] icons = {"gear", "image", "info"};
 		for (int i = 0; i < ids.length; i++) {
 			final String id = ids[i];
+            if (!available(id,s)) continue;
 			Object b = button(x, y, w, h, labels ? I18n.tr("menus.pause." + id) : "", new Runnable() {
 				@Override
 				public void run() {

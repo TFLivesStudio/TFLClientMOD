@@ -255,7 +255,9 @@ public final class NotesPage {
 			if (used > Note.MAX_TEXT * 9 / 10) color = t.dustOn;
 		} else {
 			NotesSync sync = NotesSync.get();
-			text = I18n.tr("notes.sync.label", NotesModulePanel.statusText(sync));
+			text = dev.theredstonee.trsclient.core.product.Product.onlineServices()
+                    ? I18n.tr("notes.sync.label", NotesModulePanel.statusText(sync))
+                    : I18n.tr("notes.sync.localOnly");
 		}
 		c.fill(x, y - 3, x + w, y - 2, ColorMath.withAlpha(t.border, 160));
 		Paint.textClipped(c, text, x + 2, y, w - 4, color, false);

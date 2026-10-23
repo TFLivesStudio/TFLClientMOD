@@ -177,6 +177,7 @@ public final class Icons {
 	public static void draw(Canvas c, String id, int x, int y, int px, int argb) {
 		String[] rows = rows(id);
 		if (rows == null || px <= 0) return;
+        if(ModernIcons.draw(c,id,x,y,px,argb))return;
 		for (int row = 0; row < rows.length; row++) {
 			String line = rows[row];
 			int col = 0;

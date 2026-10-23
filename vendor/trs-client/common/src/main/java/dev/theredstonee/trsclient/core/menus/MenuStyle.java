@@ -28,24 +28,7 @@ public final class MenuStyle {
 
 	/** Im Redstone-Stil zeichnen? {@code null} = kein bekanntes Menü. */
 	public static boolean enabled(Kind kind) {
-		TrsModules m = modules;
-		if (kind == null || m == null || !m.menuStyle.isEnabled()) return false;
-		switch (kind) {
-			case PAUSE:
-				return m.menuPause.get();
-			case MULTIPLAYER:
-				return m.menuMultiplayer.get();
-			case LOADING:
-				return m.menuLoading.get();
-			case OPTIONS:
-				return m.menuOptions.get();
-			case WORLDS:
-				return m.menuWorlds.get();
-			case ERROR:
-				return m.menuErrors.get();
-			default:
-				return false;
-		}
+        return kind != null && modules != null && !dev.theredstonee.trsclient.core.product.Product.safeMode();
 	}
 
 	/**
@@ -64,7 +47,7 @@ public final class MenuStyle {
 	/** Zusätzliche TRS-Knöpfe (Garderobe, Konten, Clips, Freunde, Server-Info) im Pausenmenü? */
 	public static boolean pauseButtons() {
 		TrsModules m = modules;
-		return m != null && m.menuStyle.isEnabled() && m.menuPauseButtons.get();
+		return m != null && !dev.theredstonee.trsclient.core.product.Product.safeMode();
 	}
 
 	/** Bewegter Redstone-Hintergrund (Einstellung des Startbildschirms)? */

@@ -51,13 +51,21 @@ public final class HudLayout {
 		return pos == centered(size, screenSize);
 	}
 
+    /** Strict rectangle overlap; touching edges are a valid alignment. */
+    public static boolean overlaps(int[] a, int[] b) {
+        return a[2] > 0 && a[3] > 0 && b[2] > 0 && b[3] > 0
+                && a[0] < b[0] + b[2] && a[0] + a[2] > b[0]
+                && a[1] < b[1] + b[3] && a[1] + a[3] > b[1];
+    }
+
 	public static int clamp(int v, int min, int max) {
 		return v < min ? min : Math.min(v, max);
 	}
 
 	private static int snap(int pos, int size, int screenSize) {
-		int start = EDGE_MARGIN;
-		int end = screenSize - size - EDGE_MARGIN;
+		int available = Math.max(0, screenSize - size);
+		int start = Math.min(EDGE_MARGIN, available);
+		int end = Math.max(0, available - EDGE_MARGIN);
 		int center = centered(size, screenSize);
 		if (Math.abs(pos - start) <= SNAP_DISTANCE) return start;
 		if (Math.abs(pos - end) <= SNAP_DISTANCE) return end;
@@ -66,7 +74,7 @@ public final class HudLayout {
 	}
 
 	private static int centered(int size, int screenSize) {
-		return (screenSize - size) / 2;
+		return Math.max(0, (screenSize - size) / 2);
 	}
 
 	private static int third(double center, int screenSize) {

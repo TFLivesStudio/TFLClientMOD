@@ -8,6 +8,8 @@ public final class Product {
     public static final String CONFIG = "tflcore/client.json";
     public static final String WAYPOINTS = "tflcore/waypoints.json";
     private Product() {}
+    /** Technical recovery switch. Not persisted and never exposed in navigation. */
+    public static boolean safeMode() { return Boolean.getBoolean("tflcore.safeMode"); }
     /** Only local, usable destinations belong in the TFL pause menu. */
     public static String[] pauseEntries() { return new String[]{"core", "clips", "serverInfo"}; }
     /** No approved TRS/TFL backend, launcher IPC, account or hosting integration is shipped. */

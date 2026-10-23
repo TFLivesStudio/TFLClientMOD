@@ -68,6 +68,30 @@ class MenuRailTest {
         assertNotNull(c.visible("Code: GPL-3.0-only. Chat Heads: dzwdz, MPL-2.0."));
     }
 
+    @Test void offlinePolicyOverridesLegacyHostClaimsAndKeepsCapturesReachable() {
+        I18n.use("en");
+        FakeHost host = new FakeHost();
+        ModMenu menu = new ModMenu(host);
+        RecordingCanvas c = new RecordingCanvas();
+        render(menu, c, new int[]{960, 540});
+        // This host advertises all upstream screens: product policy must still win.
+        assertTrue(host.hasFriends() && host.hasAccounts() && host.hasWardrobe());
+        for (int i = 0; i < 35; i++) {
+            assertTrue(c.visible(I18n.tr("menu.friends")) == null);
+            assertTrue(c.visible(I18n.tr("menu.accounts")) == null);
+            assertTrue(c.visible(I18n.tr("menu.wardrobe")) == null);
+            int[] captures = c.visible(I18n.tr("menu.clips"));
+            if (captures != null) {
+                assertTrue(menu.mouseClicked(captures[0] + 2, captures[1] + 2, 0));
+                assertTrue(host.capturesOpened);
+                return;
+            }
+            menu.mouseScrolled(c.railX(), 270, -1);
+            render(menu, c, new int[]{960, 540});
+        }
+        assertTrue(host.capturesOpened, "Local captures must remain reachable");
+    }
+
 	private static void render(ModMenu menu, RecordingCanvas c, int[] size) {
 		// Einblenden abwarten (fast durchsichtiger Text wird nicht gezeichnet).
 		for (int i = 0; i < 40 && menu.alpha() < 0.99f; i++) {
@@ -184,6 +208,8 @@ class MenuRailTest {
 	static final class FakeHost implements MenuHost {
 		private final TrsModules modules = new TrsModules();
         boolean packsOpened;
+        boolean capturesOpened;
+        @Override public void openClips() { capturesOpened = true; }
 
 		@Override
 		public TrsModules modules() {

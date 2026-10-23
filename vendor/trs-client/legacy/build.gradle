@@ -203,3 +203,6 @@ tasks.withType(Jar).configureEach {
 }
 
 tasks.named('jar') { from(rootProject.file('../licenses/Nunito-OFL.txt')) { into 'META-INF/licenses' }; from(rootProject.file('../licenses/Nunito-PROVENANCE.txt')) { into 'META-INF/licenses' } }
+
+// Lucide SVG-derived UI atlas: original ISC/MIT notices accompany every binary.
+tasks.withType(Jar).configureEach { from(rootProject.file('../licenses/Lucide-LICENSE.txt')) { into 'META-INF/licenses' } }

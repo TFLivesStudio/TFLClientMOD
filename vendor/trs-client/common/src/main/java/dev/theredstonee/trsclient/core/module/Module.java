@@ -67,16 +67,19 @@ public class Module {
 		return descriptionKey;
 	}
 
+	/** Fixed client infrastructure exposes settings but has no user-facing off switch. */
+	public boolean userToggleable() { return true; }
+
 	public boolean isEnabled() {
 		return enabled;
 	}
 
 	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		this.enabled = userToggleable() ? enabled : true;
 	}
 
 	public void toggle() {
-		enabled = !enabled;
+		if (userToggleable()) enabled = !enabled;
 	}
 
 	public List<Setting> settings() {
@@ -162,14 +165,14 @@ public class Module {
 
 	/** Übernimmt den Zustand aus der Config; fehlende Werte → Standard. */
 	public void read(ModuleConfig config) {
-		enabled = config.enabled != null ? config.enabled : defaultEnabled;
+		enabled = userToggleable() && config.enabled != null ? config.enabled : defaultEnabled;
 		for (Setting s : settings) s.read(config);
 	}
 
 	/** Schreibt den aktuellen Zustand in eine neue Config. */
 	public ModuleConfig write() {
 		ModuleConfig config = new ModuleConfig();
-		config.enabled = enabled;
+		config.enabled = isEnabled();
 		for (Setting s : settings) s.write(config);
 		return config;
 	}
