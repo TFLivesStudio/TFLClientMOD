@@ -21,6 +21,8 @@ The source snapshot goes under `vendor/trs-client/` and retains, as upstream sup
 - `forge/`, `forge-mojmap-legacy/`, `forge-1.13.2/`, `legacy-1.7.10/`, `neoforge/` — other upstream loader adapters.
 - `e4mc-bridge/`, Gradle wrappers, assets, licenses, docs and scripts (except generated caches).
 
+**Verification evidence**: [TRS isolated builds — GitHub Actions #2](https://github.com/TFLivesStudio/TFLClientMOD/actions/runs/39906626198). Both Fabric 26.3 and Forge 1.8.9 tasks passed and uploaded artifacts. This establishes compile-only compatibility, not Minecraft runtime behavior, branding completeness or TFL integration.
+
 **Do not** vendor unrelated Tauri/Nuxt/Rust TRS Launcher application, Microsoft login, signing keys, production backend or release infrastructure.
 
 ## Critical truth: source adoption is not yet a port
@@ -36,13 +38,13 @@ The source snapshot goes under `vendor/trs-client/` and retains, as upstream sup
 ## Migration gates
 
 **Gate 0 — import and provenance**
-- [ ] Import *complete* `client-mod/` from pinned SHA into `vendor/trs-client/` on this branch.
-- [ ] Verify SHA, file count, GPL notice, MPL Chat Heads license and loader folders.
+- [x] Import *complete* `client-mod/` from pinned SHA into `vendor/trs-client/` on this branch.
+- [x] Verify SHA, file count, GPL notice, MPL Chat Heads license and loader folders.
 - [ ] Preserve current TFL code on `main` until a working replacement is certified.
 
 **Gate 1 — independently compile source**
-- [ ] Build vendored Fabric 26.3 project with JDK 25.
-- [ ] Build vendored Forge 1.8.9 separately using the legacy build.
+- [x] Build vendored Fabric 26.3 project with JDK 25. **GitHub Actions successful**.
+- [x] Build vendored Forge 1.8.9 separately using the legacy build. **GitHub Actions successful** (Stonecutter requires Gradle runtime Java 21+, configured as Java 25; target compilation remains Java 8).
 - [ ] Inspect mod metadata and runtime dependencies; don't claim CI of the OLD TFL root validates vendored sources.
 - [ ] Run Fabric 26.3 in an isolated instance, record screen/UI/functional tests.
 
@@ -82,4 +84,4 @@ Check Gradle task listings where needed; these are intended commands, **not yet 
 
 The importer lives at `.github/workflows/adopt-trs-upstream.yml` and runs on changes to itself in branch `adopt/trs-client-foundation`. It copies a pinned upstream snapshot and attempts to commit it using repository Actions permission. If repository policy prevents Actions writes, use a local, controlled sparse checkout to vendor source and push the branch manually.
 
-Do not merge the migration branch as production merely because the source snapshot exists. **At the moment of this RFC, TFL's stable install path still uses the original `tflcore` mod.**
+Do not merge the migration branch as production merely because the source snapshot exists. **At the time of this update, TFL's stable install path still uses the original `tflcore` mod. Both isolated TRS builds pass CI; a unified TFL JAR and in-game tests remain pending.**
