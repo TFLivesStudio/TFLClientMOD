@@ -55,8 +55,9 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
+      # Stonecutter Gradle plugin requires JVM 21+; toolchains still emit Java 8 bytecode.
       - name: Build Forge 1.8.9 from complete vendored source
         working-directory: vendor/trs-client/legacy
         run: |
