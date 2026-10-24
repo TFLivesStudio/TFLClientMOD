@@ -55,7 +55,7 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
-      - run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils libgl1-mesa-dri libopenal1 libxrandr2 libxcursor1 libxi6 libxinerama1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils x11-xserver-utils libgl1-mesa-dri libopenal1 libxrandr2 libxcursor1 libxi6 libxinerama1
       - name: Fetch external test dependencies (never uploaded)
         run: python3 tools/ornithe/fetch_dependencies.py "$RUNNER_TEMP/ornithe-mods"
       - name: Real client and process restart

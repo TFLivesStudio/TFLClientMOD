@@ -21,7 +21,7 @@ public final class SmokeHarness implements Runnable {
   private final Path out;
   private final JsonObject report = new JsonObject();
   private final JsonArray checks = new JsonArray();
-  private int tick, stage, wait;
+  private int tick, stage, wait, inputFrame;
   private float normalFov;
 
   private float fov() throws Exception {
@@ -70,6 +70,7 @@ public final class SmokeHarness implements Runnable {
       if (--wait > 0) return;
       switch (stage) {
         case 0 -> {
+          c.mc.options.pauseOnUnfocus = false;
           check(
               "shared main menu", c.mc.screen instanceof CoreScreen cs && cs.ui instanceof TitleUi);
           if (restart) {
@@ -144,12 +145,18 @@ public final class SmokeHarness implements Runnable {
                   && c.right.count(System.nanoTime() / 1_000_000) > 0);
           c.modules.zoomSmooth.set(false);
           normalFov = fov();
+          inputFrame = c.frameCount;
           new java.awt.Robot().keyPress(java.awt.event.KeyEvent.VK_CONTROL);
           new java.awt.Robot().keyPress(java.awt.event.KeyEvent.VK_V);
           wait = 8;
           stage++;
         }
         case 5 -> {
+          // World creation can queue many client ticks before another input/render frame.
+          if (c.frameCount - inputFrame < 5) {
+            wait = 1;
+            return;
+          }
           check("native frame applies zoom", c.zoom.factor() > 1);
           check("native FOV return hook", fov() < normalFov * .75f);
           new java.awt.Robot().keyRelease(java.awt.event.KeyEvent.VK_CONTROL);

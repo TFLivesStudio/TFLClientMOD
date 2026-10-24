@@ -92,3 +92,7 @@ tasks.named('runProdClient') {
             config.filter { testStack == 'baseline' || (!it.name.startsWith('lwjgl-2.') && !it.name.startsWith('lwjgl_util-2.') && !it.name.startsWith('lwjgl-platform-2.')) }
         })
 }
+// Official Ornithe Gen2 launcher profile arguments (required after class package remapping).
+tasks.named('runProdClient') {
+    jvmArgs.addAll('-Dfabric.fixPackageAccess=true', '-Dfabric.gameVersion=1.8.9')
+}

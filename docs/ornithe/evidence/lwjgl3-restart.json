@@ -1,0 +1,20 @@
+{
+  "java": "25.0.5",
+  "lwjgl3": true,
+  "argentum": false,
+  "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+  "version": "0.4.0-ornithe.1",
+  "restart": true,
+  "checks": [
+    {
+      "name": "shared main menu",
+      "passed": true
+    },
+    {
+      "name": "preferences loaded after process restart",
+      "passed": true
+    }
+  ],
+  "status": "passed",
+  "heapUsedBytes": 159628992
+}

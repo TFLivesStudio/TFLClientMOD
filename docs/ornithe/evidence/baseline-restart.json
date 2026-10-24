@@ -1,0 +1,24 @@
+{
+  "java": "25.0.5",
+  "lwjgl3": false,
+  "argentum": false,
+  "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+  "version": "0.4.0-ornithe.1",
+  "restart": true,
+  "checks": [
+    {
+      "name": "shared main menu",
+      "passed": true
+    },
+    {
+      "name": "preferences loaded after process restart",
+      "passed": true
+    }
+  ],
+  "status": "passed",
+  "frames": 1,
+  "frametimeMedianMs": 31.970573,
+  "frametimeP95Ms": 31.970573,
+  "fpsFromMeanFrametime": 31.27876375565743,
+  "heapUsedBytes": 172727064
+}

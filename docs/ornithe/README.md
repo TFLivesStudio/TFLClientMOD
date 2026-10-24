@@ -69,7 +69,8 @@ remapped OSL source APIs, and Modrinth metadata for [OSL](https://modrinth.com/m
    Import/open that instance in Prism; use your authenticated Minecraft account.
 2. Install **Ornithe Gen2**, selecting Fabric Loader 0.19.5 through the Ornithe installer/component.
    The official installer supplies the required launcher component. A generic Fabric or Gen1 profile
-   does not supply Calamus Gen2. Do not install Forge into this instance.
+   does not supply Calamus Gen2. The official profile also sets `-Dfabric.fixPackageAccess=true`
+   and `-Dfabric.gameVersion=1.8.9`; retain those JVM arguments. Do not install Forge into this instance.
 3. In instance Settings → Java, select a **64-bit Java 25** executable. Allocate suitable memory
    (for example 2 GiB); the release does not alter launcher settings.
 4. Add the experimental `tflcore-ornithe-1.8.9-0.4.0-ornithe.1.jar` and OSL 0.22.2 to Mods.

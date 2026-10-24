@@ -1,0 +1,140 @@
+{
+  "java": "25.0.5",
+  "lwjgl3": true,
+  "argentum": false,
+  "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+  "version": "0.4.0-ornithe.1",
+  "restart": false,
+  "checks": [
+    {
+      "name": "shared main menu",
+      "passed": true
+    },
+    {
+      "name": "registered menu key opens common settings",
+      "passed": true
+    },
+    {
+      "name": "null-screen return uses shared title",
+      "passed": true
+    },
+    {
+      "name": "shared HUD editor",
+      "passed": true
+    },
+    {
+      "name": "world entered",
+      "passed": true
+    },
+    {
+      "name": "fps disabled",
+      "passed": true
+    },
+    {
+      "name": "fps enabled",
+      "passed": true
+    },
+    {
+      "name": "cps disabled",
+      "passed": true
+    },
+    {
+      "name": "cps enabled",
+      "passed": true
+    },
+    {
+      "name": "keystrokes disabled",
+      "passed": true
+    },
+    {
+      "name": "keystrokes enabled",
+      "passed": true
+    },
+    {
+      "name": "coords disabled",
+      "passed": true
+    },
+    {
+      "name": "coords enabled",
+      "passed": true
+    },
+    {
+      "name": "toggleSprint disabled",
+      "passed": true
+    },
+    {
+      "name": "toggleSprint enabled",
+      "passed": true
+    },
+    {
+      "name": "crosshair disabled",
+      "passed": true
+    },
+    {
+      "name": "crosshair enabled",
+      "passed": true
+    },
+    {
+      "name": "zoom disabled",
+      "passed": true
+    },
+    {
+      "name": "zoom enabled",
+      "passed": true
+    },
+    {
+      "name": "CPS hook both buttons",
+      "passed": true
+    },
+    {
+      "name": "native frame applies zoom",
+      "passed": true
+    },
+    {
+      "name": "native FOV return hook",
+      "passed": true
+    },
+    {
+      "name": "native crosshair eligibility captured",
+      "passed": true
+    },
+    {
+      "name": "physical sprint key toggles latch",
+      "passed": true
+    },
+    {
+      "name": "native sprint binding held",
+      "passed": true
+    },
+    {
+      "name": "disable restores native sprint binding",
+      "passed": true
+    },
+    {
+      "name": "zoom released restores FOV divisor",
+      "passed": true
+    },
+    {
+      "name": "menu opens in world",
+      "passed": true
+    },
+    {
+      "name": "sprint resets in GUI",
+      "passed": true
+    },
+    {
+      "name": "frames recorded",
+      "passed": true
+    },
+    {
+      "name": "preferences written",
+      "passed": true
+    }
+  ],
+  "status": "passed",
+  "frames": 176,
+  "frametimeMedianMs": 56.049338,
+  "frametimeP95Ms": 97.007364,
+  "fpsFromMeanFrametime": 16.20397634809462,
+  "heapUsedBytes": 235327496
+}
