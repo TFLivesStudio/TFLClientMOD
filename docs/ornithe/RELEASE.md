@@ -16,3 +16,10 @@ This prerelease contains the installable JAR, sources, complete corresponding re
 dependency lock and checksums. Runtime smoke evidence is attached separately. Physical-GPU,
 macOS/Windows and broad modpack/server certification remain outside this Linux software-GL experiment.
 No performance superiority is claimed. Review remains in a draft PR; do not treat this as stable TFL.
+
+[Prism installation and dependencies](https://github.com/TFLivesStudio/TFLClientMOD/blob/feat/ornithe-1.8.9-poc/docs/ornithe/README.md)
+· [Validation and known limits](https://github.com/TFLivesStudio/TFLClientMOD/blob/feat/ornithe-1.8.9-poc/docs/ornithe/VALIDATION.md)
+· [Draft PR #6](https://github.com/TFLivesStudio/TFLClientMOD/pull/6)
+
+Publication is gated by the independent build/common suite and baseline/LWJGL3/Argentum
+client smoke plus restart checks. The final suite includes retention of sprint taps shorter than a tick.

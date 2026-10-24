@@ -13,7 +13,8 @@ Ornithe hooks and are not presented as working features. No TRS backend, launche
 account service or optimization module is started.
 
 Right Shift opens settings; V holds zoom; use vanilla Controls to rebind these keys.
-The sprint control toggles sprint while the module is enabled. Leaving a world or opening a GUI
+The sprint control toggles sprint while the module is enabled; native press/release edges
+retain short taps and ignore repeated key-downs. Leaving a world or opening a GUI
 clears its latch. Vanilla continues to enforce movement, food and collision conditions.
 The HUD editor reuses common positioning/scaling. Native menus handle worlds, servers and options.
 Zoom offers factor/smoothing in this phase; wheel zoom, mouse slowdown and cinematic mode are

@@ -8,6 +8,12 @@ import org.spongepowered.asm.mixin.injection.callback.*;
 
 @Mixin(KeyBinding.class)
 public abstract class KeyBindingMixin {
+  @Inject(method = "set", at = @At("HEAD"))
+  private static void tfl$keyState(int key, boolean down, CallbackInfo ci) {
+    OrnitheClient c = OrnitheClient.get();
+    if (c != null) c.keyState(key, down);
+  }
+
   @Inject(method = "click", at = @At("HEAD"))
   private static void tfl$click(int key, CallbackInfo ci) {
     OrnitheClient c = OrnitheClient.get();

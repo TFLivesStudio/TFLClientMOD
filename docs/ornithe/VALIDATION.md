@@ -26,7 +26,9 @@ enters a deterministic flat world, toggles all seven modules off/on, captures bo
 holds real V/Control input through X11/Robot, checks the native FOV return hook and sprint latch,
 verifies disable/release restoration, opens settings in world and checks GUI sprint reset.
 A second JVM loads the saved coordinates/crosshair state and crosshair size. JSON reports enumerate
-every assertion; screenshots accompany the runtime artifact. The harness is excluded from installable JARs.
+every assertion; screenshots accompany the runtime artifact.
+These local reports precede the additional short-sprint-tap assertion; the final CI artifact
+repeats the suite with that assertion and identifies its source commit through the Actions run. The harness is excluded from installable JARs.
 
 ## Diagnostic measurements
 
@@ -63,7 +65,26 @@ The remapped installable JAR was launched separately with Fabric development mod
 Calamus Gen2, OSL 0.22.2 (complete published bundle), Legacy LWJGL3 and Argentum.
 Production launch uses Calamus explicitly because Loom’s generic task defaults to Fabric intermediary.
 Main menu/Nunito and real Right Shift settings input were visually verified.
-Additional production world evidence is recorded alongside the final artifact.
+The production JAR also entered the flat world through the native Singleplayer screen.
+Coordinates/crosshair/toggle sprint were enabled through real mouse input; HUD rendering,
+pause and save/return-to-title were visually checked.
+The first generic-launcher attempt lacked `fabric.fixPackageAccess=true` and failed on world
+creation; retaining the official Gen2 launcher arguments corrected this. This is why the
+installation guide requires the official Ornithe profile.
 
 Reproduce with `runProdClient -PtestStack=argentum -PruntimeModsDir=<verified downloads>`.
 This uses the release JAR, not development classes. See README.md for the build command.
+
+## Independent CI
+
+[Initial complete green matrix](https://github.com/TFLivesStudio/TFLClientMOD/actions/runs/40131720467)
+verified the build/common tests and all three client/restart scenarios on clean GitHub machines.
+The initial failed run exposed missing XRandR tooling and tick catch-up in the test harness;
+CI now installs `x11-xserver-utils` and waits for input/render frames, not just client ticks.
+Final publication is gated on repeating the matrix after the short-tap input correction.
+
+![Ornithe title](evidence/screenshots/title.png)
+
+![Shared settings](evidence/screenshots/settings.png)
+
+![Production JAR world with Argentum](evidence/screenshots/production-world.png)

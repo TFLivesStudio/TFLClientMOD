@@ -88,9 +88,7 @@ def productionMappings=configurations.detachedConfiguration(dependencies.create(
 tasks.named('runProdClient') {
     useXVFB=false
     classpath.setFrom(files(loom.minecraftProvider.minecraftClientJar),productionLoader,productionMappings,
-        configurations.named('minecraftTestClientRuntimeLibraries').map { config ->
-            config.filter { testStack == 'baseline' || (!it.name.startsWith('lwjgl-2.') && !it.name.startsWith('lwjgl_util-2.') && !it.name.startsWith('lwjgl-platform-2.')) }
-        })
+        configurations.named('minecraftTestClientRuntimeLibraries'))
 }
 // Official Ornithe Gen2 launcher profile arguments (required after class package remapping).
 tasks.named('runProdClient') {

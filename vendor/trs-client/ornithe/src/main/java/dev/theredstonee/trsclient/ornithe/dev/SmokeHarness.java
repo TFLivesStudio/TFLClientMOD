@@ -184,11 +184,14 @@ public final class SmokeHarness implements Runnable {
           check("sprint resets in GUI", !c.sprint.active());
           shot("world-settings");
           c.mc.openScreen(null);
+          KeyBinding.set(c.mc.options.sprintKey.getKeyCode(), true);
+          KeyBinding.set(c.mc.options.sprintKey.getKeyCode(), false);
           c.frameCount = 0;
           wait = 200;
           stage++;
         }
         case 8 -> {
+          check("sprint tap shorter than one client tick retained", c.sprint.active());
           check("frames recorded", c.frameCount > 0);
           c.save();
           c.config.flush();

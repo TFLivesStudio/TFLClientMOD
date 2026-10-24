@@ -48,6 +48,7 @@ public final class OrnitheClient implements ModInitializer {
   public boolean ready, crosshairVisible;
   public ConfigStore config;
   private boolean sprintDown;
+  private int sprintPresses;
   private Object lastWorld;
   private Window window;
   private int windowWidth = -1, windowHeight = -1, guiScale = -1;
@@ -225,11 +226,14 @@ public final class OrnitheClient implements ModInitializer {
       if (mc.screen instanceof CoreScreen cs && !cs.home) mc.openScreen(null);
       else openMenu(mc.screen);
     }
-    boolean physical = GameOptions.isPressed(mc.options.sprintKey);
     boolean blocked = mc.world == null || mc.player == null || mc.screen != null;
-    if (blocked || lastWorld != mc.world) sprint.reset();
-    sprint.update(physical && !sprintDown ? 1 : 0, modules.toggleSprint.isEnabled(), blocked);
-    sprintDown = physical;
+    if (blocked || lastWorld != mc.world) {
+      sprint.reset();
+      sprintPresses = 0;
+      sprintDown = false;
+    }
+    sprint.update(sprintPresses, modules.toggleSprint.isEnabled(), blocked);
+    sprintPresses = 0;
     lastWorld = mc.world;
     fps = Minecraft.getCurrentFps() + " FPS";
     if (mc.player != null)
@@ -258,6 +262,16 @@ public final class OrnitheClient implements ModInitializer {
             && mc.screen == null
             && zoomKey.isPressed();
     zoom.frame(active, false, modules.zoomFactor.get(), modules.zoomSmooth.get(), now);
+  }
+
+  /**
+   * Native press/release edges retain taps shorter than a client tick and ignore repeat key-downs.
+   */
+  public void keyState(int key, boolean down) {
+    if (!ready || key != mc.options.sprintKey.getKeyCode()) return;
+    if (down && !sprintDown && mc.world != null && mc.player != null && mc.screen == null)
+      sprintPresses++;
+    sprintDown = down;
   }
 
   public boolean sprintHeld(KeyBinding key) {
