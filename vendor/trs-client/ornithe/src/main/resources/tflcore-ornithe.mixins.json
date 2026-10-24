@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.theredstonee.trsclient.ornithe.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "MinecraftMixin",
+    "GameRendererMixin",
+    "GameGuiMixin",
+    "KeyBindingMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

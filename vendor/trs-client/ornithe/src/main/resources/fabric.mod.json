@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "tflcore",
+  "version": "${version}",
+  "name": "TFL Client",
+  "description": "Experimental Minecraft 1.8.9 Ornithe Gen2 platform for the existing TFL Client common core.",
+  "environment": "client",
+  "license": "GPL-3.0-only",
+  "authors": [
+    "Theredstonee (TRS Client upstream)",
+    "TFLivesStudio (TFL modifications)"
+  ],
+  "contact": {
+    "sources": "https://github.com/TFLivesStudio/TFLClientMOD"
+  },
+  "entrypoints": {
+    "init": [
+      "dev.theredstonee.trsclient.ornithe.OrnitheClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "1.8.9",
+    "java": ">=25",
+    "osl-entrypoints": ">=0.6.1",
+    "osl-lifecycle-events": ">=0.6.0",
+    "osl-keybinds": ">=0.3.0"
+  },
+  "breaks": {
+    "trsclient": "*"
+  },
+  "mixins": [
+    "tflcore-ornithe.mixins.json"
+  ]
+}

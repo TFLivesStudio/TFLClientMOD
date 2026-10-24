@@ -61,6 +61,10 @@ class ServerPacksTest {
 		});
 		http.createContext("/big", ex -> {
 			ex.sendResponseHeaders(200, 10_000_000);
+			// JDK 25 may buffer headers until the first body write. The client rejects
+			// this declared size before reading the intentionally truncated response.
+			ex.getResponseBody().write(0);
+			ex.getResponseBody().flush();
 			ex.close();
 		});
 		http.start();
@@ -107,7 +111,8 @@ class ServerPacksTest {
 	@Test
 	void sizeLimitAndCancelAndPrivateTargets() throws Exception {
 		Path target = dir.resolve("y").resolve("pack");
-		assertTrue(PackDownloader.download(url("/big"), target, sha1, 1_000_000, null, 0, null, true).error.startsWith("too large"));
+		PackDownloader.Result tooLarge = PackDownloader.download(url("/big"), target, sha1, 1_000_000, null, 0, null, true);
+		assertTrue(tooLarge.error.startsWith("too large"), tooLarge.error);
 		assertEquals("cancelled", PackDownloader.download(url("/pack.zip"), target, sha1, 1_000_000, null, 0, new AtomicBoolean(true), true).error);
 		assertEquals("private address", PackDownloader.download(url("/pack.zip"), target, sha1, 1_000_000, null, 0, null, false).error);
 		assertEquals("scheme", PackDownloader.download("file:///etc/passwd", target, sha1, 1_000_000, null, 0, null, true).error);

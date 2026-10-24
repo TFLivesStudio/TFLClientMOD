@@ -1,0 +1,45 @@
+{
+  "minecraft": "1.8.9",
+  "java": "25",
+  "intermediary": "net.ornithemc:calamus-intermediary-gen2:1.8.9",
+  "mappings": "net.ornithemc:feather-gen2:1.8.9+build.2",
+  "loader": "0.19.5",
+  "loom": "1.18.4",
+  "ploceus": "1.18.3",
+  "gradle": "9.7.1",
+  "external": [
+    {
+      "name": "osl",
+      "version": "0.22.2",
+      "project": "EHGtwpJv",
+      "versionId": "hZiJswqZ",
+      "filename": "ornithe-standard-libraries-0.22.2.jar",
+      "url": "https://cdn.modrinth.com/data/EHGtwpJv/versions/hZiJswqZ/ornithe-standard-libraries-0.22.2.jar",
+      "sha512": "fb51948c30a15a4693fb8e511c4cd57007c5233b73652af3e884ff99ad0ba29658aa6d2814a3695d7093bfb4bb905351d20470bd311259640e9f1bdeea865725",
+      "license": "Apache-2.0",
+      "bundled": false
+    },
+    {
+      "name": "lwjgl3",
+      "version": "1.4.10",
+      "project": "lpiIRiAZ",
+      "versionId": "GKmFDvJ4",
+      "filename": "legacy-lwjgl3-1.4.10.jar",
+      "url": "https://cdn.modrinth.com/data/lpiIRiAZ/versions/GKmFDvJ4/legacy-lwjgl3-1.4.10.jar",
+      "sha512": "af73ce5027ce69962c03d476ea50fa16468eb99b63e2956d1e011ef62b1361f61e34dd0fc6b2ba54a7acbd6e4649a7447ec8e5984d461b5ccc555792b9539230",
+      "license": "LGPL-2.1-only",
+      "bundled": false
+    },
+    {
+      "name": "argentum",
+      "version": "1.0.2",
+      "project": "QRMV06RW",
+      "versionId": "RxzOYPTx",
+      "filename": "argentum-1.0.2.jar",
+      "url": "https://cdn.modrinth.com/data/QRMV06RW/versions/RxzOYPTx/argentum-1.0.2.jar",
+      "sha512": "dd6b514b5777acf503976792c06ff56f974ad4a7b95545ad011fb8c7d6af828332a505ea5727648ea6a4eac5b718a5297b398e48c83613647c4c72b827c0000d",
+      "license": "LicenseRef-All-Rights-Reserved",
+      "bundled": false
+    }
+  ]
+}

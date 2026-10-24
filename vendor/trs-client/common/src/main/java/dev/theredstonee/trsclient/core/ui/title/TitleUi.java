@@ -47,7 +47,7 @@ public final class TitleUi extends UiScreen {
         int headingY=compact?7:Math.max(18,top-46);
         c.push();c.translate(left,headingY);c.scale(compact?1.15f:1.9f);
         c.strongText("TFL Client",0,0,t.text);c.pop();
-        if(!compact)c.text("0.4.0-dev.3",left,headingY+26,t.textDim,false);
+        if(!compact)c.text(host.clientVersion(),left,headingY+26,t.textDim,false);
         for(int i=0;i<entries.size();i++) {
             Entry e=entries.get(i);e.x=left;e.y=top+i*row;e.w=rail;e.h=Math.max(10,row-3);
             boolean selected=focus==i||inside(mx,my,e);
