@@ -1,90 +1,55 @@
-# Ornithe Phase 1 — validation (2026-10-24)
+# Ornithe II — validation
 
-Experimental release; Linux x86_64, Temurin 25.0.5, Xvfb, Mesa llvmpipe (LLVM 19.1.7),
-software OpenGL. Native game launches, not compilation-only compatibility claims.
+Local evidence: Java 25.0.5, Linux x86_64, Xvfb 854×480, Mesa llvmpipe (LLVM 19.1.7).
+These are actual Minecraft launches. Software OpenGL measurements do not establish physical-GPU speed or superiority over Forge.
 
-## Build and tests
+## Client checks
 
-- Independent Ornithe build completed with Gradle 9.7.1 / Loom 1.18.4 / Ploceus 1.18.3.
-- Shared core: **1,128 tests; 1,126 passed, 0 failures/errors, 2 skipped**.
-- Common production sources also compile with Java 8/Gson 2.2.4; no other game target was built.
-- Existing HTTP fixture now explicitly flushes oversized response headers: Java 25 otherwise
-  closed its intentionally truncated response before transmitting headers. Production downloader is unchanged.
-- Installable archive validation: one `tflcore` client mod, Java 25 classes, Gen2 references,
-  GPL/NOTICE/font licenses, no Forge classes, development harness, nested bridge or external mod binaries.
+| Stack | Native assertions | Restart assertions | Result |
+| --- | ---: | ---: | --- |
+| baseline | 212 | 2 | passed / passed |
+| lwjgl3 | 214 | 2 | passed / passed |
+| argentum | 214 | 2 | passed / passed |
 
-## Actual client matrix
+Machine-readable local reports are committed under [evidence/](evidence/). Final Actions runs repeat the suite against the release commit.
+The suite tests visible/native outcomes for 21 modules plus consent guards for two; other enabled/disabled checks establish state handling only.
+Restart checks verify selected saved preferences, not every setting of every module.
 
-| Stack | In-game checks | Fresh process/preferences | Status |
-| --- | --- | --- | --- |
-| baseline | 31 passed | 2 passed | passed / passed |
-| lwjgl3 | 31 passed | 2 passed | passed / passed |
-| argentum | 31 passed | 2 passed | passed / passed |
+Output assertions include native FOV/sprint/CPS, terrain and unloaded-chunk rejection, negative-coordinate waypoint persistence,
+world map textures, native chat components/history/filter, privacy, durability tooltip, particle allocation, Redstone states,
+reach/combo, humanoid emote pose restoration, color grading, circuit checker, isolated freecam movement,
+six-face panorama PNG/HUD/camera restoration, screenshot watcher and local gallery.
+Renderer checks cover active texture unit restoration, one batch per accented Nunito text run, Unicode fallback metrics and texture reuse.
 
-The tick-driven development harness opens the shared title/settings/editor, verifies return-to-title,
-enters a deterministic flat world, toggles all seven modules off/on, captures both CPS hooks,
-holds real V/Control input through X11/Robot, checks the native FOV return hook and sprint latch,
-verifies disable/release restoration, opens settings in world and checks GUI sprint reset.
-A second JVM loads the saved coordinates/crosshair state and crosshair size. JSON reports enumerate
-every assertion; screenshots accompany the runtime artifact.
-These local reports precede the additional short-sprint-tap assertion; the final CI artifact
-repeats the suite with that assertion and identifies its source commit through the Actions run. The harness is excluded from installable JARs.
+## Build regression
 
-## Diagnostic measurements
+Final build results are recorded in PROJECT_II_PROGRESS.md and the GitHub Actions checks. Common includes the new HUD Arrange/Undo test;
+Ornithe has nine target contracts covering capability preservation, explicit consent and byte parity of native Netty compression.
+Common production retains Java 8 bytecode/Gson 2.2.4; target Java 25 does not change other platform requirements.
 
-200 client ticks after warm-up; deterministic flat world, no movement, 854×480, same mod settings.
-Measurements are short software-renderer smoke samples, not controlled benchmarks. Heap is a point
-sample without forced GC. They establish instrumentation, **not a performance ranking**.
+## Diagnostic smoke samples
 
-| Stack | Frames | FPS from mean interval | Median ms | P95 ms | Heap MiB |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| baseline | 257 | 23.50 | 41.11 | 59.43 | 284.2 |
-| lwjgl3 | 176 | 16.20 | 56.05 | 97.01 | 224.4 |
-| argentum | 283 | 25.55 | 33.88 | 53.68 | 642.3 |
+Mixed test stages and enabled modules, short runs, no controlled baseline without TFL, no forced GC. Values are instrumentation samples only.
 
-## Compatibility limits
+| Stack | Frames | FPS from mean | p50 ms | p95 ms | p99 ms | Heap MiB |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| baseline | 397 | 23.21 | 44.07 | 71.88 | 112.45 | 495.0 |
+| lwjgl3 | 410 | 23.57 | 43.38 | 67.79 | 106.13 | 506.5 |
+| argentum | 436 | 25.45 | 39.39 | 64.89 | 87.29 | 224.3 |
 
-Argentum 1.0.2 initializes its renderer in the real client, builds chunks and enables model instancing;
-the seven TFL functions and restart checks pass beside it. Its configuration is not modified.
-No proprietary implementation was copied, decompiled or added as a compile dependency.
-Legacy LWJGL3 reports its SDL3 backend and LWJGL 3.4.3 runtime.
+A module-menu diagnostics action exports a bounded frametime ring, p50/p95/p99, heap, owned texture count/estimate, resolution, GL/Java/OS and initialization/world-load durations.
+Texture estimates cover TFL-owned dynamic textures, not total GPU VRAM. Export writes asynchronously and excludes server addresses/config content.
+Use [WINDOWS_BENCHMARK.md](WINDOWS_BENCHMARK.md) for comparable physical-GPU scenarios with/without TFL and Argentum.
 
-Known upstream/environment diagnostics: missing legacy Realms/Twitch classes, legacy Log4j console
-appender warnings in development, and Java 25 Unsafe deprecation notices from third-party libraries.
-These do not prevent the tested sessions. The cloud has no audio device; sound was tested with a null
-backend, not speakers. Development remapping can warn about an optional third-party target.
+## Remaining acceptance limits
 
-No physical-GPU, Windows, macOS, multiplayer/server-policy, broad modpack, IME or long-session
-certification is implied. Vanilla world/server/options screens keep vanilla styling in this phase.
-Only seven modules are ported; advanced per-module settings omitted from the PoC UI are not implemented.
-The experiment remains a draft PR and a prerelease; Forge is retained.
+- Windows/macOS and physical GPU stability/performance, borderless multi-monitor behavior and sound on speakers (cloud uses a null audio backend).
+- Authenticated multiplayer, encrypted/compressed real connections, multi-address connection racing, reconnect behavior and server policies.
+- Actual Nether/End transitions, sustained exploration/teleports, reload stress and large persistent maps.
+- Cosmetic tint/animations/cape with an authorized real cape, chat heads, all HUD styles/previews and every exposed setting.
+- Default crowded HUD layouts may overlap; explicit Arrange is available and undoable. No universal all-widget fit is claimed.
+- No remote services or external recording; shulker/totem/shield mechanics absent from 1.8.9 are not simulated.
+- Optional video requires a local MJPEG asset. No included high-resolution animated wallpaper or native player preview is claimed.
 
-## Production JAR
-
-The remapped installable JAR was launched separately with Fabric development mode disabled,
-Calamus Gen2, OSL 0.22.2 (complete published bundle), Legacy LWJGL3 and Argentum.
-Production launch uses Calamus explicitly because Loom’s generic task defaults to Fabric intermediary.
-Main menu/Nunito and real Right Shift settings input were visually verified.
-The production JAR also entered the flat world through the native Singleplayer screen.
-Coordinates/crosshair/toggle sprint were enabled through real mouse input; HUD rendering,
-pause and save/return-to-title were visually checked.
-The first generic-launcher attempt lacked `fabric.fixPackageAccess=true` and failed on world
-creation; retaining the official Gen2 launcher arguments corrected this. This is why the
-installation guide requires the official Ornithe profile.
-
-Reproduce with `runProdClient -PtestStack=argentum -PruntimeModsDir=<verified downloads>`.
-This uses the release JAR, not development classes. See README.md for the build command.
-
-## Independent CI
-
-[Initial complete green matrix](https://github.com/TFLivesStudio/TFLClientMOD/actions/runs/40131720467)
-verified the build/common tests and all three client/restart scenarios on clean GitHub machines.
-The initial failed run exposed missing XRandR tooling and tick catch-up in the test harness;
-CI now installs `x11-xserver-utils` and waits for input/render frames, not just client ticks.
-Final publication is gated on repeating the matrix after the short-tap input correction.
-
-![Ornithe title](evidence/screenshots/title.png)
-
-![Shared settings](evidence/screenshots/settings.png)
-
-![Production JAR world with Argentum](evidence/screenshots/production-world.png)
+Legacy Realms/Twitch absence, Java Unsafe and old logging warnings occur in development; they did not prevent these passing sessions.
+Phase I evidence remains in Git history at c637961. Its seven-module claims do not describe this release.

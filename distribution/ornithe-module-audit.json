@@ -1,0 +1,5180 @@
+{
+  "schemaVersion": 1,
+  "version": "0.4.0-ornithe.2",
+  "inventory": "distribution/modules.json",
+  "evidence": "docs/ornithe/evidence (local Java 25/Linux llvmpipe runs; final CI repeats)",
+  "counts": {
+    "implemented_with_limitations": 73,
+    "not_applicable_1_8_9": 1,
+    "requires_external_infrastructure": 5,
+    "total": 79,
+    "completelyCertified": 0,
+    "nativeOutputAssertedModules": 21,
+    "guardOnlyModules": 2,
+    "runtimePending": 0
+  },
+  "warning": "Runtime wiring and enabled-state toggles are not complete functional certification.",
+  "modules": [
+    {
+      "id": "fps",
+      "name": "FPS",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameGuiMixin.render",
+        "OrnitheClient.createHud",
+        "OrnitheClient.tick"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Ornithe HUD adapter; advanced options are listed only when connected",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Ornithe HUD adapter; advanced options are listed only when connected",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "cps",
+      "name": "CPS",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameGuiMixin.render",
+        "OrnitheClient.createHud",
+        "OrnitheClient.tick"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Ornithe HUD adapter; advanced options are listed only when connected",
+        "nativeFunctionalChecks": [
+          "CPS hook both buttons"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "CPS hook both buttons"
+        ],
+        "lwjgl3": [
+          "CPS hook both buttons"
+        ],
+        "argentum": [
+          "CPS hook both buttons"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Ornithe HUD adapter; advanced options are listed only when connected",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "keystrokes",
+      "name": "Keystrokes",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "OrnitheKeystrokes",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "showCps",
+        "showSpace",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native coordinates/direction/biome and actual bindings with mouse/CPS/space options",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native coordinates/direction/biome and actual bindings with mouse/CPS/space options",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "ping",
+      "name": "Ping",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "details",
+        "graph",
+        "jitter",
+        "scale",
+        "shadow",
+        "spikeThreshold",
+        "spikeWarning",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [
+        "interval"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared tab latency, keepalive jitter, history, spike warning and TPS estimate. 1.8.9 has no active ping-request packet; interval is preserved but not exposed.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared tab latency, keepalive jitter, history, spike warning and TPS estimate. 1.8.9 has no active ping-request packet; interval is preserved but not exposed.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "armor",
+      "name": "Armor",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "durability",
+        "hand",
+        "layout",
+        "percent",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native item icons with shared ArmorLayout and durability formatting",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native item icons with shared ArmorLayout and durability formatting",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "effects",
+      "name": "Potion Effects",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "coords",
+      "name": "Coordinates",
+      "category": "WORLD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "biome",
+        "direction",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "clock",
+      "name": "Clock",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "seconds",
+        "shadow",
+        "textColor",
+        "twelveHour"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "memory",
+      "name": "Memory",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "server",
+      "name": "Server Address",
+      "category": "WORLD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "packs",
+      "name": "Active Resource Packs",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "toggleSprint",
+      "name": "Toggle Sprint",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameGuiMixin.render",
+        "OrnitheClient.createHud",
+        "OrnitheClient.tick"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [
+        "flyBoost",
+        "flyBoostFactor",
+        "onlyForward",
+        "remember"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Ornithe HUD adapter; advanced options are listed only when connected",
+        "nativeFunctionalChecks": [
+          "physical sprint key toggles latch",
+          "native sprint binding held",
+          "disable restores native sprint binding",
+          "sprint resets in GUI",
+          "sprint tap shorter than one client tick retained"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "physical sprint key toggles latch",
+          "native sprint binding held",
+          "disable restores native sprint binding",
+          "sprint resets in GUI",
+          "sprint tap shorter than one client tick retained"
+        ],
+        "lwjgl3": [
+          "physical sprint key toggles latch",
+          "native sprint binding held",
+          "disable restores native sprint binding",
+          "sprint resets in GUI",
+          "sprint tap shorter than one client tick retained"
+        ],
+        "argentum": [
+          "physical sprint key toggles latch",
+          "native sprint binding held",
+          "disable restores native sprint binding",
+          "sprint resets in GUI",
+          "sprint tap shorter than one client tick retained"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Ornithe HUD adapter; advanced options are listed only when connected",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "toggleSneak",
+      "name": "Toggle Sneak",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [
+        "remember"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native edge-triggered sneak; resets on GUI/world change",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native edge-triggered sneak; resets on GUI/world change",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "reach",
+      "name": "Reach",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "decimals",
+        "hold",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Observed eye-to-hit distance only",
+        "nativeFunctionalChecks": [
+          "native attack records actual hit distance"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native attack records actual hit distance"
+        ],
+        "lwjgl3": [
+          "native attack records actual hit distance"
+        ],
+        "argentum": [
+          "native attack records actual hit distance"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Observed eye-to-hit distance only",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "combo",
+      "name": "Combo",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "best",
+        "scale",
+        "shadow",
+        "textColor",
+        "timeout"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Confirmed native hurt events after a local attack",
+        "nativeFunctionalChecks": [
+          "native hurt confirms combo",
+          "duplicate hurt does not confirm another hit",
+          "own hurt clears combo"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native hurt confirms combo",
+          "duplicate hurt does not confirm another hit",
+          "own hurt clears combo"
+        ],
+        "lwjgl3": [
+          "native hurt confirms combo",
+          "duplicate hurt does not confirm another hit",
+          "own hurt clears combo"
+        ],
+        "argentum": [
+          "native hurt confirms combo",
+          "duplicate hurt does not confirm another hit",
+          "own hurt clears combo"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Confirmed native hurt events after a local attack",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "speed",
+      "name": "Speed",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor",
+        "vertical"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native tick-cached HUD data",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tick-cached HUD data",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "minimap",
+      "name": "Minimap",
+      "category": "WORLD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "MapEngine.tick",
+        "OrnitheMapPlatform",
+        "MinimapRenderer",
+        "WorldMapUi"
+      ],
+      "implementedSettings": [
+        "autoZoomIndoor",
+        "autoZoomSpeed",
+        "background",
+        "backgroundOpacity",
+        "biome",
+        "caveMode",
+        "colors",
+        "compass",
+        "coords",
+        "edgeWaypoints",
+        "fairPlay",
+        "hideRoof",
+        "mobIcons",
+        "opacity",
+        "rotate",
+        "scale",
+        "shadow",
+        "shape",
+        "showDeath",
+        "showFriends",
+        "showHostile",
+        "showPassive",
+        "showPlayers",
+        "showWaypoints",
+        "size",
+        "textColor",
+        "time",
+        "zoom"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+        "nativeFunctionalChecks": [
+          "map samples received terrain",
+          "map excludes unknown chunks",
+          "map reader excludes unknown chunks"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "map samples received terrain",
+          "map excludes unknown chunks",
+          "map reader excludes unknown chunks"
+        ],
+        "lwjgl3": [
+          "map samples received terrain",
+          "map excludes unknown chunks",
+          "map reader excludes unknown chunks"
+        ],
+        "argentum": [
+          "map samples received terrain",
+          "map excludes unknown chunks",
+          "map reader excludes unknown chunks"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "worldMap",
+      "name": "World map",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "MapEngine.tick",
+        "OrnitheMapPlatform",
+        "MinimapRenderer",
+        "WorldMapUi"
+      ],
+      "implementedSettings": [
+        "cacheSize",
+        "exportSize",
+        "grid",
+        "inertia",
+        "key",
+        "netherCoords",
+        "otherDimensions",
+        "showHostile",
+        "showPassive",
+        "showPlayers",
+        "showWaypoints",
+        "smoothZoom",
+        "waypointList"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+        "nativeFunctionalChecks": [
+          "native map key opens shared world map",
+          "world map uploads received region textures"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native map key opens shared world map",
+          "world map uploads received region textures"
+        ],
+        "lwjgl3": [
+          "native map key opens shared world map",
+          "world map uploads received region textures"
+        ],
+        "argentum": [
+          "native map key opens shared world map",
+          "world map uploads received region textures"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "crosshair",
+      "name": "Crosshair",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameGuiMixin.hasCrosshair",
+        "OrnitheClient.drawHud"
+      ],
+      "implementedSettings": [
+        "color",
+        "gap",
+        "outline",
+        "shape",
+        "size",
+        "thickness"
+      ],
+      "hiddenPreservedSettings": [
+        "attack"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Basic geometry connected; 1.8.9 has no attack cooldown indicator",
+        "nativeFunctionalChecks": [
+          "native crosshair eligibility captured"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native crosshair eligibility captured"
+        ],
+        "lwjgl3": [
+          "native crosshair eligibility captured"
+        ],
+        "argentum": [
+          "native crosshair eligibility captured"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Basic geometry connected; 1.8.9 has no attack cooldown indicator",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "hitColor",
+      "name": "Hit Color",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ],
+      "implementedSettings": [
+        "color",
+        "opacity"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "freelook",
+      "name": "Freelook",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameRendererMixin.transformCamera",
+        "GameRendererMixin.updateLocalPlayerCamera",
+        "OrnitheFreelook.frame"
+      ],
+      "implementedSettings": [
+        "key",
+        "perspective",
+        "servers",
+        "toggle"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Independent native camera angles, shared hold/toggle and server exclusion list. Restores perspective on GUI, death and world changes.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Independent native camera angles, shared hold/toggle and server exclusion list. Restores perspective on GUI, death and world changes.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameRendererMixin.getFov",
+        "MouseMixin.tick",
+        "MinecraftMixin.scroll",
+        "GameRendererMixin.cinematic"
+      ],
+      "implementedSettings": [
+        "cinematic",
+        "factor",
+        "key",
+        "scroll",
+        "slowMouse",
+        "smooth"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native FOV, scroll, mouse slowdown, cinematic smoothing and configurable binding",
+        "nativeFunctionalChecks": [
+          "native frame applies zoom",
+          "native FOV return hook",
+          "zoom released restores FOV divisor"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native frame applies zoom",
+          "native FOV return hook",
+          "zoom released restores FOV divisor"
+        ],
+        "lwjgl3": [
+          "native frame applies zoom",
+          "native FOV return hook",
+          "zoom released restores FOV divisor"
+        ],
+        "argentum": [
+          "native frame applies zoom",
+          "native FOV return hook",
+          "zoom released restores FOV divisor"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Native FOV, scroll, mouse slowdown, cinematic smoothing and configurable binding",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "fullbright",
+      "name": "Gamma",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameRendererMixin.updateLightMap"
+      ],
+      "implementedSettings": [
+        "level"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native lightmap gamma read; original option is never overwritten",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native lightmap gamma read; original option is never overwritten",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "autorefill",
+      "name": "Auto-Refill",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheRefill.tick",
+        "AutoRefill.Game",
+        "ClientPlayerInteractionManager.clickSlot",
+        "OrnitheConsent"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Replenishes an emptied selected slot using a normal inventory swap. Survival/adventure only, no GUI, no Fair Play. Old enabled flags require an explicit off/on toggle here.",
+        "nativeFunctionalChecks": [
+          "legacy enabled refill never grants inventory approval"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "legacy enabled refill never grants inventory approval"
+        ],
+        "lwjgl3": [
+          "legacy enabled refill never grants inventory approval"
+        ],
+        "argentum": [
+          "legacy enabled refill never grants inventory approval"
+        ]
+      },
+      "nativeEvidenceKind": "guard only",
+      "limitations": [
+        "Replenishes an emptied selected slot using a normal inventory swap. Survival/adventure only, no GUI, no Fair Play. Old enabled flags require an explicit off/on toggle here.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "titleScreen",
+      "name": "Title Screen",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "MinecraftMixin.openScreen",
+        "OrnitheClient.title"
+      ],
+      "implementedSettings": [
+        "animated",
+        "backgroundMode"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "menuStyle",
+      "name": "Menu Style",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "MinecraftMixin.openScreen",
+        "ButtonWidgetMixin.render",
+        "ScreenMixin.renderBackground"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared pause navigation and modern native option/button surfaces; vanilla behavior retained",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared pause navigation and modern native option/button surfaces; vanilla behavior retained",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "oldAnimations",
+      "name": "1.7 Animations",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ],
+      "implementedSettings": [
+        "blockHit",
+        "noDip"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "lowFire",
+      "name": "Low Fire",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ],
+      "implementedSettings": [
+        "height"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "shieldPosition",
+      "name": "Shield Position",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Absent in Minecraft 1.8.9",
+      "state": "VERSION_UNAVAILABLE",
+      "finalStatus": "not_applicable_1_8_9",
+      "nativeHooks": [],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [
+        "blockRotX",
+        "blockRotY",
+        "blockRotZ",
+        "blockScale",
+        "blockX",
+        "blockY",
+        "blockZ",
+        "normalRotX",
+        "normalRotY",
+        "normalRotZ",
+        "normalScale",
+        "normalX",
+        "normalY",
+        "normalZ",
+        "opacity",
+        "preset",
+        "transparent"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25",
+        "external infrastructure/integration required"
+      ],
+      "argentum": {
+        "state": "VERSION_UNAVAILABLE",
+        "policy": "Combat shields were introduced in Minecraft 1.9",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Combat shields were introduced in Minecraft 1.9",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "blockOutline",
+      "name": "Block Outline",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ],
+      "implementedSettings": [
+        "color",
+        "opacity",
+        "width"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "hitboxes",
+      "name": "Hitboxes",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ],
+      "implementedSettings": [
+        "color"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "noHurtCam",
+      "name": "No Hurt Cam",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "GameRendererMixin.applyHurtCam"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Cancels native hurt-camera transform; restores automatically when disabled",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Cancels native hurt-camera transform; restores automatically when disabled",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "chat",
+      "name": "Chat Improvements",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ChatGuiMixin.addMessage",
+        "ChatHistory.limit",
+        "OrnitheChat.receive"
+      ],
+      "implementedSettings": [
+        "history",
+        "stack",
+        "timestampSeconds",
+        "timestampTwelveHour",
+        "timestamps"
+      ],
+      "hiddenPreservedSettings": [
+        "coordLinks",
+        "copy",
+        "copyMode"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Timestamps, stacking and bounded history preserve native text/click/hover components. Copy and coordinate links are not connected yet.",
+        "nativeFunctionalChecks": [
+          "chat disabled",
+          "native chat groups duplicates without double insertion",
+          "native timestamp added",
+          "native chat preserves original component actions",
+          "native history respects configured bound",
+          "chat disable restores Vanilla retention"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "chat disabled",
+          "native chat groups duplicates without double insertion",
+          "native timestamp added",
+          "native chat preserves original component actions",
+          "native history respects configured bound",
+          "chat disable restores Vanilla retention"
+        ],
+        "lwjgl3": [
+          "chat disabled",
+          "native chat groups duplicates without double insertion",
+          "native timestamp added",
+          "native chat preserves original component actions",
+          "native history respects configured bound",
+          "chat disable restores Vanilla retention"
+        ],
+        "argentum": [
+          "chat disabled",
+          "native chat groups duplicates without double insertion",
+          "native timestamp added",
+          "native chat preserves original component actions",
+          "native history respects configured bound",
+          "chat disable restores Vanilla retention"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Timestamps, stacking and bounded history preserve native text/click/hover components. Copy and coordinate links are not connected yet.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "autoGg",
+      "name": "Auto GG",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheAutomation.tick",
+        "ChatNetworkMixin.handleChatMessage",
+        "OrnitheConsent",
+        "AutoGg",
+        "ChatOut"
+      ],
+      "implementedSettings": [
+        "delay",
+        "presets",
+        "text",
+        "triggers"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Sends chat using shared sanitization/rate limits. Old enabled preferences do not authorize sends: switch this module off/on here to approve Ornithe. Disable at any time.",
+        "nativeFunctionalChecks": [
+          "legacy enabled AutoGG never grants send approval"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "legacy enabled AutoGG never grants send approval"
+        ],
+        "lwjgl3": [
+          "legacy enabled AutoGG never grants send approval"
+        ],
+        "argentum": [
+          "legacy enabled AutoGG never grants send approval"
+        ]
+      },
+      "nativeEvidenceKind": "guard only",
+      "limitations": [
+        "Sends chat using shared sanitization/rate limits. Old enabled preferences do not authorize sends: switch this module off/on here to approve Ornithe. Disable at any time.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "textHotkeys",
+      "name": "Text Hotkeys",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheAutomation.tick",
+        "ChatNetworkMixin.handleChatMessage",
+        "OrnitheConsent",
+        "AutoGg",
+        "ChatOut"
+      ],
+      "implementedSettings": [
+        "key1",
+        "key2",
+        "key3",
+        "key4",
+        "text1",
+        "text2",
+        "text3",
+        "text4"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Sends chat using shared sanitization/rate limits. Old enabled preferences do not authorize sends: switch this module off/on here to approve Ornithe. Disable at any time.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Sends chat using shared sanitization/rate limits. Old enabled preferences do not authorize sends: switch this module off/on here to approve Ornithe. Disable at any time.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "waypoints",
+      "name": "Waypoints",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheWaypoints.tick",
+        "WaypointSaveUi",
+        "WaypointShare",
+        "WaypointStore",
+        "Projection"
+      ],
+      "implementedSettings": [
+        "addKey",
+        "beam",
+        "death",
+        "distance",
+        "listKey",
+        "range"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared persistent points, death markers, add/list bindings and projected names/distances/beams in first person. Third-person world projection is intentionally omitted.",
+        "nativeFunctionalChecks": [
+          "native world waypoints persist negative coordinates and dimension"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native world waypoints persist negative coordinates and dimension"
+        ],
+        "lwjgl3": [
+          "native world waypoints persist negative coordinates and dimension"
+        ],
+        "argentum": [
+          "native world waypoints persist negative coordinates and dimension"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared persistent points, death markers, add/list bindings and projected names/distances/beams in first person. Third-person world projection is intentionally omitted.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "trsOnline",
+      "name": "Online services",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "BACKEND_UNAVAILABLE",
+      "finalStatus": "requires_external_infrastructure",
+      "nativeHooks": [],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [
+        "badgeNametag",
+        "badgeTab",
+        "capes",
+        "cosmetics",
+        "fanSymbolNametag",
+        "fanSymbolTab",
+        "sync"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25",
+        "external infrastructure/integration required"
+      ],
+      "argentum": {
+        "state": "BACKEND_UNAVAILABLE",
+        "policy": "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "capePhysics",
+      "name": "Cape Physics",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheCapes.tick",
+        "CapePhysics",
+        "CapeLayerMixin",
+        "ClothMesh"
+      ],
+      "implementedSettings": [
+        "detail",
+        "gravity",
+        "height",
+        "movement",
+        "scope",
+        "stiffness",
+        "style",
+        "wind",
+        "windMode"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared bounded cloth/LOD and native cape layer. Uses existing Vanilla cape ownership/resources only, no remote cosmetics. Menu player preview is not connected.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared bounded cloth/LOD and native cape layer. Uses existing Vanilla cape ownership/resources only, no remote cosmetics. Menu player preview is not connected.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "colors",
+      "name": "Colors",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheColors",
+        "ColorGrade",
+        "GameRendererMixin.renderWorld",
+        "PostChain"
+      ],
+      "implementedSettings": [
+        "brightness",
+        "contrast",
+        "saturation",
+        "temperature",
+        "vibrance"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared color matrix/vibrance with Vanilla post-processing. Skips existing Vanilla shaders; no second world renderer. GPU hardware performance remains unmeasured.",
+        "nativeFunctionalChecks": [
+          "native color post-process executes"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native color post-process executes"
+        ],
+        "lwjgl3": [
+          "native color post-process executes"
+        ],
+        "argentum": [
+          "native color post-process executes"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared color matrix/vibrance with Vanilla post-processing. Skips existing Vanilla shaders; no second world renderer. GPU hardware performance remains unmeasured.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "emotes",
+      "name": "Emotes",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "EmoteWheel",
+        "EmoteController(local=true)",
+        "HumanoidModelMixin.setupAnimation",
+        "OrnitheEmotes.tick"
+      ],
+      "implementedSettings": [
+        "camera"
+      ],
+      "hiddenPreservedSettings": [
+        "others"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Local radial wheel/model animation only; no remote synchronization",
+        "nativeFunctionalChecks": [
+          "local emote starts without online services",
+          "native humanoid emote pose applied",
+          "emote selects third person",
+          "attack cancels local emote",
+          "emote restores previous perspective",
+          "humanoid restores vanilla pose after emote"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "local emote starts without online services",
+          "native humanoid emote pose applied",
+          "emote selects third person",
+          "attack cancels local emote",
+          "emote restores previous perspective",
+          "humanoid restores vanilla pose after emote"
+        ],
+        "lwjgl3": [
+          "local emote starts without online services",
+          "native humanoid emote pose applied",
+          "emote selects third person",
+          "attack cancels local emote",
+          "emote restores previous perspective",
+          "humanoid restores vanilla pose after emote"
+        ],
+        "argentum": [
+          "local emote starts without online services",
+          "native humanoid emote pose applied",
+          "emote selects third person",
+          "attack cancels local emote",
+          "emote restores previous perspective",
+          "humanoid restores vanilla pose after emote"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Local radial wheel/model animation only; no remote synchronization",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "redstoneSignal",
+      "name": "Signal Strength",
+      "category": "REDSTONE",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheRedstone.tick",
+        "OrnitheRedstoneWorld",
+        "RedstoneTools",
+        "RedstonePanels",
+        "SignalOverlay"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "bar",
+        "details",
+        "name",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+        "nativeFunctionalChecks": [
+          "native redstone dust power 13",
+          "native redstone probe recognizes dust",
+          "native powered repeater delay",
+          "native comparator subtract mode",
+          "shared redstone readout consumes native states"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native redstone dust power 13",
+          "native redstone probe recognizes dust",
+          "native powered repeater delay",
+          "native comparator subtract mode",
+          "shared redstone readout consumes native states"
+        ],
+        "lwjgl3": [
+          "native redstone dust power 13",
+          "native redstone probe recognizes dust",
+          "native powered repeater delay",
+          "native comparator subtract mode",
+          "shared redstone readout consumes native states"
+        ],
+        "argentum": [
+          "native redstone dust power 13",
+          "native redstone probe recognizes dust",
+          "native powered repeater delay",
+          "native comparator subtract mode",
+          "shared redstone readout consumes native states"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "redstoneOverlay",
+      "name": "Signal Overlay",
+      "category": "REDSTONE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheRedstone.tick",
+        "OrnitheRedstoneWorld",
+        "RedstoneTools",
+        "RedstonePanels",
+        "SignalOverlay"
+      ],
+      "implementedSettings": [
+        "radius",
+        "visibleOnly",
+        "zero"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "redstoneClock",
+      "name": "Clock Meter",
+      "category": "REDSTONE",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheRedstone.tick",
+        "OrnitheRedstoneWorld",
+        "RedstoneTools",
+        "RedstonePanels",
+        "SignalOverlay"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "keep",
+        "scale",
+        "scope",
+        "shadow",
+        "textColor",
+        "window"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "clips",
+      "name": "Clips & Recording",
+      "category": "MISC",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "BACKEND_UNAVAILABLE",
+      "finalStatus": "requires_external_infrastructure",
+      "nativeHooks": [],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [
+        "background",
+        "backgroundOpacity",
+        "bufferIcon",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25",
+        "external infrastructure/integration required"
+      ],
+      "argentum": {
+        "state": "BACKEND_UNAVAILABLE",
+        "policy": "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "fpsBoost",
+      "name": "FPS Boost",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheGameOptions",
+        "BoostPreset.target",
+        "UndoLog",
+        "OrnitheMenuHost.actions"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Explicit Vanilla-only detail presets with persistent shared UndoLog. No automatic preset, no culler or Argentum config changes; no measured FPS gain is claimed.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Explicit Vanilla-only detail presets with persistent shared UndoLog. No automatic preset, no culler or Argentum config changes; no measured FPS gain is claimed.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "dynamicFps",
+      "name": "Dynamic FPS",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePerformance.frame",
+        "MinecraftMixin.getMaxFramerate",
+        "SoundManager.setVolume"
+      ],
+      "implementedSettings": [
+        "afkLimit",
+        "afkMinutes",
+        "minimized",
+        "quieter",
+        "unfocused",
+        "volume"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared focus/minimized/AFK limits through the vanilla frame limiter. Sound attenuation is transient; options are preserved.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared focus/minimized/AFK limits through the vanilla frame limiter. Sound attenuation is transient; options are preserved.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "borderlessFullscreen",
+      "name": "Borderless Fullscreen",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheBorderless",
+        "MinecraftMixin.toggleFullscreen",
+        "SDLVideo"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "SDL borderless on the primary desktop, with window geometry restoration and no GL context recreation. Multi-monitor/Windows acceptance remains pending.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "SDL borderless on the primary desktop, with window geometry restoration and no GL context recreation. Multi-monitor/Windows acceptance remains pending.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "entityCulling",
+      "name": "Entity Culling",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "OPTIONAL_INTEGRATION",
+      "finalStatus": "requires_external_infrastructure",
+      "nativeHooks": [],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [
+        "blockEntities",
+        "entities",
+        "frames",
+        "items",
+        "nameTags",
+        "occlusion",
+        "players"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25",
+        "external infrastructure/integration required"
+      ],
+      "argentum": {
+        "state": "OPTIONAL_INTEGRATION",
+        "policy": "No second entity culler is installed. External renderer/culling policy stays under modpack control; saved preferences are retained.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "No second entity culler is installed. External renderer/culling policy stays under modpack control; saved preferences are retained.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "particles",
+      "name": "Particles",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ParticleManagerMixin.addParticle",
+        "ParticleGate"
+      ],
+      "implementedSettings": [
+        "amount",
+        "explosions",
+        "limit",
+        "rain",
+        "smoke"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared particle gate before native particle allocation, bounded live counts; no replacement renderer",
+        "nativeFunctionalChecks": [
+          "native particle gate suppresses configured smoke",
+          "disabling particle gate restores native allocation"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native particle gate suppresses configured smoke",
+          "disabling particle gate restores native allocation"
+        ],
+        "lwjgl3": [
+          "native particle gate suppresses configured smoke",
+          "disabling particle gate restores native allocation"
+        ],
+        "argentum": [
+          "native particle gate suppresses configured smoke",
+          "disabling particle gate restores native allocation"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared particle gate before native particle allocation, bounded live counts; no replacement renderer",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "worldDetails",
+      "name": "World Details",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "WorldDetailsMixin",
+        "TextureAtlasMixin",
+        "GameRendererMixin.renderSnowAndRain"
+      ],
+      "implementedSettings": [
+        "animations",
+        "sky",
+        "stars",
+        "weather"
+      ],
+      "hiddenPreservedSettings": [
+        "fog"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native sky, star, weather and atlas animation gates. Fog remains Vanilla; no chunk renderer changes.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native sky, star, weather and atlas animation gates. Fog remains Vanilla; no chunk renderer changes.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "builtinOptimizations",
+      "name": "Built-in Optimizations",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "OPTIONAL_INTEGRATION",
+      "finalStatus": "requires_external_infrastructure",
+      "nativeHooks": [],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25",
+        "external infrastructure/integration required"
+      ],
+      "argentum": {
+        "state": "OPTIONAL_INTEGRATION",
+        "policy": "External renderer/optimizers remain separate; no optimization binary is bundled",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "External renderer/optimizers remain separate; no optimization binary is bundled",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "netOptimize",
+      "name": "Network Optimization",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheNet",
+        "NetConnectionMixin(clientbound only)",
+        "NetBoost",
+        "NetCodecs"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared compression/decryption adapters replace exact Vanilla handlers only. Timing/keepalive packets are observed, never delayed or changed; multiplayer native acceptance remains pending.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared compression/decryption adapters replace exact Vanilla handlers only. Timing/keepalive packets are observed, never delayed or changed; multiplayer native acceptance remains pending.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "lowLatency",
+      "name": "Low Input Latency",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheLatency.frame",
+        "LowLatency",
+        "GameRendererMixin.frame"
+      ],
+      "implementedSettings": [
+        "latePoll"
+      ],
+      "hiddenPreservedSettings": [
+        "mode"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Late SDL/mouse polling only with Argentum; TFL GPU fences are bypassed until combined frame-pacing benchmarks exist. Mode preference preserved.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Late SDL/mouse polling only with Argentum; TFL GPU fences are bypassed until combined frame-pacing benchmarks exist. Mode preference preserved.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "fastConnect",
+      "name": "Fast Connect",
+      "category": "PERFORMANCE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "FastConnectMixin",
+        "FastConnectSelectionMixin",
+        "FastConnect.init(configDir=null)"
+      ],
+      "implementedSettings": [
+        "preResolve"
+      ],
+      "hiddenPreservedSettings": [
+        "fastSwitch",
+        "prePacks"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared DNS cache/prefetch and connection address racing with Vanilla handshake identity. Launcher hints and resource-pack preloads are disabled; native multi-address acceptance remains pending.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared DNS cache/prefetch and connection address racing with Vanilla handshake identity. Launcher hints and resource-pack preloads are disabled; native multi-address acceptance remains pending.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "social",
+      "name": "Social",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "BACKEND_UNAVAILABLE",
+      "finalStatus": "requires_external_infrastructure",
+      "nativeHooks": [],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [
+        "corner",
+        "dnd",
+        "dndFullscreen",
+        "duration",
+        "hostingDirect",
+        "sound",
+        "toastInvites",
+        "toastMessages",
+        "toastOnline",
+        "toastRequests",
+        "toasts"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "deactivation": {
+        "baseline": false,
+        "lwjgl3": false,
+        "argentum": false
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25",
+        "external infrastructure/integration required"
+      ],
+      "argentum": {
+        "state": "BACKEND_UNAVAILABLE",
+        "policy": "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "chatMentions",
+      "name": "Mentions",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "Qol.onChat",
+        "ChatGuiMixin.addMessage"
+      ],
+      "implementedSettings": [
+        "bold",
+        "ownName",
+        "sound",
+        "soundType",
+        "volume",
+        "words"
+      ],
+      "hiddenPreservedSettings": [
+        "color"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared mention detection and throttled native sound; whole-line bold highlight. Exact RGB word highlighting is not connected.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared mention detection and throttled native sound; whole-line bold highlight. Exact RGB word highlighting is not connected.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "chatHeads",
+      "name": "Chat Heads",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ChatHeadsMixin",
+        "ChatHeadDetect(MPL-2.0)",
+        "ChatHeadCache",
+        "TextRenderUtils.wrapText",
+        "PlayerInfo.getSkinTexture"
+      ],
+      "implementedSettings": [
+        "hat"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared sender detection, bounded line cache and native authorized skin/hat textures. Only the first wrapped line gets a head; existing lines update on chat reset.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared sender detection, bounded line cache and native authorized skin/hat textures. Only the first wrapped line gets a head; existing lines update on chat reset.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "chatFilter",
+      "name": "Chat Filter",
+      "category": "CHAT",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "Qol.hideChat",
+        "ChatGuiMixin.addMessage"
+      ],
+      "implementedSettings": [
+        "words"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared bounded literal word matching before chat insertion; no outgoing interception",
+        "nativeFunctionalChecks": [
+          "native chat filter prevents insertion"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native chat filter prevents insertion"
+        ],
+        "lwjgl3": [
+          "native chat filter prevents insertion"
+        ],
+        "argentum": [
+          "native chat filter prevents insertion"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared bounded literal word matching before chat insertion; no outgoing interception",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "autoReconnect",
+      "name": "Auto Reconnect",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ReconnectMixin",
+        "AutoReconnect",
+        "KickReasons",
+        "OrnitheConsent"
+      ],
+      "implementedSettings": [
+        "attempts",
+        "delay",
+        "mode",
+        "never"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native disconnect countdown and cancel control, shared kick/ban guards and bounded attempts. Old enabled flags require an explicit off/on toggle here.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native disconnect countdown and cancel control, shared kick/ban guards and bounded attempts. Old enabled flags require an explicit off/on toggle here.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "queueAlerts",
+      "name": "Queue & Alerts",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ChatNetworkMixin.handleChatMessage",
+        "Qol.onServerText",
+        "QolPanels.drawWarnings"
+      ],
+      "implementedSettings": [
+        "death",
+        "kick",
+        "mention",
+        "patterns",
+        "position",
+        "sound"
+      ],
+      "hiddenPreservedSettings": [
+        "flash"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared queue/mention/death notices and native sounds from received chat/action bar. OS taskbar flash is not connected.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared queue/mention/death notices and native sounds from received chat/action bar. OS taskbar flash is not connected.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "scoreboard",
+      "name": "Scoreboard",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheVanillaHuds.tick",
+        "VanillaHudMixin",
+        "GameGuiAccess",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "hideNumbers",
+        "scale",
+        "shadow",
+        "textColor",
+        "title"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "tabPing",
+      "name": "Tab List Ping",
+      "category": "HUD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "TabPingMixin.renderPing",
+        "PlayerInfo.getPing"
+      ],
+      "implementedSettings": [
+        "colors"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Native tab-list numeric latency and optional threshold colors; no active ping packet in 1.8.9",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native tab-list numeric latency and optional threshold colors; no active ping packet in 1.8.9",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "bossBar",
+      "name": "Boss Bar",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheVanillaHuds.tick",
+        "VanillaHudMixin",
+        "GameGuiAccess",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "titles",
+      "name": "Titles",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheVanillaHuds.tick",
+        "VanillaHudMixin",
+        "GameGuiAccess",
+        "HudLayout",
+        "HudEditor"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "warnings",
+      "name": "Warnings",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "armor",
+        "background",
+        "backgroundOpacity",
+        "cooldown",
+        "deathCompass",
+        "durability",
+        "health",
+        "healthLevel",
+        "hunger",
+        "hungerLevel",
+        "inventory",
+        "scale",
+        "shadow",
+        "sound",
+        "textColor",
+        "tools"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared threshold/cooldown warnings with real armor/food/health/inventory data and death compass",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared threshold/cooldown warnings with real armor/food/health/inventory data and death compass",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "itemCounter",
+      "name": "Item Counter",
+      "category": "PVP",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "arrows",
+        "background",
+        "backgroundOpacity",
+        "blocks",
+        "gapples",
+        "healing",
+        "hideEmpty",
+        "layout",
+        "pearls",
+        "scale",
+        "shadow",
+        "splash",
+        "textColor"
+      ],
+      "hiddenPreservedSettings": [
+        "totemPops",
+        "totems"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Native inventory icons; 1.8.9 has no totems",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Native inventory icons; 1.8.9 has no totems",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "hitFeedback",
+      "name": "Hit Feedback",
+      "category": "PVP",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "marker",
+        "markerColor",
+        "markerSize",
+        "markerTime",
+        "sound",
+        "volume"
+      ],
+      "hiddenPreservedSettings": [
+        "particles"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared marker/sound on confirmed hits; extra particle emitters not connected",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared marker/sound on confirmed hits; extra particle emitters not connected",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "streamerMode",
+      "name": "Streamer Mode",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "PrivacyTextMixin",
+        "PrivacyClipboardMixin",
+        "OrnitheCanvas",
+        "StreamerMode",
+        "OrnithePrivacy.tick"
+      ],
+      "implementedSettings": [
+        "hideIp",
+        "key",
+        "name",
+        "others"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Masks rendered names and address tokens in common/native text and clipboard. Original server/config/export data remains intact.",
+        "nativeFunctionalChecks": [
+          "shared/native privacy masks names",
+          "shared/native privacy masks address tokens"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "shared/native privacy masks names",
+          "shared/native privacy masks address tokens"
+        ],
+        "lwjgl3": [
+          "shared/native privacy masks names",
+          "shared/native privacy masks address tokens"
+        ],
+        "argentum": [
+          "shared/native privacy masks names",
+          "shared/native privacy masks address tokens"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Masks rendered names and address tokens in common/native text and clipboard. Original server/config/export data remains intact.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "tooltips",
+      "name": "Better Tooltips",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "TooltipMixin",
+        "TooltipLinesMixin",
+        "TooltipText",
+        "Tooltips.draw",
+        "FilledMapItem.getMapData"
+      ],
+      "implementedSettings": [
+        "durability",
+        "food",
+        "map",
+        "mapSize"
+      ],
+      "hiddenPreservedSettings": [
+        "enchants",
+        "enchantsShift",
+        "shulker"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared durability, food and filled-map tooltip cards. Shulker boxes do not exist in 1.8.9; compact enchantments are not connected yet.",
+        "nativeFunctionalChecks": [
+          "native tooltip contains shared durability"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native tooltip contains shared durability"
+        ],
+        "lwjgl3": [
+          "native tooltip contains shared durability"
+        ],
+        "argentum": [
+          "native tooltip contains shared durability"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared durability, food and filled-map tooltip cards. Shulker boxes do not exist in 1.8.9; compact enchantments are not connected yet.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "serverProfiles",
+      "name": "Server Profiles",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "ServerProfiles.update",
+        "ModMenu.ServerProfilesPage"
+      ],
+      "implementedSettings": [
+        "notify"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Existing local server-profile matching and shared profile UI",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Existing local server-profile matching and shared profile UI",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "panorama",
+      "name": "Panorama Screenshots",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnithePanorama",
+        "Panorama.OwnCapture",
+        "GameRendererMixin.renderWorld",
+        "PanoramaPanel"
+      ],
+      "implementedSettings": [
+        "format"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared offline cube/equirectangular capture using six native world frames and asynchronous encoding. Temporarily detaches camera/hides HUD, restoring both. No launcher sharing.",
+        "nativeFunctionalChecks": [
+          "panorama captures six native world faces",
+          "panorama encodes the local image",
+          "panorama restores HUD and camera"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "panorama captures six native world faces",
+          "panorama encodes the local image",
+          "panorama restores HUD and camera"
+        ],
+        "lwjgl3": [
+          "panorama captures six native world faces",
+          "panorama encodes the local image",
+          "panorama restores HUD and camera"
+        ],
+        "argentum": [
+          "panorama captures six native world faces",
+          "panorama encodes the local image",
+          "panorama restores HUD and camera"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared offline cube/equirectangular capture using six native world frames and asynchronous encoding. Temporarily detaches camera/hides HUD, restoring both. No launcher sharing.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "screenshots",
+      "name": "Screenshot Tools",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "Screenshots.Platform",
+        "Screenshots.tick",
+        "Screenshots.render",
+        "ClipsUi"
+      ],
+      "implementedSettings": [
+        "seconds",
+        "toast"
+      ],
+      "hiddenPreservedSettings": [
+        "chatActions",
+        "replaceEssential"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Local gallery/editor and screenshot toast; online sharing, chat actions and third-party preference changes are disabled",
+        "nativeFunctionalChecks": [
+          "native screenshot file written",
+          "local screenshot watcher updates toast",
+          "shared local gallery opens natively"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "native screenshot file written",
+          "local screenshot watcher updates toast",
+          "shared local gallery opens natively"
+        ],
+        "lwjgl3": [
+          "native screenshot file written",
+          "local screenshot watcher updates toast",
+          "shared local gallery opens natively"
+        ],
+        "argentum": [
+          "native screenshot file written",
+          "local screenshot watcher updates toast",
+          "shared local gallery opens natively"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Local gallery/editor and screenshot toast; online sharing, chat actions and third-party preference changes are disabled",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "keySearch",
+      "name": "Key Binding Search",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheKeySearchUi",
+        "KeySearch.filter",
+        "KeyBinding.resetMapping",
+        "GameOptions.save"
+      ],
+      "implementedSettings": [],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared search language, conflicts/unbound filters and native keyboard/mouse rebinding. Available through the module action; Vanilla Controls remains available.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared search language, conflicts/unbound filters and native keyboard/mouse rebinding. Available through the module action; Vanilla Controls remains available.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "hungerOverlay",
+      "name": "Hunger Overlay",
+      "category": "HUD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheComfort.draw",
+        "HungerOverlay",
+        "HungerState.modernRegen=false"
+      ],
+      "implementedSettings": [
+        "health",
+        "heldFood",
+        "saturation"
+      ],
+      "hiddenPreservedSettings": [
+        "exhaustion"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared saturation, held-food and legacy health prediction over Vanilla HUD. Exhaustion is not sent by the server and is left unknown.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared saturation, held-food and legacy health prediction over Vanilla HUD. Exhaustion is not sent by the server and is left unknown.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "circuitLibrary",
+      "name": "Circuit Library",
+      "category": "REDSTONE",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheCircuits",
+        "Circuits.Platform",
+        "CircuitWorld",
+        "GhostPainter",
+        "CircuitLibraryPage"
+      ],
+      "implementedSettings": [
+        "confirmKey",
+        "hideCorrect",
+        "hideKey",
+        "labels",
+        "layerDownKey",
+        "layerUpKey",
+        "opacity",
+        "openKey",
+        "rotateKey"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared offline library/ghost templates, layers, rotation and block-state checks, with a small bundled GPL recipe set and local cache. Remote submissions and downloads are disabled.",
+        "nativeFunctionalChecks": [
+          "offline circuit recipes available",
+          "circuit service clients are absent",
+          "native circuit checker sees missing template blocks"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "offline circuit recipes available",
+          "circuit service clients are absent",
+          "native circuit checker sees missing template blocks"
+        ],
+        "lwjgl3": [
+          "offline circuit recipes available",
+          "circuit service clients are absent",
+          "native circuit checker sees missing template blocks"
+        ],
+        "argentum": [
+          "offline circuit recipes available",
+          "circuit service clients are absent",
+          "native circuit checker sees missing template blocks"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared offline library/ghost templates, layers, rotation and block-state checks, with a small bundled GPL recipe set and local cache. Remote submissions and downloads are disabled.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "notes",
+      "name": "World Notes",
+      "category": "WORLD",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "Notes.tick",
+        "ModMenu.NotesPage",
+        "MapPlatform"
+      ],
+      "implementedSettings": [
+        "key"
+      ],
+      "hiddenPreservedSettings": [
+        "sync"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared offline notebooks and map coordinate actions; remote sync disabled",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared offline notebooks and map coordinate actions; remote sync disabled",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "pinnedNote",
+      "name": "Pinned Note",
+      "category": "HUD",
+      "hud": true,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "NotePanel",
+        "Notes.currentWorld",
+        "GameGuiMixin.render"
+      ],
+      "implementedSettings": [
+        "background",
+        "backgroundOpacity",
+        "lines",
+        "scale",
+        "shadow",
+        "textColor",
+        "width"
+      ],
+      "hiddenPreservedSettings": [],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Shared pinned notebook, checklist and wrapping; offline only",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Shared pinned notebook, checklist and wrapping; offline only",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "cinematic",
+      "name": "Camera Paths",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "EXPERIMENTAL",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheCinematic",
+        "Cinematic.Host",
+        "Minecraft.setCamera",
+        "CinematicInputMixin",
+        "GameRendererMixin"
+      ],
+      "implementedSettings": [
+        "addKey",
+        "clearKey",
+        "ease",
+        "freecamFairPlay",
+        "freecamKey",
+        "freecamSpeed",
+        "hideHud",
+        "playKey",
+        "preview",
+        "removeKey",
+        "seconds",
+        "smoothing",
+        "timing"
+      ],
+      "hiddenPreservedSettings": [
+        "record"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "EXPERIMENTAL",
+        "policy": "Shared offline keyframes/playback and collision-limited local freecam. Received chunks only. External recording unavailable; multiplayer gameplay acceptance remains pending.",
+        "nativeFunctionalChecks": [
+          "freecam detaches the native camera",
+          "freecam physical movement leaves player in place",
+          "freecam physical movement moves only the camera",
+          "freecam restores the native player camera"
+        ]
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [
+          "freecam detaches the native camera",
+          "freecam physical movement leaves player in place",
+          "freecam physical movement moves only the camera",
+          "freecam restores the native player camera"
+        ],
+        "lwjgl3": [
+          "freecam detaches the native camera",
+          "freecam physical movement leaves player in place",
+          "freecam physical movement moves only the camera",
+          "freecam restores the native player camera"
+        ],
+        "argentum": [
+          "freecam detaches the native camera",
+          "freecam physical movement leaves player in place",
+          "freecam physical movement moves only the camera",
+          "freecam restores the native player camera"
+        ]
+      },
+      "nativeEvidenceKind": "output assertions",
+      "limitations": [
+        "Shared offline keyframes/playback and collision-limited local freecam. Received chunks only. External recording unavailable; multiplayer gameplay acceptance remains pending.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    },
+    {
+      "id": "halloween",
+      "name": "Halloween",
+      "category": "MISC",
+      "hud": false,
+      "applicability": "Applicable subject to dependencies/limits",
+      "state": "LIMITED",
+      "finalStatus": "implemented_with_limitations",
+      "nativeHooks": [
+        "OrnitheSeasonal.tick",
+        "LivingEntityMixin.doEvent",
+        "SpookyFx.draw"
+      ],
+      "implementedSettings": [
+        "ghostTrail",
+        "hits"
+      ],
+      "hiddenPreservedSettings": [
+        "jumpscares",
+        "others",
+        "spookySounds"
+      ],
+      "gui": "Shared ModMenu/settings, capability detail and available actions; unsupported settings hidden",
+      "activation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "deactivation": {
+        "baseline": true,
+        "lwjgl3": true,
+        "argentum": true
+      },
+      "persistence": "Shared ConfigStore; registry preservation/consent unit contracts. Process restart verifies selected preferences only.",
+      "restoration": "See explicit native assertions; per-setting lifecycle acceptance remains incomplete.",
+      "dependencies": [
+        "Ornithe Gen2",
+        "OSL 0.22.2",
+        "Java 25"
+      ],
+      "argentum": {
+        "state": "LIMITED",
+        "policy": "Local procedural bat hit effects and self ghost trail. Remote event rewards, other-client effects, jumpscares and remote sounds are unavailable.",
+        "nativeFunctionalChecks": []
+      },
+      "unitTests": [
+        "CapabilityRegistryTest (inventory/config contract)",
+        "common JUnit suite (shared regression; not per-module certification)"
+      ],
+      "nativeChecks": {
+        "baseline": [],
+        "lwjgl3": [],
+        "argentum": []
+      },
+      "nativeEvidenceKind": "state/screen survival only; functional acceptance pending",
+      "limitations": [
+        "Local procedural bat hit effects and self ghost trail. Remote event rewards, other-client effects, jumpscares and remote sounds are unavailable.",
+        "No complete per-setting, multiplayer, physical-GPU or all-dimension certification."
+      ],
+      "completelyCertified": false
+    }
+  ]
+}
