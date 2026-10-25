@@ -24,8 +24,9 @@ bundled video presentation, received-world maps and transparent shared pause nav
 keybinding visibility. The real-world menu run also passed the shared pause and local emote lifecycle
 assertions on Vulkan/llvmpipe; screenshots and a summary are included in the evidence folder.
 
-Cloud CI exposed a nested Xvfb launcher and missing legacy X11/RandR runtime libraries.
-The smoke runner now explicitly owns its display; CI installs the same X11 libraries as
-the existing legacy runtime workflow. Screenshot-watcher checks wait for the actual
+Cloud CI exposed a nested Xvfb launcher and a legacy display-mode discovery failure.
+The smoke runner now explicitly owns its display. The X11 shared libraries were already
+installed; CI now also installs x11-xserver-utils (the xrandr utility), matching the
+existing legacy runtime workflow. Screenshot-watcher checks wait for the actual
 asynchronous result with a ten-second deadline rather than assuming 20 ticks equal one
 second on a busy software renderer. Neither fix changes gameplay or disables assertions.
