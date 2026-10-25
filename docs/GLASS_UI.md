@@ -24,7 +24,8 @@ bundled video presentation, received-world maps and transparent shared pause nav
 keybinding visibility. The real-world menu run also passed the shared pause and local emote lifecycle
 assertions on Vulkan/llvmpipe; screenshots and a summary are included in the evidence folder.
 
-The first cloud CI run exposed nested Xvfb displays in Loom's CI launcher. The smoke
-runner now explicitly owns its display. Screenshot-watcher checks wait for the actual
+Cloud CI exposed a nested Xvfb launcher and missing legacy X11/RandR runtime libraries.
+The smoke runner now explicitly owns its display; CI installs the same X11 libraries as
+the existing legacy runtime workflow. Screenshot-watcher checks wait for the actual
 asynchronous result with a ten-second deadline rather than assuming 20 ticks equal one
 second on a busy software renderer. Neither fix changes gameplay or disables assertions.
