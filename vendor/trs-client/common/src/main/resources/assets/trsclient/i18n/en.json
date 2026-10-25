@@ -2554,5 +2554,11 @@
   "config.resetWarning": "Click again to reset module/HUD settings. Backup kept.",
   "config.resetDone": "Module settings reset; previous file backed up",
   "config.failed": "Operation failed: {0}",
-  "title.clientSettings": "Client settings"
+  "title.clientSettings": "Client settings",
+  "setting.keystrokes.pressedColor": "Pressed key background",
+  "setting.keystrokes.pressedTextColor": "Pressed key text",
+  "setting.minimap.cloudFog": "Clouds over unexplored areas (both maps)",
+  "setting.titleScreen.panelOpacity": "Glass panel opacity",
+  "setting.titleScreen.cornerRadius": "Menu corner radius",
+  "setting.titleScreen.menuAccent": "Menu accent"
 }

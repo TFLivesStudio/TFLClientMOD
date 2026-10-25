@@ -2554,5 +2554,11 @@
   "editor.profileLimit": "Profile limit reached",
   "editor.precisionHint": "Tab: select / Arrows: 1 px / Shift: 10 px or free drag / Right click: reset",
   "clips.local.hint": "Saved on this device · F2 takes a screenshot",
-  "title.clientSettings": "Client settings"
+  "title.clientSettings": "Client settings",
+  "setting.keystrokes.pressedColor": "Basılan tuş arka planı",
+  "setting.keystrokes.pressedTextColor": "Basılan tuş metni",
+  "setting.minimap.cloudFog": "Keşfedilmemiş alanların bulutları (iki harita)",
+  "setting.titleScreen.panelOpacity": "Cam panel opaklığı",
+  "setting.titleScreen.cornerRadius": "Menü köşe yarıçapı",
+  "setting.titleScreen.menuAccent": "Menü vurgu rengi"
 }

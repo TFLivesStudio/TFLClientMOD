@@ -256,6 +256,7 @@ public final class TrsClient implements ClientModInitializer {
 	};
 
 	private void onTick(Minecraft mc) {
+        if(Mc.screen()==null)dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
 		migrateKeys(mc);
         //? if >=26.3 {
         /*if(mc.options!=null) {

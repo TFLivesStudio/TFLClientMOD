@@ -22,7 +22,7 @@ public final class OrnitheAutomation {
           m,
           State.LIMITED,
           "Sends chat using shared sanitization/rate limits. Old enabled preferences do not"
-              + " authorize sends: switch this module off/on here to approve Ornithe. Disable at"
+              + " authorize sends: switch this module off/on here to approve TFL Client. Disable at"
               + " any time.",
           m.settings().stream().map(s -> s.key()).toList(),
           "OrnitheAutomation.tick",

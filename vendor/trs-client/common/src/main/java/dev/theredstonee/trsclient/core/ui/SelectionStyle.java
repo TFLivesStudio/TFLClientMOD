@@ -9,7 +9,11 @@ public final class SelectionStyle {
     /** Bounded scanline rounded rectangle; no textures, allocations or GL state changes. */
     public static void rounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         if(w<=0||h<=0||(color>>>24)==0) return;
-        drawRounded(c,x,y,w,h,radius,color);
+        int sub=Math.max(1,Math.min(4,c.pixelScale()));
+        if(sub==1){drawRounded(c,x,y,w,h,radius,color);return;}
+        c.push();
+        try {c.scale(1f/sub);drawRounded(c,x*sub,y*sub,w*sub,h*sub,radius*sub,color);}
+        finally {c.pop();}
     }
     private static void drawRounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         int r=Math.max(0,Math.min(radius,Math.min(w,h)/2));
@@ -31,11 +35,12 @@ public final class SelectionStyle {
         }
     }
     public static void panel(Canvas c,int x,int y,int w,int h,int fill,int border) {
-        rounded(c,x,y,w,h,RADIUS,border);
-        rounded(c,x+1,y+1,w-2,h-2,RADIUS-1,fill);
+        int radius=UiAppearance.radius();
+        rounded(c,x,y,w,h,radius,ColorMath.withAlpha(border,100));
+        rounded(c,x+1,y+1,w-2,h-2,Math.max(0,radius-1),UiAppearance.glass(fill));
     }
     public static void button(Canvas c,int x,int y,int w,int h,boolean primary,boolean hover) {
         Theme t=Theme.get();
-        panel(c,x,y,w,h,primary?(hover?t.accentHover:t.accent):(hover?t.surfaceHover:t.surfaceHigh),hover?t.accent:t.border);
+        panel(c,x,y,w,h,primary?(hover?ColorMath.lerp(UiAppearance.accent(),0xFFFFFFFF,.18f):UiAppearance.accent()):(hover?t.surfaceHover:t.surfaceHigh),hover?UiAppearance.accent():t.border);
     }
 }

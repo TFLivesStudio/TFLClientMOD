@@ -258,7 +258,7 @@ public final class OrnitheClient implements ModInitializer {
       capabilities.connect(
           item,
           limited,
-          "Ornithe HUD adapter; advanced options are listed only when connected",
+          "TFL HUD; advanced options are listed only when connected",
           List.of("scale", "shadow", "background", "backgroundOpacity", "textColor"),
           "GameGuiMixin.render",
           "OrnitheClient.createHud",
@@ -290,7 +290,7 @@ public final class OrnitheClient implements ModInitializer {
         modules.titleScreen,
         limited,
         "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
-        List.of("animated","backgroundMode"),
+        List.of("animated","backgroundMode","panelOpacity","cornerRadius","menuAccent"),
         "MinecraftMixin.openScreen",
         "OrnitheClient.title");
     var backend =
@@ -467,7 +467,7 @@ public final class OrnitheClient implements ModInitializer {
               }
 
               public String versionLine() {
-                return "Minecraft 1.8.9 · Ornithe Gen2 · Experimental";
+                return "Minecraft 1.8.9 · TFL Client · Experimental";
               }
 
               public String clientVersion() {
@@ -492,6 +492,7 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   private void tick() {
+    if(mc.screen==null)dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
     synchronizeKeys();
     mapPlatform.updateIdentity();
     map.tick(mapPlatform);

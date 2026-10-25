@@ -35,25 +35,43 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
     public LocalMjpegPlayer(Path path){this.path=path;}
     public void start(final MenuBackground.Mode mode) throws IOException {
         close();
-        if(!Files.isRegularFile(path,LinkOption.NOFOLLOW_LINKS)||Files.size(path)>256L*1024*1024)throw new IOException("Missing/oversized local menu.mjpeg");
+        if(Files.exists(path,LinkOption.NOFOLLOW_LINKS)) {
+            if(!Files.isRegularFile(path,LinkOption.NOFOLLOW_LINKS)||Files.size(path)>256L*1024*1024)throw new IOException("Invalid local menu.mjpeg");
+        } else {
+            try(InputStream bundled=LocalMjpegPlayer.class.getResourceAsStream("/assets/trsclient/video/menu.mjpeg")) {
+                if(bundled==null)throw new IOException("Missing bundled menu video");
+            }
+        }
         final Work work=new Work();active=work;
         work.thread=new Thread(()->run(work,mode),"TFL-local-video");work.thread.setDaemon(true);work.thread.setPriority(Thread.MIN_PRIORITY);work.thread.start();
     }
+    private InputStream openVideo() throws IOException {
+        if(Files.exists(path,LinkOption.NOFOLLOW_LINKS)) {
+            if(!Files.isRegularFile(path,LinkOption.NOFOLLOW_LINKS)||Files.size(path)>256L*1024*1024)throw new IOException("Invalid local video");
+            return Files.newInputStream(path);
+        }
+        InputStream bundled=LocalMjpegPlayer.class.getResourceAsStream("/assets/trsclient/video/menu.mjpeg");
+        if(bundled==null)throw new IOException("Missing bundled video");
+        return bundled;
+    }
     private void run(Work work,MenuBackground.Mode mode) {
-        long due=System.nanoTime(),lastOutput=Long.MIN_VALUE/2;
+        long due=System.nanoTime();
+        int phase=24-Math.min(24,Math.max(1,mode.fps));
         try {
             while(work.running) {
                 int count=0;
-                try(InputStream in=new BufferedInputStream(Files.newInputStream(path))) {
+                try(InputStream in=new BufferedInputStream(openVideo())) {
                     work.stream=in;
                     byte[] jpeg;
                     while(work.running&&(jpeg=readFrame(in))!=null) {
                         count++;
                         long now=System.nanoTime();
-                        if(now-lastOutput>=1_000_000_000L/Math.max(1,mode.fps)) {
+                        phase+=Math.min(24,Math.max(1,mode.fps));
+                        if(phase>=24) {
+                            phase-=24;
                             BufferedImage image=decode(jpeg,mode.width,mode.height);
                             if(work.running){work.pending.set(new Frame(image));decoded++;}
-                            lastOutput=now;
+
                         }
                         due+=1_000_000_000L/24;
                         long delay=due-System.nanoTime();

@@ -178,7 +178,14 @@ public final class MinimapRenderer {
 			if (clipped) clip.end();
 			return;
 		}
-		e.textures().beginFrame(3);
+		if (e.modules().mapCloudFog.get()) {
+            for(int b=0;b<n;b++) {
+                float top=bands[b*4],bottom=bands[b*4+1],left=bands[b*4+2],right=bands[b*4+3];
+                CloudFog.draw(c,cx+left,cy+top,right-left,bottom-top,
+                    (left+radius)/(2*radius),(top+radius)/(2*radius),(right+radius)/(2*radius),(bottom+radius)/(2*radius));
+            }
+        }
+        e.textures().beginFrame(3);
 		int tint = (opacity << 24) | 0xFFFFFF;
 		// Innenansicht: darunter die Oberfläche – noch nicht abgetastete Stellen bleiben so nicht leer
 		// (nur deckend, sonst schimmerte das ausgeblendete Dach durch).

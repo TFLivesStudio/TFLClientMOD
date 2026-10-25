@@ -52,7 +52,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   private final java.util.Map<String, DynamicEntry> dynamic = new java.util.HashMap<>();
 
   private final int[] advances = new int[384];
-  private static final int CELL = 52, COLS = 24, FIRST = 32, LAST = 384;
+  private static final int CELL = 104, COLS = 24, FIRST = 32, LAST = 384;
   private int width, height, scale = 1;
   private final Identifier still = new Identifier("trsclient:textures/menu/black-hole.png");
   private final Identifier icons = new Identifier("trsclient:textures/ui/icons.png");
@@ -71,7 +71,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
         mc.getResourceManager()
             .getResource(new Identifier("trsclient:font/nunito-regular.ttf"))
             .asStream()) {
-      Font face = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(36f);
+      Font face = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(72f);
       BufferedImage image =
           new BufferedImage(
               COLS * CELL, ((LAST - FIRST + COLS - 1) / COLS) * CELL, BufferedImage.TYPE_INT_ARGB);
@@ -92,8 +92,8 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
                           .getWidth());
           g.drawString(
               String.valueOf((char) ch),
-              n % COLS * CELL + 2,
-              n / COLS * CELL + 2 + g.getFontMetrics().getAscent());
+              n % COLS * CELL + 4,
+              n / COLS * CELL + 4 + g.getFontMetrics().getAscent());
         }
       } finally {
         g.dispose();
@@ -193,6 +193,8 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     GlStateManager.activeTexture(oldActiveTexture);
   }
 
+  public int pixelScale() { return scale; }
+
   public void fill(int x1, int y1, int x2, int y2, int color) {
     GuiElement.fill(x1, y1, x2, y2, color);
   }
@@ -231,7 +233,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
         GL11.GL_QUADS, net.minecraft.client.render.vertex.DefaultVertexFormat.POSITION_TEX);
     double cursor = x - .5,
         top = y - .5,
-        size = CELL * .25,
+        size = CELL * .125,
         atlasW = COLS * CELL,
         atlasH = ((LAST - FIRST + COLS - 1) / COLS) * CELL;
     for (int i = 0; i < text.length(); i++) {
@@ -245,7 +247,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
       buffer.vertex(cursor + size, top + size, 0).texture(u + du, v + dv).nextVertex();
       buffer.vertex(cursor + size, top, 0).texture(u + du, v).nextVertex();
       buffer.vertex(cursor, top, 0).texture(u, v).nextVertex();
-      cursor += advances[ch] / 4.0;
+      cursor += advances[ch] / 8.0;
     }
     tess.end();
     glyphBatches++;
@@ -257,7 +259,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     text = privateText(text);
     if (nativeFont(text)) return mc.textRenderer.getWidth(text);
     double width = 0;
-    for (int i = 0; i < text.length(); i++) width += advances[text.charAt(i)] / 4.0;
+    for (int i = 0; i < text.length(); i++) width += advances[text.charAt(i)] / 8.0;
     return (int) Math.ceil(width);
   }
 
@@ -272,7 +274,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     double width = 0;
     int end = 0;
     while (end < text.length()) {
-      double next = advances[text.charAt(end)] / 4.0;
+      double next = advances[text.charAt(end)] / 8.0;
       if (width + next > max) break;
       width += next;
       end++;
@@ -357,6 +359,13 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     }
     System.arraycopy(pixels, 0, entry.texture.getPixels(), 0, w * h);
     entry.texture.upload();
+    if(name.equals("menu-video")||name.equals("map/cloud-fog")) {
+      int previous=GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+      mc.getTextureManager().bind((Identifier)entry.ref.id);
+      GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+      GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+      GlStateManager.bindTexture(previous);
+    }
     return entry.ref;
   }
 

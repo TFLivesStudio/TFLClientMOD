@@ -1,0 +1,65 @@
+name: Shared UI parity
+on:
+  push:
+    branches: [feat/glass-ui-parity]
+  pull_request:
+    paths: ['vendor/trs-client/common/**', 'vendor/trs-client/fabric/**', 'vendor/trs-client/ornithe/**', '.github/workflows/ui-parity.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ['1.8.9', '26.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Graphics dependencies
+        run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils libgl1-mesa-dri libvulkan1 mesa-vulkan-drivers libopenal1 libxrandr2 libxcursor1 libxi6 libxinerama1
+      - name: Build and test 1.8.9
+        if: matrix.target == '1.8.9'
+        run: |
+          vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe build :common:test --no-daemon --max-workers=2
+          python3 tools/ornithe/verify_jar.py vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-0.4.0-ui.1.jar
+      - name: Build and test 26.3
+        if: matrix.target == '26.3'
+        run: vendor/trs-client/gradlew -p vendor/trs-client :common:test :fabric:26.3:build -PtrsVersions=26.3 --no-daemon --max-workers=2
+      - name: Native 1.8.9 with large GUI and bundled video
+        if: matrix.target == '1.8.9'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: xvfb-run -a -s '-screen 0 1920x1080x24' python3 tools/ornithe/run_smoke.py --large
+      - name: Native 26.3 option navigation
+        if: matrix.target == '26.3'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=screens --no-daemon --max-workers=2
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('vendor/trs-client/run/screen-smoke.json')
+          r=json.loads(p.read_text())
+          assert r['results'] and all(x['passed'] for x in r['results']),r
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: glass-ui-${{ matrix.target }}
+          path: |
+            vendor/trs-client/ornithe/build/libs/*ui.1*.jar
+            vendor/trs-client/ornithe/build/smoke/
+            vendor/trs-client/common/build/test-results/
+            vendor/trs-client/fabric/versions/26.3/build/libs/*ui.1*.jar
+            vendor/trs-client/run/screen-smoke.json
+            vendor/trs-client/run/screenshots/

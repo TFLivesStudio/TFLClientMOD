@@ -4,7 +4,7 @@ plugins {
 }
 group='dev.tflives'
 version=project.mod_version
-base { archivesName='tflcore-ornithe-1.8.9' }
+base { archivesName='tflcore-1.8.9' }
 ploceus { setIntermediaryGeneration(2) }
 repositories { mavenCentral() }
 dependencies {
@@ -30,6 +30,10 @@ loom {
     runs {
         client {
             if (project.hasProperty('smoke')) vmArg '-Dtflcore.ornithe.smoke=true'
+            if (project.hasProperty('uiSmokeLarge')) {
+                programArgs '--width', '1920', '--height', '1080'
+                vmArg '-Dtflcore.ui.smoke.large=true'
+            }
             vmArg '--enable-native-access=ALL-UNNAMED'
         }
     }

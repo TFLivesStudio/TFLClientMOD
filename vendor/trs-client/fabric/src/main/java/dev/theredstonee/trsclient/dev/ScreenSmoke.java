@@ -15,7 +15,7 @@ import java.util.*;
 public final class ScreenSmoke {
     private final String[] keys={"options.video","options.sounds","options.controls","options.controls/controls.keybinds","options.controls/options.mouse_settings","options.language","options.resourcepack","options.accessibility","options.chat","options.skinCustomisation"};
     private final List<Map<String,Object>> results=new ArrayList<>();
-    private int phase,index,wait; private Screen options; private String target; private Screen previous;
+    private int phase,index,wait,titleWarmup; private Screen options; private String target; private Screen previous;
     private final long start=System.currentTimeMillis();
     public static void install(){ScreenSmoke t=new ScreenSmoke();net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(t::tick);}
     private void tick(Minecraft mc){
@@ -23,7 +23,7 @@ public final class ScreenSmoke {
         try {
             if(System.currentTimeMillis()-start>120000)throw new IllegalStateException("navigation timeout");
             if(Mc.overlay()!=null)return;
-            if(phase==0){if(Mc.screen()==null)return;options=MenusTest.options(new TrsTitleScreen(),mc);Mc.setScreen(options);phase=1;wait=20;return;}
+            if(phase==0){if(Mc.screen()==null)return;if(titleWarmup++<30)return;record("bundledVideoPresented",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented(),"decoded bundled blue video reached the native renderer");AutoTest.shot(mc,"glass-title");options=MenusTest.options(new TrsTitleScreen(),mc);Mc.setScreen(options);phase=1;wait=20;return;}
             if(phase==1){
                 if(index>=keys.length){finish(mc);phase=3;return;}
                 target=keys[index++];previous=options;

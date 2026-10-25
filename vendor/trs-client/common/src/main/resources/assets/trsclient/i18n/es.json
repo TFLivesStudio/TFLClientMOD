@@ -2554,5 +2554,11 @@
   "config.resetWarning": "Click again to reset module/HUD settings. Backup kept.",
   "config.resetDone": "Module settings reset; previous file backed up",
   "config.failed": "Operation failed: {0}",
-  "title.clientSettings": "Ajustes del cliente"
+  "title.clientSettings": "Ajustes del cliente",
+  "setting.keystrokes.pressedColor": "Fondo de tecla pulsada",
+  "setting.keystrokes.pressedTextColor": "Texto de tecla pulsada",
+  "setting.minimap.cloudFog": "Nubes en zonas sin explorar (ambos mapas)",
+  "setting.titleScreen.panelOpacity": "Opacidad de los paneles de cristal",
+  "setting.titleScreen.cornerRadius": "Radio de las esquinas del menú",
+  "setting.titleScreen.menuAccent": "Color de acento del menú"
 }

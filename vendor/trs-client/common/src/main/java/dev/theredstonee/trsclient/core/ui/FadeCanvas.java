@@ -37,6 +37,8 @@ public final class FadeCanvas implements Canvas {
 	}
 
 	@Override
+	public int pixelScale(){return delegate.pixelScale();}
+
 	public void fill(int x1, int y1, int x2, int y2, int argb) {
 		delegate.fill(x1, y1, x2, y2, color(argb));
 	}

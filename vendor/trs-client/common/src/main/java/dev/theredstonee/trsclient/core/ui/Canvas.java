@@ -8,6 +8,8 @@ package dev.theredstonee.trsclient.core.ui;
  */
 public interface Canvas {
 	/** Rechteck von (x1, y1) bis ausschließlich (x2, y2) in ARGB. */
+	default int pixelScale() { return 1; }
+
 	void fill(int x1, int y1, int x2, int y2, int argb);
 
 	/** Text an der linken oberen Ecke (Schriftgröße 9, Grundlinie wie Vanilla). */

@@ -33,6 +33,8 @@ public final class ScaledCanvas implements Canvas {
 	}
 
 	@Override
+	public int pixelScale(){return Math.max(1,Math.round(delegate.pixelScale()*factor));}
+
 	public void fill(int x1, int y1, int x2, int y2, int argb) {
 		delegate.fill(x1, y1, x2, y2, argb);
 	}

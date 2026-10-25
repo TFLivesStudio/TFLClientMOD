@@ -90,7 +90,7 @@ public final class MenuSkin {
 	 */
 	public static void background(Canvas c, int width, int height, boolean inWorld, int headerH, int footerTop) {
         long start=System.nanoTime();Theme t=Theme.get();
-        c.fill(0,0,width,height,inWorld?0xB0080D18:t.background);
+        if (!inWorld) dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().draw(c,width,height,dev.theredstonee.trsclient.core.menus.MenuStyle.animated());
         if(headerH>0)header(c,width,headerH,inWorld);
         if(footerTop<height)footer(c,width,footerTop,height,inWorld);
         measure(start);
@@ -145,13 +145,13 @@ public final class MenuSkin {
 
 	/** Kopfleiste mit kleinem TRS-Schriftzug links und Staubleitung unten. */
 	public static void header(Canvas c, int width, int h, boolean inWorld) {
-        Theme t=Theme.get();c.fill(0,0,width,h,inWorld?0xB00D1424:t.surfaceHigh);
+        Theme t=Theme.get();c.fill(0,0,width,h,dev.theredstonee.trsclient.core.ui.UiAppearance.glass(t.surfaceHigh));
         c.fill(0,h-1,width,h,t.border);logo(c,10,Math.max(2,(h-c.lineHeight())/2),1,1f);
 	}
 
 	/** Fußleiste (Knopfbereich unter einer Liste). */
 	public static void footer(Canvas c, int width, int top, int height, boolean inWorld) {
-        Theme t=Theme.get();c.fill(0,top,width,height,inWorld?0xB00D1424:t.surfaceHigh);c.fill(0,top,width,top+1,t.border);
+        Theme t=Theme.get();c.fill(0,top,width,height,dev.theredstonee.trsclient.core.ui.UiAppearance.glass(t.surfaceHigh));c.fill(0,top,width,top+1,t.border);
 	}
 
 	/** „TRS“ in der Pixelschrift, glühend; {@code scale} = Pixel je Schriftpunkt. */

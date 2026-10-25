@@ -38,3 +38,13 @@ The original Java package/resource namespace `trsclient` is deliberate; public l
 Do not re-enable TRS services or bundle optimization binaries without a separately approved audit.
 Keep common compatible with Java 8 and Gson 2.2.4 for Forge 1.8.9.
 Read docs/RELEASE_READINESS.md and docs/CONTINUATION.md for actual evidence and open gates.
+
+## Shared UI parity (active user requirement)
+
+New menu/HUD/map features must be implemented for both active targets: Minecraft 1.8.9
+and Fabric 26.3. Keep presentation, settings IDs/defaults/persistence and behavior in common;
+platform-specific rendering/input hooks may differ. Exercise both adapters when a shared
+feature changes. The existing 1.8.9 capability audit still applies: do not claim complete
+functional equivalence for adapters whose options remain limited. Use `.github/workflows/ui-parity.yml`
+for shared regressions and record any unverified behavior explicitly. Visible menus use TFL
+branding; retain technical loader identities, dependency declarations and legal notices.

@@ -25,6 +25,8 @@ public abstract class WindowUi extends UiScreen {
 	/** Fensterrechteck des letzten Bilds {x, y, w, h}. */
 	protected final int[] window = new int[4];
 
+	protected boolean screenScrim() {return true;}
+
 	protected abstract String title();
 
 	protected abstract void playClick();
@@ -48,7 +50,7 @@ public abstract class WindowUi extends UiScreen {
 	protected final void draw(Canvas raw, int width, int height, int mouseX, int mouseY, float dt) {
 		Theme t = Theme.get();
 		Canvas c = FadeCanvas.of(raw, alpha());
-		c.fill(0, 0, width, height, t.scrim);
+		if(screenScrim()) c.fill(0, 0, width, height, t.scrim);
 		int[] s = size(width, height);
 		int pw = s[0];
 		int ph = s[1];
@@ -68,7 +70,7 @@ public abstract class WindowUi extends UiScreen {
 
 	private void header(Canvas c, int px, int py, int pw, int mx, int my) {
 		Theme t = Theme.get();
-		c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, t.surfaceHigh);
+		c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, dev.theredstonee.trsclient.core.ui.UiAppearance.glass(t.surfaceHigh));
 		c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
 		int lx = px + PAD;
 		int ly = py + (HEADER_H - PixelFont.HEIGHT * 2) / 2;
