@@ -21,6 +21,36 @@ import org.lwjgl.opengl.GL11;
 public final class OrnitheCanvas implements Canvas, Textures.Store {
   private final Minecraft mc;
   private Identifier font;
+  private int scope,
+      oldTexture,
+      oldSrcRgb,
+      oldDstRgb,
+      oldSrcAlpha,
+      oldDstAlpha,
+      oldMatrixMode,
+      oldMatrixDepth,
+      oldActiveTexture;
+  private boolean oldBlend,
+      oldLighting,
+      oldTexturing,
+      oldDepth,
+      oldAlpha,
+      oldCull,
+      oldScissor,
+      oldRescale,
+      oldNormalize,
+      oldDepthMask,
+      oldLight0,
+      oldLight1,
+      oldColorMaterial;
+  private final java.nio.IntBuffer savedScissor = org.lwjgl.BufferUtils.createIntBuffer(16);
+  private final java.nio.FloatBuffer savedColor = org.lwjgl.BufferUtils.createFloatBuffer(16);
+  public long glyphBatches, glyphsRendered;
+
+  private record DynamicEntry(DynamicTexture texture, TextureRef ref) {}
+
+  private final java.util.Map<String, DynamicEntry> dynamic = new java.util.HashMap<>();
+
   private final int[] advances = new int[384];
   private static final int CELL = 52, COLS = 24, FIRST = 32, LAST = 384;
   private int width, height, scale = 1;
@@ -84,18 +114,106 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     this.width = width;
     this.height = height;
     this.scale = scale;
+    if (scope++ == 0) {
+      oldActiveTexture = GL11.glGetInteger(org.lwjgl.opengl.GL13.GL_ACTIVE_TEXTURE);
+      GlStateManager.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
+      oldLight0 = GL11.glIsEnabled(GL11.GL_LIGHT0);
+      oldLight1 = GL11.glIsEnabled(GL11.GL_LIGHT1);
+      oldColorMaterial = GL11.glIsEnabled(GL11.GL_COLOR_MATERIAL);
+      oldBlend = GL11.glIsEnabled(GL11.GL_BLEND);
+      oldLighting = GL11.glIsEnabled(GL11.GL_LIGHTING);
+      oldTexturing = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
+      oldDepth = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
+      oldAlpha = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
+      oldCull = GL11.glIsEnabled(GL11.GL_CULL_FACE);
+      oldScissor = GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
+      oldRescale = GL11.glIsEnabled(0x803A);
+      oldNormalize = GL11.glIsEnabled(GL11.GL_NORMALIZE);
+      oldDepthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
+      oldTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+      oldSrcRgb = GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_SRC_RGB);
+      oldDstRgb = GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_DST_RGB);
+      oldSrcAlpha = GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_SRC_ALPHA);
+      oldDstAlpha = GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_DST_ALPHA);
+      savedColor.clear();
+      GL11.glGetFloat(GL11.GL_CURRENT_COLOR, savedColor);
+      savedScissor.clear();
+      GL11.glGetInteger(GL11.GL_SCISSOR_BOX, savedScissor);
+      oldMatrixMode = GL11.glGetInteger(GL11.GL_MATRIX_MODE);
+      GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+      oldMatrixDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
+      GlStateManager.pushMatrix();
+    }
     GlStateManager.disableLighting();
     GlStateManager.enableTexture();
     GlStateManager.enableBlend();
     GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
   }
 
+  public void end() {
+    if (scope <= 0) throw new IllegalStateException("Unbalanced canvas scope");
+    if (--scope != 0) return;
+    GlStateManager.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);
+    GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+    while (GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH) > oldMatrixDepth)
+      GlStateManager.popMatrix();
+    GlStateManager.matrixMode(oldMatrixMode);
+    if (oldLight0) GlStateManager.enableLight(0);
+    else GlStateManager.disableLight(0);
+    if (oldLight1) GlStateManager.enableLight(1);
+    else GlStateManager.disableLight(1);
+    if (oldColorMaterial) GlStateManager.enableColorMaterial();
+    else GlStateManager.disableColorMaterial();
+    if (oldBlend) GlStateManager.enableBlend();
+    else GlStateManager.disableBlend();
+    if (oldLighting) GlStateManager.enableLighting();
+    else GlStateManager.disableLighting();
+    if (oldTexturing) GlStateManager.enableTexture();
+    else GlStateManager.disableTexture();
+    if (oldDepth) GlStateManager.enableDepthTest();
+    else GlStateManager.disableDepthTest();
+    if (oldAlpha) GlStateManager.enableAlphaTest();
+    else GlStateManager.disableAlphaTest();
+    if (oldCull) GlStateManager.enableCull();
+    else GlStateManager.disableCull();
+    if (oldRescale) GlStateManager.enableRescaleNormal();
+    else GlStateManager.disableRescaleNormal();
+    if (oldNormalize) GlStateManager.enableNormalize();
+    else GlStateManager.disableNormalize();
+    GlStateManager.depthMask(oldDepthMask);
+    GlStateManager.blendFuncSeparate(oldSrcRgb, oldDstRgb, oldSrcAlpha, oldDstAlpha);
+    GlStateManager.bindTexture(oldTexture);
+    GlStateManager.color4f(
+        savedColor.get(0), savedColor.get(1), savedColor.get(2), savedColor.get(3));
+    if (oldScissor) {
+      GL11.glEnable(GL11.GL_SCISSOR_TEST);
+      GL11.glScissor(
+          savedScissor.get(0), savedScissor.get(1), savedScissor.get(2), savedScissor.get(3));
+    } else GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    GlStateManager.activeTexture(oldActiveTexture);
+  }
+
   public void fill(int x1, int y1, int x2, int y2, int color) {
     GuiElement.fill(x1, y1, x2, y2, color);
   }
 
+  private boolean nativeFont(String text) {
+    for (int i = 0; i < text.length(); i++) {
+      char ch = text.charAt(i);
+      if (ch == '\u00a7' || ch < FIRST || ch >= LAST) return true;
+    }
+    return font == null;
+  }
+
+  private String privateText(String text) {
+    var c = OrnitheClient.get();
+    return c != null && c.ready ? c.privacy.text(text) : text;
+  }
+
   public void text(String text, int x, int y, int color, boolean shadow) {
-    if (font == null) {
+    text = privateText(text);
+    if (text.isEmpty()) return;
+    if (nativeFont(text)) {
       mc.textRenderer.draw(text, x, y, color, shadow);
       return;
     }
@@ -107,45 +225,40 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
         (color >> 8 & 255) / 255f,
         (color & 255) / 255f,
         (color >>> 24) / 255f);
-    float cursor = x;
+    var tess = net.minecraft.client.render.vertex.Tesselator.getInstance();
+    var buffer = tess.getBuffer();
+    buffer.begin(
+        GL11.GL_QUADS, net.minecraft.client.render.vertex.DefaultVertexFormat.POSITION_TEX);
+    double cursor = x - .5,
+        top = y - .5,
+        size = CELL * .25,
+        atlasW = COLS * CELL,
+        atlasH = ((LAST - FIRST + COLS - 1) / COLS) * CELL;
     for (int i = 0; i < text.length(); i++) {
       char ch = text.charAt(i);
-      if (ch == '\u00a7' && i + 1 < text.length()) {
-        i++;
-        continue;
-      }
-      if (ch < FIRST || ch >= LAST) ch = '?';
       int n = ch - FIRST;
-      push();
-      translate(cursor - .5f, y - .5f);
-      scale(.25f);
-      GuiElement.drawTexture(
-          0,
-          0,
-          n % COLS * CELL,
-          n / COLS * CELL,
-          CELL,
-          CELL,
-          COLS * CELL,
-          ((LAST - FIRST + COLS - 1) / COLS) * CELL);
-      pop();
-      cursor += advances[ch] / 4f;
+      double u = (n % COLS * CELL) / atlasW,
+          v = (n / COLS * CELL) / atlasH,
+          du = CELL / atlasW,
+          dv = CELL / atlasH;
+      buffer.vertex(cursor, top + size, 0).texture(u, v + dv).nextVertex();
+      buffer.vertex(cursor + size, top + size, 0).texture(u + du, v + dv).nextVertex();
+      buffer.vertex(cursor + size, top, 0).texture(u + du, v).nextVertex();
+      buffer.vertex(cursor, top, 0).texture(u, v).nextVertex();
+      cursor += advances[ch] / 4.0;
     }
+    tess.end();
+    glyphBatches++;
+    glyphsRendered += text.length();
     GlStateManager.color4f(1, 1, 1, 1);
   }
 
   public int textWidth(String text) {
-    if (font == null) return mc.textRenderer.getWidth(text);
-    float w = 0;
-    for (int i = 0; i < text.length(); i++) {
-      char ch = text.charAt(i);
-      if (ch == '\u00a7' && i + 1 < text.length()) {
-        i++;
-        continue;
-      }
-      w += advances[ch >= FIRST && ch < LAST ? ch : '?'] / 4f;
-    }
-    return (int) Math.ceil(w);
+    text = privateText(text);
+    if (nativeFont(text)) return mc.textRenderer.getWidth(text);
+    double width = 0;
+    for (int i = 0; i < text.length(); i++) width += advances[text.charAt(i)] / 4.0;
+    return (int) Math.ceil(width);
   }
 
   public int lineHeight() {
@@ -153,10 +266,18 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   }
 
   public String clip(String text, int max) {
-    if (textWidth(text) <= max) return text;
-    int end = text.length();
-    while (end > 0 && textWidth(text.substring(0, end)) > Math.max(0, max)) end--;
-    return text.substring(0, end);
+    text = privateText(text);
+    if (max <= 0) return "";
+    if (nativeFont(text)) return mc.textRenderer.trim(text, max);
+    double width = 0;
+    int end = 0;
+    while (end < text.length()) {
+      double next = advances[text.charAt(end)] / 4.0;
+      if (width + next > max) break;
+      width += next;
+      end++;
+    }
+    return end == text.length() ? text : text.substring(0, end);
   }
 
   public void flush() {}
@@ -223,13 +344,27 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   }
 
   public TextureRef upload(String name, int w, int h, int[] pixels) {
-    DynamicTexture tex = new DynamicTexture(w, h);
-    System.arraycopy(pixels, 0, tex.getPixels(), 0, w * h);
-    tex.upload();
-    return new TextureRef(mc.getTextureManager().register("tflcore/" + name, tex), w, h);
+    if (!Textures.validName(name) || w <= 0 || h <= 0 || pixels.length < w * h)
+      throw new IllegalArgumentException("Texture dimensions/name");
+    DynamicEntry entry = dynamic.get(name);
+    if (entry == null || entry.ref.width != w || entry.ref.height != h) {
+      if (entry != null) release(entry.ref);
+      DynamicTexture texture = new DynamicTexture(w, h);
+      TextureRef ref =
+          new TextureRef(mc.getTextureManager().register("tflcore/" + name, texture), w, h);
+      entry = new DynamicEntry(texture, ref);
+      dynamic.put(name, entry);
+    }
+    System.arraycopy(pixels, 0, entry.texture.getPixels(), 0, w * h);
+    entry.texture.upload();
+    return entry.ref;
   }
 
+  public int ownedDynamicTextures(){return dynamic.size()+(font==null?0:1);}
+  public long ownedDynamicTextureBytes(){long bytes=font==null?0:(long)COLS*CELL*((LAST-FIRST+COLS-1)/COLS)*CELL*4;for(var entry:dynamic.values())bytes+=(long)entry.ref.width*entry.ref.height*4;return bytes;}
+
   public void release(TextureRef texture) {
+    dynamic.values().removeIf(e -> e.ref.id.equals(texture.id));
     mc.getTextureManager().close((Identifier) texture.id);
   }
 

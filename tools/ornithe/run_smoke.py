@@ -10,6 +10,14 @@ if a.restart:cmd.append('-Prestart')
 x=C.CDLL(ctypes.util.find_library('X11'));x.XOpenDisplay.argtypes=[C.c_char_p];x.XOpenDisplay.restype=C.c_void_p
 x.XSetInputFocus.argtypes=[C.c_void_p,C.c_ulong,C.c_int,C.c_ulong];x.XFlush.argtypes=[C.c_void_p];x.XCloseDisplay.argtypes=[C.c_void_p]
 d=x.XOpenDisplay(os.environ.get('DISPLAY',':0').encode());assert d,'An X11 display is required'
+class XError(C.Structure):
+ _fields_=[('type',C.c_int),('display',C.c_void_p),('resourceid',C.c_ulong),('serial',C.c_ulong),('error_code',C.c_ubyte),('request_code',C.c_ubyte),('minor_code',C.c_ubyte)]
+errors=[]
+@C.CFUNCTYPE(C.c_int,C.c_void_p,C.POINTER(XError))
+def handle_x_error(display,error):
+ if error.contents.error_code not in (3,8):errors.append(error.contents.error_code)
+ return 0
+x.XSetErrorHandler.argtypes=[C.c_void_p];x.XSetErrorHandler(C.cast(handle_x_error,C.c_void_p))
 proc=subprocess.Popen(cmd);deadline=time.monotonic()+480
 try:
  while proc.poll() is None:
@@ -19,6 +27,7 @@ try:
   if win:x.XSetInputFocus(d,int(win.group(1),16),2,0);x.XFlush(d)
   time.sleep(.5)
 finally:x.XCloseDisplay(d)
+assert not errors,f'Unexpected X11 errors: {errors}'
 assert proc.returncode==0,f'Gradle exit {proc.returncode}'
 r=json.loads(report.read_text());assert r['status']=='passed',r
 print(f"Verified {a.stack} {'restart' if a.restart else 'smoke'}: {len(r['checks'])} checks")

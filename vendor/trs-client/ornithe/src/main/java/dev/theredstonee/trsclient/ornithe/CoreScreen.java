@@ -19,11 +19,19 @@ public final class CoreScreen extends Screen {
   public void render(int mx, int my, float delta) {
     OrnitheClient c = OrnitheClient.get();
     c.canvas.begin(width, height, c.window().getScale());
-    ui.render(c.canvas, width, height, mx, my);
+    try {
+      ui.render(c.canvas, width, height, mx, my);
+      if (c.navigation != null)
+        c.navigation.screenshots.render(c.canvas, width, height, mx, my, true);
+    } finally {
+      c.canvas.end();
+    }
   }
 
   @Override
   protected void mouseClicked(int x, int y, int b) {
+    if (OrnitheClient.get().navigation != null
+        && OrnitheClient.get().navigation.screenshots.mouseClicked(x, y, b)) return;
     ui.inputClick(x, y, b);
   }
 
@@ -64,6 +72,7 @@ public final class CoreScreen extends Screen {
 
   @Override
   public void removed() {
+    if(home)dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
     OrnitheClient c = OrnitheClient.get();
     if (c != null) c.save();
   }

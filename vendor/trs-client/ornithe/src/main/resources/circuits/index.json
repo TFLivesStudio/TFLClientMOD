@@ -1,0 +1,7 @@
+{
+  "circuits": [
+    "repeater_clock",
+    "rs_latch",
+    "xor_gate"
+  ]
+}

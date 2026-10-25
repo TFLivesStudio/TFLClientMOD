@@ -1,6 +1,6 @@
 TFL Client is a modified distribution of TRS Client MOD.
 Original TRS Client: Copyright (C) 2026 Ohev Tamerin (Theredstonee).
-TFL modifications: Copyright (C) 2026 TFLivesStudio; modified 2026-10-23.
+TFL modifications: Copyright (C) 2026 TFLivesStudio; modified 2026-10-23 through 2026-10-25.
 Code license: GPL-3.0-only. Original notices and MPL-2.0 Chat Heads headers remain applicable.
 Nunito and Inter typefaces: SIL Open Font License 1.1. See META-INF/licenses/Nunito-OFL.txt,
 Nunito-PROVENANCE.txt and Inter-OFL.txt.
@@ -10,3 +10,8 @@ they are not an indication of an approved TRS Launcher/backend integration.
 For every distributed binary, provide the complete corresponding source and build instructions
 at the exact commit used to generate it. An inaccessible private repository is not source delivery.
 Minecraft is a Mojang/Microsoft trademark. This is not an official Minecraft product.
+
+Ornithe II adapters reuse GPL shared/legacy behavior and shaders. Local circuit example templates
+are derived from the vendored GPL catalogue. Native Chat Heads adapts the retained MPL-2.0
+shared sender/cache/layout code; corresponding source and MPL notice remain included.
+Argentum is an optional external runtime mod, not incorporated in this distribution.

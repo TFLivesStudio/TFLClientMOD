@@ -94,3 +94,13 @@ tasks.named('runProdClient') {
 tasks.named('runProdClient') {
     jvmArgs.addAll('-Dfabric.fixPackageAccess=true', '-Dfabric.gameVersion=1.8.9')
 }
+// Target contracts are tested separately from the shared Java 8 regression suite.
+dependencies {
+    testImplementation platform("org.junit:junit-bom:${junit_version}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+tasks.named('test') {
+    useJUnitPlatform()
+    systemProperty 'ornithe.repoRoot', file('../../..').absolutePath
+}

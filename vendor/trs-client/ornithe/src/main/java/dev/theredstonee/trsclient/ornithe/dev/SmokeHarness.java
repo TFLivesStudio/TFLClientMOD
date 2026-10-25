@@ -23,6 +23,15 @@ public final class SmokeHarness implements Runnable {
   private final JsonArray checks = new JsonArray();
   private int tick, stage, wait, inputFrame;
   private float normalFov;
+  private long mapUploads;
+  private java.nio.file.Path nativeScreenshot;
+  private long colorPasses, panoramaFaces;
+  private double playerX, playerZ;
+  private boolean hiddenBefore;
+
+  private long posesBefore;
+  private int perspectiveBefore;
+  private net.minecraft.client.render.model.entity.HumanoidModel emoteModel;
 
   private float fov() throws Exception {
     var method =
@@ -95,13 +104,13 @@ public final class SmokeHarness implements Runnable {
         case 2 -> {
           check(
               "registered menu key opens common settings",
-              c.mc.screen instanceof CoreScreen cs && cs.ui instanceof PocMenu);
+              c.mc.screen instanceof CoreScreen cs && cs.ui instanceof ModMenu);
           shot("settings");
           c.mc.openScreen(null);
           check(
               "null-screen return uses shared title",
               c.mc.screen instanceof CoreScreen cs && cs.ui instanceof TitleUi);
-          new PocHost(c, null).openHudEditor();
+          new OrnitheMenuHost(c, null).openHudEditor();
           wait = 15;
           stage++;
         }
@@ -128,7 +137,7 @@ public final class SmokeHarness implements Runnable {
           c.mc.openScreen(null);
           check("world entered", true);
           for (var m : c.modules.registry.all())
-            if (OrnitheClient.SUPPORTED.contains(m.id())) {
+            if (c.capabilities.runnable(m) && m.userToggleable()) {
               m.setEnabled(false);
               check(m.id() + " disabled", !m.isEnabled());
               m.setEnabled(true);
@@ -196,6 +205,197 @@ public final class SmokeHarness implements Runnable {
           c.save();
           c.config.flush();
           check("preferences written", Files.isRegularFile(c.config.file()));
+          nativeFeatures();
+          perspectiveBefore = c.mc.options.perspective;
+          c.modules.emoteCamera.set(
+              dev.theredstonee.trsclient.core.module.TrsModules.EmoteCamera.BACK);
+          check(
+              "local emote starts without online services",
+              c.emotes.controller.play(
+                      c.emotes.controller.all().get(0).id(), System.currentTimeMillis())
+                  == dev.theredstonee.trsclient.core.emote.EmoteController.Result.PLAYED);
+          emoteModel = new net.minecraft.client.render.model.entity.HumanoidModel();
+          posesBefore = c.emotes.appliedPoses;
+          wait = 8;
+          stage++;
+        }
+        case 9 -> {
+          emoteModel.setupAnimation(0, 0, 1, 0, 0, .0625f, c.mc.player);
+          check("native humanoid emote pose applied", c.emotes.appliedPoses > posesBefore);
+          check("emote selects third person", c.mc.options.perspective == 1);
+          shot("local-emote");
+          c.emotes.attack();
+          wait = 10;
+          stage++;
+        }
+        case 10 -> {
+          check(
+              "attack cancels local emote",
+              !c.emotes.controller.selfPlaying(System.currentTimeMillis()));
+          check(
+              "emote restores previous perspective", c.mc.options.perspective == perspectiveBefore);
+          emoteModel.setupAnimation(0, 0, 1, 0, 0, .0625f, c.mc.player);
+          var reference = new net.minecraft.client.render.model.entity.HumanoidModel();
+          reference.setupAnimation(0, 0, 1, 0, 0, .0625f, c.mc.player);
+          check(
+              "humanoid restores vanilla pose after emote",
+              Math.abs(emoteModel.rightArm.rotationX - reference.rightArm.rotationX) < .0001f
+                  && Math.abs(emoteModel.rightArm.x - reference.rightArm.x) < .0001f);
+          colorPasses = c.colors.applied;
+          c.modules.colors.setEnabled(true);
+          c.modules.colorSaturation.set(0);
+          inputFrame = c.frameCount;
+          wait = 10;
+          stage++;
+        }
+        case 11 -> {
+          if (c.frameCount - inputFrame < 3) {
+            wait = 1;
+            return;
+          }
+          check("native color post-process executes", c.colors.applied > colorPasses);
+          shot("world-grayscale");
+          c.modules.colorSaturation.set(100);
+          c.modules.colors.setEnabled(false);
+          check(
+              "offline circuit recipes available",
+              dev.theredstonee.trsclient.core.circuit.CircuitLibrary.get().all().size() >= 3);
+          check(
+              "circuit service clients are absent",
+              dev.theredstonee.trsclient.core.circuit.Circuits.get().submissions() == null);
+          var circuit =
+              dev.theredstonee.trsclient.core.circuit.CircuitLibrary.get().byId("rs_latch");
+          dev.theredstonee.trsclient.core.circuit.Circuits.get()
+              .placeAt(
+                  circuit,
+                  (int) Math.floor(c.mc.player.x) + 2,
+                  8,
+                  (int) Math.floor(c.mc.player.z),
+                  0,
+                  false);
+          wait = 10;
+          stage++;
+        }
+        case 12 -> {
+          var circuits = dev.theredstonee.trsclient.core.circuit.Circuits.get();
+          check(
+              "native circuit checker sees missing template blocks",
+              circuits.check() != null && circuits.check().missing() > 0);
+          shot("circuit-template");
+          circuits.remove();
+          playerX = c.mc.player.x;
+          playerZ = c.mc.player.z;
+          c.cinematic.controller.toggleFreecam(c.cinematic);
+          check(
+              "freecam detaches the native camera",
+              c.cinematic.detached() && c.mc.getCamera() != c.mc.player);
+          new java.awt.Robot().keyPress(java.awt.event.KeyEvent.VK_W);
+          inputFrame = c.frameCount;
+          wait = 10;
+          stage++;
+        }
+        case 13 -> {
+          if (c.frameCount - inputFrame < 5) {
+            wait = 1;
+            return;
+          }
+          new java.awt.Robot().keyRelease(java.awt.event.KeyEvent.VK_W);
+          check(
+              "freecam physical movement leaves player in place",
+              Math.hypot(c.mc.player.x - playerX, c.mc.player.z - playerZ) < .01);
+          check(
+              "freecam physical movement moves only the camera",
+              Math.hypot(c.mc.getCamera().x - playerX, c.mc.getCamera().z - playerZ) > .05);
+          shot("local-freecam");
+          c.cinematic.controller.toggleFreecam(c.cinematic);
+          check("freecam restores the native player camera", c.mc.getCamera() == c.mc.player);
+          hiddenBefore = c.mc.options.hideGui;
+          panoramaFaces = c.panorama.faces;
+          dev.theredstonee.trsclient.core.panorama.Panorama.get().request(true, true);
+          wait = 20;
+          stage++;
+        }
+        case 14 -> {
+          var panorama = dev.theredstonee.trsclient.core.panorama.Panorama.get();
+          if (panorama.state() != dev.theredstonee.trsclient.core.panorama.Panorama.State.IDLE) {
+            wait = 10;
+            return;
+          }
+          check("panorama captures six native world faces", c.panorama.faces - panoramaFaces == 6);
+          check(
+              "panorama encodes the local image",
+              panorama.lastImage() != null && Files.isRegularFile(panorama.lastImage()));
+          check(
+              "panorama restores HUD and camera",
+              c.mc.options.hideGui == hiddenBefore && c.mc.getCamera() == c.mc.player);
+          check(
+              "color disable releases native post-chain",
+              !c.modules.colors.isEnabled() && !c.colors.allocated());
+          var point =
+              new dev.theredstonee.trsclient.core.waypoint.Waypoint(
+                  "Native fixture", -17, 64, -33, c.mapPlatform.dimension(), 0x3D7BFF);
+          c.waypoints.add(c.mapPlatform.worldKey(), point);
+          c.waypoints.saveIfDirty();
+          var loaded =
+              new dev.theredstonee.trsclient.core.waypoint.WaypointStore(c.waypoints.file());
+          loaded.load();
+          check(
+              "native world waypoints persist negative coordinates and dimension",
+              loaded.all(c.mapPlatform.worldKey()).stream()
+                  .anyMatch(
+                      w ->
+                          w.name.equals("Native fixture")
+                              && w.x == -17
+                              && w.z == -33
+                              && w.dimension.equals(c.mapPlatform.dimension())));
+          c.waypoints.remove(c.mapPlatform.worldKey(), point);
+          c.waypoints.saveIfDirty();
+          mapUploads = c.map.textures().uploads();
+          KeyBinding.click(c.mapKey.getKeyCode());
+          wait = 15;
+          stage++;
+        }
+        case 15 -> {
+          check(
+              "native map key opens shared world map",
+              c.mc.screen instanceof CoreScreen cs
+                  && cs.ui instanceof dev.theredstonee.trsclient.core.map.WorldMapUi);
+          check(
+              "world map uploads received region textures",
+              c.map.textures().regionTextureCount() > 0
+                  && c.map.textures().uploads() >= mapUploads);
+          shot("world-map");
+          c.mc.openScreen(null);
+          String name =
+              java.time.LocalDateTime.now()
+                      .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss"))
+                  + "_189.png";
+          nativeScreenshot = c.mc.gameDir.toPath().resolve("screenshots").resolve(name);
+          Screenshot.take(c.mc.gameDir, name, c.mc.width, c.mc.height, c.mc.getRenderTarget());
+          wait = 20;
+          stage++;
+        }
+        case 16 -> {
+          check("native screenshot file written", Files.isRegularFile(nativeScreenshot));
+          check(
+              "local screenshot watcher updates toast",
+              c.navigation.screenshots.toast().file() != null
+                  && nativeScreenshot
+                      .toAbsolutePath()
+                      .normalize()
+                      .equals(
+                          c.navigation.screenshots.toast().file().toAbsolutePath().normalize()));
+          c.navigation.captures(null);
+          wait = 15;
+          stage++;
+        }
+        case 17 -> {
+          check(
+              "shared local gallery opens natively",
+              c.mc.screen instanceof CoreScreen cs
+                  && cs.ui instanceof dev.theredstonee.trsclient.core.ui.clips.ClipsUi);
+          shot("local-gallery");
+          c.mc.openScreen(null);
           finish(null);
         }
       }
@@ -204,8 +404,226 @@ public final class SmokeHarness implements Runnable {
     }
   }
 
+  /** Native client fixtures verify mapping/hook outputs, not multiplayer gameplay certification. */
+  private void nativeFeatures() throws Exception {
+    check(
+        "map has native world identity",
+        !c.map.worldKey().isEmpty() && c.map.worldKey().equals(c.mapPlatform.worldKey()));
+    check("map samples received terrain", c.map.sampledTotal() > 0);
+    check("map excludes unknown chunks", !c.redstone.world.loaded(29000000, 64, 29000000));
+    check(
+        "map reader excludes unknown chunks",
+        !c.mapPlatform.isLoaded(1812500, 1812500) && !c.mapPlatform.open(1812500, 1812500));
+    c.modules.autoGg.setEnabled(true);
+    check(
+        "legacy enabled AutoGG never grants send approval",
+        !c.automation.allowed(c.modules.autoGg));
+    c.modules.autoRefill.setEnabled(true);
+    check("legacy enabled refill never grants inventory approval", !c.refill.active());
+    check(
+        "shared/native privacy masks names",
+        !c.privacy.text(c.mc.player.getName()).equals(c.mc.player.getName()));
+    check(
+        "shared/native privacy masks address tokens",
+        c.privacy.text("play.example.net").equals("*****"));
+    var sword =
+        new net.minecraft.item.ItemStack(
+            net.minecraft.item.Item.REGISTRY.get(
+                new net.minecraft.resource.Identifier("minecraft:diamond_sword")));
+    sword.setDamage(100);
+    check(
+        "native tooltip contains shared durability",
+        sword.getTooltip(c.mc.player, false).stream()
+            .anyMatch(line -> line.contains(Integer.toString(sword.getMaxDamage() - 100))));
+    c.modules.particleNoSmoke.set(true);
+    check(
+        "native particle gate suppresses configured smoke",
+        c.mc.particleManager.addParticle(
+                net.minecraft.entity.particle.ParticleType.SMOKE_NORMAL.getId(),
+                c.mc.player.x,
+                c.mc.player.y,
+                c.mc.player.z,
+                0,
+                0,
+                0)
+            == null);
+    c.modules.particles.setEnabled(false);
+    check(
+        "disabling particle gate restores native allocation",
+        c.mc.particleManager.addParticle(
+                net.minecraft.entity.particle.ParticleType.SMOKE_NORMAL.getId(),
+                c.mc.player.x,
+                c.mc.player.y,
+                c.mc.player.z,
+                0,
+                0,
+                0)
+            != null);
+    c.modules.particles.setEnabled(true);
+    checkChat();
+    checkCanvas();
+    var pos =
+        new net.minecraft.util.math.BlockPos(
+            (int) Math.floor(c.mc.player.x) + 2, 8, (int) Math.floor(c.mc.player.z));
+    var before = c.mc.world.getBlockState(pos);
+    var probe = new dev.theredstonee.trsclient.core.redstone.BlockProbe();
+    try {
+      c.mc.world.setBlockState(
+          pos,
+          net.minecraft.block.Blocks.REDSTONE_WIRE
+              .defaultState()
+              .set(net.minecraft.block.RedstoneWireBlock.POWER, 13),
+          2);
+      check(
+          "native redstone dust power 13",
+          c.redstone.world.dustPower(pos.getX(), pos.getY(), pos.getZ()) == 13);
+      check(
+          "native redstone probe recognizes dust",
+          c.redstone.world.probe(pos.getX(), pos.getY(), pos.getZ(), probe)
+              && probe.kind == dev.theredstonee.trsclient.core.redstone.RedstoneKind.DUST
+              && probe.power == 13);
+      c.mc.world.setBlockState(
+          pos, net.minecraft.block.Blocks.POWERED_REPEATER.getStateFromMetadata(8), 2);
+      c.redstone.world.probe(pos.getX(), pos.getY(), pos.getZ(), probe);
+      check(
+          "native powered repeater delay",
+          probe.kind == dev.theredstonee.trsclient.core.redstone.RedstoneKind.REPEATER
+              && probe.powered
+              && probe.delay == 3);
+      c.mc.world.setBlockState(
+          pos, net.minecraft.block.Blocks.POWERED_COMPARATOR.getStateFromMetadata(4), 2);
+      c.redstone.world.probe(pos.getX(), pos.getY(), pos.getZ(), probe);
+      check(
+          "native comparator subtract mode",
+          probe.kind == dev.theredstonee.trsclient.core.redstone.RedstoneKind.COMPARATOR
+              && probe.subtract);
+      c.modules.redstoneSignal.setEnabled(true);
+      c.redstone.tools.tick(
+          c.redstone.world,
+          c.mc.world,
+          true,
+          pos.getX(),
+          pos.getY(),
+          pos.getZ(),
+          c.mc.player.x,
+          c.mc.player.y,
+          c.mc.player.z);
+      check("shared redstone readout consumes native states", c.redstone.tools.readout().valid);
+    } finally {
+      c.mc.world.setBlockState(pos, before, 2);
+    }
+    var pig = new net.minecraft.entity.living.mob.passive.animal.PigEntity(c.mc.world);
+    var oldHit = c.mc.crosshairTarget;
+    var eye = c.mc.player.getEyePosition(1);
+    try {
+      c.mc.crosshairTarget = new net.minecraft.world.HitResult(pig, eye.add(0, 0, 2));
+      c.modules.reach.setEnabled(true);
+      c.mc.interactionManager.attackEntity(c.mc.player, pig);
+      check(
+          "native attack records actual hit distance",
+          Math.abs(c.pvp.reach.distance() - 2) < .0001);
+      pig.doEvent((byte) 2);
+      check("native hurt confirms combo", c.pvp.combo.combo() == 1);
+      pig.doEvent((byte) 2);
+      check("duplicate hurt does not confirm another hit", c.pvp.combo.combo() == 1);
+      c.mc.player.doEvent((byte) 2);
+      check("own hurt clears combo", c.pvp.combo.combo() == 0);
+    } finally {
+      c.mc.crosshairTarget = oldHit;
+    }
+  }
+
+  private void checkChat() throws Exception {
+    var gui = c.mc.gui.getChat();
+    gui.clear();
+    var field = gui.getClass().getDeclaredField("messages");
+    field.setAccessible(true);
+    @SuppressWarnings("unchecked")
+    var messages = (java.util.List<net.minecraft.client.gui.ChatMessage>) field.get(gui);
+    c.modules.chat.setEnabled(true);
+    c.modules.chatStack.set(true);
+    c.modules.chatTimestamps.set(true);
+    c.modules.qol.chatFilter.setEnabled(false);
+    var original = new net.minecraft.text.LiteralText("Ornithe native chat fixture");
+    original
+        .getStyle()
+        .setClickEvent(
+            new net.minecraft.text.ClickEvent(
+                net.minecraft.text.ClickEvent.Action.SUGGEST_COMMAND, "/help"));
+    gui.addMessage(original);
+    gui.addMessage(original);
+    check(
+        "native chat groups duplicates without double insertion",
+        messages.size() == 1 && messages.get(0).getText().getString().contains("x2"));
+    check("native timestamp added", messages.get(0).getText().getString().startsWith("["));
+    check(
+        "native chat preserves original component actions",
+        messages.get(0).getText().getSiblings().stream()
+            .anyMatch(t -> t.getStyle().getClickEvent() != null));
+    c.modules.qol.chatFilter.setEnabled(true);
+    c.modules.qol.chatFilterWords.set("hiddenfixture");
+    gui.addMessage(new net.minecraft.text.LiteralText("hiddenfixture"));
+    check("native chat filter prevents insertion", messages.size() == 1);
+    c.modules.qol.chatFilter.setEnabled(false);
+    c.modules.chatStack.set(false);
+    c.modules.chatTimestamps.set(false);
+    c.modules.qol.chatHistory.set(150);
+    for (int i = 0; i < 160; i++)
+      gui.addMessage(new net.minecraft.text.LiteralText("History fixture " + i));
+    check("native history respects configured bound", messages.size() == 150);
+    c.modules.chat.setEnabled(false);
+    gui.addMessage(new net.minecraft.text.LiteralText("Vanilla limit restored"));
+    check("chat disable restores Vanilla retention", messages.size() == 100);
+    c.modules.chat.setEnabled(true);
+    gui.clear();
+  }
+
+  private void checkCanvas() {
+    var win = c.window();
+    int active = org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL13.GL_ACTIVE_TEXTURE);
+    net.minecraft.client.render.platform.GlStateManager.activeTexture(
+        org.lwjgl.opengl.GL13.GL_TEXTURE1);
+    long batches = c.canvas.glyphBatches;
+    c.canvas.begin(win.getWidth(), win.getHeight(), win.getScale());
+    try {
+      c.canvas.text("Español: áéíóú ñ", 0, 0, 0xFFFFFFFF, false);
+    } finally {
+      c.canvas.end();
+    }
+    check(
+        "canvas restores active texture unit",
+        org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL13.GL_ACTIVE_TEXTURE)
+            == org.lwjgl.opengl.GL13.GL_TEXTURE1);
+    net.minecraft.client.render.platform.GlStateManager.activeTexture(active);
+    check("Nunito batches an accented text run in one draw", c.canvas.glyphBatches - batches == 1);
+    check("Unicode fallback has nonzero metrics", c.canvas.textWidth("漢字") > 0);
+    int[] pixels = new int[16];
+    java.util.Arrays.fill(pixels, 0xFFFF0000);
+    var one = c.canvas.upload("smoke/reuse", 4, 4, pixels);
+    java.util.Arrays.fill(pixels, 0xFF0000FF);
+    var two = c.canvas.upload("smoke/reuse", 4, 4, pixels);
+    check("dynamic texture update reuses native allocation", one.id.equals(two.id));
+    c.canvas.release(two);
+  }
+
   private void finish(Throwable error) {
     try {
+      JsonObject capabilities = new JsonObject();
+      for (var entry : c.capabilities.entries().entrySet()) {
+        var cap = entry.getValue();
+        JsonObject value = new JsonObject();
+        value.addProperty("state", cap.state().name());
+        value.addProperty("detail", cap.detail());
+        JsonArray settings = new JsonArray();
+        for (String setting : new TreeSet<>(cap.settings()))
+          settings.add(new JsonPrimitive(setting));
+        value.add("settings", settings);
+        JsonArray hooks = new JsonArray();
+        for (String hook : cap.hooks()) hooks.add(new JsonPrimitive(hook));
+        value.add("hooks", hooks);
+        capabilities.add(entry.getKey(), value);
+      }
+      report.add("capabilities", capabilities);
       report.addProperty("status", error == null ? "passed" : "failed");
       if (error != null) {
         report.addProperty("error", error.toString());
@@ -216,6 +634,7 @@ public final class SmokeHarness implements Runnable {
       Arrays.sort(frames);
       if (count > 0) {
         report.addProperty("frames", count);
+        report.addProperty("frametimeP99Ms", frames[(int) ((count - 1) * .99)] / 1e6);
         report.addProperty("frametimeMedianMs", frames[count / 2] / 1e6);
         report.addProperty("frametimeP95Ms", frames[(int) ((count - 1) * .95)] / 1e6);
         report.addProperty(

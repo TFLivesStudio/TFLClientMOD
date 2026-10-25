@@ -29,8 +29,6 @@ import org.slf4j.*;
 /** Ornithe platform hooks only. The registry, settings, layout, UI and storage belong to common. */
 public final class OrnitheClient implements ModInitializer {
   public static final Logger LOG = LoggerFactory.getLogger("TFL/Ornithe");
-  public static final Set<String> SUPPORTED =
-      Set.of("fps", "coords", "cps", "keystrokes", "zoom", "toggleSprint", "crosshair");
   private static OrnitheClient instance;
 
   public static OrnitheClient get() {
@@ -40,13 +38,56 @@ public final class OrnitheClient implements ModInitializer {
   public Minecraft mc;
   public OrnitheCanvas canvas;
   public final TrsModules modules = new TrsModules();
+  public final dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry capabilities =
+      new dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry(modules.registry);
   public final ZoomState zoom = new ZoomState();
-  public final ToggleState sprint = new ToggleState();
+  public final ToggleState sprint = new ToggleState(), sneak = new ToggleState();
+  private boolean sneakDown;
+  private int sneakPresses;
+  private OrnitheHuds extendedHuds;
   public final ClickCounter left = new ClickCounter(), right = new ClickCounter();
   public final List<HudItem> hudItems = new ArrayList<>();
-  public KeyBinding menuKey, zoomKey;
+  public KeyBinding menuKey, zoomKey, mapKey, emoteKey;
+  public OrnitheEmotes emotes;
+  public OrnitheNavigation navigation;
+  public OrnithePvp pvp;
+  public OrnitheWaypoints waypointOverlay;
+  public float worldFov = 70;
+  public long initNanos=System.nanoTime(),readyNanos,worldLoadNanos;
+  public double lastWorldLoadMs;
+  public OrnithePanorama panorama;
+  public OrnitheLatency latency;
+  public OrnitheChatHeads heads;
+  public OrnitheNet network;
+  public OrnitheBorderless borderless;
+  public OrnitheCircuits circuits;
+  public OrnitheSeasonal seasonal;
+  public OrnitheColors colors;
+  public OrnitheCinematic cinematic;
+  public OrnitheCapes capes;
+  public OrnithePrivacy privacy;
+  public OrnitheComfort comfort;
+  public OrnitheRefill refill;
+  public OrnitheAutomation automation;
+  public OrnithePerformance performance;
+  public OrnitheVanillaHuds vanillaHuds;
+  public float hudPartial;
+  public OrnitheFreelook freelook;
+  public OrnitheChat chat;
+  public OrnitheRedstone redstone;
+  public dev.theredstonee.trsclient.core.notes.Notes notes;
+  private String sharedZoomKey, sharedMapKey;
+  private boolean notesDown;
+  private int nativeZoomKey, nativeMapKey, lastSprintCode, lastSneakCode;
   public boolean ready, crosshairVisible;
   public ConfigStore config;
+  public final OrnitheConsent consent = new OrnitheConsent();
+  public dev.theredstonee.trsclient.core.waypoint.WaypointStore waypoints;
+  public dev.theredstonee.trsclient.core.map.MapEngine map;
+  public OrnitheMapPlatform mapPlatform;
+  private final dev.theredstonee.trsclient.core.map.MinimapRenderer minimapRenderer =
+      new dev.theredstonee.trsclient.core.map.MinimapRenderer();
+
   private boolean sprintDown;
   private int sprintPresses;
   private Object lastWorld;
@@ -71,22 +112,102 @@ public final class OrnitheClient implements ModInitializer {
   @Override
   public void init() {
     instance = this;
+    installCapabilities();
+    installCamera();
     var dir = FabricLoader.getInstance().getConfigDir();
     I18n.init(dir);
     Theme.loadFrom(dir);
+    waypoints =
+        new dev.theredstonee.trsclient.core.waypoint.WaypointStore(dir.resolve(Product.WAYPOINTS));
+    waypoints.load();
+    modules.registry.addPart(consent);
     config = new ConfigStore(dir.resolve(Product.CONFIG));
     LOG.info("Configuration: {}", config.load(modules.registry));
     KeybindEvents.REGISTER_KEYBINDS.register(
         () -> {
           menuKey = KeybindRegistry.register("key.tflcore.menu", 54, "key.categories.tflcore");
+          emoteKey = KeybindRegistry.register("key.tflcore.emotes", 19, "key.categories.tflcore");
+          mapKey = KeybindRegistry.register("key.tflcore.map", 50, "key.categories.tflcore");
           zoomKey = KeybindRegistry.register("key.tflcore.zoom", 47, "key.categories.tflcore");
         });
     MinecraftClientEvents.READY.register(
         game -> {
           mc = game;
           canvas = new OrnitheCanvas(mc);
+          map = dev.theredstonee.trsclient.core.map.MapEngine.init(modules, dir);
+          mapPlatform = new OrnitheMapPlatform(this);
+          installMaps();
+          notes = dev.theredstonee.trsclient.core.notes.Notes.init(modules, dir, LOG::warn);
+          emotes = new OrnitheEmotes(this);
+          navigation = new OrnitheNavigation(this);
+          pvp = new OrnithePvp(this);
+          latency = new OrnitheLatency(this);
+          heads = new OrnitheChatHeads(this);
+          network = new OrnitheNet(this);
+          borderless = new OrnitheBorderless(this);
+          seasonal = new OrnitheSeasonal(this);
+          colors = new OrnitheColors(this);
+          capes = new OrnitheCapes(this);
+          privacy = new OrnithePrivacy(this);
+          automation = new OrnitheAutomation(this);
+          refill = new OrnitheRefill(this);
+          comfort = new OrnitheComfort(this);
+          performance = new OrnithePerformance(this);
+          vanillaHuds = new OrnitheVanillaHuds(this);
+          freelook = new OrnitheFreelook(this);
+          chat = new OrnitheChat(this);
+          redstone = new OrnitheRedstone(this);
+          circuits = new OrnitheCircuits(this);
+          cinematic = new OrnitheCinematic(this);
+          waypointOverlay = new OrnitheWaypoints(this);
+          panorama = new OrnithePanorama(this);
+          capabilities.connect(
+              modules.notes.notes,
+              dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.LIMITED,
+              "Shared offline notebooks and map coordinate actions; remote sync disabled",
+              List.of("key"),
+              "Notes.tick",
+              "ModMenu.NotesPage",
+              "MapPlatform");
+          dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().install(new dev.theredstonee.trsclient.core.ui.background.LocalMjpegPlayer(dir.resolve("tflcore/menu.mjpeg")));
           reload();
           createHud();
+          extendedHuds = new OrnitheHuds(this);
+          var notePanel = new dev.theredstonee.trsclient.core.notes.NotePanel(modules);
+          capabilities.connect(
+              modules.notes.pinnedNote,
+              dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.LIMITED,
+              "Shared pinned notebook, checklist and wrapping; offline only",
+              modules.notes.pinnedNote.settings().stream().map(s -> s.key()).toList(),
+              "NotePanel",
+              "Notes.currentWorld",
+              "GameGuiMixin.render");
+          hudItems.add(
+              new HudItem() {
+                public HudModule module() {
+                  return modules.notes.pinnedNote;
+                }
+
+                private boolean preview() {
+                  return mc.world == null
+                      || mc.screen instanceof CoreScreen cs && cs.ui instanceof HudEditor;
+                }
+
+                public int width() {
+                  return notePanel.width(canvas::textWidth, preview());
+                }
+
+                public int height() {
+                  return notePanel.height(canvas::textWidth, preview());
+                }
+
+                public void draw(Canvas c) {
+                  if (preview() || notePanel.visible())
+                    notePanel.draw(c, canvas::textWidth, preview());
+                }
+              });
+          synchronizeKeys();
+          readyNanos=System.nanoTime();
           ready = true;
           if (mc.screen instanceof TitleScreen && !Product.safeMode()) mc.openScreen(title());
           LOG.info(
@@ -116,12 +237,88 @@ public final class OrnitheClient implements ModInitializer {
         game -> {
           save();
           config.flush();
+          if (emotes != null) emotes.controller.tick(System.currentTimeMillis(), List.of(), null);
+          if (notes != null) notes.save();
+          if (latency != null) latency.close();
+          if (colors != null) colors.release();
+          if (cinematic != null) cinematic.detachView(false);
+          if (map != null) map.shutdown();
+          try {
+            waypoints.saveIfDirty();
+          } catch (java.io.IOException e) {
+            LOG.error("Waypoint shutdown save failed", e);
+          }
         });
   }
 
+  private void installCapabilities() {
+    var limited = dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.LIMITED;
+    for (var item :
+        List.of(modules.fps, modules.cps, modules.coords, modules.keystrokes, modules.toggleSprint))
+      capabilities.connect(
+          item,
+          limited,
+          "Ornithe HUD adapter; advanced options are listed only when connected",
+          List.of("scale", "shadow", "background", "backgroundOpacity", "textColor"),
+          "GameGuiMixin.render",
+          "OrnitheClient.createHud",
+          "OrnitheClient.tick");
+    for (var item : List.of(modules.coords, modules.keystrokes))
+      capabilities.connect(
+          item,
+          limited,
+          "Native coordinates/direction/biome and actual bindings with mouse/CPS/space options",
+          item.settings().stream().map(s -> s.key()).toList(),
+          "OrnitheHuds.tick",
+          "OrnitheKeystrokes",
+          "GameGuiMixin.render");
+    capabilities.connect(
+        modules.zoom,
+        limited,
+        "Factor and smoothing connected; extended camera options in migration",
+        List.of("factor", "smooth"),
+        "GameRendererMixin.getFov",
+        "OrnitheClient.frame");
+    capabilities.connect(
+        modules.crosshair,
+        limited,
+        "Basic geometry connected; 1.8.9 has no attack cooldown indicator",
+        List.of("shape", "color", "size", "gap", "thickness", "outline"),
+        "GameGuiMixin.hasCrosshair",
+        "OrnitheClient.drawHud");
+    capabilities.connect(
+        modules.titleScreen,
+        limited,
+        "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
+        List.of("animated","backgroundMode"),
+        "MinecraftMixin.openScreen",
+        "OrnitheClient.title");
+    var backend =
+        dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.BACKEND_UNAVAILABLE;
+    for (String id : List.of("trsOnline", "social", "clips"))
+      capabilities.declare(
+          id,
+          backend,
+          "Requires an authorized TFL backend/launcher integration; saved preferences retained");
+    capabilities.declare(
+        "shieldPosition",
+        dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.VERSION_UNAVAILABLE,
+        "Combat shields were introduced in Minecraft 1.9");
+    capabilities.declare(
+        "builtinOptimizations",
+        dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.OPTIONAL_INTEGRATION,
+        "External renderer/optimizers remain separate; no optimization binary is bundled");
+  }
+
   public void reload() {
+    if (colors != null) colors.release();
     if (canvas != null) canvas.prepare();
     rebuildCrosshair();
+    if (mapPlatform != null) mapPlatform.reloaded();
+    if (map != null) {
+      map.textures().clear();
+      map.sprites().clear();
+    }
   }
 
   public void save() {
@@ -156,8 +353,79 @@ public final class OrnitheClient implements ModInitializer {
     return window;
   }
 
+  private void installMaps() {
+    var limited = dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.LIMITED;
+    for (var m : List.of(modules.minimap, modules.worldMap))
+      capabilities.connect(
+          m,
+          limited,
+          "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+          m.settings().stream().map(setting -> setting.key()).toList(),
+          "MapEngine.tick",
+          "OrnitheMapPlatform",
+          "MinimapRenderer",
+          "WorldMapUi");
+    capabilities.connect(
+        modules.waypoints,
+        limited,
+        "Persistent points and map controls; world-space beams are not connected yet",
+        List.of("death"),
+        "WaypointStore",
+        "WorldMapUi",
+        "OrnitheMapPlatform");
+    hudItems.add(
+        new HudItem() {
+          public HudModule module() {
+            return modules.minimap;
+          }
+
+          public int width() {
+            return minimapRenderer.width(modules);
+          }
+
+          public int height() {
+            return minimapRenderer.height(modules);
+          }
+
+          public void draw(Canvas c) {
+            minimapRenderer.draw(c, map, !mapPlatform.inWorld(), modules.minimap.scale.get(), null);
+          }
+        });
+  }
+
+  public void openWorldMap(Screen parent) {
+    if (mapPlatform == null || !mapPlatform.inWorld()) return;
+    mc.openScreen(
+        new CoreScreen(
+            new dev.theredstonee.trsclient.core.map.WorldMapUi(
+                map,
+                new dev.theredstonee.trsclient.core.map.WorldMapUi.Host() {
+                  public void closeScreen() {
+                    map.setWorldMapOpen(false);
+                    mc.openScreen(parent);
+                  }
+
+                  public void playClick() {
+                    clickSound();
+                  }
+
+                  public boolean isMapKey(int key) {
+                    return key == mapKey.getKeyCode();
+                  }
+                }),
+            false));
+  }
+
+  public void clickSound() {
+    if (mc != null && mc.getSoundManager() != null)
+      mc.getSoundManager()
+          .play(
+              net.minecraft.client.sound.instance.SimpleSoundInstance.of(
+                  new net.minecraft.resource.Identifier("minecraft:gui.button.press"), 1f));
+  }
+
   public void openMenu(Screen parent) {
-    mc.openScreen(new CoreScreen(new PocMenu(new PocHost(this, parent)), false));
+    mc.openScreen(new CoreScreen(new ModMenu(new OrnitheMenuHost(this, parent)), false));
   }
 
   public Screen title() {
@@ -206,12 +474,14 @@ public final class OrnitheClient implements ModInitializer {
                 return version();
               }
 
-              public void playClick() {}
+              public void playClick() {
+                clickSound();
+              }
 
               public void narrate(String text) {}
 
               public boolean animated() {
-                return false;
+                return modules.titleAnimated.get();
               }
 
               public boolean simpleAnimation() {
@@ -222,19 +492,68 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   private void tick() {
+    synchronizeKeys();
+    mapPlatform.updateIdentity();
+    map.tick(mapPlatform);
+    notes.tick(System.currentTimeMillis());
+    boolean noteKey = OrnitheKeys.isDown(modules.notes.openKey.get());
+    if (noteKey && !notesDown && mc.screen == null && capabilities.active(modules.notes.notes)) {
+      dev.theredstonee.trsclient.core.notes.Notes.requestOpen();
+      openMenu(null);
+    }
+    notesDown = noteKey;
+    navigation.screenshots.tick();
+    String profile = modules.serverProfiles.update(mapPlatform.worldKey());
+    if (profile != null) {
+      save();
+      if (modules.comfort.profilesNotify.get()) mapPlatform.message(profile);
+    }
+    emotes.tick();
+    pvp.tick();
+    heads.tick();
+    network.tick();
+    seasonal.tick();
+    capes.tick();
+    privacy.tick();
+    automation.tick();
+    refill.tick();
+    comfort.tick();
+    vanillaHuds.tick();
+    chat.tick();
+    redstone.tick();
+    circuits.tick();
+    cinematic.tick();
+    waypointOverlay.tick();
+    panorama.tick();
+    while (emoteKey.consumeClick()) emotes.open(mc.screen);
+    while (mapKey.consumeClick())
+      if (capabilities.active(modules.worldMap)) openWorldMap(mc.screen);
     while (menuKey.consumeClick()) {
       if (mc.screen instanceof CoreScreen cs && !cs.home) mc.openScreen(null);
       else openMenu(mc.screen);
     }
-    boolean blocked = mc.world == null || mc.player == null || mc.screen != null;
-    if (blocked || lastWorld != mc.world) {
+    boolean blocked =
+        mc.world == null || mc.player == null || mc.screen != null || mc.player.getHealth() <= 0;
+    if (blocked
+        || lastWorld != mc.world
+        || lastSprintCode != mc.options.sprintKey.getKeyCode()
+        || lastSneakCode != mc.options.sneakKey.getKeyCode()) {
       sprint.reset();
+      sneak.reset();
+      sneakPresses = 0;
+      sneakDown = false;
       sprintPresses = 0;
       sprintDown = false;
     }
     sprint.update(sprintPresses, modules.toggleSprint.isEnabled(), blocked);
     sprintPresses = 0;
+    sneak.update(sneakPresses, modules.toggleSneak.isEnabled(), blocked);
+    sneakPresses = 0;
+    extendedHuds.tick();
+    if(lastWorld!=mc.world&&mc.world!=null&&worldLoadNanos!=0){lastWorldLoadMs=(System.nanoTime()-worldLoadNanos)/1e6;worldLoadNanos=0;}
     lastWorld = mc.world;
+    lastSprintCode = mc.options.sprintKey.getKeyCode();
+    lastSneakCode = mc.options.sneakKey.getKeyCode();
     fps = Minecraft.getCurrentFps() + " FPS";
     if (mc.player != null)
       coords =
@@ -252,6 +571,12 @@ public final class OrnitheClient implements ModInitializer {
 
   public void frame() {
     if (!ready) return;
+    latency.frame();
+    cinematic.frame();
+    panorama.frame();
+    if (!cinematic.detached()) freelook.frame();
+    performance.frame();
+    borderless.frame();
     long now = System.nanoTime();
     if (lastFrame != 0) frameNanos[frameCount++ % frameNanos.length] = now - lastFrame;
     lastFrame = now;
@@ -261,20 +586,38 @@ public final class OrnitheClient implements ModInitializer {
             && mc.player != null
             && mc.screen == null
             && zoomKey.isPressed();
-    zoom.frame(active, false, modules.zoomFactor.get(), modules.zoomSmooth.get(), now);
+    boolean blocked =
+        !modules.zoom.isEnabled()
+            || mc.world == null
+            || mc.player == null
+            || mc.player.getHealth() <= 0
+            || mc.screen != null;
+    zoom.frame(
+        active && !blocked, blocked, modules.zoomFactor.get(), modules.zoomSmooth.get(), now);
   }
 
   /**
    * Native press/release edges retain taps shorter than a client tick and ignore repeat key-downs.
    */
   public void keyState(int key, boolean down) {
-    if (!ready || key != mc.options.sprintKey.getKeyCode()) return;
+    if (!ready) return;
+    if (key == mc.options.sneakKey.getKeyCode()) {
+      if (down && !sneakDown && mc.world != null && mc.player != null && mc.screen == null)
+        sneakPresses++;
+      sneakDown = down;
+    }
+    if (key != mc.options.sprintKey.getKeyCode()) return;
     if (down && !sprintDown && mc.world != null && mc.player != null && mc.screen == null)
       sprintPresses++;
     sprintDown = down;
   }
 
   public boolean sprintHeld(KeyBinding key) {
+    if (ready && key == mc.options.sneakKey)
+      return modules.toggleSneak.isEnabled()
+          && sneak.active()
+          && mc.screen == null
+          && mc.world != null;
     return ready
         && key == mc.options.sprintKey
         && modules.toggleSprint.isEnabled()
@@ -283,56 +626,84 @@ public final class OrnitheClient implements ModInitializer {
         && mc.world != null;
   }
 
+  public void synchronizeKeys() {
+    if (mc == null || zoomKey == null || mapKey == null) return;
+    if (!Objects.equals(sharedZoomKey, modules.zoomKey.get())) {
+      zoomKey.setKeyCode(OrnitheKeys.code(modules.zoomKey.get()));
+      sharedZoomKey = modules.zoomKey.get();
+      KeyBinding.resetMapping();
+    } else if (nativeZoomKey != zoomKey.getKeyCode()) {
+      modules.zoomKey.set(OrnitheKeys.name(zoomKey.getKeyCode()));
+      sharedZoomKey = modules.zoomKey.get();
+    }
+    if (!Objects.equals(sharedMapKey, modules.worldMapKey.get())) {
+      mapKey.setKeyCode(OrnitheKeys.code(modules.worldMapKey.get()));
+      sharedMapKey = modules.worldMapKey.get();
+      KeyBinding.resetMapping();
+    } else if (nativeMapKey != mapKey.getKeyCode()) {
+      modules.worldMapKey.set(OrnitheKeys.name(mapKey.getKeyCode()));
+      sharedMapKey = modules.worldMapKey.get();
+    }
+    nativeZoomKey = zoomKey.getKeyCode();
+    nativeMapKey = mapKey.getKeyCode();
+  }
+
+  public int wheel(int amount) {
+    if (ready && mc.screen == null && cinematic.controller.scroll(cinematic, Math.signum(amount)))
+      return 0;
+    if (ready
+        && mc.screen == null
+        && modules.zoomScroll.get()
+        && zoom.isActive()
+        && modules.zoom.isEnabled()) {
+      zoom.scroll(Math.signum(amount));
+      return 0;
+    }
+    return amount;
+  }
+
+  private void installCamera() {
+    var state = dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.LIMITED;
+    capabilities.connect(
+        modules.zoom,
+        state,
+        "Native FOV, scroll, mouse slowdown, cinematic smoothing and configurable binding",
+        modules.zoom.settings().stream().map(s -> s.key()).toList(),
+        "GameRendererMixin.getFov",
+        "MouseMixin.tick",
+        "MinecraftMixin.scroll",
+        "GameRendererMixin.cinematic");
+    capabilities.connect(
+        modules.noHurtCam,
+        state,
+        "Cancels native hurt-camera transform; restores automatically when disabled",
+        List.of(),
+        "GameRendererMixin.applyHurtCam");
+    capabilities.connect(
+        modules.fullbright,
+        state,
+        "Native lightmap gamma read; original option is never overwritten",
+        List.of("level"),
+        "GameRendererMixin.updateLightMap");
+  }
+
   public void click(int code) {
     if (ready && mc.world != null && mc.player != null && mc.screen == null) {
       long now = System.nanoTime() / 1_000_000;
-      if (code == -100) left.record(now);
+      if (code == -100) {
+        left.record(now);
+        if (emotes != null) emotes.attack();
+      }
       if (code == -99) right.record(now);
     }
   }
 
   private void createHud() {
     hudItems.add(item(modules.fps, () -> fps));
-    hudItems.add(item(modules.coords, () -> coords));
+
     hudItems.add(item(modules.cps, () -> cps));
     hudItems.add(item(modules.toggleSprint, () -> sprintLabel));
-    hudItems.add(
-        new HudItem() {
-          public HudModule module() {
-            return modules.keystrokes;
-          }
-
-          public int width() {
-            return 74;
-          }
-
-          public int height() {
-            return 63;
-          }
-
-          public void draw(Canvas c) {
-            key(c, mc.options.forwardKey, "W", 25, 0, 23);
-            key(c, mc.options.leftKey, "A", 0, 21, 23);
-            key(c, mc.options.backKey, "S", 25, 21, 23);
-            key(c, mc.options.rightKey, "D", 50, 21, 23);
-            key(c, mc.options.jumpKey, "SPACE", 0, 42, 73);
-          }
-
-          private void key(Canvas c, KeyBinding k, String text, int x, int y, int w) {
-            c.fill(
-                x,
-                y,
-                x + w,
-                y + 19,
-                k.isPressed() ? 0xC06078B0 : modules.keystrokes.backgroundArgb());
-            c.text(
-                text,
-                x + (w - c.textWidth(text)) / 2,
-                y + 5,
-                modules.keystrokes.textColor.argb(),
-                modules.keystrokes.shadow());
-          }
-        });
+    hudItems.add(new OrnitheKeystrokes(this));
   }
 
   private HudItem item(HudModule module, java.util.function.Supplier<String> text) {
@@ -358,27 +729,44 @@ public final class OrnitheClient implements ModInitializer {
 
   public void drawHud() {
     if (!ready || mc.world == null || mc.player == null || mc.options.hideGui) return;
-    if (mc.screen instanceof CoreScreen cs && cs.ui instanceof HudEditor) return;
+    if (mc.screen instanceof CoreScreen cs && !cs.ui.overlay()) return;
     Window win = window();
     canvas.begin(win.getWidth(), win.getHeight(), win.getScale());
-    for (HudItem item : hudItems) {
-      HudModule m = item.module();
-      if (!m.isEnabled()) continue;
-      float s = (float) m.scale.get();
-      int x = HudLayout.resolveX(m.position(), Math.round(item.width() * s), win.getWidth()),
-          y = HudLayout.resolveY(m.position(), Math.round(item.height() * s), win.getHeight());
-      canvas.push();
-      canvas.translate(x, y);
-      canvas.scale(s);
-      item.draw(canvas);
-      canvas.pop();
-    }
-    if (crosshairVisible && modules.crosshair.isEnabled()) {
-      int x = win.getWidth() / 2, y = win.getHeight() / 2;
-      if (modules.crosshairOutline.get())
-        for (int[] r : outline) canvas.fill(x + r[0], y + r[1], x + r[2], y + r[3], 0xFF000000);
-      for (int[] r : reticle)
-        canvas.fill(x + r[0], y + r[1], x + r[2], y + r[3], modules.crosshairColor.argb());
+    try {
+      for (HudItem item : hudItems) {
+        HudModule m = item.module();
+        if (!m.isEnabled()) continue;
+        float s = (float) m.scale.get();
+        int x = HudLayout.resolveX(m.position(), Math.round(item.width() * s), win.getWidth()),
+            y = HudLayout.resolveY(m.position(), Math.round(item.height() * s), win.getHeight());
+        canvas.push();
+        canvas.translate(x, y);
+        canvas.scale(s);
+        item.draw(canvas);
+        canvas.pop();
+      }
+      if (crosshairVisible && modules.crosshair.isEnabled()) {
+        int x = win.getWidth() / 2, y = win.getHeight() / 2;
+        if (modules.crosshairOutline.get())
+          for (int[] r : outline) canvas.fill(x + r[0], y + r[1], x + r[2], y + r[3], 0xFF000000);
+        for (int[] r : reticle)
+          canvas.fill(x + r[0], y + r[1], x + r[2], y + r[3], modules.crosshairColor.argb());
+      }
+      dev.theredstonee.trsclient.core.panorama.PanoramaToast.draw(
+          canvas,
+          win.getWidth(),
+          win.getHeight(),
+          dev.theredstonee.trsclient.core.panorama.Panorama.get().toast(System.currentTimeMillis()),
+          "TFL Client");
+      pvp.draw(canvas, win.getWidth(), win.getHeight());
+      redstone.draw(canvas, win.getWidth(), win.getHeight());
+      comfort.draw(canvas, win.getWidth(), win.getHeight());
+      seasonal.draw(canvas, win.getWidth(), win.getHeight());
+      circuits.draw(canvas, win.getWidth(), win.getHeight());
+      waypointOverlay.draw(canvas, win.getWidth(), win.getHeight());
+      navigation.screenshots.render(canvas, win.getWidth(), win.getHeight(), -1, -1, false);
+    } finally {
+      canvas.end();
     }
   }
 }

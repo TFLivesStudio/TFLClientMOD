@@ -10,6 +10,11 @@ with zipfile.ZipFile(p) as z:
     assert meta['entrypoints']['init']==['dev.theredstonee.trsclient.ornithe.OrnitheClient']
     assert 'LICENSE_trsclient' in names and 'META-INF/TFL-NOTICE.txt' in names
     assert 'assets/trsclient/font/nunito-regular.ttf' in names
+    assert 'dev/theredstonee/trsclient/ornithe/capability/CapabilityRegistry.class' in names
+    assert not any(n.endswith('/PocMenu.class') or n.endswith('/PocHost.class') for n in names)
+    assert 'assets/minecraft/shaders/program/trsclient_color.fsh' in names
+    assert 'circuits/index.json' in names
+    assert len(json.loads(z.read('circuits/index.json'))['circuits']) >= 3
     assert not any(n.endswith('.jar') or '/ornithe/dev/' in n or '/forge/' in n or n=='mcmod.info' for n in names)
     classes=[z.read(n) for n in names if n.endswith('.class')]
     assert all(struct.unpack('>H',b[6:8])[0]==69 for b in classes)
