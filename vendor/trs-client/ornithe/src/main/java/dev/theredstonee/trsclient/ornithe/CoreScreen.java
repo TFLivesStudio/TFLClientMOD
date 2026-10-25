@@ -72,6 +72,7 @@ public final class CoreScreen extends Screen {
 
   @Override
   public void removed() {
+    ui.removed();
     if(home)dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
     OrnitheClient c = OrnitheClient.get();
     if (c != null) c.save();

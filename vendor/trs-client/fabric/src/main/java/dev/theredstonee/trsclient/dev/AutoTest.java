@@ -88,6 +88,9 @@ public final class AutoTest {
 		// -PtrsAutotestOnly=realbench: nur der realistische Benchmark (eigener Ablauf, ohne Menü-Tests)
 		if (RealBenchRunner.installIfRequested()) return;
 		TrsClient.LOGGER.info("[Autotest] aktiv");
+		//? if >=26.3 {
+        /*if("depth".equals(System.getProperty("trsclient.autotest.only"))){DepthSmoke.install();return;}
+        *///?}
 		if ("screens".equals(System.getProperty("trsclient.autotest.only"))) { ScreenSmoke.install(); return; }
 		if ("certification".equals(System.getProperty("trsclient.autotest.only"))) {
 			ModuleCertification.install();

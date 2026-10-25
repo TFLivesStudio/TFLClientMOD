@@ -330,7 +330,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   }
 
   public void image(TextureRef tex, float u, float v, int w, int h, int color) {
-    mc.getTextureManager().bind((Identifier) tex.id);
+    if(tex.id instanceof Integer)GlStateManager.bindTexture((Integer)tex.id);else mc.getTextureManager().bind((Identifier) tex.id);
     GlStateManager.enableBlend();
     GlStateManager.color4f(
         (color >> 16 & 255) / 255f,
@@ -359,7 +359,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     }
     System.arraycopy(pixels, 0, entry.texture.getPixels(), 0, w * h);
     entry.texture.upload();
-    if(name.equals("menu-video")||name.equals("map/cloud-fog")) {
+    if(name.equals("menu-video")||name.equals("map/cloud-fog")||name.equals("map/volume")) {
       int previous=GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
       mc.getTextureManager().bind((Identifier)entry.ref.id);
       GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);

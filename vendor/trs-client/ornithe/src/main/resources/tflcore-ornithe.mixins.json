@@ -37,7 +37,9 @@
     "NetConnectionMixin",
     "ChatHeadsMixin",
     "FastConnectMixin",
-    "FastConnectSelectionMixin"
+    "FastConnectSelectionMixin",
+    "InventoryTutorialMixin",
+    "MiniPlayerLayersMixin"
   ],
   "injectors": {
     "defaultRequire": 1

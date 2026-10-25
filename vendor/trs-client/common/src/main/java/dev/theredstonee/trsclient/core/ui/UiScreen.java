@@ -194,6 +194,9 @@ public abstract class UiScreen {
 	/** Wird nach der Schließ-Animation aufgerufen (Bildschirm wirklich schließen). */
 	protected abstract void onClosed();
 
+    /** Release transient rendering resources when the host removes this screen. */
+    public void removed() {}
+
 	/** Schließen anstoßen (Esc oder Knopf) – schließt nach der Animation. */
 	public void requestClose() {
 		closing = true;

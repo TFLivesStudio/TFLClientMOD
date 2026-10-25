@@ -18,12 +18,33 @@ public final class ScreenSmoke {
     private int phase,index,wait,titleWarmup; private Screen options; private String target; private Screen previous;
     private final long start=System.currentTimeMillis();
     public static void install(){ScreenSmoke t=new ScreenSmoke();net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(t::tick);}
+
+  private int videoProbeStage;
+  private long videoProbeAt;
+  private final com.google.gson.JsonArray videoEvidence=new com.google.gson.JsonArray();
+  private boolean videoProbe(){
+    var bg=dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared();
+    var m=bg.metrics();long now=System.nanoTime();
+    if(videoProbeAt==0){if(m.framesPresented<2)return false;videoProbeAt=now;AutoTest.shot(Minecraft.getInstance(),"depth-video-start");return false;}
+    double elapsed=(now-videoProbeAt)/1e9;
+    double duration=videoProbeStage==0?20:videoProbeStage==1||videoProbeStage==2||videoProbeStage==5?3:1;
+    if(elapsed<duration||videoProbeStage==0&&m.loops<1&&elapsed<45)return false;
+    var item=new com.google.gson.JsonObject();item.addProperty("scenario",videoProbeStage);item.add("metrics",new com.google.gson.Gson().toJsonTree(m));videoEvidence.add(item);
+    AutoTest.shot(Minecraft.getInstance(),"depth-video-"+videoProbeStage);
+    if(videoProbeStage==0){if(m.loops<1||m.framesPresented<20)throw new AssertionError("Native video loop/presentation did not advance");dev.theredstonee.trsclient.TrsClient.get().modules().menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.HIGH);}
+    else if(videoProbeStage==1){if(m.framesPresented<3)throw new AssertionError("Quality video did not advance");dev.theredstonee.trsclient.TrsClient.get().modules().menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.PERFORMANCE);}
+    else if(videoProbeStage==2){if(m.framesPresented<3)throw new AssertionError("Performance video did not advance");dev.theredstonee.trsclient.TrsClient.get().modules().menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC);}
+    else if(videoProbeStage==3){if(bg.videoActive())throw new AssertionError("Static preference started a decoder");dev.theredstonee.trsclient.TrsClient.get().modules().menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.OFF);}
+    else if(videoProbeStage==4){if(bg.videoActive())throw new AssertionError("Off preference started a decoder");bg.close();dev.theredstonee.trsclient.TrsClient.get().modules().menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.BALANCED);}
+    else {if(m.framesPresented<3)throw new AssertionError("Video did not restart");return true;}
+    videoProbeStage++;videoProbeAt=now;return false;
+  }
     private void tick(Minecraft mc){
         if(wait-->0)return;
         try {
-            if(System.currentTimeMillis()-start>120000)throw new IllegalStateException("navigation timeout");
+            if(System.currentTimeMillis()-start>240000)throw new IllegalStateException("navigation timeout");
             if(Mc.overlay()!=null)return;
-            if(phase==0){if(Mc.screen()==null)return;if(titleWarmup++<30)return;record("bundledVideoPresented",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented(),"decoded bundled blue video reached the native renderer");AutoTest.shot(mc,"glass-title");options=MenusTest.options(new TrsTitleScreen(),mc);Mc.setScreen(options);phase=1;wait=20;return;}
+            if(phase==0){if(Mc.screen()==null)return;if(titleWarmup++<30)return;if(!videoProbe())return;record("bundledVideoPresented",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented(),"decoded bundled blue video reached the native renderer");AutoTest.shot(mc,"glass-title");options=MenusTest.options(new TrsTitleScreen(),mc);Mc.setScreen(options);phase=1;wait=20;return;}
             if(phase==1){
                 if(index>=keys.length){finish(mc);phase=3;return;}
                 target=keys[index++];previous=options;
@@ -80,7 +101,7 @@ public final class ScreenSmoke {
     }
     private void record(String key,boolean passed,String detail){Map<String,Object> r=new LinkedHashMap<>();r.put("destination",key);r.put("passed",passed);r.put("detail",detail);results.add(r);}
     private void finish(Minecraft mc){
-        Map<String,Object> out=new LinkedHashMap<>();out.put("scope","native option navigation and rendered frames; no exhaustive interaction certification");out.put("elapsedMs",System.currentTimeMillis()-start);out.put("results",results);
+        Map<String,Object> out=new LinkedHashMap<>();out.put("scope","native option navigation and rendered frames; no exhaustive interaction certification");out.put("elapsedMs",System.currentTimeMillis()-start);out.put("results",results);out.put("videoEvidence",videoEvidence);
         try{Files.write(mc.gameDirectory.toPath().resolve("screen-smoke.json"),new GsonBuilder().setPrettyPrinting().create().toJson(out).getBytes(StandardCharsets.UTF_8));}catch(Exception e){throw new RuntimeException(e);}
         mc.stop();
     }

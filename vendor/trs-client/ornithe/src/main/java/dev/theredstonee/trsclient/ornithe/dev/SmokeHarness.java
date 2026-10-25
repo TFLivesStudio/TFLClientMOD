@@ -24,7 +24,7 @@ public final class SmokeHarness implements Runnable {
   private int tick, stage, wait, inputFrame;
   private float normalFov;
   private long mapUploads;
-  private boolean fogZoomed;
+  private boolean fogZoomed;private int mapProbeStage;
   private long screenshotDeadline;
   private java.nio.file.Path nativeScreenshot;
   private long colorPasses, panoramaFaces;
@@ -37,7 +37,7 @@ public final class SmokeHarness implements Runnable {
 
   private float fov() throws Exception {
     var method =
-        c.mc.gameRenderer.getClass().getDeclaredMethod("getFov", float.class, boolean.class);
+        java.util.Arrays.stream(c.mc.gameRenderer.getClass().getDeclaredMethods()).filter(m->m.getReturnType()==float.class&&java.util.Arrays.equals(m.getParameterTypes(),new Class<?>[]{float.class,boolean.class})).findFirst().orElseThrow();
     method.setAccessible(true);
     return (float) method.invoke(c.mc.gameRenderer, 0f, true);
   }
@@ -60,6 +60,27 @@ public final class SmokeHarness implements Runnable {
     report.add("checks", checks);
   }
 
+
+  private int videoProbeStage;
+  private long videoProbeAt;
+  private final com.google.gson.JsonArray videoEvidence=new com.google.gson.JsonArray();
+  private boolean videoProbe(){
+    var bg=dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared();
+    var m=bg.metrics();long now=System.nanoTime();
+    if(videoProbeAt==0){if(m.framesPresented<2)return false;videoProbeAt=now;shot("depth-video-start");return false;}
+    double elapsed=(now-videoProbeAt)/1e9;
+    double duration=videoProbeStage==0?20:videoProbeStage==1||videoProbeStage==2||videoProbeStage==5?3:1;
+    if(elapsed<duration||videoProbeStage==0&&m.loops<1&&elapsed<45)return false;
+    var item=new com.google.gson.JsonObject();item.addProperty("scenario",videoProbeStage);item.add("metrics",new com.google.gson.Gson().toJsonTree(m));videoEvidence.add(item);
+    shot("depth-video-"+videoProbeStage);
+    if(videoProbeStage==0){if(m.loops<1||m.framesPresented<20)throw new AssertionError("Native video loop/presentation did not advance");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.HIGH);}
+    else if(videoProbeStage==1){if(m.framesPresented<3)throw new AssertionError("Quality video did not advance");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.PERFORMANCE);}
+    else if(videoProbeStage==2){if(m.framesPresented<3)throw new AssertionError("Performance video did not advance");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC);}
+    else if(videoProbeStage==3){if(bg.videoActive())throw new AssertionError("Static preference started a decoder");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.OFF);}
+    else if(videoProbeStage==4){if(bg.videoActive())throw new AssertionError("Off preference started a decoder");bg.close();c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.BALANCED);}
+    else {if(m.framesPresented<3)throw new AssertionError("Video did not restart");return true;}
+    videoProbeStage++;videoProbeAt=now;return false;
+  }
   private void check(String name, boolean ok) {
     JsonObject r = new JsonObject();
     r.addProperty("name", name);
@@ -76,7 +97,7 @@ public final class SmokeHarness implements Runnable {
   public void run() {
     try {
       tick++;
-      if (System.nanoTime() - started > 180_000_000_000L)
+      if (System.nanoTime() - started > 300_000_000_000L)
         throw new AssertionError("client timeout");
       if (--wait > 0) return;
       switch (stage) {
@@ -103,6 +124,7 @@ public final class SmokeHarness implements Runnable {
           stage++;
         }
         case 1 -> {
+          if(!videoProbe())return;report.add("videoEvidence",videoEvidence);
           check("bundled blue video presents decoded frames",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented());
           shot("title");
           KeyBinding.click(c.menuKey.getKeyCode());
@@ -375,6 +397,20 @@ public final class SmokeHarness implements Runnable {
               "world map uploads received region textures",
               c.map.textures().regionTextureCount() > 0
                   && c.map.textures().uploads() >= mapUploads);
+          report.addProperty("miniPlayerFailure",c.miniPlayer.state.failure);report.addProperty("miniPlayerUpdates",c.miniPlayer.state.updates);report.addProperty("miniComposites",c.miniPlayer.composites);check("Mini Player native framebuffer",c.miniPlayer.state.failure.isEmpty());check("Mini Player drew native model",c.miniPlayer.composites>0);check("Mini Player framebuffer has visible model pixels",c.miniPlayer.visiblePixels()>100);
+          var mapUi=(dev.theredstonee.trsclient.core.map.WorldMapUi)((CoreScreen)c.mc.screen).ui;
+          var volume=mapUi.volumeRenderer();
+          check("bounded native 3D volume available",volume.failure().isEmpty());
+          if(volume.displayed()==null){wait=5;return;}
+          if(mapProbeStage<3){
+            double expected=mapProbeStage==0?0:mapProbeStage==1?30:55;
+            if(Math.abs(volume.displayed().tilt-expected)>.1){wait=5;return;}
+            shot("depth-map-"+mapProbeStage);var camera=volume.displayed();
+            double[] at=mapUi.testWorldAt(camera.width/2,camera.height/2);
+            check("perspective inverse center "+mapProbeStage,Math.abs(at[0]-camera.cx)<.01&&Math.abs(at[1]-camera.cz)<.01);
+            report.addProperty("volumeBackend",volume.backend());report.addProperty("volumeFrames",volume.renderedFrames());report.addProperty("volumeAverageMs",volume.renderNanos()/1e6/Math.max(1,volume.renderedFrames()));
+            mapProbeStage++;if(mapProbeStage<3){c.modules.worldMapTilt.set(mapProbeStage==1?30:55);wait=30;return;}
+          }
           shot("world-map");
           c.mc.openScreen(null);
           String name =
@@ -556,7 +592,11 @@ public final class SmokeHarness implements Runnable {
   private void checkChat() throws Exception {
     var gui = c.mc.gui.getChat();
     gui.clear();
-    var field = gui.getClass().getDeclaredField("messages");
+    var field = java.util.Arrays.stream(gui.getClass().getDeclaredFields()).filter(f->java.util.List.class.isAssignableFrom(f.getType())&&f.getName().equals("messages")).findFirst().orElse(null);
+    if(field==null){for(var f:gui.getClass().getDeclaredFields()){
+      var type=f.getGenericType();if(type instanceof java.lang.reflect.ParameterizedType parameterized&&parameterized.getRawType()==java.util.List.class&&parameterized.getActualTypeArguments()[0]==net.minecraft.client.gui.ChatMessage.class){field=f;break;}
+    }}
+    if(field==null)throw new IllegalStateException("Native chat messages field not found");
     field.setAccessible(true);
     @SuppressWarnings("unchecked")
     var messages = (java.util.List<net.minecraft.client.gui.ChatMessage>) field.get(gui);
@@ -643,7 +683,7 @@ public final class SmokeHarness implements Runnable {
         value.add("hooks", hooks);
         capabilities.add(entry.getKey(), value);
       }
-      report.add("capabilities", capabilities);
+      report.add("capabilities", capabilities);report.add("videoEvidence",videoEvidence);
       report.addProperty("status", error == null ? "passed" : "failed");
       if (error != null) {
         report.addProperty("error", error.toString());

@@ -1,0 +1,39 @@
+if (project.name != "26.3" && !project.plugins.hasPlugin("ploceus")) return
+// The fixture is an explicitly enabled, separate local mod; production JARs remain byte-identical.
+if (project.hasProperty('depthNativeProbe')) {
+    def probeMetadata=layout.buildDirectory.file('native-probe-resources/fabric.mod.json')
+    def writeProbeMetadata=tasks.register('writeNativeProbeMetadata') {
+        outputs.file(probeMetadata)
+        doLast {
+            def target=probeMetadata.get().asFile;target.parentFile.mkdirs()
+            target.text='{"schemaVersion":1,"id":"tfl_depth_probe","version":"1.0.0","environment":"client","depends":{"tflcore":"*"}}'
+        }
+    }
+    def probeJar=tasks.register('nativeProbeJar',Jar) {
+        dependsOn(tasks.named('classes'),writeProbeMetadata)
+        setExcludes([])
+        archiveClassifier='native-probe-dev'
+        from(sourceSets.main.output.classesDirs) { include 'dev/theredstonee/trsclient/ornithe/dev/**';include 'dev/theredstonee/trsclient/dev/**' }
+        from(probeMetadata) { into '' }
+    }
+    def probeArtifact=probeJar
+    if (project.name != '26.3') {
+        probeArtifact=tasks.register('remapNativeProbeJar',Class.forName("net.fabricmc.loom.task.RemapJarTask",true,tasks.named("remapJar").get().class.classLoader)) {
+            inputFile=probeJar.flatMap { it.archiveFile }
+            archiveClassifier='native-probe'
+            addNestedDependencies=false
+        }
+    }
+    tasks.named('runProdClient') {
+        mods.from(probeArtifact)
+        if (project.name != '26.3') {
+            jvmArgs.addAll('-Dtflcore.ornithe.smoke=true',"-Dtflcore.ornithe.report=${layout.buildDirectory.dir('smoke/production').get().asFile}",'-Dtflcore.ui.smoke.large=true')
+            programArgs.addAll('--width','1920','--height','1080')
+        }
+    }
+}
+if (project.hasProperty('depthRuntimeModsDir')) {
+    def external=fileTree(project.property('depthRuntimeModsDir')) { include '*.jar' }
+    dependencies.add(project.name == '26.3' ? 'runtimeOnly' : 'modLocalRuntime',external)
+    tasks.named('runProdClient') { mods.from(external) }
+}

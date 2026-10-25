@@ -37,7 +37,7 @@ public final class OrnitheClient implements ModInitializer {
 
   public Minecraft mc;
   public OrnitheCanvas canvas;
-  public final TrsModules modules = new TrsModules();
+  public final TrsModules modules = new TrsModules(true);
   public final dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry capabilities =
       new dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry(modules.registry);
   public final ZoomState zoom = new ZoomState();
@@ -79,6 +79,8 @@ public final class OrnitheClient implements ModInitializer {
   private String sharedZoomKey, sharedMapKey;
   private boolean notesDown;
   private int nativeZoomKey, nativeMapKey, lastSprintCode, lastSneakCode;
+  public OrnitheMiniPlayer miniPlayer;
+  public float hudPartialTick=1;
   public boolean ready, crosshairVisible;
   public ConfigStore config;
   public final OrnitheConsent consent = new OrnitheConsent();
@@ -217,7 +219,7 @@ public final class OrnitheClient implements ModInitializer {
               System.getProperty("java.version"),
               FabricLoader.getInstance().isModLoaded("legacy-lwjgl3"),
               FabricLoader.getInstance().isModLoaded("argentum"));
-          if (FabricLoader.getInstance().isDevelopmentEnvironment()
+          if ((FabricLoader.getInstance().isDevelopmentEnvironment()||FabricLoader.getInstance().isModLoaded("tfl_depth_probe"))
               && Boolean.getBoolean("tflcore.ornithe.smoke"))
             try {
               smokeTick =
@@ -552,6 +554,7 @@ public final class OrnitheClient implements ModInitializer {
     sneakPresses = 0;
     extendedHuds.tick();
     if(lastWorld!=mc.world&&mc.world!=null&&worldLoadNanos!=0){lastWorldLoadMs=(System.nanoTime()-worldLoadNanos)/1e6;worldLoadNanos=0;}
+    if(lastWorld!=mc.world&&miniPlayer!=null)miniPlayer.close();
     lastWorld = mc.world;
     lastSprintCode = mc.options.sprintKey.getKeyCode();
     lastSneakCode = mc.options.sneakKey.getKeyCode();
@@ -700,6 +703,8 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   private void createHud() {
+    miniPlayer=new OrnitheMiniPlayer(this);hudItems.add(miniPlayer);
+    capabilities.connect(modules.miniPlayer,dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.EXPERIMENTAL,"Live native player, cached depth framebuffer and draw-only equipment filters",modules.miniPlayer.settings().stream().map(s->s.key()).toList(),"OrnitheMiniPlayer","EntityRenderDispatcher.render");
     hudItems.add(item(modules.fps, () -> fps));
 
     hudItems.add(item(modules.cps, () -> cps));
@@ -728,8 +733,13 @@ public final class OrnitheClient implements ModInitializer {
     };
   }
 
-  public void drawHud() {
-    if (!ready || mc.world == null || mc.player == null || mc.options.hideGui) return;
+  public void drawHud() { drawHud(1); }
+  public void drawHud(float partial) {
+    hudPartialTick=partial;
+    if (!ready || mc.world == null || mc.player == null){if(miniPlayer!=null)miniPlayer.close();return;}
+    if(mc.options.hideGui||mc.screen instanceof CoreScreen cs&&!cs.ui.overlay()){
+        if(miniPlayer!=null&&modules.miniPlayer.shouldDraw(false,true,true,mc.options.hideGui,mc.screen!=null,true))drawMiniOnly();return;
+    }
     if (mc.screen instanceof CoreScreen cs && !cs.ui.overlay()) return;
     Window win = window();
     canvas.begin(win.getWidth(), win.getHeight(), win.getScale());
@@ -740,6 +750,7 @@ public final class OrnitheClient implements ModInitializer {
         float s = (float) m.scale.get();
         int x = HudLayout.resolveX(m.position(), Math.round(item.width() * s), win.getWidth()),
             y = HudLayout.resolveY(m.position(), Math.round(item.height() * s), win.getHeight());
+        if(x+item.width()*s<0||y+item.height()*s<0||x>=win.getWidth()||y>=win.getHeight())continue;
         canvas.push();
         canvas.translate(x, y);
         canvas.scale(s);
@@ -770,4 +781,5 @@ public final class OrnitheClient implements ModInitializer {
       canvas.end();
     }
   }
+  private void drawMiniOnly(){Window w=window();canvas.begin(w.getWidth(),w.getHeight(),w.getScale());try{var m=modules.miniPlayer;float s=m.scale.getFloat();int x=HudLayout.resolveX(m.position(),Math.round(miniPlayer.width()*s),w.getWidth()),y=HudLayout.resolveY(m.position(),Math.round(miniPlayer.height()*s),w.getHeight());canvas.push();try{canvas.translate(x,y);canvas.scale(s);miniPlayer.draw(canvas);}finally{canvas.pop();}}finally{canvas.end();}}
 }
