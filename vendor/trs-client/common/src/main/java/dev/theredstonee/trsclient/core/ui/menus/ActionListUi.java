@@ -11,6 +11,9 @@ import java.util.List;
 public final class ActionListUi extends WindowUi {
   private final String label;
   private String description = "";
+  private boolean scrim=true;
+  public ActionListUi transparent(){scrim=false;return this;}
+  protected boolean screenScrim(){return scrim;}
   private final List<MenuAction> actions;
   private final Runnable close, click;
   private int scroll, maxScroll;

@@ -128,7 +128,7 @@ public final class OrnitheNavigation {
             }));
     return new CoreScreen(
         new ActionListUi(
-            "TFL Client · Paused", actions, () -> c.mc.openScreen(null), c::clickSound),
+            "TFL Client · Paused", actions, () -> c.mc.openScreen(null), c::clickSound).transparent(),
         false);
   }
 
@@ -192,7 +192,7 @@ public final class OrnitheNavigation {
     c.mc.openScreen(
         new CoreScreen(
             new ActionListUi(
-                "Ornithe Gen2 · " + c.modules.registry.all().size() + " capabilities",
+                "TFL Client · " + c.modules.registry.all().size() + " capabilities",
                 rows,
                 () -> c.mc.openScreen(parent),
                 c::clickSound),

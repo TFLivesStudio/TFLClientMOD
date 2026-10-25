@@ -69,6 +69,8 @@ public final class GfxCanvas implements Canvas {
 	}
 
 	@Override
+	public int pixelScale() { return Math.max(1, (int)net.minecraft.client.Minecraft.getInstance().getWindow().getGuiScale()); }
+
 	public void fill(int x1, int y1, int x2, int y2, int argb) {
 		g.fill(x1, y1, x2, y2, argb);
 		pending = true;
@@ -101,7 +103,7 @@ public final class GfxCanvas implements Canvas {
 
 	@Override
 	public int lineHeight() {
-		return 9;
+		return 10;
 	}
 
 	@Override

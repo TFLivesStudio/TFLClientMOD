@@ -350,6 +350,7 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 
 	private void drawMap(Canvas c, MapLayer layer, int w, int h, long now) {
 		if (!c.images()) return;
+		if(e.modules().mapCloudFog.get()) CloudFog.draw(c,0,0,w,h,0,0,1,1);
 		float scale = cam.scale();
 		double cx = cam.centerX(), cz = cam.centerZ();
 		double wx0 = cx - w / 2.0 / scale, wx1 = cx + w / 2.0 / scale;

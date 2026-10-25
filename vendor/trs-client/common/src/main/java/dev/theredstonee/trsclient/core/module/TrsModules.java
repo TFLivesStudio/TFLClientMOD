@@ -169,7 +169,10 @@ public final class TrsModules {
 	public final BoolSetting detailNoWeather;
 	public final BoolSetting detailNoAnimations;
 
-	public final BoolSetting keystrokesShowCps;
+	public final ColorSetting keystrokesPressedColor;
+    public final ColorSetting keystrokesPressedText;
+    public final BoolSetting mapCloudFog;
+    public final BoolSetting keystrokesShowCps;
 	public final BoolSetting keystrokesShowSpace;
 	public final KeySetting zoomKey;
 	public final NumberSetting zoomFactor;
@@ -737,7 +740,9 @@ public final class TrsModules {
 						+ "with a quick-reply key. Uses the TRS Online Features.", true));
 		social.icon("chat").category(Category.CHAT);
 
-		keystrokesShowCps = keystrokes.add(new BoolSetting("showCps", "CPS below mouse buttons", true));
+		keystrokesPressedColor = keystrokes.add(new ColorSetting("pressedColor", "Pressed key background", 0xC03B82F6, true));
+        keystrokesPressedText = keystrokes.add(new ColorSetting("pressedTextColor", "Pressed key text", 0xFFFFFFFF, true));
+        keystrokesShowCps = keystrokes.add(new BoolSetting("showCps", "CPS below mouse buttons", true));
 		keystrokesShowSpace = keystrokes.add(new BoolSetting("showSpace", "Show space bar", true));
 		// Zoom- und Freelook-Taste sind Vanilla-Tastenbelegungen (Steuerung → TRS Client); der
 		// Loader verbindet sie beim Start (KeySetting.link), dann sind sie auch hier änderbar.
@@ -782,8 +787,9 @@ public final class TrsModules {
 		crosshairAttack = crosshair.add(new BoolSetting("attack", "Attack cooldown", true));
 		hitColorColor = hitColor.add(new ColorSetting("color", "Color", 0xB07CFF));
 		hitColorOpacity = hitColor.add(new NumberSetting("opacity", "Opacity (%)", 70, 10, 100, 10, ""));
-		titleAnimated = titleScreen.add(new BoolSetting("animated", "Animated background", true));
-        menuBackground=titleScreen.add(new ChoiceSetting<>("backgroundMode","Menu background",dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.class,dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC));
+		dev.theredstonee.trsclient.core.ui.UiAppearance.bind(titleScreen);
+        titleAnimated = titleScreen.add(new BoolSetting("animated", "Animated background", true));
+        menuBackground=titleScreen.add(new ChoiceSetting<>("backgroundMode","Menu background",dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.class,dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.HIGH));
 		// Aussehen (Design Redstone | Winternacht, Farbschema, Akzent) auf den Seiten „Startbildschirm“ und „Menü-Stil“.
 		dev.theredstonee.trsclient.core.intro.LookPanel look = new dev.theredstonee.trsclient.core.intro.LookPanel(this);
 		dev.theredstonee.trsclient.core.ui.menu.ModulePanel.Registry.set(titleScreen, look);
@@ -849,7 +855,8 @@ public final class TrsModules {
 		waypointDistance = waypoints.add(new BoolSetting("distance", "Show distance", true));
 		waypointDeath = waypoints.add(new BoolSetting("death", "Set death point automatically", true));
 		waypointRange = waypoints.add(new NumberSetting("range", "Only up to (blocks, 0 = always)", 0, 0, 2000, 100, ""));
-		minimapFairPlay = minimap.add(new BoolSetting("fairPlay", "Fair Play (maps show only what you could see)", false));
+		mapCloudFog = minimap.add(new BoolSetting("cloudFog", "Clouds over unexplored areas (both maps)", true));
+        minimapFairPlay = minimap.add(new BoolSetting("fairPlay", "Fair Play (maps show only what you could see)", false));
 		minimapShape = minimap.add(new ChoiceSetting<>("shape", "Shape", MapShape.class, MapShape.ROUND));
 		minimapSize = minimap.add(new NumberSetting("size", "Size (pixels)", 112, 64, 256, 8, ""));
 		minimapZoom = minimap.add(new ChoiceSetting<>("zoom", "Zoom", MinimapZoom.class, MinimapZoom.NORMAL));

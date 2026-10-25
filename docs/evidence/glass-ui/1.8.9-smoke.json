@@ -1,0 +1,2126 @@
+{
+  "java": "25.0.5.0.3",
+  "lwjgl3": false,
+  "argentum": false,
+  "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+  "version": "0.4.0-ui.1",
+  "restart": false,
+  "checks": [
+    {
+      "name": "shared main menu",
+      "passed": true
+    },
+    {
+      "name": "bundled blue video presents decoded frames",
+      "passed": true
+    },
+    {
+      "name": "registered menu key opens common settings",
+      "passed": true
+    },
+    {
+      "name": "null-screen return uses shared title",
+      "passed": true
+    },
+    {
+      "name": "shared HUD editor",
+      "passed": true
+    },
+    {
+      "name": "world entered",
+      "passed": true
+    },
+    {
+      "name": "fps disabled",
+      "passed": true
+    },
+    {
+      "name": "fps enabled",
+      "passed": true
+    },
+    {
+      "name": "cps disabled",
+      "passed": true
+    },
+    {
+      "name": "cps enabled",
+      "passed": true
+    },
+    {
+      "name": "keystrokes disabled",
+      "passed": true
+    },
+    {
+      "name": "keystrokes enabled",
+      "passed": true
+    },
+    {
+      "name": "ping disabled",
+      "passed": true
+    },
+    {
+      "name": "ping enabled",
+      "passed": true
+    },
+    {
+      "name": "armor disabled",
+      "passed": true
+    },
+    {
+      "name": "armor enabled",
+      "passed": true
+    },
+    {
+      "name": "effects disabled",
+      "passed": true
+    },
+    {
+      "name": "effects enabled",
+      "passed": true
+    },
+    {
+      "name": "coords disabled",
+      "passed": true
+    },
+    {
+      "name": "coords enabled",
+      "passed": true
+    },
+    {
+      "name": "clock disabled",
+      "passed": true
+    },
+    {
+      "name": "clock enabled",
+      "passed": true
+    },
+    {
+      "name": "memory disabled",
+      "passed": true
+    },
+    {
+      "name": "memory enabled",
+      "passed": true
+    },
+    {
+      "name": "server disabled",
+      "passed": true
+    },
+    {
+      "name": "server enabled",
+      "passed": true
+    },
+    {
+      "name": "packs disabled",
+      "passed": true
+    },
+    {
+      "name": "packs enabled",
+      "passed": true
+    },
+    {
+      "name": "toggleSprint disabled",
+      "passed": true
+    },
+    {
+      "name": "toggleSprint enabled",
+      "passed": true
+    },
+    {
+      "name": "toggleSneak disabled",
+      "passed": true
+    },
+    {
+      "name": "toggleSneak enabled",
+      "passed": true
+    },
+    {
+      "name": "reach disabled",
+      "passed": true
+    },
+    {
+      "name": "reach enabled",
+      "passed": true
+    },
+    {
+      "name": "combo disabled",
+      "passed": true
+    },
+    {
+      "name": "combo enabled",
+      "passed": true
+    },
+    {
+      "name": "speed disabled",
+      "passed": true
+    },
+    {
+      "name": "speed enabled",
+      "passed": true
+    },
+    {
+      "name": "minimap disabled",
+      "passed": true
+    },
+    {
+      "name": "minimap enabled",
+      "passed": true
+    },
+    {
+      "name": "worldMap disabled",
+      "passed": true
+    },
+    {
+      "name": "worldMap enabled",
+      "passed": true
+    },
+    {
+      "name": "crosshair disabled",
+      "passed": true
+    },
+    {
+      "name": "crosshair enabled",
+      "passed": true
+    },
+    {
+      "name": "hitColor disabled",
+      "passed": true
+    },
+    {
+      "name": "hitColor enabled",
+      "passed": true
+    },
+    {
+      "name": "freelook disabled",
+      "passed": true
+    },
+    {
+      "name": "freelook enabled",
+      "passed": true
+    },
+    {
+      "name": "zoom disabled",
+      "passed": true
+    },
+    {
+      "name": "zoom enabled",
+      "passed": true
+    },
+    {
+      "name": "fullbright disabled",
+      "passed": true
+    },
+    {
+      "name": "fullbright enabled",
+      "passed": true
+    },
+    {
+      "name": "autorefill disabled",
+      "passed": true
+    },
+    {
+      "name": "autorefill enabled",
+      "passed": true
+    },
+    {
+      "name": "oldAnimations disabled",
+      "passed": true
+    },
+    {
+      "name": "oldAnimations enabled",
+      "passed": true
+    },
+    {
+      "name": "lowFire disabled",
+      "passed": true
+    },
+    {
+      "name": "lowFire enabled",
+      "passed": true
+    },
+    {
+      "name": "blockOutline disabled",
+      "passed": true
+    },
+    {
+      "name": "blockOutline enabled",
+      "passed": true
+    },
+    {
+      "name": "hitboxes disabled",
+      "passed": true
+    },
+    {
+      "name": "hitboxes enabled",
+      "passed": true
+    },
+    {
+      "name": "noHurtCam disabled",
+      "passed": true
+    },
+    {
+      "name": "noHurtCam enabled",
+      "passed": true
+    },
+    {
+      "name": "chat disabled",
+      "passed": true
+    },
+    {
+      "name": "chat enabled",
+      "passed": true
+    },
+    {
+      "name": "autoGg disabled",
+      "passed": true
+    },
+    {
+      "name": "autoGg enabled",
+      "passed": true
+    },
+    {
+      "name": "textHotkeys disabled",
+      "passed": true
+    },
+    {
+      "name": "textHotkeys enabled",
+      "passed": true
+    },
+    {
+      "name": "waypoints disabled",
+      "passed": true
+    },
+    {
+      "name": "waypoints enabled",
+      "passed": true
+    },
+    {
+      "name": "capePhysics disabled",
+      "passed": true
+    },
+    {
+      "name": "capePhysics enabled",
+      "passed": true
+    },
+    {
+      "name": "colors disabled",
+      "passed": true
+    },
+    {
+      "name": "colors enabled",
+      "passed": true
+    },
+    {
+      "name": "emotes disabled",
+      "passed": true
+    },
+    {
+      "name": "emotes enabled",
+      "passed": true
+    },
+    {
+      "name": "redstoneSignal disabled",
+      "passed": true
+    },
+    {
+      "name": "redstoneSignal enabled",
+      "passed": true
+    },
+    {
+      "name": "redstoneOverlay disabled",
+      "passed": true
+    },
+    {
+      "name": "redstoneOverlay enabled",
+      "passed": true
+    },
+    {
+      "name": "redstoneClock disabled",
+      "passed": true
+    },
+    {
+      "name": "redstoneClock enabled",
+      "passed": true
+    },
+    {
+      "name": "fpsBoost disabled",
+      "passed": true
+    },
+    {
+      "name": "fpsBoost enabled",
+      "passed": true
+    },
+    {
+      "name": "dynamicFps disabled",
+      "passed": true
+    },
+    {
+      "name": "dynamicFps enabled",
+      "passed": true
+    },
+    {
+      "name": "particles disabled",
+      "passed": true
+    },
+    {
+      "name": "particles enabled",
+      "passed": true
+    },
+    {
+      "name": "worldDetails disabled",
+      "passed": true
+    },
+    {
+      "name": "worldDetails enabled",
+      "passed": true
+    },
+    {
+      "name": "netOptimize disabled",
+      "passed": true
+    },
+    {
+      "name": "netOptimize enabled",
+      "passed": true
+    },
+    {
+      "name": "lowLatency disabled",
+      "passed": true
+    },
+    {
+      "name": "lowLatency enabled",
+      "passed": true
+    },
+    {
+      "name": "fastConnect disabled",
+      "passed": true
+    },
+    {
+      "name": "fastConnect enabled",
+      "passed": true
+    },
+    {
+      "name": "chatMentions disabled",
+      "passed": true
+    },
+    {
+      "name": "chatMentions enabled",
+      "passed": true
+    },
+    {
+      "name": "chatHeads disabled",
+      "passed": true
+    },
+    {
+      "name": "chatHeads enabled",
+      "passed": true
+    },
+    {
+      "name": "chatFilter disabled",
+      "passed": true
+    },
+    {
+      "name": "chatFilter enabled",
+      "passed": true
+    },
+    {
+      "name": "autoReconnect disabled",
+      "passed": true
+    },
+    {
+      "name": "autoReconnect enabled",
+      "passed": true
+    },
+    {
+      "name": "queueAlerts disabled",
+      "passed": true
+    },
+    {
+      "name": "queueAlerts enabled",
+      "passed": true
+    },
+    {
+      "name": "scoreboard disabled",
+      "passed": true
+    },
+    {
+      "name": "scoreboard enabled",
+      "passed": true
+    },
+    {
+      "name": "tabPing disabled",
+      "passed": true
+    },
+    {
+      "name": "tabPing enabled",
+      "passed": true
+    },
+    {
+      "name": "bossBar disabled",
+      "passed": true
+    },
+    {
+      "name": "bossBar enabled",
+      "passed": true
+    },
+    {
+      "name": "titles disabled",
+      "passed": true
+    },
+    {
+      "name": "titles enabled",
+      "passed": true
+    },
+    {
+      "name": "warnings disabled",
+      "passed": true
+    },
+    {
+      "name": "warnings enabled",
+      "passed": true
+    },
+    {
+      "name": "itemCounter disabled",
+      "passed": true
+    },
+    {
+      "name": "itemCounter enabled",
+      "passed": true
+    },
+    {
+      "name": "hitFeedback disabled",
+      "passed": true
+    },
+    {
+      "name": "hitFeedback enabled",
+      "passed": true
+    },
+    {
+      "name": "streamerMode disabled",
+      "passed": true
+    },
+    {
+      "name": "streamerMode enabled",
+      "passed": true
+    },
+    {
+      "name": "tooltips disabled",
+      "passed": true
+    },
+    {
+      "name": "tooltips enabled",
+      "passed": true
+    },
+    {
+      "name": "serverProfiles disabled",
+      "passed": true
+    },
+    {
+      "name": "serverProfiles enabled",
+      "passed": true
+    },
+    {
+      "name": "panorama disabled",
+      "passed": true
+    },
+    {
+      "name": "panorama enabled",
+      "passed": true
+    },
+    {
+      "name": "screenshots disabled",
+      "passed": true
+    },
+    {
+      "name": "screenshots enabled",
+      "passed": true
+    },
+    {
+      "name": "keySearch disabled",
+      "passed": true
+    },
+    {
+      "name": "keySearch enabled",
+      "passed": true
+    },
+    {
+      "name": "hungerOverlay disabled",
+      "passed": true
+    },
+    {
+      "name": "hungerOverlay enabled",
+      "passed": true
+    },
+    {
+      "name": "circuitLibrary disabled",
+      "passed": true
+    },
+    {
+      "name": "circuitLibrary enabled",
+      "passed": true
+    },
+    {
+      "name": "notes disabled",
+      "passed": true
+    },
+    {
+      "name": "notes enabled",
+      "passed": true
+    },
+    {
+      "name": "pinnedNote disabled",
+      "passed": true
+    },
+    {
+      "name": "pinnedNote enabled",
+      "passed": true
+    },
+    {
+      "name": "cinematic disabled",
+      "passed": true
+    },
+    {
+      "name": "cinematic enabled",
+      "passed": true
+    },
+    {
+      "name": "halloween disabled",
+      "passed": true
+    },
+    {
+      "name": "halloween enabled",
+      "passed": true
+    },
+    {
+      "name": "CPS hook both buttons",
+      "passed": true
+    },
+    {
+      "name": "native frame applies zoom",
+      "passed": true
+    },
+    {
+      "name": "native FOV return hook",
+      "passed": true
+    },
+    {
+      "name": "native crosshair eligibility captured",
+      "passed": true
+    },
+    {
+      "name": "physical sprint key toggles latch",
+      "passed": true
+    },
+    {
+      "name": "native sprint binding held",
+      "passed": true
+    },
+    {
+      "name": "disable restores native sprint binding",
+      "passed": true
+    },
+    {
+      "name": "zoom released restores FOV divisor",
+      "passed": true
+    },
+    {
+      "name": "menu opens in world",
+      "passed": true
+    },
+    {
+      "name": "sprint resets in GUI",
+      "passed": true
+    },
+    {
+      "name": "sprint tap shorter than one client tick retained",
+      "passed": true
+    },
+    {
+      "name": "frames recorded",
+      "passed": true
+    },
+    {
+      "name": "preferences written",
+      "passed": true
+    },
+    {
+      "name": "map has native world identity",
+      "passed": true
+    },
+    {
+      "name": "map samples received terrain",
+      "passed": true
+    },
+    {
+      "name": "map excludes unknown chunks",
+      "passed": true
+    },
+    {
+      "name": "map reader excludes unknown chunks",
+      "passed": true
+    },
+    {
+      "name": "legacy enabled AutoGG never grants send approval",
+      "passed": true
+    },
+    {
+      "name": "legacy enabled refill never grants inventory approval",
+      "passed": true
+    },
+    {
+      "name": "shared/native privacy masks names",
+      "passed": true
+    },
+    {
+      "name": "shared/native privacy masks address tokens",
+      "passed": true
+    },
+    {
+      "name": "native tooltip contains shared durability",
+      "passed": true
+    },
+    {
+      "name": "native particle gate suppresses configured smoke",
+      "passed": true
+    },
+    {
+      "name": "disabling particle gate restores native allocation",
+      "passed": true
+    },
+    {
+      "name": "native chat groups duplicates without double insertion",
+      "passed": true
+    },
+    {
+      "name": "native timestamp added",
+      "passed": true
+    },
+    {
+      "name": "native chat preserves original component actions",
+      "passed": true
+    },
+    {
+      "name": "native chat filter prevents insertion",
+      "passed": true
+    },
+    {
+      "name": "native history respects configured bound",
+      "passed": true
+    },
+    {
+      "name": "chat disable restores Vanilla retention",
+      "passed": true
+    },
+    {
+      "name": "canvas restores active texture unit",
+      "passed": true
+    },
+    {
+      "name": "Nunito batches an accented text run in one draw",
+      "passed": true
+    },
+    {
+      "name": "Unicode fallback has nonzero metrics",
+      "passed": true
+    },
+    {
+      "name": "dynamic texture update reuses native allocation",
+      "passed": true
+    },
+    {
+      "name": "native redstone dust power 13",
+      "passed": true
+    },
+    {
+      "name": "native redstone probe recognizes dust",
+      "passed": true
+    },
+    {
+      "name": "native powered repeater delay",
+      "passed": true
+    },
+    {
+      "name": "native comparator subtract mode",
+      "passed": true
+    },
+    {
+      "name": "shared redstone readout consumes native states",
+      "passed": true
+    },
+    {
+      "name": "native attack records actual hit distance",
+      "passed": true
+    },
+    {
+      "name": "native hurt confirms combo",
+      "passed": true
+    },
+    {
+      "name": "duplicate hurt does not confirm another hit",
+      "passed": true
+    },
+    {
+      "name": "own hurt clears combo",
+      "passed": true
+    },
+    {
+      "name": "local emote starts without online services",
+      "passed": true
+    },
+    {
+      "name": "native humanoid emote pose applied",
+      "passed": true
+    },
+    {
+      "name": "emote selects third person",
+      "passed": true
+    },
+    {
+      "name": "attack cancels local emote",
+      "passed": true
+    },
+    {
+      "name": "emote restores previous perspective",
+      "passed": true
+    },
+    {
+      "name": "humanoid restores vanilla pose after emote",
+      "passed": true
+    },
+    {
+      "name": "native color post-process executes",
+      "passed": true
+    },
+    {
+      "name": "offline circuit recipes available",
+      "passed": true
+    },
+    {
+      "name": "circuit service clients are absent",
+      "passed": true
+    },
+    {
+      "name": "native circuit checker sees missing template blocks",
+      "passed": true
+    },
+    {
+      "name": "freecam detaches the native camera",
+      "passed": true
+    },
+    {
+      "name": "freecam physical movement leaves player in place",
+      "passed": true
+    },
+    {
+      "name": "freecam physical movement moves only the camera",
+      "passed": true
+    },
+    {
+      "name": "freecam restores the native player camera",
+      "passed": true
+    },
+    {
+      "name": "panorama captures six native world faces",
+      "passed": true
+    },
+    {
+      "name": "panorama encodes the local image",
+      "passed": true
+    },
+    {
+      "name": "panorama restores HUD and camera",
+      "passed": true
+    },
+    {
+      "name": "color disable releases native post-chain",
+      "passed": true
+    },
+    {
+      "name": "native world waypoints persist negative coordinates and dimension",
+      "passed": true
+    },
+    {
+      "name": "native map key opens shared world map",
+      "passed": true
+    },
+    {
+      "name": "world map uploads received region textures",
+      "passed": true
+    },
+    {
+      "name": "native screenshot file written",
+      "passed": true
+    },
+    {
+      "name": "local screenshot watcher updates toast",
+      "passed": true
+    },
+    {
+      "name": "shared local gallery opens natively",
+      "passed": true
+    },
+    {
+      "name": "shared transparent pause navigation",
+      "passed": true
+    }
+  ],
+  "capabilities": {
+    "fps": {
+      "state": "LIMITED",
+      "detail": "TFL HUD; advanced options are listed only when connected",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "GameGuiMixin.render",
+        "OrnitheClient.createHud",
+        "OrnitheClient.tick"
+      ]
+    },
+    "cps": {
+      "state": "LIMITED",
+      "detail": "TFL HUD; advanced options are listed only when connected",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "GameGuiMixin.render",
+        "OrnitheClient.createHud",
+        "OrnitheClient.tick"
+      ]
+    },
+    "keystrokes": {
+      "state": "LIMITED",
+      "detail": "Native coordinates/direction/biome and actual bindings with mouse/CPS/space options",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "pressedColor",
+        "pressedTextColor",
+        "scale",
+        "shadow",
+        "showCps",
+        "showSpace",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "OrnitheKeystrokes",
+        "GameGuiMixin.render"
+      ]
+    },
+    "ping": {
+      "state": "LIMITED",
+      "detail": "Shared tab latency, keepalive jitter, history, spike warning and TPS estimate. 1.8.9 has no active ping-request packet; interval is preserved but not exposed.",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "details",
+        "graph",
+        "jitter",
+        "scale",
+        "shadow",
+        "spikeThreshold",
+        "spikeWarning",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "armor": {
+      "state": "LIMITED",
+      "detail": "Native item icons with shared ArmorLayout and durability formatting",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "durability",
+        "hand",
+        "layout",
+        "percent",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "effects": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "coords": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "biome",
+        "direction",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "clock": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "seconds",
+        "shadow",
+        "textColor",
+        "twelveHour"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "memory": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "server": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "packs": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "toggleSprint": {
+      "state": "LIMITED",
+      "detail": "TFL HUD; advanced options are listed only when connected",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "GameGuiMixin.render",
+        "OrnitheClient.createHud",
+        "OrnitheClient.tick"
+      ]
+    },
+    "toggleSneak": {
+      "state": "LIMITED",
+      "detail": "Native edge-triggered sneak; resets on GUI/world change",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "reach": {
+      "state": "LIMITED",
+      "detail": "Observed eye-to-hit distance only",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "decimals",
+        "hold",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ]
+    },
+    "combo": {
+      "state": "LIMITED",
+      "detail": "Confirmed native hurt events after a local attack",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "best",
+        "scale",
+        "shadow",
+        "textColor",
+        "timeout"
+      ],
+      "hooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ]
+    },
+    "speed": {
+      "state": "LIMITED",
+      "detail": "Native tick-cached HUD data",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor",
+        "vertical"
+      ],
+      "hooks": [
+        "OrnitheHuds.tick",
+        "GameGuiMixin.render",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "minimap": {
+      "state": "LIMITED",
+      "detail": "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+      "settings": [
+        "autoZoomIndoor",
+        "autoZoomSpeed",
+        "background",
+        "backgroundOpacity",
+        "biome",
+        "caveMode",
+        "cloudFog",
+        "colors",
+        "compass",
+        "coords",
+        "edgeWaypoints",
+        "fairPlay",
+        "hideRoof",
+        "mobIcons",
+        "opacity",
+        "rotate",
+        "scale",
+        "shadow",
+        "shape",
+        "showDeath",
+        "showFriends",
+        "showHostile",
+        "showPassive",
+        "showPlayers",
+        "showWaypoints",
+        "size",
+        "textColor",
+        "time",
+        "zoom"
+      ],
+      "hooks": [
+        "MapEngine.tick",
+        "OrnitheMapPlatform",
+        "MinimapRenderer",
+        "WorldMapUi"
+      ]
+    },
+    "worldMap": {
+      "state": "LIMITED",
+      "detail": "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+      "settings": [
+        "cacheSize",
+        "exportSize",
+        "grid",
+        "inertia",
+        "key",
+        "netherCoords",
+        "otherDimensions",
+        "showHostile",
+        "showPassive",
+        "showPlayers",
+        "showWaypoints",
+        "smoothZoom",
+        "waypointList"
+      ],
+      "hooks": [
+        "MapEngine.tick",
+        "OrnitheMapPlatform",
+        "MinimapRenderer",
+        "WorldMapUi"
+      ]
+    },
+    "crosshair": {
+      "state": "LIMITED",
+      "detail": "Basic geometry connected; 1.8.9 has no attack cooldown indicator",
+      "settings": [
+        "color",
+        "gap",
+        "outline",
+        "shape",
+        "size",
+        "thickness"
+      ],
+      "hooks": [
+        "GameGuiMixin.hasCrosshair",
+        "OrnitheClient.drawHud"
+      ]
+    },
+    "hitColor": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+      "settings": [
+        "color",
+        "opacity"
+      ],
+      "hooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ]
+    },
+    "freelook": {
+      "state": "EXPERIMENTAL",
+      "detail": "Independent native camera angles, shared hold/toggle and server exclusion list. Restores perspective on GUI, death and world changes.",
+      "settings": [
+        "key",
+        "perspective",
+        "servers",
+        "toggle"
+      ],
+      "hooks": [
+        "GameRendererMixin.transformCamera",
+        "GameRendererMixin.updateLocalPlayerCamera",
+        "OrnitheFreelook.frame"
+      ]
+    },
+    "zoom": {
+      "state": "LIMITED",
+      "detail": "Native FOV, scroll, mouse slowdown, cinematic smoothing and configurable binding",
+      "settings": [
+        "cinematic",
+        "factor",
+        "key",
+        "scroll",
+        "slowMouse",
+        "smooth"
+      ],
+      "hooks": [
+        "GameRendererMixin.getFov",
+        "MouseMixin.tick",
+        "MinecraftMixin.scroll",
+        "GameRendererMixin.cinematic"
+      ]
+    },
+    "fullbright": {
+      "state": "LIMITED",
+      "detail": "Native lightmap gamma read; original option is never overwritten",
+      "settings": [
+        "level"
+      ],
+      "hooks": [
+        "GameRendererMixin.updateLightMap"
+      ]
+    },
+    "autorefill": {
+      "state": "EXPERIMENTAL",
+      "detail": "Replenishes an emptied selected slot using a normal inventory swap. Survival/adventure only, no GUI, no Fair Play. Old enabled flags require an explicit off/on toggle here.",
+      "settings": [],
+      "hooks": [
+        "OrnitheRefill.tick",
+        "AutoRefill.Game",
+        "ClientPlayerInteractionManager.clickSlot",
+        "OrnitheConsent"
+      ]
+    },
+    "titleScreen": {
+      "state": "LIMITED",
+      "detail": "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
+      "settings": [
+        "animated",
+        "backgroundMode",
+        "cornerRadius",
+        "menuAccent",
+        "panelOpacity"
+      ],
+      "hooks": [
+        "MinecraftMixin.openScreen",
+        "OrnitheClient.title"
+      ]
+    },
+    "menuStyle": {
+      "state": "LIMITED",
+      "detail": "Shared pause navigation and modern native option/button surfaces; vanilla behavior retained",
+      "settings": [],
+      "hooks": [
+        "MinecraftMixin.openScreen",
+        "ButtonWidgetMixin.render",
+        "ScreenMixin.renderBackground"
+      ]
+    },
+    "oldAnimations": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+      "settings": [
+        "blockHit",
+        "noDip"
+      ],
+      "hooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ]
+    },
+    "lowFire": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+      "settings": [
+        "height"
+      ],
+      "hooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ]
+    },
+    "shieldPosition": {
+      "state": "VERSION_UNAVAILABLE",
+      "detail": "Combat shields were introduced in Minecraft 1.9",
+      "settings": [],
+      "hooks": []
+    },
+    "blockOutline": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+      "settings": [
+        "color",
+        "opacity",
+        "width"
+      ],
+      "hooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ]
+    },
+    "hitboxes": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native cosmetic transform/tint hooks only; does not change attacks, cooldowns, damage or packets",
+      "settings": [
+        "color"
+      ],
+      "hooks": [
+        "ItemInHandMixin",
+        "HitColorMixin",
+        "HitboxMixin",
+        "WorldDetailsMixin.renderBlockOutline"
+      ]
+    },
+    "noHurtCam": {
+      "state": "LIMITED",
+      "detail": "Cancels native hurt-camera transform; restores automatically when disabled",
+      "settings": [],
+      "hooks": [
+        "GameRendererMixin.applyHurtCam"
+      ]
+    },
+    "chat": {
+      "state": "LIMITED",
+      "detail": "Timestamps, stacking and bounded history preserve native text/click/hover components. Copy and coordinate links are not connected yet.",
+      "settings": [
+        "history",
+        "stack",
+        "timestampSeconds",
+        "timestampTwelveHour",
+        "timestamps"
+      ],
+      "hooks": [
+        "ChatGuiMixin.addMessage",
+        "ChatHistory.limit",
+        "OrnitheChat.receive"
+      ]
+    },
+    "autoGg": {
+      "state": "LIMITED",
+      "detail": "Sends chat using shared sanitization/rate limits. Old enabled preferences do not authorize sends: switch this module off/on here to approve TFL Client. Disable at any time.",
+      "settings": [
+        "delay",
+        "presets",
+        "text",
+        "triggers"
+      ],
+      "hooks": [
+        "OrnitheAutomation.tick",
+        "ChatNetworkMixin.handleChatMessage",
+        "OrnitheConsent",
+        "AutoGg",
+        "ChatOut"
+      ]
+    },
+    "textHotkeys": {
+      "state": "LIMITED",
+      "detail": "Sends chat using shared sanitization/rate limits. Old enabled preferences do not authorize sends: switch this module off/on here to approve TFL Client. Disable at any time.",
+      "settings": [
+        "key1",
+        "key2",
+        "key3",
+        "key4",
+        "text1",
+        "text2",
+        "text3",
+        "text4"
+      ],
+      "hooks": [
+        "OrnitheAutomation.tick",
+        "ChatNetworkMixin.handleChatMessage",
+        "OrnitheConsent",
+        "AutoGg",
+        "ChatOut"
+      ]
+    },
+    "waypoints": {
+      "state": "LIMITED",
+      "detail": "Shared persistent points, death markers, add/list bindings and projected names/distances/beams in first person. Third-person world projection is intentionally omitted.",
+      "settings": [
+        "addKey",
+        "beam",
+        "death",
+        "distance",
+        "listKey",
+        "range"
+      ],
+      "hooks": [
+        "OrnitheWaypoints.tick",
+        "WaypointSaveUi",
+        "WaypointShare",
+        "WaypointStore",
+        "Projection"
+      ]
+    },
+    "trsOnline": {
+      "state": "BACKEND_UNAVAILABLE",
+      "detail": "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+      "settings": [],
+      "hooks": []
+    },
+    "capePhysics": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared bounded cloth/LOD and native cape layer. Uses existing Vanilla cape ownership/resources only, no remote cosmetics. Menu player preview is not connected.",
+      "settings": [
+        "detail",
+        "gravity",
+        "height",
+        "movement",
+        "scope",
+        "stiffness",
+        "style",
+        "wind",
+        "windMode"
+      ],
+      "hooks": [
+        "OrnitheCapes.tick",
+        "CapePhysics",
+        "CapeLayerMixin",
+        "ClothMesh"
+      ]
+    },
+    "colors": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared color matrix/vibrance with Vanilla post-processing. Skips existing Vanilla shaders; no second world renderer. GPU hardware performance remains unmeasured.",
+      "settings": [
+        "brightness",
+        "contrast",
+        "saturation",
+        "temperature",
+        "vibrance"
+      ],
+      "hooks": [
+        "OrnitheColors",
+        "ColorGrade",
+        "GameRendererMixin.renderWorld",
+        "PostChain"
+      ]
+    },
+    "emotes": {
+      "state": "EXPERIMENTAL",
+      "detail": "Local radial wheel/model animation only; no remote synchronization",
+      "settings": [
+        "camera"
+      ],
+      "hooks": [
+        "EmoteWheel",
+        "EmoteController(local\u003dtrue)",
+        "HumanoidModelMixin.setupAnimation",
+        "OrnitheEmotes.tick"
+      ]
+    },
+    "redstoneSignal": {
+      "state": "LIMITED",
+      "detail": "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "bar",
+        "details",
+        "name",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheRedstone.tick",
+        "OrnitheRedstoneWorld",
+        "RedstoneTools",
+        "RedstonePanels",
+        "SignalOverlay"
+      ]
+    },
+    "redstoneOverlay": {
+      "state": "LIMITED",
+      "detail": "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+      "settings": [
+        "radius",
+        "visibleOnly",
+        "zero"
+      ],
+      "hooks": [
+        "OrnitheRedstone.tick",
+        "OrnitheRedstoneWorld",
+        "RedstoneTools",
+        "RedstonePanels",
+        "SignalOverlay"
+      ]
+    },
+    "redstoneClock": {
+      "state": "LIMITED",
+      "detail": "Native 1.8.9 received block states and shared renderers. Container contents remain unknown; client packet timing is not server TPS.",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "keep",
+        "scale",
+        "scope",
+        "shadow",
+        "textColor",
+        "window"
+      ],
+      "hooks": [
+        "OrnitheRedstone.tick",
+        "OrnitheRedstoneWorld",
+        "RedstoneTools",
+        "RedstonePanels",
+        "SignalOverlay"
+      ]
+    },
+    "clips": {
+      "state": "BACKEND_UNAVAILABLE",
+      "detail": "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+      "settings": [],
+      "hooks": []
+    },
+    "fpsBoost": {
+      "state": "LIMITED",
+      "detail": "Explicit Vanilla-only detail presets with persistent shared UndoLog. No automatic preset, no culler or Argentum config changes; no measured FPS gain is claimed.",
+      "settings": [],
+      "hooks": [
+        "OrnitheGameOptions",
+        "BoostPreset.target",
+        "UndoLog",
+        "OrnitheMenuHost.actions"
+      ]
+    },
+    "dynamicFps": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared focus/minimized/AFK limits through the vanilla frame limiter. Sound attenuation is transient; options are preserved.",
+      "settings": [
+        "afkLimit",
+        "afkMinutes",
+        "minimized",
+        "quieter",
+        "unfocused",
+        "volume"
+      ],
+      "hooks": [
+        "OrnithePerformance.frame",
+        "MinecraftMixin.getMaxFramerate",
+        "SoundManager.setVolume"
+      ]
+    },
+    "borderlessFullscreen": {
+      "state": "OPTIONAL_INTEGRATION",
+      "detail": "Runtime borderless requires the Legacy LWJGL3 SDL bridge. Baseline keeps Vanilla fullscreen without recreating its GL context.",
+      "settings": [],
+      "hooks": []
+    },
+    "entityCulling": {
+      "state": "OPTIONAL_INTEGRATION",
+      "detail": "No second entity culler is installed. External renderer/culling policy stays under modpack control; saved preferences are retained.",
+      "settings": [],
+      "hooks": []
+    },
+    "particles": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared particle gate before native particle allocation, bounded live counts; no replacement renderer",
+      "settings": [
+        "amount",
+        "explosions",
+        "limit",
+        "rain",
+        "smoke"
+      ],
+      "hooks": [
+        "ParticleManagerMixin.addParticle",
+        "ParticleGate"
+      ]
+    },
+    "worldDetails": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native sky, star, weather and atlas animation gates. Fog remains Vanilla; no chunk renderer changes.",
+      "settings": [
+        "animations",
+        "sky",
+        "stars",
+        "weather"
+      ],
+      "hooks": [
+        "WorldDetailsMixin",
+        "TextureAtlasMixin",
+        "GameRendererMixin.renderSnowAndRain"
+      ]
+    },
+    "builtinOptimizations": {
+      "state": "OPTIONAL_INTEGRATION",
+      "detail": "External renderer/optimizers remain separate; no optimization binary is bundled",
+      "settings": [],
+      "hooks": []
+    },
+    "netOptimize": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared compression/decryption adapters replace exact Vanilla handlers only. Timing/keepalive packets are observed, never delayed or changed; multiplayer native acceptance remains pending.",
+      "settings": [],
+      "hooks": [
+        "OrnitheNet",
+        "NetConnectionMixin(clientbound only)",
+        "NetBoost",
+        "NetCodecs"
+      ]
+    },
+    "lowLatency": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared bounded GPU queue limiter with cached native entry points and late mouse polling. Disabled by default; no hardware latency benefit is claimed.",
+      "settings": [
+        "latePoll",
+        "mode"
+      ],
+      "hooks": [
+        "OrnitheLatency.frame",
+        "LowLatency",
+        "GameRendererMixin.frame"
+      ]
+    },
+    "fastConnect": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared DNS cache/prefetch and connection address racing with Vanilla handshake identity. Launcher hints and resource-pack preloads are disabled; native multi-address acceptance remains pending.",
+      "settings": [
+        "preResolve"
+      ],
+      "hooks": [
+        "FastConnectMixin",
+        "FastConnectSelectionMixin",
+        "FastConnect.init(configDir\u003dnull)"
+      ]
+    },
+    "social": {
+      "state": "BACKEND_UNAVAILABLE",
+      "detail": "Requires an authorized TFL backend/launcher integration; saved preferences retained",
+      "settings": [],
+      "hooks": []
+    },
+    "chatMentions": {
+      "state": "LIMITED",
+      "detail": "Shared mention detection and throttled native sound; whole-line bold highlight. Exact RGB word highlighting is not connected.",
+      "settings": [
+        "bold",
+        "ownName",
+        "sound",
+        "soundType",
+        "volume",
+        "words"
+      ],
+      "hooks": [
+        "Qol.onChat",
+        "ChatGuiMixin.addMessage"
+      ]
+    },
+    "chatHeads": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared sender detection, bounded line cache and native authorized skin/hat textures. Only the first wrapped line gets a head; existing lines update on chat reset.",
+      "settings": [
+        "hat"
+      ],
+      "hooks": [
+        "ChatHeadsMixin",
+        "ChatHeadDetect(MPL-2.0)",
+        "ChatHeadCache",
+        "TextRenderUtils.wrapText",
+        "PlayerInfo.getSkinTexture"
+      ]
+    },
+    "chatFilter": {
+      "state": "LIMITED",
+      "detail": "Shared bounded literal word matching before chat insertion; no outgoing interception",
+      "settings": [
+        "words"
+      ],
+      "hooks": [
+        "Qol.hideChat",
+        "ChatGuiMixin.addMessage"
+      ]
+    },
+    "autoReconnect": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native disconnect countdown and cancel control, shared kick/ban guards and bounded attempts. Old enabled flags require an explicit off/on toggle here.",
+      "settings": [
+        "attempts",
+        "delay",
+        "mode",
+        "never"
+      ],
+      "hooks": [
+        "ReconnectMixin",
+        "AutoReconnect",
+        "KickReasons",
+        "OrnitheConsent"
+      ]
+    },
+    "queueAlerts": {
+      "state": "LIMITED",
+      "detail": "Shared queue/mention/death notices and native sounds from received chat/action bar. OS taskbar flash is not connected.",
+      "settings": [
+        "death",
+        "kick",
+        "mention",
+        "patterns",
+        "position",
+        "sound"
+      ],
+      "hooks": [
+        "ChatNetworkMixin.handleChatMessage",
+        "Qol.onServerText",
+        "QolPanels.drawWarnings"
+      ]
+    },
+    "scoreboard": {
+      "state": "LIMITED",
+      "detail": "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "hideNumbers",
+        "scale",
+        "shadow",
+        "textColor",
+        "title"
+      ],
+      "hooks": [
+        "OrnitheVanillaHuds.tick",
+        "VanillaHudMixin",
+        "GameGuiAccess",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "tabPing": {
+      "state": "EXPERIMENTAL",
+      "detail": "Native tab-list numeric latency and optional threshold colors; no active ping packet in 1.8.9",
+      "settings": [
+        "colors"
+      ],
+      "hooks": [
+        "TabPingMixin.renderPing",
+        "PlayerInfo.getPing"
+      ]
+    },
+    "bossBar": {
+      "state": "LIMITED",
+      "detail": "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheVanillaHuds.tick",
+        "VanillaHudMixin",
+        "GameGuiAccess",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "titles": {
+      "state": "LIMITED",
+      "detail": "Native 1.8.9 scoreboard/boss/title data, shared HUD placement and editor. Vanilla presentation resumes when disabled.",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "shadow",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnitheVanillaHuds.tick",
+        "VanillaHudMixin",
+        "GameGuiAccess",
+        "HudLayout",
+        "HudEditor"
+      ]
+    },
+    "warnings": {
+      "state": "LIMITED",
+      "detail": "Shared threshold/cooldown warnings with real armor/food/health/inventory data and death compass",
+      "settings": [
+        "armor",
+        "background",
+        "backgroundOpacity",
+        "cooldown",
+        "deathCompass",
+        "durability",
+        "health",
+        "healthLevel",
+        "hunger",
+        "hungerLevel",
+        "inventory",
+        "scale",
+        "shadow",
+        "sound",
+        "textColor",
+        "tools"
+      ],
+      "hooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ]
+    },
+    "itemCounter": {
+      "state": "LIMITED",
+      "detail": "Native inventory icons; 1.8.9 has no totems",
+      "settings": [
+        "arrows",
+        "background",
+        "backgroundOpacity",
+        "blocks",
+        "gapples",
+        "healing",
+        "hideEmpty",
+        "layout",
+        "pearls",
+        "scale",
+        "shadow",
+        "splash",
+        "textColor"
+      ],
+      "hooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ]
+    },
+    "hitFeedback": {
+      "state": "LIMITED",
+      "detail": "Shared marker/sound on confirmed hits; extra particle emitters not connected",
+      "settings": [
+        "marker",
+        "markerColor",
+        "markerSize",
+        "markerTime",
+        "sound",
+        "volume"
+      ],
+      "hooks": [
+        "OrnithePvp.tick",
+        "AttackMixin.attackEntity",
+        "LivingEntityMixin.doEvent",
+        "QolPanels",
+        "GameGuiMixin.render"
+      ]
+    },
+    "streamerMode": {
+      "state": "LIMITED",
+      "detail": "Masks rendered names and address tokens in common/native text and clipboard. Original server/config/export data remains intact.",
+      "settings": [
+        "hideIp",
+        "key",
+        "name",
+        "others"
+      ],
+      "hooks": [
+        "PrivacyTextMixin",
+        "PrivacyClipboardMixin",
+        "OrnitheCanvas",
+        "StreamerMode",
+        "OrnithePrivacy.tick"
+      ]
+    },
+    "tooltips": {
+      "state": "LIMITED",
+      "detail": "Shared durability, food and filled-map tooltip cards. Shulker boxes do not exist in 1.8.9; compact enchantments are not connected yet.",
+      "settings": [
+        "durability",
+        "food",
+        "map",
+        "mapSize"
+      ],
+      "hooks": [
+        "TooltipMixin",
+        "TooltipLinesMixin",
+        "TooltipText",
+        "Tooltips.draw",
+        "FilledMapItem.getMapData"
+      ]
+    },
+    "serverProfiles": {
+      "state": "LIMITED",
+      "detail": "Existing local server-profile matching and shared profile UI",
+      "settings": [
+        "notify"
+      ],
+      "hooks": [
+        "ServerProfiles.update",
+        "ModMenu.ServerProfilesPage"
+      ]
+    },
+    "panorama": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared offline cube/equirectangular capture using six native world frames and asynchronous encoding. Temporarily detaches camera/hides HUD, restoring both. No launcher sharing.",
+      "settings": [
+        "format"
+      ],
+      "hooks": [
+        "OrnithePanorama",
+        "Panorama.OwnCapture",
+        "GameRendererMixin.renderWorld",
+        "PanoramaPanel"
+      ]
+    },
+    "screenshots": {
+      "state": "LIMITED",
+      "detail": "Local gallery/editor and screenshot toast; online sharing, chat actions and third-party preference changes are disabled",
+      "settings": [
+        "seconds",
+        "toast"
+      ],
+      "hooks": [
+        "Screenshots.Platform",
+        "Screenshots.tick",
+        "Screenshots.render",
+        "ClipsUi"
+      ]
+    },
+    "keySearch": {
+      "state": "LIMITED",
+      "detail": "Shared search language, conflicts/unbound filters and native keyboard/mouse rebinding. Available through the module action; Vanilla Controls remains available.",
+      "settings": [],
+      "hooks": [
+        "OrnitheKeySearchUi",
+        "KeySearch.filter",
+        "KeyBinding.resetMapping",
+        "GameOptions.save"
+      ]
+    },
+    "hungerOverlay": {
+      "state": "LIMITED",
+      "detail": "Shared saturation, held-food and legacy health prediction over Vanilla HUD. Exhaustion is not sent by the server and is left unknown.",
+      "settings": [
+        "health",
+        "heldFood",
+        "saturation"
+      ],
+      "hooks": [
+        "OrnitheComfort.draw",
+        "HungerOverlay",
+        "HungerState.modernRegen\u003dfalse"
+      ]
+    },
+    "circuitLibrary": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared offline library/ghost templates, layers, rotation and block-state checks, with a small bundled GPL recipe set and local cache. Remote submissions and downloads are disabled.",
+      "settings": [
+        "confirmKey",
+        "hideCorrect",
+        "hideKey",
+        "labels",
+        "layerDownKey",
+        "layerUpKey",
+        "opacity",
+        "openKey",
+        "rotateKey"
+      ],
+      "hooks": [
+        "OrnitheCircuits",
+        "Circuits.Platform",
+        "CircuitWorld",
+        "GhostPainter",
+        "CircuitLibraryPage"
+      ]
+    },
+    "notes": {
+      "state": "LIMITED",
+      "detail": "Shared offline notebooks and map coordinate actions; remote sync disabled",
+      "settings": [
+        "key"
+      ],
+      "hooks": [
+        "Notes.tick",
+        "ModMenu.NotesPage",
+        "MapPlatform"
+      ]
+    },
+    "pinnedNote": {
+      "state": "LIMITED",
+      "detail": "Shared pinned notebook, checklist and wrapping; offline only",
+      "settings": [
+        "background",
+        "backgroundOpacity",
+        "lines",
+        "scale",
+        "shadow",
+        "textColor",
+        "width"
+      ],
+      "hooks": [
+        "NotePanel",
+        "Notes.currentWorld",
+        "GameGuiMixin.render"
+      ]
+    },
+    "cinematic": {
+      "state": "EXPERIMENTAL",
+      "detail": "Shared offline keyframes/playback and collision-limited local freecam. Received chunks only. External recording unavailable; multiplayer gameplay acceptance remains pending.",
+      "settings": [
+        "addKey",
+        "clearKey",
+        "ease",
+        "freecamFairPlay",
+        "freecamKey",
+        "freecamSpeed",
+        "hideHud",
+        "playKey",
+        "preview",
+        "removeKey",
+        "seconds",
+        "smoothing",
+        "timing"
+      ],
+      "hooks": [
+        "OrnitheCinematic",
+        "Cinematic.Host",
+        "Minecraft.setCamera",
+        "CinematicInputMixin",
+        "GameRendererMixin"
+      ]
+    },
+    "halloween": {
+      "state": "LIMITED",
+      "detail": "Local procedural bat hit effects and self ghost trail. Remote event rewards, other-client effects, jumpscares and remote sounds are unavailable.",
+      "settings": [
+        "ghostTrail",
+        "hits"
+      ],
+      "hooks": [
+        "OrnitheSeasonal.tick",
+        "LivingEntityMixin.doEvent",
+        "SpookyFx.draw"
+      ]
+    }
+  },
+  "status": "passed",
+  "frames": 323,
+  "frametimeP99Ms": 192.948226,
+  "frametimeMedianMs": 56.415282,
+  "frametimeP95Ms": 89.980916,
+  "fpsFromMeanFrametime": 16.199154567206424,
+  "heapUsedBytes": 552214224
+}

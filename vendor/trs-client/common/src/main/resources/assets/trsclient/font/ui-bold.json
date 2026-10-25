@@ -7,8 +7,8 @@
         0,
         0
       ],
-      "size": 10,
-      "oversample": 4
+      "size": 9,
+      "oversample": 8
     },
     {
       "type": "reference",

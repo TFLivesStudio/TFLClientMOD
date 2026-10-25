@@ -24,6 +24,8 @@ public final class SmokeHarness implements Runnable {
   private int tick, stage, wait, inputFrame;
   private float normalFov;
   private long mapUploads;
+  private boolean fogZoomed;
+  private long screenshotDeadline;
   private java.nio.file.Path nativeScreenshot;
   private long colorPasses, panoramaFaces;
   private double playerX, playerZ;
@@ -80,6 +82,10 @@ public final class SmokeHarness implements Runnable {
       switch (stage) {
         case 0 -> {
           c.mc.options.pauseOnUnfocus = false;
+          if(Boolean.getBoolean("tflcore.ui.smoke.large")) {
+            c.mc.options.guiScale=4;
+            c.mc.openScreen(c.title());
+          }
           check(
               "shared main menu", c.mc.screen instanceof CoreScreen cs && cs.ui instanceof TitleUi);
           if (restart) {
@@ -92,10 +98,12 @@ public final class SmokeHarness implements Runnable {
             finish(null);
             return;
           }
+          c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.BALANCED);
           wait = 25;
           stage++;
         }
         case 1 -> {
+          check("bundled blue video presents decoded frames",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented());
           shot("title");
           KeyBinding.click(c.menuKey.getKeyCode());
           wait = 15;
@@ -356,6 +364,9 @@ public final class SmokeHarness implements Runnable {
           stage++;
         }
         case 15 -> {
+          if(!fogZoomed&&c.mc.screen instanceof CoreScreen cs){
+            cs.ui.mouseScrolled(cs.width/2.0,cs.height/2.0,-3);fogZoomed=true;wait=15;return;
+          }
           check(
               "native map key opens shared world map",
               c.mc.screen instanceof CoreScreen cs
@@ -372,10 +383,14 @@ public final class SmokeHarness implements Runnable {
                   + "_189.png";
           nativeScreenshot = c.mc.gameDir.toPath().resolve("screenshots").resolve(name);
           Screenshot.take(c.mc.gameDir, name, c.mc.width, c.mc.height, c.mc.getRenderTarget());
+          screenshotDeadline=System.nanoTime()+10_000_000_000L;
           wait = 20;
           stage++;
         }
         case 16 -> {
+          var toastFile=c.navigation.screenshots.toast().file();
+          boolean watched=toastFile!=null&&nativeScreenshot.toAbsolutePath().normalize().equals(toastFile.toAbsolutePath().normalize());
+          if((!Files.isRegularFile(nativeScreenshot)||!watched)&&System.nanoTime()<screenshotDeadline){wait=5;return;}
           check("native screenshot file written", Files.isRegularFile(nativeScreenshot));
           check(
               "local screenshot watcher updates toast",
@@ -395,6 +410,11 @@ public final class SmokeHarness implements Runnable {
               c.mc.screen instanceof CoreScreen cs
                   && cs.ui instanceof dev.theredstonee.trsclient.core.ui.clips.ClipsUi);
           shot("local-gallery");
+          c.mc.openScreen(c.navigation.pause());wait=15;stage++;
+        }
+        case 18 -> {
+          check("shared transparent pause navigation",c.mc.screen instanceof CoreScreen cs && cs.ui instanceof dev.theredstonee.trsclient.core.ui.menus.ActionListUi);
+          shot("pause");
           c.mc.openScreen(null);
           finish(null);
         }

@@ -345,7 +345,7 @@ public final class ModMenu extends UiScreen {
 	protected void draw(Canvas raw, int width, int height, int mouseX, int mouseY, float dt) {
 		Theme t = Theme.get();
 		Canvas c = FadeCanvas.of(raw, alpha());
-		c.fill(0, 0, width, height, t.scrim);
+		c.fill(0, 0, width, height, ColorMath.withAlpha(t.scrim,56));
 
 		// Fenster: nutzt den Bildschirm (GUI-Pixel – wächst also mit kleinerer GUI-Größe mit).
 		int pw = Math.min(width - 16, Math.max(Math.min(440, width - 16), Math.min(780, Math.round(width * 0.86f))));
@@ -449,7 +449,7 @@ public final class ModMenu extends UiScreen {
 
 	private void header(Canvas c, int px, int py, int pw, int mx, int my) {
 		Theme t = Theme.get();
-		c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, t.surfaceHigh);
+		c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, dev.theredstonee.trsclient.core.ui.UiAppearance.glass(t.surfaceHigh));
 		c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
         int lx=px+PAD;
         int ly=py+(HEADER_H-c.lineHeight())/2;

@@ -617,7 +617,7 @@ public final class VanillaMenus {
 				}
 			}
 			//? if >=26.3 {
-            /*if(k==MenuStyle.Kind.PAUSE && MenuStyle.enabled(k)) layoutPause(s);
+            /*if(k==MenuStyle.Kind.PAUSE && MenuStyle.enabled(k)) GlassPause.open(s);
             if(s.getClass()==OptionsScreen.class && MenuStyle.enabled(k)) layoutOptions(s);
             *///?}
             if (k == MenuStyle.Kind.PAUSE && s instanceof PauseScreen && MenuStyle.pauseButtons() && !s.children().isEmpty()) pauseButtons(s, host);

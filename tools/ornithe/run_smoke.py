@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Real Linux/X11 client smoke driver. Focuses the native window for Robot input and verifies report status."""
 import argparse,ctypes as C,ctypes.util,json,os,pathlib,re,subprocess,time
-p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');p.add_argument('--large',action='store_true');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];project=root/'vendor/trs-client/ornithe'
 report=project/'build/smoke'/a.stack/('restart.json' if a.restart else 'report.json');report.unlink(missing_ok=True)
 cmd=[str(project/'gradlew'),'-p',str(project),'--no-daemon','--max-workers=2','runClient','-Psmoke',f'-PtestStack={a.stack}']
 if a.mods_dir:cmd.append(f'-PruntimeModsDir={a.mods_dir.resolve()}')
 if a.restart:cmd.append('-Prestart')
+if a.large:cmd.append('-PuiSmokeLarge')
 x=C.CDLL(ctypes.util.find_library('X11'));x.XOpenDisplay.argtypes=[C.c_char_p];x.XOpenDisplay.restype=C.c_void_p
 x.XSetInputFocus.argtypes=[C.c_void_p,C.c_ulong,C.c_int,C.c_ulong];x.XFlush.argtypes=[C.c_void_p];x.XCloseDisplay.argtypes=[C.c_void_p]
 d=x.XOpenDisplay(os.environ.get('DISPLAY',':0').encode());assert d,'An X11 display is required'
@@ -29,5 +30,5 @@ try:
 finally:x.XCloseDisplay(d)
 assert not errors,f'Unexpected X11 errors: {errors}'
 assert proc.returncode==0,f'Gradle exit {proc.returncode}'
-r=json.loads(report.read_text());assert r['status']=='passed',r
+r=json.loads(report.read_text());assert r['status']=='passed',{'error':r.get('error'),'failed':[c['name'] for c in r['checks'] if not c['passed']]}
 print(f"Verified {a.stack} {'restart' if a.restart else 'smoke'}: {len(r['checks'])} checks")

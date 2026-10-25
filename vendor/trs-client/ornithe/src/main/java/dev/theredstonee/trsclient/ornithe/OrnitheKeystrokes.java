@@ -56,27 +56,27 @@ public final class OrnitheKeystrokes implements HudItem {
     key(canvas, o.useKey, "RMB", 36, 48, 34, mh);
     if (c.modules.keystrokesShowCps.get()) {
       long now = System.nanoTime() / 1000000;
-      center(canvas, CPS[Math.min(99, c.left.count(now))], 0, 64, 34);
-      center(canvas, CPS[Math.min(99, c.right.count(now))], 36, 64, 34);
+      center(canvas, CPS[Math.min(99, c.left.count(now))], 0, 64, 34, o.attackKey.isPressed());
+      center(canvas, CPS[Math.min(99, c.right.count(now))], 36, 64, 34, o.useKey.isPressed());
     }
     if (c.modules.keystrokesShowSpace.get()) {
       int y = 50 + mh;
-      canvas.fill(0, y, 70, y + 11, o.jumpKey.isPressed() ? 0xC06078B0 : module().backgroundArgb());
-      canvas.fill(21, y + 5, 49, y + 6, module().textColor.argb());
+      canvas.fill(0, y, 70, y + 11, o.jumpKey.isPressed() ? c.modules.keystrokesPressedColor.argb() : module().backgroundArgb());
+      canvas.fill(21, y + 5, 49, y + 6, o.jumpKey.isPressed() ? c.modules.keystrokesPressedText.argb() : module().textColor.argb());
     }
   }
 
   private void key(Canvas canvas, KeyBinding key, String label, int x, int y, int w, int h) {
-    canvas.fill(x, y, x + w, y + h, key.isPressed() ? 0xC06078B0 : module().backgroundArgb());
-    center(canvas, label, x, y + 5, w);
+    canvas.fill(x, y, x + w, y + h, key.isPressed() ? c.modules.keystrokesPressedColor.argb() : module().backgroundArgb());
+    canvas.text(label, x + (w - canvas.textWidth(label)) / 2, y + 5, key.isPressed() ? c.modules.keystrokesPressedText.argb() : module().textColor.argb(), module().shadow() && !key.isPressed());
   }
 
-  private void center(Canvas canvas, String text, int x, int y, int w) {
+  private void center(Canvas canvas, String text, int x, int y, int w, boolean pressed) {
     canvas.text(
         text,
         x + (w - canvas.textWidth(text)) / 2,
         y,
-        module().textColor.argb(),
-        module().shadow());
+        pressed ? c.modules.keystrokesPressedText.argb() : module().textColor.argb(),
+        module().shadow() && !pressed);
   }
 }

@@ -2554,5 +2554,11 @@
   "editor.profileLimit": "Profile limit reached",
   "editor.precisionHint": "Tab: select / Arrows: 1 px / Shift: 10 px or free drag / Right click: reset",
   "clips.local.hint": "Saved on this device · F2 takes a screenshot",
-  "title.clientSettings": "Client settings"
+  "title.clientSettings": "Client settings",
+  "setting.keystrokes.pressedColor": "Fond des touches enfoncées",
+  "setting.keystrokes.pressedTextColor": "Texte des touches enfoncées",
+  "setting.minimap.cloudFog": "Nuages sur les zones inexplorées (deux cartes)",
+  "setting.titleScreen.panelOpacity": "Opacité des panneaux en verre",
+  "setting.titleScreen.cornerRadius": "Rayon des coins du menu",
+  "setting.titleScreen.menuAccent": "Couleur du menu"
 }

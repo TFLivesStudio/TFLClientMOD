@@ -74,7 +74,7 @@ public final class KeystrokesHud extends HudElement {
 			y += GAP;
 			boolean down = mc.gameSettings.keyBindJump.isKeyDown();
 			fillKey(g, 0, y, WIDTH, SPACE_H, down, bg);
-			int bar = down ? Brand.BG : color;
+			int bar = down ? modules.keystrokesPressedText.argb() : color;
 			g.fill(WIDTH / 2 - 14, y + 5, WIDTH / 2 + 14, y + 6, bar);
 		}
 	}
@@ -92,15 +92,15 @@ public final class KeystrokesHud extends HudElement {
 		return labels[idx];
 	}
 
-	private static void key(Gfx g, FontRenderer font, int x, int y, int w, int h, String label, boolean down, int bg, int color, boolean shadow) {
+	private void key(Gfx g, FontRenderer font, int x, int y, int w, int h, String label, boolean down, int bg, int color, boolean shadow) {
 		fillKey(g, x, y, w, h, down, bg);
 		int tw = font.getStringWidth(label);
-		g.text(font, label, x + (w - tw) / 2, y + (h - 8) / 2, down ? Brand.BG : color, shadow && !down);
+		g.text(font, label, x + (w - tw) / 2, y + (h - 8) / 2, down ? modules.keystrokesPressedText.argb() : color, shadow && !down);
 	}
 
-	private static void mouse(Gfx g, FontRenderer font, int x, int y, int h, String label, boolean down, int bg, int color, boolean shadow, int cps) {
+	private void mouse(Gfx g, FontRenderer font, int x, int y, int h, String label, boolean down, int bg, int color, boolean shadow, int cps) {
 		fillKey(g, x, y, MOUSE_W, h, down, bg);
-		int textColor = down ? Brand.BG : color;
+		int textColor = down ? modules.keystrokesPressedText.argb() : color;
 		boolean textShadow = shadow && !down;
 		if (cps < 0) {
 			g.text(font, label, x + (MOUSE_W - font.getStringWidth(label)) / 2, y + (h - 8) / 2, textColor, textShadow);
@@ -111,8 +111,8 @@ public final class KeystrokesHud extends HudElement {
 		}
 	}
 
-	private static void fillKey(Gfx g, int x, int y, int w, int h, boolean down, int bg) {
-		if (down) g.fill(x, y, x + w, y + h, Brand.HUD_BG_PRESSED);
+	private void fillKey(Gfx g, int x, int y, int w, int h, boolean down, int bg) {
+		if (down) g.fill(x, y, x + w, y + h, modules.keystrokesPressedColor.argb());
 		else if (bg != 0) g.fill(x, y, x + w, y + h, bg);
 	}
 }

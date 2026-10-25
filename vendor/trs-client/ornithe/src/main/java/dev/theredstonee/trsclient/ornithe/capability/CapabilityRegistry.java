@@ -41,7 +41,7 @@ public final class CapabilityRegistry {
       entries.put(
           m.id(),
           new Capability(
-              State.PENDING, "Native Ornithe adapter not connected yet", Set.of(), List.of()));
+              State.PENDING, "Native adapter not connected yet", Set.of(), List.of()));
   }
 
   public void declare(String id, State state, String detail) {
