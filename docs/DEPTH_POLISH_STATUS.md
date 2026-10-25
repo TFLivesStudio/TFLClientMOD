@@ -22,4 +22,13 @@ Performance and limits:
 
 CI and publication:
 
-The `Depth and Polish` workflow builds and runs installed JARs in baseline/LWJGL3/Argentum and baseline/Sodium matrices, checks restart and video reports, and only publishes prereleases after all jobs pass. The current task will attach the resulting CI/PR/release links when those gates complete.
+The `Depth and Polish` workflow builds and runs installed JARs in baseline/LWJGL3/Argentum and baseline/Sodium matrices, checks restart and video reports, and only publishes prereleases after all jobs pass. All five native matrix scenarios and common tests passed in [run 40238168496](https://github.com/TFLivesStudio/TFLClientMOD/actions/runs/40238168496). Both publication jobs succeeded. Published source commit: `540cc243b29746bcd1ebf0cf9e212eb044b82a0a`; [PR #8](https://github.com/TFLivesStudio/TFLClientMOD/pull/8) remains a draft, preserving PR #7 and main.
+
+Published downloads:
+
+- [1.8.9 prerelease](https://github.com/TFLivesStudio/TFLClientMOD/releases/tag/v0.4.0-depth.1-ornithe189): installed JAR, complete source ZIP, exact dependencies, native evidence, instructions and SHA-256.
+- [26.3 prerelease](https://github.com/TFLivesStudio/TFLClientMOD/releases/tag/v0.4.0-depth.1-fabric263): the corresponding Fabric deliverables.
+
+The downloaded published JARs, evidence ZIPs and source ZIP were checked against the release SHA-256 manifests. The archived CI reports contain 248 + 3 checks for 1.8.9/Argentum, and 27 + 1 + 13 for 26.3/Sodium (some camera-ready checks repeat while the worker completes).
+
+Additional native screen recordings are [1.8.9 baseline](evidence/depth-polish/native-189-baseline.mp4) and [26.3 title playback](evidence/depth-polish/native-263-title.mp4). They are real 8 fps X11 captures on a software renderer, not GPU/game FPS benchmarks. The 1.8.9 recording includes automated world/camera/effect transitions; there is no generated UI or interpolated mockup. Movie documentation was archived after the binary publication; the production code remains the published commit above.

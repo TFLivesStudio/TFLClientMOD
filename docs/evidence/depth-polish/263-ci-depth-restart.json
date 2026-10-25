@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Mini Player preferences survive process restart",
+      "passed": true
+    }
+  ],
+  "elapsedMs": 13303
+}

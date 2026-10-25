@@ -1,0 +1,121 @@
+{
+  "nativeSkin": "PlayerSkin[body\u003dResourceTexture[id\u003dminecraft:entity/player/wide/kai, texturePath\u003dminecraft:textures/entity/player/wide/kai.png], cape\u003dnull, elytra\u003dnull, model\u003dWIDE, secure\u003dtrue]",
+  "volumeAverageMs": 301.5069114,
+  "volumeBackend": "bounded CPU 3D ray marcher / native texture composition",
+  "miniUpdates": 25,
+  "miniAverageExtractionMs": 0.6443948,
+  "pipRenders": 25,
+  "pipComposites": 25,
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Mini Player registered in HUD and editor",
+      "passed": true
+    },
+    {
+      "name": "native player PIP rendered",
+      "passed": true
+    },
+    {
+      "name": "native widget state has no failure",
+      "passed": true
+    },
+    {
+      "name": "world camera unchanged by widget",
+      "passed": true
+    },
+    {
+      "name": "native equipment received",
+      "passed": true
+    },
+    {
+      "name": "native movement reached real player",
+      "passed": true
+    },
+    {
+      "name": "native local emote starts",
+      "passed": true
+    },
+    {
+      "name": "disabled widget skips extraction",
+      "passed": true
+    },
+    {
+      "name": "world map available",
+      "passed": true
+    },
+    {
+      "name": "3D volume native backend healthy",
+      "passed": true
+    },
+    {
+      "name": "native perspective picking 0",
+      "passed": true
+    },
+    {
+      "name": "3D volume native backend healthy",
+      "passed": true
+    },
+    {
+      "name": "3D volume native backend healthy",
+      "passed": true
+    },
+    {
+      "name": "3D volume native backend healthy",
+      "passed": true
+    },
+    {
+      "name": "native perspective picking 1",
+      "passed": true
+    },
+    {
+      "name": "3D volume native backend healthy",
+      "passed": true
+    },
+    {
+      "name": "3D volume native backend healthy",
+      "passed": true
+    },
+    {
+      "name": "native perspective picking 2",
+      "passed": true
+    },
+    {
+      "name": "closed map releases display projection",
+      "passed": true
+    },
+    {
+      "name": "widget recovers after attachment invalidation",
+      "passed": true
+    },
+    {
+      "name": "native resource reload recreates model",
+      "passed": true
+    },
+    {
+      "name": "F1 enabled",
+      "passed": true
+    },
+    {
+      "name": "F1 default skips model extraction",
+      "passed": true
+    },
+    {
+      "name": "F1 opt-in draws model",
+      "passed": true
+    },
+    {
+      "name": "server respawn replaced native player",
+      "passed": true
+    },
+    {
+      "name": "native Nether change received",
+      "passed": true
+    },
+    {
+      "name": "native return dimension received",
+      "passed": true
+    }
+  ],
+  "elapsedMs": 140199
+}

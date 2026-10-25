@@ -1,0 +1,67 @@
+{
+  "bundledMedia": {
+    "menu.mjpeg": {
+      "sha256": "694298dc5a0811e7933ed9a8825e622dadbef0c5126701ab946dc8ed4c6648a8",
+      "bytes": 22224418,
+      "playbackFps": 24,
+      "rawMjpegHasTimestamps": false,
+      "width": 1920,
+      "height": 1080,
+      "nb_read_frames": "400"
+    },
+    "menu-balanced.mjpeg": {
+      "sha256": "c20b867ac0da1a7cbaf6a99b8fe0c3a4566cc8ad2f442d056d0c1ecfaeb1ab35",
+      "bytes": 14308897,
+      "playbackFps": 24,
+      "rawMjpegHasTimestamps": false,
+      "width": 1280,
+      "height": 720,
+      "nb_read_frames": "400"
+    },
+    "menu-performance.mjpeg": {
+      "sha256": "9fa29bfbd6530b32d805f890ac5320afff0854c7184fb2dfc2d8b94a409b5b43",
+      "bytes": 5339709,
+      "playbackFps": 15,
+      "rawMjpegHasTimestamps": false,
+      "width": 854,
+      "height": 480,
+      "nb_read_frames": "250"
+    }
+  },
+  "nativeBackgroundMotion": [
+    {
+      "target": "1.8.9",
+      "sourceScreenshots": [
+        "depth-video-start.png",
+        "depth-video-0.png"
+      ],
+      "roi": [
+        1209,
+        129,
+        1766,
+        464
+      ],
+      "meanAbsoluteRgbDifference": 3.9585287208481823,
+      "changedPixelFractionAbove3": 0.37588359816715344,
+      "scope": "same native title mode, background ROI away from menu controls and status badge",
+      "passed": true
+    },
+    {
+      "target": "26.3",
+      "sourceScreenshots": [
+        "depth-video-start.png",
+        "depth-video-0.png"
+      ],
+      "roi": [
+        1209,
+        129,
+        1766,
+        464
+      ],
+      "meanAbsoluteRgbDifference": 4.977294854274409,
+      "changedPixelFractionAbove3": 0.4643479192904419,
+      "scope": "same native title mode, background ROI away from menu controls and status badge",
+      "passed": true
+    }
+  ]
+}
