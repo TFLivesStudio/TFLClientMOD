@@ -52,6 +52,12 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 	private final MapEngine e;
 	private final Host host;
 	private final MapCamera cam = new MapCamera();
+    private final VolumeMapRenderer volume=new VolumeMapRenderer();
+    private dev.theredstonee.trsclient.core.map.volume.MapProjection projection;
+    private double tilt,yaw,dragX,dragY,zoomWorldX,zoomWorldZ,zoomScreenX,zoomScreenY;
+    private boolean perspectiveZoom;
+    private final double[] projectedArrow=new double[2],gridLine=new double[4];
+    private final double[] inversePoint=new double[3];
 	private final WorldMapTiles tiles = new WorldMapTiles();
 	private final WorldMapTiles tilesUnder = new WorldMapTiles();
 	private final WorldMapSidebar sidebar = new WorldMapSidebar(this);
@@ -313,6 +319,16 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		double gs = guiScale();
 		cam.setLimits((float) (MIN_SCREEN_PX / gs), (float) (MAX_SCREEN_PX / gs));
 		cam.update(dt);
+        double ease=1-Math.exp(-Math.max(0,dt)*8);
+        tilt+=(e.modules().worldMapTilt.get()-tilt)*ease;
+        double yawDelta=(e.modules().worldMapRotation.get()-yaw)%360;if(yawDelta>180)yawDelta-=360;if(yawDelta< -180)yawDelta+=360;
+        yaw+=yawDelta*ease;
+        if(perspectiveZoom){
+            dev.theredstonee.trsclient.core.map.volume.MapProjection requested=new dev.theredstonee.trsclient.core.map.volume.MapProjection(cam.centerX(),cam.centerZ(),cam.scale(),w,h,tilt,yaw);
+            requested.ground(zoomScreenX,zoomScreenY,inversePoint);
+            cam.follow(cam.centerX()+zoomWorldX-inversePoint[0],cam.centerZ()+zoomWorldZ-inversePoint[1]);
+            if(!cam.moving())perspectiveZoom=false;
+        }
 		if (follow && e.inWorld()) {
 			double f = MapDimensions.factor(e.dimension(), viewDimension());
 			if (!Double.isNaN(f)) cam.follow(e.playerX() * f, e.playerZ() * f);
@@ -350,7 +366,7 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 
 	private void drawMap(Canvas c, MapLayer layer, int w, int h, long now) {
 		if (!c.images()) return;
-		if(e.modules().mapCloudFog.get()) CloudFog.draw(c,0,0,w,h,0,0,1,1);
+
 		float scale = cam.scale();
 		double cx = cam.centerX(), cz = cam.centerZ();
 		double wx0 = cx - w / 2.0 / scale, wx1 = cx + w / 2.0 / scale;
@@ -365,10 +381,33 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		MapLayer under = layer.roof() && !viewingOther() ? e.surfaceLayer() : null;
 		if (under != null) tilesUnder.draw(c, e, under, cx, cz, wx0, wz0, wx1, wz1, screenPx, now);
 		tiles.draw(c, e, layer, cx, cz, wx0, wz0, wx1, wz1, screenPx, now);
-		c.pop();
+        c.pop();
+        dev.theredstonee.trsclient.core.map.volume.CloudQuality quality=e.modules().mapCloudFog.get()?e.modules().worldMapCloudQuality.get():dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF;
+        dev.theredstonee.trsclient.core.map.volume.MapProjection requested=new dev.theredstonee.trsclient.core.map.volume.MapProjection(cx,cz,cam.scale(),w,h,tilt,yaw);
+        dev.theredstonee.trsclient.core.map.volume.CloudQuality renderQuality=quality;
+        if(renderQuality==dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF&&(Math.abs(tilt)>.01||Math.abs(yaw)>.01))renderQuality=dev.theredstonee.trsclient.core.map.volume.CloudQuality.LOW;
+        boolean ready=volume.draw(c,e,layer,requested,renderQuality,e.modules().worldMapCloudMotion.get(),quality==dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF?0:e.modules().worldMapCloudDensity.get()/100,e.modules().worldMapCloudHeight.get(),e.modules().worldMapCloudDistance.get());
+        projection=ready?volume.displayed():null;
+        if(quality!=dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF&&!volume.failure().isEmpty())c.text("3D clouds unavailable: "+c.clip(volume.failure(),w-24),12,BAR_H+4,0xFFFFB080,false);
 	}
 
 	private void grid(Canvas c, int w, int h) {
+        if(projection!=null){
+            c.scissor(0,BAR_H,w,h-BAR_H);
+            try{
+                for(int axis=0;axis<2;axis++){
+                    double lo=axis==0?projection.minX:projection.minZ,hi=axis==0?projection.maxX:projection.maxZ;
+                    int spacing=16*Math.max(1,(int)Math.ceil((hi-lo)/16/256));
+                    for(double at=Math.ceil(lo/spacing)*spacing;at<=hi;at+=spacing){
+                        if(!projection.groundGridSegment(axis==0,at,gridLine))continue;
+                        double dx=gridLine[2]-gridLine[0],dy=gridLine[3]-gridLine[1];
+                        int alpha=((long)at&511)==0?0x50:0x20;
+                        c.push();try{c.translate((float)gridLine[0],(float)gridLine[1]);c.rotate((float)Math.atan2(dy,dx));c.fill(0,0,(int)Math.ceil(Math.hypot(dx,dy)),1,alpha<<24);}finally{c.pop();}
+                    }
+                }
+            }finally{c.noScissor();}
+            return;
+        }
 		float scale = cam.scale();
 		int alphaChunk = scale * guiScale() >= 12f ? 0x28 : 0x18;
 		double cx = cam.centerX(), cz = cam.centerZ();
@@ -390,17 +429,20 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 	}
 
 	private void toScreen(double wx, double wz) {
-		point[0] = cam.screenX(wx) + width / 2.0;
-		point[1] = cam.screenY(wz) + height / 2.0;
+		if(projection!=null){projection.project(wx,0,wz,point);return;}
+        point[0] = cam.screenX(wx) + width / 2.0;
+        point[1] = cam.screenY(wz) + height / 2.0;
 	}
 
-	private double worldX(double sx) {
-		return cam.worldX(sx - width / 2.0);
-	}
+	private double worldX(double sx,double sy) {
+        if(projection!=null){projection.ground(sx,sy,inversePoint);return inversePoint[0];}
+        return cam.worldX(sx-width/2.0);
+    }
 
-	private double worldZ(double sy) {
-		return cam.worldZ(sy - height / 2.0);
-	}
+	private double worldZ(double sx,double sy) {
+        if(projection!=null){projection.ground(sx,sy,inversePoint);return inversePoint[1];}
+        return cam.worldZ(sy-height/2.0);
+    }
 
 	private boolean onScreen(float margin) {
 		return point[0] >= -margin && point[0] <= width + margin && point[1] >= -margin && point[1] <= height + margin;
@@ -479,8 +521,8 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 			double f = MapDimensions.factor(e.dimension(), viewDim);
 			if (!Double.isNaN(f)) {
 				toScreen(px * f, pz * f);
-				float yawRad = (float) Math.toRadians(e.yaw());
-				sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad + (float) Math.PI,
+				float yawRad = screenHeading(px*f,pz*f);
+				sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad,
 						0x90000000 | (Theme.get().dustOn & 0xFFFFFF), s);
 			}
 			return;
@@ -525,10 +567,16 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		}
 		// Eigene Position.
 		toScreen(px, pz);
-		float yawRad = (float) Math.toRadians(e.yaw());
-		sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad + (float) Math.PI,
+		float yawRad = screenHeading(px,pz);
+		sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad,
 				0xFF000000 | (Theme.get().dustOn & 0xFFFFFF), s);
 	}
+
+    private float screenHeading(double x,double z){
+        double angle=Math.toRadians(e.yaw());if(projection==null)return (float)(angle+Math.PI);
+        projection.project(x-Math.sin(angle)*16,0,z+Math.cos(angle)*16,projectedArrow);
+        return (float)Math.atan2(projectedArrow[0]-point[0],point[1]-projectedArrow[1]);
+    }
 
 	// --- Leisten ---
 
@@ -565,6 +613,8 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		bx = button(c, bx, "home", I18n.tr("map.center"), mx, my, this::centerOnPlayer);
 		bx = button(c, bx, "plus", I18n.tr("map.zoomIn"), mx, my, () -> zoomButton(1));
 		bx = textButton(c, bx, "-", I18n.tr("map.zoomOut"), mx, my, t, () -> zoomButton(-1));
+        bx = textButton(c,bx,"3D",I18n.tr("map.perspective"),mx,my,t,this::cyclePerspective);
+        bx = textButton(c,bx,"R",I18n.tr("map.rotate"),mx,my,t,()->{double next=e.modules().worldMapRotation.get()+30;e.modules().worldMapRotation.set(next>180?-180:next);saveView();});
 		if (viewingOther()) {
 			if (foreignDim != null && foreignDim.layers.size() > 1) {
 				bx = button(c, bx, "layers", I18n.tr("map.nextLayer"), mx, my, this::cycleForeignLayer);
@@ -616,7 +666,7 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		String right = fp.active() ? I18n.tr(fp.serverFair() ? "map.fairPlayServer" : "map.fairPlay") + "  ·  " + zoom : zoom;
 		List<String> coords = null;
 		if (layer != null && my > BAR_H && my < h - BAR_H && !overSidebar(mx, my)) {
-			int bxw = (int) Math.floor(worldX(mx)), bzw = (int) Math.floor(worldZ(my));
+			int bxw = (int) Math.floor(worldX(mx,my)), bzw = (int) Math.floor(worldZ(mx,my));
 			coords = coordinateTexts(bxw, e.heightAt(layer, bxw, bzw), bzw);
 		}
 		int leftEnd = 150;
@@ -905,8 +955,12 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		int[] rect = null;
 		if (visibleOnly) {
 			int right = sidebarOpen ? width - WorldMapSidebar.WIDTH : width;
-			rect = new int[]{(int) Math.floor(worldX(0)), (int) Math.floor(worldZ(BAR_H)), (int) Math.ceil(worldX(right)),
-					(int) Math.ceil(worldZ(height - BAR_H))};
+			double ax=Double.POSITIVE_INFINITY,az=ax,bx=Double.NEGATIVE_INFINITY,bz=bx;
+            for(int iy=0;iy<2;iy++)for(int ix=0;ix<2;ix++){
+                double sx=ix*right,sy=iy==0?BAR_H:height-BAR_H;
+                double wx=worldX(sx,sy),wz=worldZ(sx,sy);ax=Math.min(ax,wx);az=Math.min(az,wz);bx=Math.max(bx,wx);bz=Math.max(bz,wz);
+            }
+            rect=new int[]{(int)Math.floor(ax),(int)Math.floor(az),(int)Math.ceil(bx),(int)Math.ceil(bz)};
 		}
 		Path out = MapExport.gameDir(e.disk()).resolve("screenshots");
 		final MapPlatform platform = e.platform();
@@ -1075,8 +1129,8 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		}
 		follow = false;
 		// Mitte der freien Fläche links neben der Liste.
-		double shift = sidebarOpen ? WorldMapSidebar.WIDTH / 2.0 / cam.targetScale() : 0;
-		cam.center(w.x + 0.5 + shift, w.z + 0.5);
+		if(projection!=null){projection.ground((width-(sidebarOpen?WorldMapSidebar.WIDTH:0))*.5,height*.5,inversePoint);cam.center(w.x+.5-(inversePoint[0]-projection.cx),w.z+.5-(inversePoint[1]-projection.cz));}
+        else {double shift = sidebarOpen ? WorldMapSidebar.WIDTH / 2.0 / cam.targetScale() : 0;cam.center(w.x + 0.5 + shift, w.z + 0.5);}
 		pulse = w;
 		pulseUntil = System.currentTimeMillis() + 1600;
 	}
@@ -1269,12 +1323,15 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 			// Beim Zoomen um den Zeiger löst sich die Karte vom Spieler.
 			follow = Math.abs(sx - width / 2f) < 1 && Math.abs(sy - height / 2f) < 1;
 		}
-		cam.zoomTo(next, sx - width / 2.0, sy - height / 2.0);
+		if(projection!=null){
+            projection.ground(sx,sy,inversePoint);zoomWorldX=inversePoint[0];zoomWorldZ=inversePoint[1];zoomScreenX=sx;zoomScreenY=sy;perspectiveZoom=true;
+            cam.zoomTo(next,0,0);
+        } else cam.zoomTo(next, sx - width / 2.0, sy - height / 2.0);
 	}
 
 	@Override
 	public boolean mouseClicked(double mx, double my, int button) {
-		cam.stop();
+		cam.stop();perspectiveZoom=false;
 		if (dialogOpen) {
 			if (!inside(mx, my, dialogRect[0], dialogRect[1], dialogRect[2], dialogRect[3])) {
 				dialogOpen = false;
@@ -1303,13 +1360,13 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 			menuOpen = true;
 			menuX = (int) mx;
 			menuY = (int) my;
-			menuBlockX = (int) Math.floor(worldX(mx));
-			menuBlockZ = (int) Math.floor(worldZ(my));
+			menuBlockX = (int) Math.floor(worldX(mx,my));
+			menuBlockZ = (int) Math.floor(worldZ(mx,my));
 			menuWaypoint = waypointAt(mx, my);
 			return true;
 		}
 		if (button == 0) {
-			cam.beginDrag(mx, my, System.nanoTime());
+			cam.beginDrag(mx, my, System.nanoTime());dragX=mx;dragY=my;
 			return true;
 		}
 		return false;
@@ -1324,13 +1381,16 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 			if (!Double.isNaN(f)) cam.follow(e.playerX() * f, e.playerZ() * f);
 			follow = false;
 		}
-		cam.dragTo(mx, my, System.nanoTime());
+		if(projection!=null){
+            projection.ground(dragX,dragY,inversePoint);double oldX=inversePoint[0],oldZ=inversePoint[1];
+            projection.ground(mx,my,inversePoint);cam.follow(cam.centerX()+oldX-inversePoint[0],cam.centerZ()+oldZ-inversePoint[1]);dragX=mx;dragY=my;
+        }else cam.dragTo(mx, my, System.nanoTime());
 		return true;
 	}
 
 	@Override
 	public boolean mouseReleased(double mx, double my, int button) {
-		if (cam.dragging()) cam.endDrag(System.nanoTime(), e.modules().worldMapInertia.get());
+		if (cam.dragging()) cam.endDrag(System.nanoTime(), projection==null&&e.modules().worldMapInertia.get());
 		return super.mouseReleased(mx, my, button);
 	}
 
@@ -1387,10 +1447,14 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		return false;
 	}
 
-	@Override
-	public boolean charTyped(char ch) {
+	public void cyclePerspective(){double value=e.modules().worldMapTilt.get();e.modules().worldMapTilt.set(value<15?30:value<45?55:0);perspectiveZoom=false;saveView();}
+    private void saveView(){dev.theredstonee.trsclient.core.config.ConfigStore store=dev.theredstonee.trsclient.core.config.ConfigStore.active();if(store!=null)try{store.saveLater(e.modules().registry);}catch(java.io.IOException ignored){}}
+
+    @Override
+    public boolean charTyped(char ch) {
 		if (!dialogOpen) {
 			if (sidebarOpen && sidebar.search.focused()) return sidebar.type(ch);
+            if(ch=='p'||ch=='P'){cyclePerspective();return true;}
 			return false;
 		}
 		TextInput f = focused();
@@ -1407,12 +1471,16 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 
 	@Override
 	protected void onClosed() {
+        volume.close();
 		closeForeign();
 		e.setWorldMapOpen(false);
 		host.closeScreen();
 	}
 
-	// --- Für den Selbsttest ---
+	@Override public void removed(){volume.close();e.setWorldMapOpen(false);closeForeign();}
+    public VolumeMapRenderer volumeRenderer(){return volume;}
+
+    // --- Für den Selbsttest ---
 
 	/** Zoomt sofort (ohne Animation) auf {@code s} Bildschirmpixel je Block (auf die Stufenleiter gerundet). */
 	public void setScaleNow(float screenPxPerBlock) {
@@ -1437,7 +1505,7 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 
 	/** Weltpunkt unter einer Bildschirmposition (Selbsttest). */
 	public double[] testWorldAt(int sx, int sy) {
-		return new double[]{worldX(sx), worldZ(sy)};
+		return new double[]{worldX(sx,sy), worldZ(sx,sy)};
 	}
 
 	/** Öffnet den Dialog für einen neuen Wegpunkt an dieser Position (Selbsttest). */

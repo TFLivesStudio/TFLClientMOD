@@ -27,7 +27,8 @@ public final class TrsModules {
 	/** Einführung, „NEU“-Markierungen, im Client gewähltes Aussehen (siehe core.intro). */
 	public final dev.theredstonee.trsclient.core.intro.ClientState clientState = new dev.theredstonee.trsclient.core.intro.ClientState();
 
-	public final HudModule fps;
+	public final dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule miniPlayer;
+    public final HudModule fps;
 	public final HudModule cps;
 	public final HudModule keystrokes;
 	public final HudModule ping;
@@ -295,7 +296,10 @@ public final class TrsModules {
 	public final BoolSetting minimapAutoZoomSpeed;
 	public final BoolSetting minimapAutoZoomIndoor;
 	// --- Weltkarte ---
-	public final Module worldMap;
+	public final ChoiceSetting<dev.theredstonee.trsclient.core.map.volume.CloudQuality> worldMapCloudQuality;
+    public final NumberSetting worldMapTilt, worldMapRotation, worldMapCloudHeight, worldMapCloudDensity, worldMapCloudDistance;
+    public final BoolSetting worldMapCloudMotion;
+    public final Module worldMap;
 	public final KeySetting worldMapKey;
 	public final BoolSetting worldMapWaypoints;
 	public final BoolSetting worldMapPlayers;
@@ -484,24 +488,28 @@ public final class TrsModules {
 		}
 	}
 
-	public TrsModules() {
+	public TrsModules() { this(false); }
+
+    /** Fresh legacy profiles keep uncertified network paths opt-in; saved values still win. */
+    public TrsModules(boolean safeNetworking) {
+        miniPlayer=registry.register(new dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule());
 		fps = registry.register(new HudModule("fps", "FPS", "Frames per second", true,
 				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.01)));
 		cps = registry.register(new HudModule("cps", "CPS", "Clicks per second (left | right)", true,
-				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.075)));
+				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.10)));
 		keystrokes = registry.register(new HudModule("keystrokes", "Keystrokes", "WASD, mouse buttons and space bar", true,
 				new HudPosition(HudAnchor.BOTTOM_RIGHT, -0.005, -0.08)));
 		ping = registry.register(new HudModule("ping", "Ping", "Round-trip time to the server with jitter and a small history "
 				+ "graph (not in singleplayer). From Minecraft 1.20.2 the TFL Client measures it itself with a ping request "
 				+ "every few seconds (the same request as the F3 network graph); before that it shows the value the server "
 				+ "reports in the player list.", true,
-				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.14)));
+				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.19)));
 		armor = registry.register(new HudModule("armor", "Armor", "Worn armor with durability", false,
 				new HudPosition(HudAnchor.CENTER_LEFT, 0.005, 0.0)));
 		effects = registry.register(new HudModule("effects", "Potion Effects", "Active effects with remaining time", false,
 				new HudPosition(HudAnchor.CENTER_RIGHT, -0.005, 0.0)));
 		coords = registry.register(new HudModule("coords", "Coordinates", "Position, facing direction and biome", false,
-				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.205)));
+				new HudPosition(HudAnchor.TOP_LEFT, 0.005, 0.28)));
 		clock = registry.register(new HudModule("clock", "Clock", "Your computer's real time", false,
 				new HudPosition(HudAnchor.TOP_RIGHT, -0.005, 0.13)));
 		memory = registry.register(new HudModule("memory", "Memory", "Memory (RAM) used by the game", false,
@@ -707,7 +715,7 @@ public final class TrsModules {
 				"Processes incoming packets faster on your PC: a faster decryption of the connection (online-mode servers) "
 						+ "and compression without extra copies, plus TCP_NODELAY where Minecraft leaves it off (1.7.10). "
 						+ "It cannot lower your ping – the time packets travel through the internet stays the same. What the "
-						+ "server receives stays exactly the same.", true));
+						+ "server receives stays exactly the same.", !safeNetworking));
 		lowLatency = registry.register(new Module("lowLatency", "Low Input Latency",
 				"Shortens the time from moving the mouse to seeing it on screen: limits how many frames wait in the "
 						+ "graphics card queue and reads your input right before each frame. Helps most when the graphics "
@@ -719,7 +727,7 @@ public final class TrsModules {
 				"Connects to servers faster: remembers server addresses (also looked up in advance when you select a "
 						+ "server), tries all addresses of a server at once instead of waiting for a dead one (e.g. broken "
 						+ "IPv6) and skips the slow reverse lookup for IP addresses. The server still receives exactly the "
-						+ "address you entered.", true));
+						+ "address you entered.", !safeNetworking));
 		fastConnect.icon("link").category(Category.PERFORMANCE);
 		fastConnectPreResolve = fastConnect.add(new BoolSetting("preResolve", "Look up servers in advance", true));
 		fastConnectSwitch = fastConnect.add(new BoolSetting("fastSwitch", "Faster server switch", true));
@@ -855,7 +863,7 @@ public final class TrsModules {
 		waypointDistance = waypoints.add(new BoolSetting("distance", "Show distance", true));
 		waypointDeath = waypoints.add(new BoolSetting("death", "Set death point automatically", true));
 		waypointRange = waypoints.add(new NumberSetting("range", "Only up to (blocks, 0 = always)", 0, 0, 2000, 100, ""));
-		mapCloudFog = minimap.add(new BoolSetting("cloudFog", "Clouds over unexplored areas (both maps)", true));
+		mapCloudFog = minimap.add(new BoolSetting("cloudFog", "Clouds (minimap uses simplified top view)", true));
         minimapFairPlay = minimap.add(new BoolSetting("fairPlay", "Fair Play (maps show only what you could see)", false));
 		minimapShape = minimap.add(new ChoiceSetting<>("shape", "Shape", MapShape.class, MapShape.ROUND));
 		minimapSize = minimap.add(new NumberSetting("size", "Size (pixels)", 112, 64, 256, 8, ""));
@@ -879,7 +887,14 @@ public final class TrsModules {
 		minimapCoords = minimap.add(new BoolSetting("coords", "Coordinates below the map", true));
 		minimapBiome = minimap.add(new BoolSetting("biome", "Biome below the map", true));
 		minimapTime = minimap.add(new BoolSetting("time", "Time of day below the map", false));
-		worldMapKey = worldMap.add(new KeySetting("key", "Open world map", "key.keyboard.m"));
+		worldMapCloudQuality=worldMap.add(new ChoiceSetting<>("cloudQuality","Volumetric cloud quality",dev.theredstonee.trsclient.core.map.volume.CloudQuality.class,dev.theredstonee.trsclient.core.map.volume.CloudQuality.BALANCED));
+        worldMapTilt=worldMap.add(new NumberSetting("tilt","Perspective tilt",0,0,55,1,"","°"));
+        worldMapRotation=worldMap.add(new NumberSetting("rotation","Map rotation",0,-180,180,1,"","°"));
+        worldMapCloudHeight=worldMap.add(new NumberSetting("cloudHeight","Cloud layer height",48,8,128,4,""));
+        worldMapCloudDensity=worldMap.add(new NumberSetting("cloudDensity","Cloud density",100,20,200,5,"","%"));
+        worldMapCloudDistance=worldMap.add(new NumberSetting("cloudDistance","Cloud draw distance",4096,128,16384,128,""));
+        worldMapCloudMotion=worldMap.add(new BoolSetting("cloudMotion","Subtle atmospheric motion",false));
+        worldMapKey = worldMap.add(new KeySetting("key", "Open world map", "key.keyboard.m"));
 		worldMapWaypoints = worldMap.add(new BoolSetting("showWaypoints", "Show waypoints", true));
 		worldMapPlayers = worldMap.add(new BoolSetting("showPlayers", "Show players", true));
 		worldMapHostile = worldMap.add(new BoolSetting("showHostile", "Show hostile mobs", false));

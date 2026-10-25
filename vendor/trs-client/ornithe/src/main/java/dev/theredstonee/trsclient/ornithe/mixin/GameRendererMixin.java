@@ -8,6 +8,9 @@ import org.spongepowered.asm.mixin.injection.callback.*;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
+ @Inject(method="render(FJ)V",at=@At("TAIL"))
+ private void tfl$hiddenMini(float partial,long limit,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null)c.drawHiddenMini(partial);}
+
   @Inject(method = "renderWorld", at = @At("TAIL"))
   private void tfl$grade(float partial, long limit, CallbackInfo ci) {
     var c = OrnitheClient.get();

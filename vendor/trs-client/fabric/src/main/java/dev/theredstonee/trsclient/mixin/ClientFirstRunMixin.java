@@ -10,12 +10,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Options.class)
 public abstract class ClientFirstRunMixin {
     @Shadow public boolean onboardAccessibility;
-    @Shadow public TutorialSteps tutorialStep;
     @Inject(method={"<init>","load"},at=@At("RETURN"))
     private void tfl$firstRun(CallbackInfo ci) {
-        // Only the redundant introduction and basic tutorial; narrator and all actual accessibility settings stay untouched.
+        // Dismiss only the redundant introduction; preserve tutorial progress and accessibility preferences.
         onboardAccessibility=false;
-        tutorialStep=TutorialSteps.NONE;
     }
 }
 *///?} else {

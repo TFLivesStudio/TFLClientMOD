@@ -24,7 +24,7 @@ public final class SmokeHarness implements Runnable {
   private int tick, stage, wait, inputFrame;
   private float normalFov;
   private long mapUploads;
-  private boolean fogZoomed;
+  private boolean fogZoomed;private int mapProbeStage;private long miniBefore;private Object playerBefore;private int dimensionBefore;
   private long screenshotDeadline;
   private java.nio.file.Path nativeScreenshot;
   private long colorPasses, panoramaFaces;
@@ -37,7 +37,7 @@ public final class SmokeHarness implements Runnable {
 
   private float fov() throws Exception {
     var method =
-        c.mc.gameRenderer.getClass().getDeclaredMethod("getFov", float.class, boolean.class);
+        java.util.Arrays.stream(c.mc.gameRenderer.getClass().getDeclaredMethods()).filter(m->m.getReturnType()==float.class&&java.util.Arrays.equals(m.getParameterTypes(),new Class<?>[]{float.class,boolean.class})).findFirst().orElseThrow();
     method.setAccessible(true);
     return (float) method.invoke(c.mc.gameRenderer, 0f, true);
   }
@@ -60,6 +60,27 @@ public final class SmokeHarness implements Runnable {
     report.add("checks", checks);
   }
 
+
+  private int videoProbeStage;
+  private long videoProbeAt;
+  private final com.google.gson.JsonArray videoEvidence=new com.google.gson.JsonArray();
+  private boolean videoProbe(){
+    var bg=dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared();
+    var m=bg.metrics();long now=System.nanoTime();
+    if(videoProbeAt==0){if(m.framesPresented<2)return false;videoProbeAt=now;shot("depth-video-start");return false;}
+    double elapsed=(now-videoProbeAt)/1e9;
+    double duration=videoProbeStage==0?20:videoProbeStage==1||videoProbeStage==2||videoProbeStage==5?3:1;
+    if(elapsed<duration||videoProbeStage==0&&m.loops<1&&elapsed<45)return false;
+    var item=new com.google.gson.JsonObject();item.addProperty("scenario",videoProbeStage);item.add("metrics",new com.google.gson.Gson().toJsonTree(m));videoEvidence.add(item);
+    shot("depth-video-"+videoProbeStage);
+    if(videoProbeStage==0){if(m.loops<1||m.framesPresented<20)throw new AssertionError("Native video loop/presentation did not advance");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.HIGH);}
+    else if(videoProbeStage==1){if(m.framesPresented<3)throw new AssertionError("Quality video did not advance");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.PERFORMANCE);}
+    else if(videoProbeStage==2){if(m.framesPresented<3)throw new AssertionError("Performance video did not advance");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC);}
+    else if(videoProbeStage==3){if(bg.videoActive())throw new AssertionError("Static preference started a decoder");c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.OFF);}
+    else if(videoProbeStage==4){if(bg.videoActive())throw new AssertionError("Off preference started a decoder");bg.close();c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.BALANCED);}
+    else {if(m.framesPresented<3)throw new AssertionError("Video did not restart");return true;}
+    videoProbeStage++;videoProbeAt=now;return false;
+  }
   private void check(String name, boolean ok) {
     JsonObject r = new JsonObject();
     r.addProperty("name", name);
@@ -76,12 +97,13 @@ public final class SmokeHarness implements Runnable {
   public void run() {
     try {
       tick++;
-      if (System.nanoTime() - started > 180_000_000_000L)
+      if (System.nanoTime() - started > 300_000_000_000L)
         throw new AssertionError("client timeout");
       if (--wait > 0) return;
       switch (stage) {
         case 0 -> {
           c.mc.options.pauseOnUnfocus = false;
+          c.modules.worldMapTilt.set(0);c.modules.worldMapRotation.set(0);if(!restart)c.modules.miniPlayer.reset();
           if(Boolean.getBoolean("tflcore.ui.smoke.large")) {
             c.mc.options.guiScale=4;
             c.mc.openScreen(c.title());
@@ -94,6 +116,7 @@ public final class SmokeHarness implements Runnable {
                 c.modules.coords.isEnabled()
                     && c.modules.crosshair.isEnabled()
                     && c.modules.crosshairSize.get() == 7);
+            check("Mini Player preferences survive process restart",c.modules.miniPlayer.opacity.getInt()==65&&c.modules.miniPlayer.angle.get()==dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule.Angle.SIDE&&Math.abs(c.modules.miniPlayer.position().offsetX-.123)<1e-8);
             shot("restart-title");
             finish(null);
             return;
@@ -103,6 +126,7 @@ public final class SmokeHarness implements Runnable {
           stage++;
         }
         case 1 -> {
+          if(!videoProbe())return;report.add("videoEvidence",videoEvidence);
           check("bundled blue video presents decoded frames",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented());
           shot("title");
           KeyBinding.click(c.menuKey.getKeyCode());
@@ -129,7 +153,7 @@ public final class SmokeHarness implements Runnable {
           shot("editor");
           c.mc.openScreen(null);
           c.mc.startGame(
-              "tfl-ornithe-smoke",
+              "tfl-depth-polish-smoke",
               "TFL Ornithe Smoke",
               new WorldSettings(
                       189L, WorldSettings.GameMode.CREATIVE, false, false, WorldGeneratorType.FLAT)
@@ -375,6 +399,20 @@ public final class SmokeHarness implements Runnable {
               "world map uploads received region textures",
               c.map.textures().regionTextureCount() > 0
                   && c.map.textures().uploads() >= mapUploads);
+          report.addProperty("miniPlayerFailure",c.miniPlayer.state.failure);report.addProperty("miniPlayerUpdates",c.miniPlayer.state.updates);report.addProperty("miniComposites",c.miniPlayer.composites);check("Mini Player native framebuffer",c.miniPlayer.state.failure.isEmpty());check("Mini Player drew native model",c.miniPlayer.composites>0);check("Mini Player framebuffer has visible model pixels",c.miniPlayer.visiblePixels()>100);
+          var mapUi=(dev.theredstonee.trsclient.core.map.WorldMapUi)((CoreScreen)c.mc.screen).ui;
+          var volume=mapUi.volumeRenderer();
+          check("bounded native 3D volume available",volume.failure().isEmpty());
+          if(volume.displayed()==null){wait=5;return;}
+          if(mapProbeStage<3){
+            double expected=mapProbeStage==0?0:mapProbeStage==1?30:55;
+            if(Math.abs(volume.displayed().tilt-expected)>.1){wait=5;return;}
+            shot("depth-map-"+mapProbeStage);var camera=volume.displayed();
+            double[] at=mapUi.testWorldAt(camera.width/2,camera.height/2);
+            check("perspective inverse center "+mapProbeStage,Math.abs(at[0]-camera.cx)<.01&&Math.abs(at[1]-camera.cz)<.01);
+            report.addProperty("volumeBackend",volume.backend());report.addProperty("volumeFrames",volume.renderedFrames());report.addProperty("volumeAverageMs",volume.renderNanos()/1e6/Math.max(1,volume.renderedFrames()));
+            mapProbeStage++;if(mapProbeStage<3){c.modules.worldMapTilt.set(mapProbeStage==1?30:55);wait=30;return;}
+          }
           shot("world-map");
           c.mc.openScreen(null);
           String name =
@@ -416,7 +454,73 @@ public final class SmokeHarness implements Runnable {
           check("shared transparent pause navigation",c.mc.screen instanceof CoreScreen cs && cs.ui instanceof dev.theredstonee.trsclient.core.ui.menus.ActionListUi);
           shot("pause");
           c.mc.openScreen(null);
-          finish(null);
+          for(var module:c.modules.registry.all())if(module instanceof dev.theredstonee.trsclient.core.module.HudModule)module.setEnabled(module==c.modules.miniPlayer);
+          c.modules.miniPlayer.setEnabled(true);c.modules.miniPlayer.position().offsetX=.02;c.modules.miniPlayer.position().offsetY=.02;
+          c.modules.miniPlayer.angle.set(dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule.Angle.FRONT);c.mc.player.sendChat("/clear @p");
+          stage++;wait=15;
+        }
+        case 19 -> {
+          MiniGlProbe.verify(c);check("Mini Player restores native GL and world camera state",true);
+          check("production Paper Doll contains visible pixels",c.miniPlayer.visiblePixels()>100);shot("depth-mini-front");
+          c.mc.player.sendChat("/replaceitem entity @p slot.armor.head minecraft:diamond_helmet");
+          c.mc.player.sendChat("/replaceitem entity @p slot.armor.chest minecraft:diamond_chestplate");
+          c.mc.player.sendChat("/replaceitem entity @p slot.hotbar.0 minecraft:diamond_sword");stage++;wait=20;
+        }
+        case 20 -> {
+          check("native Paper Doll equipment received",c.mc.player.inventory.armor[3]!=null&&c.mc.player.inventory.getSelectedItem()!=null);shot("depth-mini-equipment");
+          c.modules.miniPlayer.armor.set(false);c.modules.miniPlayer.heldItems.set(false);stage++;wait=10;
+        }
+        case 21 -> {
+          shot("depth-mini-hidden-equipment");c.modules.miniPlayer.armor.set(true);c.modules.miniPlayer.heldItems.set(true);
+          playerX=c.mc.player.x;playerZ=c.mc.player.z;KeyBinding.set(c.mc.options.forwardKey.getKeyCode(),true);stage++;wait=15;
+        }
+        case 22 -> {
+          check("Paper Doll uses moving real player",Math.abs(c.mc.player.x-playerX)+Math.abs(c.mc.player.z-playerZ)>.1);shot("depth-mini-walk");
+          KeyBinding.set(c.mc.options.forwardKey.getKeyCode(),false);KeyBinding.set(c.mc.options.jumpKey.getKeyCode(),true);stage++;wait=3;
+        }
+        case 23 -> {
+          shot("depth-mini-jump");KeyBinding.set(c.mc.options.jumpKey.getKeyCode(),false);KeyBinding.set(c.mc.options.sneakKey.getKeyCode(),true);stage++;wait=10;
+        }
+        case 24 -> {
+          check("Paper Doll real sneak",c.mc.player.isSneaking());shot("depth-mini-sneak");KeyBinding.set(c.mc.options.sneakKey.getKeyCode(),false);c.mc.player.swingArm();stage++;wait=2;
+        }
+        case 25 -> {
+          shot("depth-mini-attack");c.modules.emoteCamera.set(dev.theredstonee.trsclient.core.module.TrsModules.EmoteCamera.OFF);
+          c.emotes.controller.play(c.emotes.controller.all().get(0).id(),System.currentTimeMillis());stage++;wait=10;
+        }
+        case 26 -> {
+          shot("depth-mini-emote");c.emotes.controller.onAttack(System.currentTimeMillis());
+          c.mc.reloadResources();stage++;wait=20;
+        }
+        case 27 -> {
+          check("Paper Doll survives resource reload",c.miniPlayer.state.failure.isEmpty()&&c.miniPlayer.visiblePixels()>100);shot("depth-mini-resource-reload");
+          c.mc.options.hideGui=true;miniBefore=c.miniPlayer.state.updates;stage++;wait=10;
+        }
+        case 28 -> {
+          check("F1 skips native Paper Doll",c.miniPlayer.state.updates==miniBefore);c.modules.miniPlayer.hideF1.set(false);stage++;wait=10;
+        }
+        case 29 -> {
+          check("F1 opt-in draws native Paper Doll",c.miniPlayer.state.updates>miniBefore);shot("depth-mini-F1-opt-in");c.mc.options.hideGui=false;c.modules.miniPlayer.hideF1.set(true);
+          playerBefore=c.mc.player;var uuid=c.mc.player.getUuid();c.mc.getServer().executeTask(()->c.mc.getServer().getPlayerManager().get(uuid).takeDamage(net.minecraft.entity.damage.DamageSource.OUT_OF_WORLD,Float.MAX_VALUE));stage++;wait=15;
+        }
+        case 30 -> {
+          if(c.mc.player.getHealth()>0){wait=5;return;}shot("depth-mini-death");c.mc.player.respawn();stage++;wait=30;
+        }
+        case 31 -> {
+          if(c.mc.player==playerBefore||c.mc.player.getHealth()<=0||c.mc.screen!=null){wait=5;return;}
+          check("native respawn replaced local player",c.mc.player!=playerBefore);shot("depth-mini-respawn");
+          dimensionBefore=c.mc.world.dimension.getId();c.mc.options.viewDistance=3;
+          int px=(int)Math.floor(c.mc.player.x),py=(int)Math.ceil(c.mc.player.y),pz=(int)Math.floor(c.mc.player.z);
+          c.mc.player.sendChat("/fill "+(px-1)+" "+py+" "+pz+" "+(px+2)+" "+(py+4)+" "+pz+" minecraft:obsidian");
+          c.mc.player.sendChat("/fill "+px+" "+(py+1)+" "+pz+" "+(px+1)+" "+(py+3)+" "+pz+" minecraft:portal");
+          c.mc.player.sendChat("/tp @p "+(px+.5)+" "+(py+1)+" "+(pz+.5));stage++;wait=30;
+        }
+        case 32 -> {
+          if(c.mc.world.dimension.getId()!=-1||c.mc.screen!=null){wait=5;return;}check("native Nether dimension received",true);shot("depth-mini-nether");
+          var uuid=c.mc.player.getUuid();c.mc.getServer().executeTask(()->c.mc.getServer().getPlayerManager().changeDimension(c.mc.getServer().getPlayerManager().get(uuid),dimensionBefore));stage++;wait=30;
+        }
+        case 33 -> {
+          if(c.mc.world.dimension.getId()!=dimensionBefore||c.mc.screen!=null){wait=5;return;}check("native return dimension received",true);shot("depth-mini-return");finish(null);
         }
       }
     } catch (Throwable e) {
@@ -556,7 +660,11 @@ public final class SmokeHarness implements Runnable {
   private void checkChat() throws Exception {
     var gui = c.mc.gui.getChat();
     gui.clear();
-    var field = gui.getClass().getDeclaredField("messages");
+    var field = java.util.Arrays.stream(gui.getClass().getDeclaredFields()).filter(f->java.util.List.class.isAssignableFrom(f.getType())&&f.getName().equals("messages")).findFirst().orElse(null);
+    if(field==null){for(var f:gui.getClass().getDeclaredFields()){
+      var type=f.getGenericType();if(type instanceof java.lang.reflect.ParameterizedType parameterized&&parameterized.getRawType()==java.util.List.class&&parameterized.getActualTypeArguments()[0]==net.minecraft.client.gui.ChatMessage.class){field=f;break;}
+    }}
+    if(field==null)throw new IllegalStateException("Native chat messages field not found");
     field.setAccessible(true);
     @SuppressWarnings("unchecked")
     var messages = (java.util.List<net.minecraft.client.gui.ChatMessage>) field.get(gui);
@@ -643,7 +751,8 @@ public final class SmokeHarness implements Runnable {
         value.add("hooks", hooks);
         capabilities.add(entry.getKey(), value);
       }
-      report.add("capabilities", capabilities);
+      if(error==null&&!restart){c.modules.coords.setEnabled(true);c.modules.crosshair.setEnabled(true);c.modules.crosshairSize.set(7);c.modules.miniPlayer.opacity.set(65);c.modules.miniPlayer.angle.set(dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule.Angle.SIDE);c.modules.miniPlayer.position().offsetX=.123;c.save();c.config.flush();}
+      report.add("capabilities", capabilities);report.add("videoEvidence",videoEvidence);
       report.addProperty("status", error == null ? "passed" : "failed");
       if (error != null) {
         report.addProperty("error", error.toString());

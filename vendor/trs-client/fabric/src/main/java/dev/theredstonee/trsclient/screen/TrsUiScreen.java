@@ -85,6 +85,7 @@ public class TrsUiScreen extends TrsScreen {
 
 	@Override
 	public void removed() {
+        ui.removed();
 		save();
 	}
 

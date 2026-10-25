@@ -26,6 +26,6 @@ public abstract class GameGuiMixin {
   @Inject(method = "render", at = @At("TAIL"))
   private void tfl$hud(float delta, CallbackInfo ci) {
     OrnitheClient c = OrnitheClient.get();
-    if (c != null) c.drawHud();
+    if (c != null) c.drawHud(delta);
   }
 }

@@ -1,7 +1,7 @@
 name: Shared UI parity
 on:
   push:
-    branches: [feat/glass-ui-parity]
+    branches: [feat/glass-ui-parity, feat/depth-polish]
   pull_request:
     paths: ['vendor/trs-client/common/**', 'vendor/trs-client/fabric/**', 'vendor/trs-client/ornithe/**', '.github/workflows/ui-parity.yml']
   workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
         if: matrix.target == '1.8.9'
         run: |
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe build :common:test --no-daemon --max-workers=2
-          python3 tools/ornithe/verify_jar.py vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-0.4.0-ui.1.jar
+          python3 tools/ornithe/verify_jar.py vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties).jar
       - name: Build and test 26.3
         if: matrix.target == '26.3'
         run: vendor/trs-client/gradlew -p vendor/trs-client :common:test :fabric:26.3:build -PtrsVersions=26.3 --no-daemon --max-workers=2
@@ -75,9 +75,9 @@ jobs:
         with:
           name: glass-ui-${{ matrix.target }}
           path: |
-            vendor/trs-client/ornithe/build/libs/*ui.1*.jar
+            vendor/trs-client/ornithe/build/libs/*.jar
             vendor/trs-client/ornithe/build/smoke/
             vendor/trs-client/common/build/test-results/
-            vendor/trs-client/fabric/versions/26.3/build/libs/*ui.1*.jar
+            vendor/trs-client/fabric/versions/26.3/build/libs/*.jar
             vendor/trs-client/run/screen-smoke.json
             vendor/trs-client/run/screenshots/

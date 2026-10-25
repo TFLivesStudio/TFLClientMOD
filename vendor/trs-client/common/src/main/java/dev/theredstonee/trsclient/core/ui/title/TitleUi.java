@@ -20,6 +20,7 @@ public final class TitleUi extends UiScreen {
     private int focus=-1,pending=-1,frames;
     private float delay,frameMs,uiMicros;
     private boolean sceneEnabled=true;
+    private long statusAt;private String videoStatus="";
     public TitleUi(final TitleHost host) {
         this.host=host; I18n.refresh();
         entries.add(new Entry("singleplayer",()->host.singleplayer()));
@@ -33,6 +34,7 @@ public final class TitleUi extends UiScreen {
         long start=System.nanoTime(); Theme t=Theme.get(); Canvas c=FadeCanvas.of(raw,alpha());
         TrsModules m=IntroGate.modules();
         if(m!=null)MenuBackground.shared().setMode(host.animated()?m.menuBackground.get():MenuBackground.Mode.STATIC);
+        MenuBackground.shared().animationAllowed(host.animated());
         MenuBackground.shared().draw(FadeCanvas.unwrap(raw),width,height,sceneEnabled);
         int left=Math.max(12,Math.min(48,width/14));
         int rail=Math.min(180,Math.max(80,width/2-left));
@@ -52,16 +54,21 @@ public final class TitleUi extends UiScreen {
             Entry e=entries.get(i);e.x=left;e.y=top+i*row;e.w=rail;e.h=Math.max(10,row-3);
             boolean selected=focus==i||inside(mx,my,e);
             // One play action; remaining destinations are text navigation, never a stack of large cards.
-            if(i==0) SelectionStyle.button(c,e.x,e.y,e.w,e.h,true,selected);
-            else if(selected) {
+            if(selected) {
                 SelectionStyle.rounded(c,e.x,e.y,e.w,e.h,4,0x64344B69);
                 c.fill(e.x,e.y+3,e.x+2,e.y+e.h-3,t.accent);
             }
             String label="trsMenu".equals(e.id)?I18n.trOr("title.clientSettings","Client settings"):e.label;
-            c.text(c.clip(label,e.w-18),e.x+9,e.y+(e.h-c.lineHeight())/2,selected||i==0?t.text:t.textDim,false);
+            c.text(c.clip(label,e.w-18),e.x+9,e.y+(e.h-c.lineHeight())/2,selected?t.text:t.textDim,false);
             final int index=i;hits.add(e.x,e.y,e.w,e.h,()->activate(index));
         }
         if(!compact)c.text(c.clip(host.versionLine(),Math.max(0,width-24)),12,height-13,t.textDim,false);
+        if(m!=null&&!compact){
+            long now=System.currentTimeMillis();if(now-statusAt>500){videoStatus=MenuBackground.shared().status();statusAt=now;}
+            String label=c.clip(videoStatus,Math.max(70,width/2-16));int bw=c.textWidth(label)+12,bx=width-bw-8,by=height-29;
+            SelectionStyle.panel(c,bx,by,bw,17,0xA0101828,0x504D77A8);c.text(label,bx+6,by+4,t.textDim,false);
+            hits.add(bx,by,bw,17,()->{host.playClick();host.trsMenu();});
+        }
         if(pending>=0) {delay-=dt;if(delay<=0){int index=pending;pending=-1;entries.get(index).action.run();}}
         frames++;frameMs=dt*1000;float us=(System.nanoTime()-start)/1000f;uiMicros=frames==1?us:uiMicros+(us-uiMicros)*0.05f;
     }

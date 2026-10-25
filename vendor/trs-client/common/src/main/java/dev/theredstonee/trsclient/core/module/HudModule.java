@@ -22,13 +22,17 @@ public class HudModule extends Module {
 	public static final int BACKGROUND_RGB = 0x17171E;
 
 	public HudModule(String id, String name, String description, boolean defaultEnabled, HudPosition defaultPosition) {
-		super(id, name, description, defaultEnabled);
+		this(id,name,description,defaultEnabled,defaultPosition,true);
+    }
+
+    public HudModule(String id,String name,String description,boolean defaultEnabled,HudPosition defaultPosition,boolean defaultBackground){
+        super(id, name, description, defaultEnabled);
 		this.defaultPosition = defaultPosition.copy();
 		this.position = defaultPosition.copy();
 		// Gemeinsame Einstellungen aller HUD-Module teilen sich die Übersetzung "setting.hud.<key>".
 		this.textColor = add(hud(new ColorSetting("textColor", "Text colour", 0xFFFFFF)));
 		this.textShadow = add(hud(new BoolSetting("shadow", "Text shadow", true)));
-		this.background = add(hud(new BoolSetting("background", "Background", true)));
+		this.background = add(hud(new BoolSetting("background", "Background", defaultBackground)));
 		this.backgroundOpacity = add(hud(new NumberSetting("backgroundOpacity", "Opacity", 56, 0, 100, 1, "", "%")));
 		this.scale = add(hud(new NumberSetting("scale", "Size", 1.0, 0.5, 2.0, 0.05, "×")));
 	}

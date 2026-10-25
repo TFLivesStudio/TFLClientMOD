@@ -11,10 +11,10 @@ import java.util.Set;
 public final class HudPresets {
     public enum Preset {
         MINIMAL("Minimal", "fps"),
-        PVP("PvP", "fps", "cps", "ping", "keystrokes", "armor", "effects", "combo", "reach"),
-        SURVIVAL("Survival", "fps", "coords", "armor", "effects", "clock"),
+        PVP("PvP", "miniPlayer", "fps", "cps", "ping", "keystrokes", "armor", "effects", "combo", "reach"),
+        SURVIVAL("Survival", "miniPlayer", "fps", "coords", "armor", "effects", "clock"),
         BUILDER("Builder", "fps", "coords", "redstoneSignal", "redstoneClock"),
-        EXPLORATION("Exploration", "coords", "minimap", "speed", "clock"),
+        EXPLORATION("Exploration", "miniPlayer", "coords", "minimap", "speed", "clock"),
         CUSTOM("Custom");
 
         public final String label;

@@ -24,16 +24,25 @@ public final class HudManager {
 	private final CrosshairRenderer crosshair;
 	private final WaypointOverlay waypointOverlay;
 	private final MinimapHud minimap;
+	//? if >=26.3 {
+	/*private final MiniPlayerHud miniPlayer;
+	*///?}
 	private final RedstoneHuds.Overlay redstoneOverlay;
 	private List<HudItem> editorItems;
 
 	public HudManager(TrsModules modules) {
+		//? if >=26.3 {
+		/*this.miniPlayer=new MiniPlayerHud(modules.miniPlayer);
+		*///?}
 		this.crosshair = new CrosshairRenderer(modules);
 		this.waypointOverlay = new WaypointOverlay(modules);
 		this.minimap = new MinimapHud(modules.minimap, modules);
 		dev.theredstonee.trsclient.core.redstone.RedstoneTools redstone = dev.theredstonee.trsclient.TrsClient.get().redstone();
 		this.redstoneOverlay = new RedstoneHuds.Overlay(modules, redstone);
 		this.elements = dev.theredstonee.trsclient.qol.QolHuds.join(Arrays.asList(
+				//? if >=26.3 {
+				/*miniPlayer,
+				*///?}
 				new FpsHud(modules.fps),
 				new CpsHud(modules.cps),
 				new KeystrokesHud(modules.keystrokes, modules),
@@ -69,6 +78,9 @@ public final class HudManager {
 	/** Weltwechsel: Kartenspeicher leeren. */
 	public void onWorldChange() {
 		minimap.onWorldChange();
+		//? if >=26.3 {
+		/*miniPlayer.invalidate();
+		*///?}
 	}
 
 	public List<HudElement> elements() {
@@ -141,8 +153,18 @@ public final class HudManager {
 		return s instanceof TrsUiScreen && !((TrsUiScreen) s).ui().overlay();
 	}
 
+    //? if >=26.3 {
+    /*public void renderHiddenMini(Gfx g){if(miniPlayer!=null&&!miniPlayer.module().isEnabled())return;draw(g,mc.font,miniPlayer,g.width(),g.height(),false);}
+    *///?}
+
 	private void renderElements(Gfx g) {
-		if (Mc.hudHidden() || hiddenByScreen()) return;
+		if(Mc.hudHidden())return;
+		if (hiddenByScreen()) {
+			//? if >=26.3 {
+			/*draw(g,mc.font,miniPlayer,g.width(),g.height(),false);
+			*///?}
+			return;
+		}
 		// Bis 1.21.5 wird das Vanilla-Fadenkreuz per Mixin ausgeblendet und das eigene hier gezeichnet;
 		// ab 1.21.6 ersetzt TRS die Fabric-HUD-Ebene des Fadenkreuzes direkt (siehe TrsClient).
 		//? if <1.21.6
@@ -183,6 +205,7 @@ public final class HudManager {
 	public void draw(Gfx g, Font font, HudElement e, int sw, int sh, boolean preview) {
 		int[] b = bounds(font, e, sw, sh, preview);
 		float scale = e.module().scale.getFloat();
+		if(b[0]+b[2]<=0||b[1]+b[3]<=0||b[0]>=sw||b[1]>=sh)return;
 		if (!preview) {
 			e.originX = b[0];
 			e.originY = b[1];

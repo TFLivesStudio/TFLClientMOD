@@ -1,0 +1,241 @@
+{
+  "scope": "native option navigation and rendered frames; no exhaustive interaction certification",
+  "elapsedMs": 61304,
+  "results": [
+    {
+      "destination": "bundledVideoPresented",
+      "passed": true,
+      "detail": "decoded bundled blue video reached the native renderer"
+    },
+    {
+      "destination": "options.video",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.VideoSettingsScreen"
+    },
+    {
+      "destination": "options.sounds",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.SoundOptionsScreen"
+    },
+    {
+      "destination": "options.controls",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.controls.ControlsScreen"
+    },
+    {
+      "destination": "options.controls/controls.keybinds",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.controls.KeyBindsScreen"
+    },
+    {
+      "destination": "offlineBindingsHidden",
+      "passed": true,
+      "detail": "visible key-list rows only; registered mappings preserved"
+    },
+    {
+      "destination": "offlineBindingsPreserved",
+      "passed": true,
+      "detail": "all five mappings remain registered for preference persistence"
+    },
+    {
+      "destination": "options.controls/options.mouse_settings",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.MouseSettingsScreen"
+    },
+    {
+      "destination": "options.language",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.LanguageSelectScreen"
+    },
+    {
+      "destination": "options.resourcepack",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.packs.PackSelectionScreen"
+    },
+    {
+      "destination": "options.accessibility",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.AccessibilityOptionsScreen"
+    },
+    {
+      "destination": "options.chat",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.ChatOptionsScreen"
+    },
+    {
+      "destination": "options.skinCustomisation",
+      "passed": true,
+      "detail": "net.minecraft.client.gui.screens.options.SkinCustomizationScreen"
+    }
+  ],
+  "videoEvidence": [
+    {
+      "scenario": 0,
+      "metrics": {
+        "mode": "BALANCED",
+        "decoderState": "running",
+        "fallbackReason": "",
+        "failure": "",
+        "sessions": 2,
+        "framesDecoded": 517,
+        "framesUploaded": 515,
+        "framesPresented": 515,
+        "loops": 1,
+        "decodedFingerprint": 4357933101691170536,
+        "uploadedFingerprint": -5992721840848193977,
+        "decodeNanos": 14470124624,
+        "uploadNanos": 704360410,
+        "decoderCpuNanos": 14339066666,
+        "uploadBytes": 1898496000,
+        "discardedFrames": 1,
+        "elapsedNanos": 21544481268,
+        "pixelBufferAllocations": 2,
+        "imageBufferAllocations": 1,
+        "pendingFrames": 1,
+        "ownedTextures": 1,
+        "decoderFps": 23.99686460624604,
+        "presentationFps": 23.903827507809215
+      }
+    },
+    {
+      "scenario": 1,
+      "metrics": {
+        "mode": "HIGH",
+        "decoderState": "running",
+        "fallbackReason": "",
+        "failure": "",
+        "sessions": 3,
+        "framesDecoded": 49,
+        "framesUploaded": 49,
+        "framesPresented": 49,
+        "loops": 0,
+        "decodedFingerprint": -3447839250926016781,
+        "uploadedFingerprint": -3447839250926016781,
+        "decodeNanos": 2933061273,
+        "uploadNanos": 149355094,
+        "decoderCpuNanos": 2900926075,
+        "uploadBytes": 406425600,
+        "discardedFrames": 0,
+        "elapsedNanos": 2994315824,
+        "pixelBufferAllocations": 2,
+        "imageBufferAllocations": 1,
+        "pendingFrames": 0,
+        "ownedTextures": 1,
+        "decoderFps": 16.36433926149535,
+        "presentationFps": 16.363478908716974
+      }
+    },
+    {
+      "scenario": 2,
+      "metrics": {
+        "mode": "PERFORMANCE",
+        "decoderState": "running",
+        "fallbackReason": "",
+        "failure": "",
+        "sessions": 4,
+        "framesDecoded": 45,
+        "framesUploaded": 45,
+        "framesPresented": 45,
+        "loops": 0,
+        "decodedFingerprint": -7078642016243199792,
+        "uploadedFingerprint": -7078642016243199792,
+        "decodeNanos": 647700633,
+        "uploadNanos": 30119334,
+        "decoderCpuNanos": 573695408,
+        "uploadBytes": 73785600,
+        "discardedFrames": 0,
+        "elapsedNanos": 3004251143,
+        "pixelBufferAllocations": 1,
+        "imageBufferAllocations": 1,
+        "pendingFrames": 0,
+        "ownedTextures": 1,
+        "decoderFps": 14.978774362739752,
+        "presentationFps": 14.975995296626936
+      }
+    },
+    {
+      "scenario": 3,
+      "metrics": {
+        "mode": "STATIC",
+        "decoderState": "stopped",
+        "fallbackReason": "Static mode selected",
+        "failure": "",
+        "sessions": 4,
+        "framesDecoded": 45,
+        "framesUploaded": 45,
+        "framesPresented": 45,
+        "loops": 0,
+        "decodedFingerprint": -7078642016243199792,
+        "uploadedFingerprint": -7078642016243199792,
+        "decodeNanos": 659119109,
+        "uploadNanos": 30119334,
+        "decoderCpuNanos": 585504009,
+        "uploadBytes": 73785600,
+        "discardedFrames": 0,
+        "elapsedNanos": 4004786901,
+        "pixelBufferAllocations": 0,
+        "imageBufferAllocations": 0,
+        "pendingFrames": 0,
+        "ownedTextures": 0,
+        "decoderFps": 11.236552933381661,
+        "presentationFps": 11.234988948118902
+      }
+    },
+    {
+      "scenario": 4,
+      "metrics": {
+        "mode": "OFF",
+        "decoderState": "stopped",
+        "fallbackReason": "Off mode selected",
+        "failure": "",
+        "sessions": 4,
+        "framesDecoded": 45,
+        "framesUploaded": 45,
+        "framesPresented": 45,
+        "loops": 0,
+        "decodedFingerprint": -7078642016243199792,
+        "uploadedFingerprint": -7078642016243199792,
+        "decodeNanos": 659119109,
+        "uploadNanos": 30119334,
+        "decoderCpuNanos": 585504009,
+        "uploadBytes": 73785600,
+        "discardedFrames": 0,
+        "elapsedNanos": 5004982870,
+        "pixelBufferAllocations": 0,
+        "imageBufferAllocations": 0,
+        "pendingFrames": 0,
+        "ownedTextures": 0,
+        "decoderFps": 8.99103976353869,
+        "presentationFps": 8.990038167474744
+      }
+    },
+    {
+      "scenario": 5,
+      "metrics": {
+        "mode": "BALANCED",
+        "decoderState": "running",
+        "fallbackReason": "",
+        "failure": "",
+        "sessions": 5,
+        "framesDecoded": 73,
+        "framesUploaded": 72,
+        "framesPresented": 72,
+        "loops": 0,
+        "decodedFingerprint": -8066520643208069946,
+        "uploadedFingerprint": 8021408479555851848,
+        "decodeNanos": 2066127266,
+        "uploadNanos": 92957134,
+        "decoderCpuNanos": 2039762788,
+        "uploadBytes": 265420800,
+        "discardedFrames": 0,
+        "elapsedNanos": 3037476838,
+        "pixelBufferAllocations": 2,
+        "imageBufferAllocations": 1,
+        "pendingFrames": 1,
+        "ownedTextures": 1,
+        "decoderFps": 24.0331050715324,
+        "presentationFps": 23.702215415261985
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{"scope":"deterministic CPU fixture, no native/GPU FPS claim","results":[
+{"quality":"LOW","meanMs":13.044177285714285,"p95Ms":17.500247,"workingPixelBytes":368640,"hash":-475431924},
+{"quality":"BALANCED","meanMs":54.63375728571429,"p95Ms":56.617264,"workingPixelBytes":1128960,"hash":-1305572021},
+{"quality":"HIGH","meanMs":263.95644442857144,"p95Ms":274.843672,"workingPixelBytes":3317760,"hash":-1175837814}]}

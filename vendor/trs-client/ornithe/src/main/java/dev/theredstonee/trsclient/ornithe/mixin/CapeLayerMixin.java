@@ -26,6 +26,7 @@ public abstract class CapeLayerMixin {
       float pitch,
       float scale,
       CallbackInfo ci) {
+    var mini=dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerRenderScope.current();if(mini!=null&&!mini.cape.get()){ci.cancel();return;}
     var c = OrnitheClient.get();
     if (c != null && c.ready && c.capes.render(parent, p)) ci.cancel();
   }

@@ -33,7 +33,8 @@ public final class ServerInfoUi extends WindowUi {
 
 	@Override
 	protected String title() {
-		return I18n.tr("menus.serverInfo.title");
+		ServerInfoHost.Info info=host.info();
+		return I18n.tr(info!=null&&info.singleplayer?"pause.singleplayerWorldInformation":"menus.serverInfo.title");
 	}
 
 	@Override

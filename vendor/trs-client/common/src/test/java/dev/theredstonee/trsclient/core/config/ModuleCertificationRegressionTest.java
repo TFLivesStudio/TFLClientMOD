@@ -37,7 +37,7 @@ class ModuleCertificationRegressionTest {
 			// Persist the opposite of defaults for every module, including unavailable ones.
 			module.setEnabled(!module.isEnabled());
 		}
-		assertEquals(79, ids.size(), "Update the release module audit when changing the registry");
+		assertEquals(80, ids.size(), "Update the release module audit when changing the registry");
 		Path file = dir.resolve("roundtrip.json");
 		new ConfigStore(file).save(source.registry);
 		TrsModules loaded = new TrsModules();

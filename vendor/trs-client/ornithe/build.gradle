@@ -111,3 +111,5 @@ tasks.named('test') {
 
 // The smoke driver owns the X display; do not nest Loom's CI Xvfb wrapper.
 tasks.named('runClient') { useXvfb.set(false) }
+
+apply from: file("../../../tools/verification/depth-native.gradle")
