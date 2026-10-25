@@ -142,7 +142,7 @@ public final class MenuScreens {
 				return "TRS-Client";
 			}
 		};
-		return new TrsUiScreen(I18n.tr("menus.serverInfo.title"), new ServerInfoUi(host, TrsOnline.current()));
+		return new TrsUiScreen(I18n.tr(Mc.mc().getSingleplayerServer()!=null?"pause.singleplayerWorldInformation":"menus.serverInfo.title"), new ServerInfoUi(host, TrsOnline.current()));
 	}
 
 	/** Momentaufnahme der Verbindung (jedes Bild; billig). */

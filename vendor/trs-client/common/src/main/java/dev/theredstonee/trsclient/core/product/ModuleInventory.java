@@ -15,7 +15,8 @@ public final class ModuleInventory {
             JsonObject row=new JsonObject();row.addProperty("id",m.id());row.addProperty("name",m.name());
             row.addProperty("category",m.category().name());row.addProperty("hud",m.isHud());row.addProperty("defaultEnabled",m.isEnabled());
             String state="registered; offline logic covered where tests exist; in-game verification pending";
-            if(m.id().equals("trsOnline")||m.id().equals("social")||m.id().equals("emotes"))state="TRS backend dependent; service integration disabled";
+            if(m.id().equals("trsOnline")||m.id().equals("social"))state="TRS backend dependent; service integration disabled";
+            if(m.id().equals("emotes"))state="Six local native animations; online delivery disabled";
             if(m.id().equals("clips"))state="TRS launcher IPC dependent; recording integration disabled; local screenshots retained";
             row.addProperty("classification",state);JsonArray settings=new JsonArray();for(Setting setting:m.settings())settings.add(new JsonPrimitive(setting.key()));row.add("settings",settings);rows.add(row);
         }

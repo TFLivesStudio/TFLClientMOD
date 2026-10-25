@@ -33,7 +33,7 @@ public final class OrnitheMiniPlayer implements HudItem,AutoCloseable {
         int fh=Math.max(96,Math.min(512,Math.round(height()*c.window().getScale()*m.scale.getFloat()*2)));
         long key=MiniPlayerState.optionsKey(m);key=key*31+p.ticks/20;key=key*31+(p.isSneaking()?1:0);key=key*31+System.identityHashCode(p.inventory.getSelectedItem());key=key*31+p.getSkinTextureLocation().hashCode();key=key*31+java.util.Arrays.hashCode(p.inventory.armor);
         if(target==null||target.width!=fw||target.height!=fh){state.invalidate();key++;}
-        if(state.update(c.mc.world,p,key,true,System.nanoTime(),m)){
+        if(state.update(c.mc.world,p,key,!c.mc.isPaused(),System.nanoTime(),m)){
             long start=System.nanoTime();try{render(fw,fh,m,state.yaw());state.failure="";}catch(RuntimeException|LinkageError e){state.failure=e.toString();}finally{state.nanos+=System.nanoTime()-start;}
         }
         if(texture==null)return;

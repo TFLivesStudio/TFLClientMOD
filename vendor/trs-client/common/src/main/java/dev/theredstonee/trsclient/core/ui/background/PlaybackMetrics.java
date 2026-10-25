@@ -4,6 +4,7 @@ public final class PlaybackMetrics {
     public String mode="",decoderState="not installed",fallbackReason="",failure="";
     public long sessions,framesDecoded,framesUploaded,framesPresented,loops,decodedFingerprint,uploadedFingerprint;
     public long decodeNanos,uploadNanos,decoderCpuNanos,uploadBytes,discardedFrames,elapsedNanos;
+    public long pixelBufferAllocations,imageBufferAllocations;
     public int pendingFrames,ownedTextures;
     public double decoderFps,presentationFps;
 }

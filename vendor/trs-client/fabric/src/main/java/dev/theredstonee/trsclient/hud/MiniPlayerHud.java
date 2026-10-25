@@ -31,10 +31,11 @@ public final class MiniPlayerHud extends HudElement {
   Vector2f a=graphics.pose().transformPosition(0,0,new Vector2f()),b=graphics.pose().transformPosition(44,74,new Vector2f());
   boolean onScreen=b.x>0&&b.y>0&&a.x<g.width()&&a.y<g.height();
   boolean moving=p.getDeltaMovement().lengthSqr()>.00001||p.isSwinging()||!p.onGround();
+  var emotes=dev.theredstonee.trsclient.online.EmoteHooks.emotes();moving|=emotes!=null&&emotes.selfPlaying(System.currentTimeMillis());
   // Keep the native state fresh for breathing, cape and emote animation as well as locomotion.
   if(!settings.shouldDraw(preview,true,moving,dev.theredstonee.trsclient.compat.Mc.hudHidden(),dev.theredstonee.trsclient.compat.Mc.screen()!=null,onScreen))return;
   long key=MiniPlayerState.optionsKey(settings);key=key*31+p.getSkin().hashCode();
-  boolean update=state.update(mc.level,p,key,true,System.nanoTime(),settings);
+  boolean update=state.update(mc.level,p,key,!mc.isPaused(),System.nanoTime(),settings);
   if(cached==null||update){
    long t=System.nanoTime();
    EntityRenderer renderer=mc.getEntityRenderDispatcher().getRenderer(p);
@@ -46,7 +47,7 @@ public final class MiniPlayerHud extends HudElement {
    if(cached instanceof AvatarRenderState avatar&&!settings.cape.get())avatar.showCape=false;
    state.nanos+=System.nanoTime()-t;
   }
-  if(settings.background.get())g.fill(0,0,44,74,settings.backgroundArgb());
+  if(settings.background.get())dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(dev.theredstonee.trsclient.ui.GfxCanvas.of(g,font),0,0,44,74,settings.backgroundArgb(),0x404C7296);
   float h=Math.max(.5f,p.getBbHeight()),scale=Math.min((b.y-a.y)*.8f/h,(b.x-a.x)*.7f);
   var entity=new GuiEntityRenderState(cached,new Vector3f(0,h/2,0),new Quaternionf().rotateZ((float)Math.PI),null,
     Math.round(a.x),Math.round(a.y),Math.round(b.x),Math.round(b.y),scale,null);

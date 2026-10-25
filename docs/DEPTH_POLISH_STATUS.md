@@ -1,17 +1,25 @@
-# Operation Depth & Polish — execution record
+# Depth & Polish — validation record
 
-Base: PR #7, commit 5808ac9984b14461476b2b4be42e367dca468654. No merge to main.
+Base: PR #7, commit `5808ac9984b14461476b2b4be42e367dca468654`. Branch `feat/depth-polish`. No merge to main; Forge sources preserved.
 
-Acceptance gates (implementation, tests and native evidence are separate):
-- [ ] Audit original video, decoded/uploaded/presented movement, loop and re-entry.
-- [ ] Shared 3D density volume, bounded renderer, perspective map projection and inverse picking.
-- [ ] Unknown-terrain mask, clearing transition, minimap explicitly simplified.
-- [ ] Shared Mini Player settings/state; live native entity renderers for both targets.
-- [ ] Mini Player equipment/animations/lifecycle/editor/persistence tests.
-- [ ] Neutral Singleplayer and accessible focus navigation.
-- [ ] Safe fresh-install networking defaults; preserve existing settings.
-- [ ] Contextual pause/local-world information; remove basic tutorial prompts.
-- [ ] Shared/target tests, native clients, resource reload and frame/resource measurements.
-- [ ] Argentum/LWJGL3 and Sodium scenarios; Iris where available.
-- [ ] Authentic screenshots and video sequences, artifacts/source/dependencies/hashes/changelog.
-- [ ] Publish only verified prereleases, each target separately.
+Implemented and exercised:
+
+- Shared 64³ density/light field, bounded ray marching, top/30°/55° views, smooth yaw, inverse picking, projected heading and clipped grid. Camera/grid and unknown-mask regression tests pass. Native captures of the same map at all three angles are in `evidence/depth-polish/{189,263}`.
+- Only received client map snapshots enter the volume worker. Unknown colors stay uniform; received data clears the mask over 900 ms. The minimap is explicitly labeled a simplified top view.
+- Mini Player uses native player models, actual skins (wide Steve in 1.8.9, slim/Alex in 26.3), equipment and local animation hooks. Native tests cover equipment visibility, movement, jump/sneak, attack/emote, F1, resource reload, death/respawn and dimension changes. Shared tests cover settings, profile/config persistence, visibility and update policy. The normal HUD editor consumes the same module; this is not exhaustive manual certification of every editor gesture.
+- Installed 1.8.9 JAR + OSL/LWJGL3/Argentum passed 248 assertions, including framebuffer pixels and GL/world-camera restoration. A separate process passed three restart assertions, including Mini Player preferences. The production probe is a separate test mod and is excluded from the distributed JAR.
+- Installed 26.3 JAR + Sodium 0.9.2 passed 24 native assertions, including world camera, equipment, emote, resource reload, F1, death, respawn and Nether return. Video/option navigation passed 13 assertions. Further clean-baseline/restart/large-title CI runs repeat these scenarios.
+- Shared suite: 1,150 tests, zero failures/errors, two skipped. Nine 1.8.9 target tests and six packaging Python tests passed.
+- Native background-only image comparisons show changed pixels in both clients, away from controls/status text. The six-mode playback probes cover loop, Quality/Balanced/Performance, Static, Off and restart. The decoder retains one pending frame and reuses destination/pixel buffers (typically one image and two pixel buffers).
+- Singleplayer has no permanent selected tint. Pause labels and the local information header distinguish local worlds; only the basic inventory tutorial is skipped. Fresh 1.8.9 networking defaults are off; existing explicit choices persist.
+
+Performance and limits:
+
+- This host uses software rendering (Mesa/llvmpipe), not a physical GPU. The deterministic CPU volume fixture measured approximately LOW 13 ms, BALANCED 55 ms and HIGH 264 ms per image. HIGH is expensive; static views reuse completed images. These measurements are not game-FPS or GPU claims.
+- Native video presentation varies with host load: Balanced approximately 16–24 fps, Quality approximately 12–16 fps, Performance approximately 15 fps. Preset rates are targets, not guaranteed throughput. Static/Off preferences remain unchanged by the player.
+- Iris 1.11.7 with the pinned Sodium dependency could not initialize: OpenGL context creation failed, then Iris called an unavailable OpenGL function. Shader-pack/physical-GPU compatibility remains unverified; no Iris success claim is made.
+- Authorized-account capes, multiplayer networking and every third-party combination are not certified by local offline probes. Other historical 1.8.9 adapter limitations remain; adding Mini Player does not certify all 80 modules.
+
+CI and publication:
+
+The `Depth and Polish` workflow builds and runs installed JARs in baseline/LWJGL3/Argentum and baseline/Sodium matrices, checks restart and video reports, and only publishes prereleases after all jobs pass. The current task will attach the resulting CI/PR/release links when those gates complete.

@@ -29,6 +29,7 @@ def generate(runtime=None):
         (BASE / "common/src/main/java/dev/theredstonee/trsclient/core/module").glob("*Modules.java")))
     fields = dict((module_id, field) for field, module_id in re.findall(
         r'(\w+)\s*=\s*registry\.register\(new\s+(?:Hud)?Module\("([^"]+)"', registry))
+    fields["miniPlayer"]="miniPlayer"
     files = {target: evidence_files(BASE / target / "src/main/java") for target in ("fabric", "legacy")}
     common = evidence_files(BASE / "common/src/main/java")
     runtime_rows = {r["id"]: r for r in (runtime or {}).get("modules", [])}

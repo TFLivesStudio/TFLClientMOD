@@ -2557,7 +2557,7 @@
   "title.clientSettings": "Client settings",
   "setting.keystrokes.pressedColor": "Pressed key background",
   "setting.keystrokes.pressedTextColor": "Pressed key text",
-  "setting.minimap.cloudFog": "Clouds over unexplored areas (both maps)",
+  "setting.minimap.cloudFog": "Clouds: simplified minimap / 3D world map",
   "setting.titleScreen.panelOpacity": "Glass panel opacity",
   "setting.titleScreen.cornerRadius": "Menu corner radius",
   "setting.titleScreen.menuAccent": "Menu accent",

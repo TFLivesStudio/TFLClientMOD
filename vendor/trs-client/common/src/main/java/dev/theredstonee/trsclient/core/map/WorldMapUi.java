@@ -56,6 +56,7 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
     private dev.theredstonee.trsclient.core.map.volume.MapProjection projection;
     private double tilt,yaw,dragX,dragY,zoomWorldX,zoomWorldZ,zoomScreenX,zoomScreenY;
     private boolean perspectiveZoom;
+    private final double[] projectedArrow=new double[2],gridLine=new double[4];
     private final double[] inversePoint=new double[3];
 	private final WorldMapTiles tiles = new WorldMapTiles();
 	private final WorldMapTiles tilesUnder = new WorldMapTiles();
@@ -320,7 +321,8 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		cam.update(dt);
         double ease=1-Math.exp(-Math.max(0,dt)*8);
         tilt+=(e.modules().worldMapTilt.get()-tilt)*ease;
-        yaw+=(e.modules().worldMapRotation.get()-yaw)*ease;
+        double yawDelta=(e.modules().worldMapRotation.get()-yaw)%360;if(yawDelta>180)yawDelta-=360;if(yawDelta< -180)yawDelta+=360;
+        yaw+=yawDelta*ease;
         if(perspectiveZoom){
             dev.theredstonee.trsclient.core.map.volume.MapProjection requested=new dev.theredstonee.trsclient.core.map.volume.MapProjection(cam.centerX(),cam.centerZ(),cam.scale(),w,h,tilt,yaw);
             requested.ground(zoomScreenX,zoomScreenY,inversePoint);
@@ -343,7 +345,7 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		}
 		if (e.disk() != null) e.disk().nextFrame();
 		drawMap(c, layer, w, h, now);
-		if (projection==null && e.modules().worldMapGrid.get() && cam.scale() * gs >= 6f) grid(c, w, h);
+		if (e.modules().worldMapGrid.get() && cam.scale() * gs >= 6f) grid(c, w, h);
 		markers(c, w, h, mx, my, gs);
 		chrome(c, w, h, mx, my, t, layer, dt);
 		overlays(c, w, h, mx, my, t);
@@ -390,6 +392,22 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 	}
 
 	private void grid(Canvas c, int w, int h) {
+        if(projection!=null){
+            c.scissor(0,BAR_H,w,h-BAR_H);
+            try{
+                for(int axis=0;axis<2;axis++){
+                    double lo=axis==0?projection.minX:projection.minZ,hi=axis==0?projection.maxX:projection.maxZ;
+                    int spacing=16*Math.max(1,(int)Math.ceil((hi-lo)/16/256));
+                    for(double at=Math.ceil(lo/spacing)*spacing;at<=hi;at+=spacing){
+                        if(!projection.groundGridSegment(axis==0,at,gridLine))continue;
+                        double dx=gridLine[2]-gridLine[0],dy=gridLine[3]-gridLine[1];
+                        int alpha=((long)at&511)==0?0x50:0x20;
+                        c.push();try{c.translate((float)gridLine[0],(float)gridLine[1]);c.rotate((float)Math.atan2(dy,dx));c.fill(0,0,(int)Math.ceil(Math.hypot(dx,dy)),1,alpha<<24);}finally{c.pop();}
+                    }
+                }
+            }finally{c.noScissor();}
+            return;
+        }
 		float scale = cam.scale();
 		int alphaChunk = scale * guiScale() >= 12f ? 0x28 : 0x18;
 		double cx = cam.centerX(), cz = cam.centerZ();
@@ -503,8 +521,8 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 			double f = MapDimensions.factor(e.dimension(), viewDim);
 			if (!Double.isNaN(f)) {
 				toScreen(px * f, pz * f);
-				float yawRad = (float) Math.toRadians(e.yaw());
-				sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad + (float) Math.PI,
+				float yawRad = screenHeading(px*f,pz*f);
+				sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad,
 						0x90000000 | (Theme.get().dustOn & 0xFFFFFF), s);
 			}
 			return;
@@ -549,10 +567,16 @@ public final class WorldMapUi extends UiScreen implements WorldMapSidebar.Host {
 		}
 		// Eigene Position.
 		toScreen(px, pz);
-		float yawRad = (float) Math.toRadians(e.yaw());
-		sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad + (float) Math.PI,
+		float yawRad = screenHeading(px,pz);
+		sprites.draw(c, MapSprites.ARROW, (float) point[0], (float) point[1], 13f, yawRad,
 				0xFF000000 | (Theme.get().dustOn & 0xFFFFFF), s);
 	}
+
+    private float screenHeading(double x,double z){
+        double angle=Math.toRadians(e.yaw());if(projection==null)return (float)(angle+Math.PI);
+        projection.project(x-Math.sin(angle)*16,0,z+Math.cos(angle)*16,projectedArrow);
+        return (float)Math.atan2(projectedArrow[0]-point[0],point[1]-projectedArrow[1]);
+    }
 
 	// --- Leisten ---
 

@@ -13,10 +13,14 @@ Development base: PR #7, `5808ac9`. Branch: `feat/depth-polish`. The original Fo
 
 ## Validation record
 
-Initial shared suite: 1,149 tests, zero failures, two skipped. Native 1.8.9 baseline: 219 assertions, rendered model verified by nontransparent framebuffer pixels. Native Fabric 26.3: options/pause/emotes launched; a dedicated real-world probe rendered the slim native skin and captured walk/run/jump/sneak, opacity, attachment recreation, and the same map at top/30°/55°. Further production-JAR and optimizer checks are in progress; final evidence is recorded in `DEPTH_POLISH_STATUS.md`.
+See [the detailed execution record](DEPTH_POLISH_STATUS.md) and `docs/evidence/depth-polish` for native captures, background ROI comparisons, test totals, optimizer pins and CPU measurements. Installed production JARs are exercised with a separate test-probe mod; that probe is excluded from the downloadable mod.
 
-On this software-rendered host, the 1.8.9 video probe observed approximately 23 presented fps Balanced, 15.8 Quality, and 15 Performance. Quality requests 24 fps but did not sustain it on this host. One pending decoded frame and one native video texture are retained. These are diagnostic measurements, not physical GPU FPS claims. Initial 26.3 volume frames averaged approximately 101 ms on the worker, which limits update rate under interaction; static views reuse the result.
+1.8.9 + Argentum passed 248 assertions and a separate process restart. 26.3 + Sodium passed 24 assertions covering native equipment, movement, emote, resource reload, F1, death/respawn and dimension return. Shared tests total 1,150 (zero failures, two skipped); target and packaging tests also pass. CI repeats each required baseline and optimizer stack before publication.
 
-## Known acceptance work still in progress
+## Installation and known limits
 
-Production artifacts with isolated test-probe mods, optimizer scenarios, death/respawn/dimension and resource lifecycle, native motion recordings, complete packaging and publication gates. Do not describe this intermediate record as completion of every mission acceptance criterion.
+Use separate Minecraft instances with Java 25. For 1.8.9, install Ornithe Gen2 with Fabric Loader 0.19.5 and OSL 0.22.2; this candidate is not a Forge JAR. For 26.3, install Fabric Loader 0.19.5 and Fabric API 0.161.0+26.3. Optimizers remain separate optional downloads with exact hashes in the included dependency manifests. Remove older TFL/TRS JARs from the test instance before installing this candidate.
+
+The volume renderer uses CPU work on a background thread. HIGH is expensive on this host; LOW/BALANCED and OFF allow explicit tradeoffs. Static views reuse the completed image. The native software renderer does not establish physical-GPU FPS. Video rates depend on available CPU; Quality did not sustain its requested 24 fps here. Existing Static/Off or reduced-motion settings remain respected; the title badge explains the active mode.
+
+Iris could not initialize OpenGL on this host; shader packs and physical GPU compatibility remain unverified. Account capes and multiplayer paths require their own environments. Existing limitations of other legacy adapters remain documented; this preview does not certify every setting of all 80 modules.

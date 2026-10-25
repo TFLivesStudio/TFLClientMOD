@@ -153,8 +153,13 @@ public final class HudManager {
 		return s instanceof TrsUiScreen && !((TrsUiScreen) s).ui().overlay();
 	}
 
+    //? if >=26.3 {
+    /*public void renderHiddenMini(Gfx g){if(miniPlayer!=null&&!miniPlayer.module().isEnabled())return;draw(g,mc.font,miniPlayer,g.width(),g.height(),false);}
+    *///?}
+
 	private void renderElements(Gfx g) {
-		if (Mc.hudHidden() || hiddenByScreen()) {
+		if(Mc.hudHidden())return;
+		if (hiddenByScreen()) {
 			//? if >=26.3 {
 			/*draw(g,mc.font,miniPlayer,g.width(),g.height(),false);
 			*///?}

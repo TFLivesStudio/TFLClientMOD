@@ -23,6 +23,11 @@ public final class MiniPlayerRenderer extends PictureInPictureRenderer<MiniPlaye
   NativeEntity(){super(Minecraft.getInstance().getEntityRenderDispatcher());}
   void submit(GuiEntityRenderState s,PoseStack pose,SubmitNodeCollector collector){super.renderToTexture(s,pose,collector);}
  }
+ public void prepare(MiniPlayerFrame frame,GuiRenderState gui,net.minecraft.client.renderer.feature.FeatureRenderDispatcher dispatcher,int guiScale){
+  int width=Math.max(1,frame.x1()-frame.x0()),height=Math.max(1,frame.y1()-frame.y0());
+  int sampleScale=Math.max(1,Math.min(guiScale*2,Math.min(304/width,512/height)));
+  super.prepare(frame,gui,dispatcher,sampleScale);
+ }
  public Class<MiniPlayerFrame> getRenderStateClass(){return MiniPlayerFrame.class;}
  protected String getTextureLabel(){return "TFL Mini Player";}
  protected float getTranslateY(int h,int guiScale){return h/2f;}

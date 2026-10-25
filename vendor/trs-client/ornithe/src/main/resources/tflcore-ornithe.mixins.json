@@ -39,7 +39,8 @@
     "FastConnectMixin",
     "FastConnectSelectionMixin",
     "InventoryTutorialMixin",
-    "MiniPlayerLayersMixin"
+    "MiniPlayerLayersMixin",
+    "MiniPlayerArmorLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

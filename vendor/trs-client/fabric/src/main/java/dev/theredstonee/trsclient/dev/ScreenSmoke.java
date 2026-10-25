@@ -44,7 +44,12 @@ public final class ScreenSmoke {
         try {
             if(System.currentTimeMillis()-start>240000)throw new IllegalStateException("navigation timeout");
             if(Mc.overlay()!=null)return;
-            if(phase==0){if(Mc.screen()==null)return;if(titleWarmup++<30)return;if(!videoProbe())return;record("bundledVideoPresented",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented(),"decoded bundled blue video reached the native renderer");AutoTest.shot(mc,"glass-title");options=MenusTest.options(new TrsTitleScreen(),mc);Mc.setScreen(options);phase=1;wait=20;return;}
+            if(phase==0){if(Mc.screen()==null)return;if(titleWarmup==0){
+ dev.theredstonee.trsclient.TrsClient.get().modules().menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.BALANCED);
+ //? if >=26.3 {
+ /*org.lwjgl.sdl.SDLVideo.SDL_SetWindowSize(Mc.window().handle(),1920,1080);mc.options.guiScale().set(4);mc.resizeGui();
+ *///?}
+ }if(titleWarmup++<30)return;if(!videoProbe())return;record("bundledVideoPresented",dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoFramePresented(),"decoded bundled blue video reached the native renderer");AutoTest.shot(mc,"glass-title");options=MenusTest.options(new TrsTitleScreen(),mc);Mc.setScreen(options);phase=1;wait=20;return;}
             if(phase==1){
                 if(index>=keys.length){finish(mc);phase=3;return;}
                 target=keys[index++];previous=options;

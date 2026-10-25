@@ -2557,7 +2557,7 @@
   "title.clientSettings": "Client-Einstellungen",
   "setting.keystrokes.pressedColor": "Hintergrund gedrückter Tasten",
   "setting.keystrokes.pressedTextColor": "Text gedrückter Tasten",
-  "setting.minimap.cloudFog": "Wolken über unerforschten Gebieten (beide Karten)",
+  "setting.minimap.cloudFog": "Wolken: Minimap vereinfacht / Weltkarte 3D",
   "setting.titleScreen.panelOpacity": "Deckkraft der Glasflächen",
   "setting.titleScreen.cornerRadius": "Eckenradius des Menüs",
   "setting.titleScreen.menuAccent": "Akzentfarbe des Menüs",

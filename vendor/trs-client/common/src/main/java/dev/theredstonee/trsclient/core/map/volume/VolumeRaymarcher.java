@@ -45,9 +45,13 @@ public final class VolumeRaymarcher {
      * sampled terrain. Raising cloud quality never reduces the known map to cloud-sized pixels. */
     public void renderComposite(MapProjection camera,TerrainSnapshot terrain,CloudQuality quality,int cw,int ch,int[] clouds,int w,int h,int[] out,double clock,double density,double height,double distance){
         render(camera,terrain,quality,cw,ch,clouds,clock,density,height,distance,true);
-        for(int y=0;y<h;y++)for(int x=0;x<w;x++){
-            camera.ground((x+.5)*camera.width/w,(y+.5)*camera.height/h,ground);
-            int base=terrain.color(ground[0],ground[1]);
+        for(int y=0;y<h;y++){
+            // The inverse ground homography is linear along a scanline: two projections per row.
+            double sy=(y+.5)*camera.height/h;
+            camera.ground(.5*camera.width/w,sy,ground);double gx=ground[0],gz=ground[1];
+            camera.ground((w-.5)*camera.width/w,sy,ground);double dx=w<=1?0:(ground[0]-gx)/(w-1),dz=w<=1?0:(ground[1]-gz)/(w-1);
+            for(int x=0;x<w;x++){
+            int base=terrain.color(gx+x*dx,gz+x*dz);
             double u=Math.max(0,Math.min(cw-1,(x+.5)*cw/w-.5)),v=Math.max(0,Math.min(ch-1,(y+.5)*ch/h-.5));
             int ix=(int)u,iy=(int)v,jx=Math.min(cw-1,ix+1),jy=Math.min(ch-1,iy+1);
             double fu=u-ix,fv=v-iy;int a=clouds[iy*cw+ix],b=clouds[iy*cw+jx],c=clouds[jy*cw+ix],d=clouds[jy*cw+jx];
@@ -56,7 +60,7 @@ public final class VolumeRaymarcher {
             int green=(int)Math.min(255,channel(a,b,c,d,8,fu,fv)+((base>>8)&255)*(1-alpha));
             int blue=(int)Math.min(255,channel(a,b,c,d,0,fu,fv)+(base&255)*(1-alpha));
             out[y*w+x]=0xFF000000|red<<16|green<<8|blue;
-        }
+        }}
     }
     private static double channel(int a,int b,int c,int d,int shift,double u,double v){return ((((a>>>shift)&255)*(1-u)+((b>>>shift)&255)*u)*(1-v)+(((c>>>shift)&255)*(1-u)+((d>>>shift)&255)*u)*v);}
 

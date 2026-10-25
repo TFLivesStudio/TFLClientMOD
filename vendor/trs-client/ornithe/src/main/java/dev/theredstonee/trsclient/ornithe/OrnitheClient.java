@@ -1,4 +1,5 @@
 package dev.theredstonee.trsclient.ornithe;
+import net.minecraft.client.render.platform.GlStateManager;
 
 import dev.theredstonee.trsclient.core.config.ConfigStore;
 import dev.theredstonee.trsclient.core.hud.*;
@@ -313,6 +314,7 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   public void reload() {
+    if(miniPlayer!=null)miniPlayer.close();
     if (colors != null) colors.release();
     if (canvas != null) canvas.prepare();
     rebuildCrosshair();
@@ -781,5 +783,15 @@ public final class OrnitheClient implements ModInitializer {
       canvas.end();
     }
   }
-  private void drawMiniOnly(){Window w=window();canvas.begin(w.getWidth(),w.getHeight(),w.getScale());try{var m=modules.miniPlayer;float s=m.scale.getFloat();int x=HudLayout.resolveX(m.position(),Math.round(miniPlayer.width()*s),w.getWidth()),y=HudLayout.resolveY(m.position(),Math.round(miniPlayer.height()*s),w.getHeight());canvas.push();try{canvas.translate(x,y);canvas.scale(s);miniPlayer.draw(canvas);}finally{canvas.pop();}}finally{canvas.end();}}
+  /** F1 suppresses vanilla's entire GUI callback, so draw this explicit opt-in overlay separately. */
+  public void drawHiddenMini(float partial){
+    if(!ready||mc.world==null||mc.player==null||!mc.options.hideGui||mc.screen!=null||modules.miniPlayer.hideF1.get())return;
+    hudPartialTick=partial;Window w=window();int mode=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL11.GL_MATRIX_MODE);
+    canvas.begin(w.getWidth(),w.getHeight(),w.getScale());
+    try{
+      GlStateManager.matrixMode(org.lwjgl.opengl.GL11.GL_PROJECTION);GlStateManager.pushMatrix();GlStateManager.loadIdentity();GlStateManager.ortho(0,w.getWidth(),w.getHeight(),0,-1000,1000);
+      GlStateManager.matrixMode(org.lwjgl.opengl.GL11.GL_MODELVIEW);GlStateManager.loadIdentity();GlStateManager.disableDepthTest();GlStateManager.depthMask(false);drawMiniOnly();
+    }finally{GlStateManager.matrixMode(org.lwjgl.opengl.GL11.GL_PROJECTION);GlStateManager.popMatrix();GlStateManager.matrixMode(org.lwjgl.opengl.GL11.GL_MODELVIEW);canvas.end();GlStateManager.matrixMode(mode);}
+  }
+  private void drawMiniOnly(){Window w=window();canvas.begin(w.getWidth(),w.getHeight(),w.getScale());try{var m=modules.miniPlayer;float s=m.scale.getFloat();int x=HudLayout.resolveX(m.position(),Math.round(miniPlayer.width()*s),w.getWidth()),y=HudLayout.resolveY(m.position(),Math.round(miniPlayer.height()*s),w.getHeight());if(x+miniPlayer.width()*s<=0||y+miniPlayer.height()*s<=0||x>=w.getWidth()||y>=w.getHeight())return;canvas.push();try{canvas.translate(x,y);canvas.scale(s);miniPlayer.draw(canvas);}finally{canvas.pop();}}finally{canvas.end();}}
 }

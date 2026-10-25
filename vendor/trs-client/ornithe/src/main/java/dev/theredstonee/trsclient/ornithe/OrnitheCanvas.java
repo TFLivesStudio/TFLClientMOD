@@ -62,7 +62,10 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     Textures.install(this);
   }
 
+  private int resourceGeneration;
+  @Override public int resourceGeneration(){return resourceGeneration;}
   public void prepare() {
+    resourceGeneration++;
     if (font != null) {
       mc.getTextureManager().close(font);
       font = null;

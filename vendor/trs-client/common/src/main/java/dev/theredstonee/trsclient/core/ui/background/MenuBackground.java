@@ -29,7 +29,7 @@ public final class MenuBackground implements AutoCloseable {
     private String playbackError="";
     private String fallbackReason="Static mode selected",animationReason="";
     public void animationAllowed(boolean allowed){animationReason=allowed?"":"Animation disabled / reduced motion";}
-    public PlaybackMetrics metrics(){PlaybackMetrics m=player==null?new PlaybackMetrics():player.metrics();m.mode=mode.name();m.framesPresented=presentedFrames;m.fallbackReason=fallbackReason;m.presentationFps=startedAt==0?0:presentedFrames*1e9/Math.max(1,System.nanoTime()-startedAt);return m;}
+    public PlaybackMetrics metrics(){PlaybackMetrics m=player==null?new PlaybackMetrics():player.metrics();m.mode=mode.name();m.framesPresented=presentedFrames;m.fallbackReason=fallbackReason;m.presentationFps=!videoActive()||startedAt==0?0:presentedFrames*1e9/Math.max(1,System.nanoTime()-startedAt);return m;}
     public String status(){PlaybackMetrics m=metrics();if(!m.fallbackReason.isEmpty())return m.fallbackReason;return "Video · "+Math.round(m.presentationFps)+" fps";}
     private TextureRef still;
     public void setMode(Mode value) {

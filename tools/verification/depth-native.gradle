@@ -22,6 +22,7 @@ if (project.hasProperty('depthNativeProbe')) {
             inputFile=probeJar.flatMap { it.archiveFile }
             archiveClassifier='native-probe'
             addNestedDependencies=false
+            classpath.from(sourceSets.main.compileClasspath,sourceSets.main.output.classesDirs)
         }
     }
     tasks.named('runProdClient') {
@@ -29,6 +30,7 @@ if (project.hasProperty('depthNativeProbe')) {
         if (project.name != '26.3') {
             jvmArgs.addAll('-Dtflcore.ornithe.smoke=true',"-Dtflcore.ornithe.report=${layout.buildDirectory.dir('smoke/production').get().asFile}",'-Dtflcore.ui.smoke.large=true')
             programArgs.addAll('--width','1920','--height','1080')
+            if(project.hasProperty('restart'))jvmArgs.add('-Dtflcore.ornithe.restart=true')
         }
     }
 }

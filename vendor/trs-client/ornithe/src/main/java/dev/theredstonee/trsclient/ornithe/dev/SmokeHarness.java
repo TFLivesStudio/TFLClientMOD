@@ -24,7 +24,7 @@ public final class SmokeHarness implements Runnable {
   private int tick, stage, wait, inputFrame;
   private float normalFov;
   private long mapUploads;
-  private boolean fogZoomed;private int mapProbeStage;
+  private boolean fogZoomed;private int mapProbeStage;private long miniBefore;private Object playerBefore;private int dimensionBefore;
   private long screenshotDeadline;
   private java.nio.file.Path nativeScreenshot;
   private long colorPasses, panoramaFaces;
@@ -103,6 +103,7 @@ public final class SmokeHarness implements Runnable {
       switch (stage) {
         case 0 -> {
           c.mc.options.pauseOnUnfocus = false;
+          c.modules.worldMapTilt.set(0);c.modules.worldMapRotation.set(0);if(!restart)c.modules.miniPlayer.reset();
           if(Boolean.getBoolean("tflcore.ui.smoke.large")) {
             c.mc.options.guiScale=4;
             c.mc.openScreen(c.title());
@@ -115,6 +116,7 @@ public final class SmokeHarness implements Runnable {
                 c.modules.coords.isEnabled()
                     && c.modules.crosshair.isEnabled()
                     && c.modules.crosshairSize.get() == 7);
+            check("Mini Player preferences survive process restart",c.modules.miniPlayer.opacity.getInt()==65&&c.modules.miniPlayer.angle.get()==dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule.Angle.SIDE&&Math.abs(c.modules.miniPlayer.position().offsetX-.123)<1e-8);
             shot("restart-title");
             finish(null);
             return;
@@ -151,7 +153,7 @@ public final class SmokeHarness implements Runnable {
           shot("editor");
           c.mc.openScreen(null);
           c.mc.startGame(
-              "tfl-ornithe-smoke",
+              "tfl-depth-polish-smoke",
               "TFL Ornithe Smoke",
               new WorldSettings(
                       189L, WorldSettings.GameMode.CREATIVE, false, false, WorldGeneratorType.FLAT)
@@ -452,7 +454,73 @@ public final class SmokeHarness implements Runnable {
           check("shared transparent pause navigation",c.mc.screen instanceof CoreScreen cs && cs.ui instanceof dev.theredstonee.trsclient.core.ui.menus.ActionListUi);
           shot("pause");
           c.mc.openScreen(null);
-          finish(null);
+          for(var module:c.modules.registry.all())if(module instanceof dev.theredstonee.trsclient.core.module.HudModule)module.setEnabled(module==c.modules.miniPlayer);
+          c.modules.miniPlayer.setEnabled(true);c.modules.miniPlayer.position().offsetX=.02;c.modules.miniPlayer.position().offsetY=.02;
+          c.modules.miniPlayer.angle.set(dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule.Angle.FRONT);c.mc.player.sendChat("/clear @p");
+          stage++;wait=15;
+        }
+        case 19 -> {
+          MiniGlProbe.verify(c);check("Mini Player restores native GL and world camera state",true);
+          check("production Paper Doll contains visible pixels",c.miniPlayer.visiblePixels()>100);shot("depth-mini-front");
+          c.mc.player.sendChat("/replaceitem entity @p slot.armor.head minecraft:diamond_helmet");
+          c.mc.player.sendChat("/replaceitem entity @p slot.armor.chest minecraft:diamond_chestplate");
+          c.mc.player.sendChat("/replaceitem entity @p slot.hotbar.0 minecraft:diamond_sword");stage++;wait=20;
+        }
+        case 20 -> {
+          check("native Paper Doll equipment received",c.mc.player.inventory.armor[3]!=null&&c.mc.player.inventory.getSelectedItem()!=null);shot("depth-mini-equipment");
+          c.modules.miniPlayer.armor.set(false);c.modules.miniPlayer.heldItems.set(false);stage++;wait=10;
+        }
+        case 21 -> {
+          shot("depth-mini-hidden-equipment");c.modules.miniPlayer.armor.set(true);c.modules.miniPlayer.heldItems.set(true);
+          playerX=c.mc.player.x;playerZ=c.mc.player.z;KeyBinding.set(c.mc.options.forwardKey.getKeyCode(),true);stage++;wait=15;
+        }
+        case 22 -> {
+          check("Paper Doll uses moving real player",Math.abs(c.mc.player.x-playerX)+Math.abs(c.mc.player.z-playerZ)>.1);shot("depth-mini-walk");
+          KeyBinding.set(c.mc.options.forwardKey.getKeyCode(),false);KeyBinding.set(c.mc.options.jumpKey.getKeyCode(),true);stage++;wait=3;
+        }
+        case 23 -> {
+          shot("depth-mini-jump");KeyBinding.set(c.mc.options.jumpKey.getKeyCode(),false);KeyBinding.set(c.mc.options.sneakKey.getKeyCode(),true);stage++;wait=10;
+        }
+        case 24 -> {
+          check("Paper Doll real sneak",c.mc.player.isSneaking());shot("depth-mini-sneak");KeyBinding.set(c.mc.options.sneakKey.getKeyCode(),false);c.mc.player.swingArm();stage++;wait=2;
+        }
+        case 25 -> {
+          shot("depth-mini-attack");c.modules.emoteCamera.set(dev.theredstonee.trsclient.core.module.TrsModules.EmoteCamera.OFF);
+          c.emotes.controller.play(c.emotes.controller.all().get(0).id(),System.currentTimeMillis());stage++;wait=10;
+        }
+        case 26 -> {
+          shot("depth-mini-emote");c.emotes.controller.onAttack(System.currentTimeMillis());
+          c.mc.reloadResources();stage++;wait=20;
+        }
+        case 27 -> {
+          check("Paper Doll survives resource reload",c.miniPlayer.state.failure.isEmpty()&&c.miniPlayer.visiblePixels()>100);shot("depth-mini-resource-reload");
+          c.mc.options.hideGui=true;miniBefore=c.miniPlayer.state.updates;stage++;wait=10;
+        }
+        case 28 -> {
+          check("F1 skips native Paper Doll",c.miniPlayer.state.updates==miniBefore);c.modules.miniPlayer.hideF1.set(false);stage++;wait=10;
+        }
+        case 29 -> {
+          check("F1 opt-in draws native Paper Doll",c.miniPlayer.state.updates>miniBefore);shot("depth-mini-F1-opt-in");c.mc.options.hideGui=false;c.modules.miniPlayer.hideF1.set(true);
+          playerBefore=c.mc.player;var uuid=c.mc.player.getUuid();c.mc.getServer().executeTask(()->c.mc.getServer().getPlayerManager().get(uuid).takeDamage(net.minecraft.entity.damage.DamageSource.OUT_OF_WORLD,Float.MAX_VALUE));stage++;wait=15;
+        }
+        case 30 -> {
+          if(c.mc.player.getHealth()>0){wait=5;return;}shot("depth-mini-death");c.mc.player.respawn();stage++;wait=30;
+        }
+        case 31 -> {
+          if(c.mc.player==playerBefore||c.mc.player.getHealth()<=0||c.mc.screen!=null){wait=5;return;}
+          check("native respawn replaced local player",c.mc.player!=playerBefore);shot("depth-mini-respawn");
+          dimensionBefore=c.mc.world.dimension.getId();c.mc.options.viewDistance=3;
+          int px=(int)Math.floor(c.mc.player.x),py=(int)Math.ceil(c.mc.player.y),pz=(int)Math.floor(c.mc.player.z);
+          c.mc.player.sendChat("/fill "+(px-1)+" "+py+" "+pz+" "+(px+2)+" "+(py+4)+" "+pz+" minecraft:obsidian");
+          c.mc.player.sendChat("/fill "+px+" "+(py+1)+" "+pz+" "+(px+1)+" "+(py+3)+" "+pz+" minecraft:portal");
+          c.mc.player.sendChat("/tp @p "+(px+.5)+" "+(py+1)+" "+(pz+.5));stage++;wait=30;
+        }
+        case 32 -> {
+          if(c.mc.world.dimension.getId()!=-1||c.mc.screen!=null){wait=5;return;}check("native Nether dimension received",true);shot("depth-mini-nether");
+          var uuid=c.mc.player.getUuid();c.mc.getServer().executeTask(()->c.mc.getServer().getPlayerManager().changeDimension(c.mc.getServer().getPlayerManager().get(uuid),dimensionBefore));stage++;wait=30;
+        }
+        case 33 -> {
+          if(c.mc.world.dimension.getId()!=dimensionBefore||c.mc.screen!=null){wait=5;return;}check("native return dimension received",true);shot("depth-mini-return");finish(null);
         }
       }
     } catch (Throwable e) {
@@ -683,6 +751,7 @@ public final class SmokeHarness implements Runnable {
         value.add("hooks", hooks);
         capabilities.add(entry.getKey(), value);
       }
+      if(error==null&&!restart){c.modules.coords.setEnabled(true);c.modules.crosshair.setEnabled(true);c.modules.crosshairSize.set(7);c.modules.miniPlayer.opacity.set(65);c.modules.miniPlayer.angle.set(dev.theredstonee.trsclient.core.hud.miniplayer.MiniPlayerModule.Angle.SIDE);c.modules.miniPlayer.position().offsetX=.123;c.save();c.config.flush();}
       report.add("capabilities", capabilities);report.add("videoEvidence",videoEvidence);
       report.addProperty("status", error == null ? "passed" : "failed");
       if (error != null) {

@@ -114,7 +114,7 @@ public final class OrnitheNavigation {
             "settings",
             () -> c.mc.openScreen(new OptionsScreen(c.mc.screen, c.mc.options))));
     actions.add(new MenuAction("Captures", "image", () -> captures(c.mc.screen)));
-    actions.add(new MenuAction(c.mc.isSingleplayer()?"World Information":"Server Information", "info", () -> serverInfo(c.mc.screen)));
+    actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr(c.mc.isSingleplayer()?"pause.singleplayerWorldInformation":"pause.serverInformation"), "info", () -> serverInfo(c.mc.screen)));
     actions.add(
         new MenuAction("Capabilities & Diagnostics", "activity", () -> diagnostics(c.mc.screen)));
     actions.add(
@@ -203,7 +203,7 @@ public final class OrnitheNavigation {
     var info = new ServerInfoHost.Info();
     var s = c.mc.getCurrentServerEntry();
     info.singleplayer = c.mc.isSingleplayer();
-    info.name = s == null ? "Local World" : s.name;
+    info.name = info.singleplayer&&c.mc.world!=null?c.mc.world.getData().getName():s == null ? "Local World" : s.name;
     info.address = s == null ? null : s.ip;
     info.version = "1.8.9";
     info.dimension = c.mapPlatform.dimension();

@@ -3,6 +3,32 @@
   "implementation": "TRS common registry with TFL modifications",
   "modules": [
     {
+      "id": "miniPlayer",
+      "name": "Paper Doll · Mini Player",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "visibility",
+        "cameraAngle",
+        "opacity",
+        "rotation",
+        "fpsLimit",
+        "smoothing",
+        "showArmor",
+        "showHeldItems",
+        "showCape",
+        "hideWithF1",
+        "hideInMenus"
+      ]
+    },
+    {
       "id": "fps",
       "name": "FPS",
       "category": "HUD",
@@ -45,6 +71,8 @@
         "background",
         "backgroundOpacity",
         "scale",
+        "pressedColor",
+        "pressedTextColor",
         "showCps",
         "showSpace"
       ]
@@ -281,6 +309,7 @@
         "background",
         "backgroundOpacity",
         "scale",
+        "cloudFog",
         "fairPlay",
         "shape",
         "size",
@@ -314,6 +343,13 @@
       "defaultEnabled": true,
       "classification": "registered; offline logic covered where tests exist; in-game verification pending",
       "settings": [
+        "cloudQuality",
+        "tilt",
+        "rotation",
+        "cloudHeight",
+        "cloudDensity",
+        "cloudDistance",
+        "cloudMotion",
         "key",
         "showWaypoints",
         "showPlayers",
@@ -416,6 +452,9 @@
       "defaultEnabled": true,
       "classification": "registered; offline logic covered where tests exist; in-game verification pending",
       "settings": [
+        "panelOpacity",
+        "cornerRadius",
+        "menuAccent",
         "animated",
         "backgroundMode"
       ]
@@ -635,7 +674,7 @@
       "category": "MISC",
       "hud": false,
       "defaultEnabled": true,
-      "classification": "TRS backend dependent; service integration disabled",
+      "classification": "Six local native animations; online delivery disabled",
       "settings": [
         "camera",
         "others"
@@ -692,7 +731,7 @@
     },
     {
       "id": "clips",
-      "name": "Clips \u0026 Recording",
+      "name": "Clips & Recording",
       "category": "MISC",
       "hud": true,
       "defaultEnabled": true,
@@ -906,7 +945,7 @@
     },
     {
       "id": "queueAlerts",
-      "name": "Queue \u0026 Alerts",
+      "name": "Queue & Alerts",
       "category": "MISC",
       "hud": false,
       "defaultEnabled": false,
@@ -1224,5 +1263,11 @@
         "spookySounds"
       ]
     }
-  ]
+  ],
+  "targetDefaultOverrides": {
+    "ornithe189": {
+      "fastConnect": false,
+      "netOptimize": false
+    }
+  }
 }
