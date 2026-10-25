@@ -21,8 +21,8 @@ zero failures/errors; target-specific suite: nine passed. Six distribution-tool 
 The real 1.8.9 client completed 214 checks at 1920×1080 / GUI scale 4, including
 bundled video presentation, received-world maps and transparent shared pause navigation.
 26.3 completed 13 native checks for video presentation, option destinations and persisted
-keybinding visibility. A real-world pause check also exercises native callbacks; see the
-current evidence/CI result before treating that last gate as complete.
+keybinding visibility. The real-world menu run also passed the shared pause and local emote lifecycle
+assertions on Vulkan/llvmpipe; screenshots and a summary are included in the evidence folder.
 
 The first cloud CI run exposed nested Xvfb displays in Loom's CI launcher. The smoke
 runner now explicitly owns its display. Screenshot-watcher checks wait for the actual

@@ -1,0 +1,7 @@
+{
+  "scope": "native menus, real singleplayer world and shared pause",
+  "graphics": "Vulkan / llvmpipe Mesa 25.0.7 software",
+  "sharedPause": true,
+  "localEmoteLifecycle": true,
+  "finished": true
+}

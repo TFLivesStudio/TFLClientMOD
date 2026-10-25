@@ -2117,10 +2117,10 @@
     }
   },
   "status": "passed",
-  "frames": 326,
-  "frametimeP99Ms": 211.657168,
-  "frametimeMedianMs": 57.077334,
-  "frametimeP95Ms": 98.084181,
-  "fpsFromMeanFrametime": 15.966970124537015,
-  "heapUsedBytes": 496765864
+  "frames": 323,
+  "frametimeP99Ms": 192.948226,
+  "frametimeMedianMs": 56.415282,
+  "frametimeP95Ms": 89.980916,
+  "fpsFromMeanFrametime": 16.199154567206424,
+  "heapUsedBytes": 552214224
 }
