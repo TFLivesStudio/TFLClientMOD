@@ -1,0 +1,106 @@
+plugins {
+    id 'fabric-loom' version '1.18.4'
+    id 'ploceus' version '1.18.3'
+}
+group='dev.tflives'
+version=project.mod_version
+base { archivesName='tflcore-ornithe-1.8.9' }
+ploceus { setIntermediaryGeneration(2) }
+repositories { mavenCentral() }
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings ploceus.featherMappings(project.feather_build)
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    ploceus.dependOsl(project.osl_version)
+}
+sourceSets.main {
+    java.srcDir '../common/src/main/java'
+    resources.srcDir '../common/src/main/resources'
+}
+java { sourceCompatibility=JavaVersion.VERSION_25; targetCompatibility=JavaVersion.VERSION_25; withSourcesJar() }
+tasks.withType(JavaCompile).configureEach { options.encoding='UTF-8'; options.release=25 }
+processResources { inputs.property 'version',version; filesMatching('fabric.mod.json') { expand(version:version) } }
+tasks.withType(Jar).configureEach {
+    preserveFileTimestamps=false; reproducibleFileOrder=true
+    from('../LICENSE') { rename { 'LICENSE_trsclient' } }
+    from('../TFL-NOTICE.txt') { into 'META-INF' }
+    from('../licenses') { into 'META-INF/licenses' }
+}
+loom {
+    runs {
+        client {
+            if (project.hasProperty('smoke')) vmArg '-Dtflcore.ornithe.smoke=true'
+            vmArg '--enable-native-access=ALL-UNNAMED'
+        }
+    }
+}
+// Optional local test stack. External binaries are never compiled against or bundled.
+def testStack=providers.gradleProperty('testStack').getOrElse('baseline')
+if (!(testStack in ['baseline','lwjgl3','argentum'])) throw new GradleException('Unknown testStack')
+if (testStack != 'baseline') {
+    def external=providers.gradleProperty('runtimeModsDir').getOrNull()
+    if (!external) throw new GradleException('Pass -PruntimeModsDir=<verified external JAR directory>')
+    dependencies { modLocalRuntime files("${external}/legacy-lwjgl3-1.4.10.jar") }
+    if (testStack == 'argentum') dependencies { modLocalRuntime files("${external}/argentum-1.0.2.jar") }
+}
+// The harness is present only on the development classpath; installable/source archives omit it.
+tasks.withType(Jar).configureEach { exclude 'dev/theredstonee/trsclient/ornithe/dev/**' }
+loom.runs.client {
+    if (project.hasProperty('smoke')) {
+        vmArg "-Dtflcore.ornithe.report=${project.layout.buildDirectory.dir("smoke/${testStack}").get().asFile}"
+        if (project.hasProperty('restart')) vmArg '-Dtflcore.ornithe.restart=true'
+    }
+}
+// Existing test fixtures use modern Gson mutation APIs; production common still compiles against 2.2.4.
+project(':common') {
+    plugins.withId('java-library') { dependencies { testImplementation 'com.google.code.gson:gson:2.11.0' } }
+}
+// Launch the remapped installable JAR in a separate game directory, without development classes.
+tasks.register('runProdClient', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+    outputs.upToDateWhen { false }
+    group='verification'
+    mods.from(tasks.named('remapJar'))
+    def external=providers.gradleProperty('runtimeModsDir').getOrElse('')
+    if (!external.empty) {
+        mods.from(files("${external}/ornithe-standard-libraries-${project.osl_version}.jar"))
+        if (testStack != 'baseline') mods.from(files("${external}/legacy-lwjgl3-1.4.10.jar"))
+        if (testStack == 'argentum') mods.from(files("${external}/argentum-1.0.2.jar"))
+    }
+    runDir=layout.projectDirectory.dir("run/production-${testStack}")
+    jvmArgs.add('--enable-native-access=ALL-UNNAMED')
+}
+if (testStack != 'baseline') {
+    dependencies { modLocalRuntime fileTree("${project.property('runtimeModsDir')}/legacy-lwjgl3-dev-libs") { include '*.jar' } }
+    // Keep the old compatibility API at compile time; at runtime Legacy LWJGL3 provides it.
+    tasks.named('runClient', JavaExec) {
+        classpath=classpath.filter { !it.name.startsWith('lwjgl-2.') && !it.name.startsWith('lwjgl_util-2.') && !it.name.startsWith('lwjgl-platform-2.') }
+    }
+    loom.runs.client.vmArg '-Dorg.lwjgl.librarypath='
+}
+// This platform does not expose the legacy hosting bridge and ships no nested third-party binaries.
+sourceSets.main.resources.exclude '**/*.jar'
+if (testStack == 'argentum') {
+    dependencies { modLocalRuntime fileTree("${project.property('runtimeModsDir')}/argentum-dev-libs") { include '*.jar' } }
+}
+// Loom's generic production launcher hardcodes Fabric intermediary. Use Calamus Gen2 instead.
+def productionLoader=configurations.detachedConfiguration(dependencies.create("net.fabricmc:fabric-loader:${project.loader_version}"))
+def productionMappings=configurations.detachedConfiguration(dependencies.create("net.ornithemc:calamus-intermediary-gen2:${project.minecraft_version}"))
+tasks.named('runProdClient') {
+    useXVFB=false
+    classpath.setFrom(files(loom.minecraftProvider.minecraftClientJar),productionLoader,productionMappings,
+        configurations.named('minecraftTestClientRuntimeLibraries'))
+}
+// Official Ornithe Gen2 launcher profile arguments (required after class package remapping).
+tasks.named('runProdClient') {
+    jvmArgs.addAll('-Dfabric.fixPackageAccess=true', '-Dfabric.gameVersion=1.8.9')
+}
+// Target contracts are tested separately from the shared Java 8 regression suite.
+dependencies {
+    testImplementation platform("org.junit:junit-bom:${junit_version}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+tasks.named('test') {
+    useJUnitPlatform()
+    systemProperty 'ornithe.repoRoot', file('../../..').absolutePath
+}

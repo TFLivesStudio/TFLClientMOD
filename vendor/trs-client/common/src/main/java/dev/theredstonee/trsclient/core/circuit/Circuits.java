@@ -105,6 +105,12 @@ public final class Circuits {
 	/** Einmal beim Start (idempotent). */
 	public synchronized void install(dev.theredstonee.trsclient.core.module.TrsModules all, Platform platform,
 			KeyPresses.Down keyDown, Path configDir) {
+        install(all, platform, keyDown, configDir, true);
+    }
+
+    /** Offline platforms can install local tools without creating remote-service clients. */
+    public synchronized void install(dev.theredstonee.trsclient.core.module.TrsModules all, Platform platform,
+            KeyPresses.Down keyDown, Path configDir, boolean remoteServices) {
 		this.modules = all.circuits;
 		this.platform = platform;
 		dev.theredstonee.trsclient.core.ui.menu.ModulePanel.Registry.set(modules.circuitLibrary, new CircuitPanel());
@@ -112,6 +118,7 @@ public final class Circuits {
 		if (store == null && configDir != null) {
 			store = new CircuitStore(configDir.resolve("trsclient").resolve("circuit-templates.json"));
 			store.load();
+			if (remoteServices) {
 			// Bibliothek: Cache laden, dann einmal je Start beim Server prüfen (Hintergrund, keine Anmeldung nötig).
 			dev.theredstonee.trsclient.core.online.OnlineConfig online = dev.theredstonee.trsclient.core.online.OnlineConfig.load(configDir);
 			boolean allowed = online.launcherEnabled() && all.trsOnline.isEnabled();
@@ -120,6 +127,7 @@ public final class Circuits {
 					allowed ? online.apiBase() : null, new CircuitCache(configDir.resolve("trsclient").resolve("circuits")));
 			submissions = new CircuitSubmissions(new dev.theredstonee.trsclient.core.online.Http.UrlConnection(
 					"TRS-Client (circuits; Minecraft " + version + ")"), online.apiBase());
+            }
 		}
 	}
 

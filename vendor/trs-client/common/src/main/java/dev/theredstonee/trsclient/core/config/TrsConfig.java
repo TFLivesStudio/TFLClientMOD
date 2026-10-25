@@ -18,6 +18,8 @@ import java.util.Map;
 public final class TrsConfig {
 	public static final int CURRENT_VERSION = 2;
 
+    /** Explicit platform approvals for newly connected actions; absent means no approval. */
+    public Map<String, Map<String, Boolean>> platformApprovals = new LinkedHashMap<>();
 	public int configVersion = CURRENT_VERSION;
 	public Map<String, ModuleConfig> modules = new LinkedHashMap<>();
 	/** Gespeicherte HUD-Layouts; fehlt in Version 1. */

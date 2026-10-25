@@ -102,6 +102,15 @@ public interface MenuHost {
 	/** Zusätzliche Knöpfe eines Moduls (z. B. „Fadenkreuz-Editor“); nie null. */
 	List<MenuAction> actions(Module module);
 
+    /** Explicit user toggle; adapters can record consent for newly connected automation. */
+    default void setEnabled(Module module, boolean enabled) { module.setEnabled(enabled); }
+
+    /** Settings backed by native hooks on this platform; other preferences stay in ConfigStore. */
+    default List<dev.theredstonee.trsclient.core.module.Setting> settings(Module module) { return module.settings(); }
+
+    default String capabilityDetail(Module module) { return null; }
+
+
 	/** Einstellungen speichern. */
 	void save();
 

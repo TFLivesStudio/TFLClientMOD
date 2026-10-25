@@ -26,6 +26,8 @@ public interface TitleHost {
 	/** Fußzeile links, z. B. "Minecraft 1.21.1 · TFL Client 0.3.0". */
 	String versionLine();
 
+	default String clientVersion() { return "0.4.0-dev.3"; }
+
 	void playClick();
 
 	/** Liest einen Text über den Erzähler vor (nur wenn der Spieler ihn eingeschaltet hat); darf nichts tun. */

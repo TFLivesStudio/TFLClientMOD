@@ -247,8 +247,11 @@ public final class HudEditor extends UiScreen {
         tool(c, 112, y, 40, I18n.trOr("editor.redo", "Redo"), history.canRedo(), mx, my, new Runnable() {
             public void run() { history.redo(); }
         });
-        if (width >= 230) tool(c, 156, y, 66, safeZones ? I18n.trOr("editor.guidesOn", "Guides: on") : I18n.trOr("editor.guidesOff", "Guides: off"), true, mx, my, new Runnable() {
+        if (width >= 294) tool(c, 156, y, 66, safeZones ? I18n.trOr("editor.guidesOn", "Guides: on") : I18n.trOr("editor.guidesOff", "Guides: off"), true, mx, my, new Runnable() {
             public void run() { safeZones = !safeZones; }
+        });
+        if (width >= 222) tool(c, width >= 294 ? 226 : 156, y, 60, I18n.trOr("editor.arrange", "Arrange"), true, mx, my, new Runnable() {
+            public void run() { arrangePreset(); history.commit(); }
         });
         if (!showPresets) return;
         int columns = Math.max(1, Math.min(3, (width - 16) / 84));

@@ -108,6 +108,14 @@ public final class Panorama {
 		return false;
 	}
 
+	/** Cancel a queued request before it acquires camera/render resources. */
+	public synchronized boolean cancelRequest() {
+		if (state != State.REQUESTED) return false;
+		state = State.IDLE;
+		screenFreeSince = 0;
+		return true;
+	}
+
 	public State state() {
 		return state;
 	}
