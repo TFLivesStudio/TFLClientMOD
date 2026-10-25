@@ -857,6 +857,10 @@
     {
       "name": "shared local gallery opens natively",
       "passed": true
+    },
+    {
+      "name": "shared transparent pause navigation",
+      "passed": true
     }
   ],
   "capabilities": {
@@ -2113,10 +2117,10 @@
     }
   },
   "status": "passed",
-  "frames": 315,
-  "frametimeP99Ms": 185.615601,
-  "frametimeMedianMs": 52.986602,
-  "frametimeP95Ms": 88.330061,
-  "fpsFromMeanFrametime": 17.110027209476062,
-  "heapUsedBytes": 891681976
+  "frames": 326,
+  "frametimeP99Ms": 211.657168,
+  "frametimeMedianMs": 57.077334,
+  "frametimeP95Ms": 98.084181,
+  "fpsFromMeanFrametime": 15.966970124537015,
+  "heapUsedBytes": 496765864
 }

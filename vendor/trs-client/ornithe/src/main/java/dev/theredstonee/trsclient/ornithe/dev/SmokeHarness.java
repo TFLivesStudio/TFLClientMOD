@@ -25,6 +25,7 @@ public final class SmokeHarness implements Runnable {
   private float normalFov;
   private long mapUploads;
   private boolean fogZoomed;
+  private long screenshotDeadline;
   private java.nio.file.Path nativeScreenshot;
   private long colorPasses, panoramaFaces;
   private double playerX, playerZ;
@@ -382,10 +383,14 @@ public final class SmokeHarness implements Runnable {
                   + "_189.png";
           nativeScreenshot = c.mc.gameDir.toPath().resolve("screenshots").resolve(name);
           Screenshot.take(c.mc.gameDir, name, c.mc.width, c.mc.height, c.mc.getRenderTarget());
+          screenshotDeadline=System.nanoTime()+10_000_000_000L;
           wait = 20;
           stage++;
         }
         case 16 -> {
+          var toastFile=c.navigation.screenshots.toast().file();
+          boolean watched=toastFile!=null&&nativeScreenshot.toAbsolutePath().normalize().equals(toastFile.toAbsolutePath().normalize());
+          if((!Files.isRegularFile(nativeScreenshot)||!watched)&&System.nanoTime()<screenshotDeadline){wait=5;return;}
           check("native screenshot file written", Files.isRegularFile(nativeScreenshot));
           check(
               "local screenshot watcher updates toast",

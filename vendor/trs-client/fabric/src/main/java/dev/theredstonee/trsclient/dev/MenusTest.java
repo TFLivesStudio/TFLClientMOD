@@ -400,7 +400,11 @@ public final class MenusTest {
 				wait = 15;
 				return;
 			case 21:
-				shot(mc, "pause");
+                //? if >=26.3 {
+                /*if(!(Mc.screen() instanceof TrsUiScreen) || !(((TrsUiScreen)Mc.screen()).ui() instanceof dev.theredstonee.trsclient.core.ui.menus.ActionListUi))throw new IllegalStateException("Shared pause layout not installed");
+                log("Shared transparent pause navigation verified");
+                *///?}
+                shot(mc, "pause");
 				Mc.setScreen(MenuScreens.serverInfo(screen));
 				phase++;
 				wait = 15;

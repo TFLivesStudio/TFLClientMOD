@@ -30,5 +30,5 @@ try:
 finally:x.XCloseDisplay(d)
 assert not errors,f'Unexpected X11 errors: {errors}'
 assert proc.returncode==0,f'Gradle exit {proc.returncode}'
-r=json.loads(report.read_text());assert r['status']=='passed',r
+r=json.loads(report.read_text());assert r['status']=='passed',{'error':r.get('error'),'failed':[c['name'] for c in r['checks'] if not c['passed']]}
 print(f"Verified {a.stack} {'restart' if a.restart else 'smoke'}: {len(r['checks'])} checks")

@@ -56,8 +56,8 @@ public final class OrnitheKeystrokes implements HudItem {
     key(canvas, o.useKey, "RMB", 36, 48, 34, mh);
     if (c.modules.keystrokesShowCps.get()) {
       long now = System.nanoTime() / 1000000;
-      center(canvas, CPS[Math.min(99, c.left.count(now))], 0, 64, 34);
-      center(canvas, CPS[Math.min(99, c.right.count(now))], 36, 64, 34);
+      center(canvas, CPS[Math.min(99, c.left.count(now))], 0, 64, 34, o.attackKey.isPressed());
+      center(canvas, CPS[Math.min(99, c.right.count(now))], 36, 64, 34, o.useKey.isPressed());
     }
     if (c.modules.keystrokesShowSpace.get()) {
       int y = 50 + mh;
@@ -71,12 +71,12 @@ public final class OrnitheKeystrokes implements HudItem {
     canvas.text(label, x + (w - canvas.textWidth(label)) / 2, y + 5, key.isPressed() ? c.modules.keystrokesPressedText.argb() : module().textColor.argb(), module().shadow() && !key.isPressed());
   }
 
-  private void center(Canvas canvas, String text, int x, int y, int w) {
+  private void center(Canvas canvas, String text, int x, int y, int w, boolean pressed) {
     canvas.text(
         text,
         x + (w - canvas.textWidth(text)) / 2,
         y,
-        module().textColor.argb(),
-        module().shadow());
+        pressed ? c.modules.keystrokesPressedText.argb() : module().textColor.argb(),
+        module().shadow() && !pressed);
   }
 }

@@ -103,7 +103,7 @@ public final class GfxCanvas implements Canvas {
 
 	@Override
 	public int lineHeight() {
-		return 9;
+		return 10;
 	}
 
 	@Override

@@ -52,6 +52,21 @@ jobs:
           r=json.loads(p.read_text())
           assert r['results'] and all(x['passed'] for x in r['results']),r
           PY
+      - name: Native 26.3 world and shared pause
+        if: matrix.target == '26.3'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          ALSOFT_DRIVERS: 'null'
+        run: |
+          set -o pipefail
+          xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=menus --no-daemon --max-workers=2 | tee native-menus.log
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          log=Path('native-menus.log').read_text()
+          assert 'Shared transparent pause navigation verified' in log
+          assert 'Local emote play/cancel/camera assertions passed; network disabled' in log
+          assert 'Menüs: Fehler' not in log
+          PYCODE
       - uses: actions/upload-artifact@v4
         if: always()
         with:

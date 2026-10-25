@@ -1,0 +1,14 @@
+{
+  "common": {
+    "tests": 1138,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "1.8.9": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

@@ -108,3 +108,6 @@ tasks.named('test') {
     useJUnitPlatform()
     systemProperty 'ornithe.repoRoot', file('../../..').absolutePath
 }
+
+// The smoke driver owns the X display; do not nest Loom's CI Xvfb wrapper.
+tasks.named('runClient') { useXvfb.set(false) }

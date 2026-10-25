@@ -13,3 +13,18 @@ Development candidate 0.4.0-ui.1; no stable/RC claim. Builds remain platform-spe
 The blue clip is a hue-converted version of the user-provided video, with no requested on-screen credit. Source media is not downloaded at runtime.
 
 This is a shared presentation/settings pass, not certification that every existing platform adapter implements every module option. The historical capability audit still applies. Inventory/item textures, third-party mod screens, all resource packs, physical GPUs and multiplayer need separate visual acceptance; do not describe them as fully redesigned or certified by these checks.
+
+## Validation
+
+Both targets compile. Shared suite: 1,138 detected, 1,136 passed, two opt-in skips,
+zero failures/errors; target-specific suite: nine passed. Six distribution-tool tests pass.
+The real 1.8.9 client completed 214 checks at 1920×1080 / GUI scale 4, including
+bundled video presentation, received-world maps and transparent shared pause navigation.
+26.3 completed 13 native checks for video presentation, option destinations and persisted
+keybinding visibility. A real-world pause check also exercises native callbacks; see the
+current evidence/CI result before treating that last gate as complete.
+
+The first cloud CI run exposed nested Xvfb displays in Loom's CI launcher. The smoke
+runner now explicitly owns its display. Screenshot-watcher checks wait for the actual
+asynchronous result with a ten-second deadline rather than assuming 20 ticks equal one
+second on a busy software renderer. Neither fix changes gameplay or disables assertions.

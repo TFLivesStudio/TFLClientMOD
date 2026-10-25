@@ -163,7 +163,12 @@ public final class TrsTitleScreen extends TrsUiScreen {
 		}
 
 		@Override
-		public String versionLine() {
+		public String clientVersion() {
+            return FabricLoader.getInstance().getModContainer("tflcore").map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("Development");
+        }
+
+        @Override
+        public String versionLine() {
 			return versionLine;
 		}
 
