@@ -88,6 +88,9 @@ public final class Screenshots {
 		}
 
 		/** Gibt es hier TRS Online (Link kopieren, An Freunde senden)? */
+        /** Targets may keep external mod preferences read-only despite a saved opt-in. */
+        default boolean allowExternalPreferenceChanges() { return true; }
+
 		default boolean online() {
 			return true;
 		}
@@ -330,7 +333,7 @@ public final class Screenshots {
 			}
 			if (now - started >= ESSENTIAL_DELAY_MS && now - lastEssentialCheck >= ESSENTIAL_CHECK_MS) {
 				lastEssentialCheck = now;
-				essentialReplaced = EssentialInterop.apply(replaceEssential(), store) && replaceEssential();
+				essentialReplaced = platform.allowExternalPreferenceChanges() && EssentialInterop.apply(replaceEssential(), store) && replaceEssential();
 			}
 		} catch (RuntimeException e) {
 			// nie das Spiel stören

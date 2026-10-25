@@ -949,7 +949,7 @@ public final class ModMenu extends UiScreen {
 		if (m.userToggleable()) Paint.toggle(c, tx, ty, tw, 12, progress, toggleHover);
 
 		// Name ungekürzt: notfalls in zwei Zeilen.
-		boolean gear = !m.settings().isEmpty();
+		boolean gear = !host.settings(m).isEmpty();
 		int nameW = w - 16 - (gear ? 12 : 0);
 		List<String> lines = Paint.wrap(c, m.name(), nameW);
 		int nameColor = ColorMath.lerp(t.text, 0xFFFFFFFF, progress * 0.4f);
@@ -975,7 +975,7 @@ public final class ModMenu extends UiScreen {
 			@Override
 			public void run() {
 				host.playClick();
-				m.toggle();
+				host.setEnabled(m, !m.isEnabled());
 			}
 		});
 	}
@@ -1033,7 +1033,7 @@ public final class ModMenu extends UiScreen {
 			@Override
 			public void run() {
 				host.playClick();
-				m.toggle();
+				host.setEnabled(m, !m.isEnabled());
 			}
 		});
 		int resetX = tx - 26;
@@ -1088,7 +1088,7 @@ public final class ModMenu extends UiScreen {
 		c.scissor(listX, listTop, listX + listW, bottom);
 		hits.clip(listX, listTop, listW, bottom - listTop);
 		int ry = listTop + 2 - settingsScroll;
-		ry = Paint.paragraph(c, m.description(), listX + 2, ry, Math.min(listW - 8, 360), 10, t.textDim) + 6;
+		ry = Paint.paragraph(c, host.capabilityDetail(m) == null ? m.description() : m.description() + "\n" + host.capabilityDetail(m), listX + 2, ry, Math.min(listW - 8, 360), 10, t.textDim) + 6;
 		if (extra != null) {
 			ry = extra.draw(c, hits, listX + 2, ry, listW - 10, mx, my, new Runnable() {
 				@Override
@@ -1097,7 +1097,7 @@ public final class ModMenu extends UiScreen {
 				}
 			});
 		}
-		List<Setting> settings = m.settings();
+		List<Setting> settings = host.settings(m);
 		if (settings.isEmpty() && extra != null) {
 			// Nur der Zusatzbereich (z. B. FPS-Boost) – kein „keine Einstellungen“.
 		} else if (settings.isEmpty()) {

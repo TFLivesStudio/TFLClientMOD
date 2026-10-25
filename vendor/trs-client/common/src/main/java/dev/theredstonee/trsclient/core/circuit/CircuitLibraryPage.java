@@ -271,6 +271,7 @@ public final class CircuitLibraryPage {
 
 	/** Zeile mit „Eigene Schaltung einreichen“ und „Meine Einreichungen“. */
 	private int subButtons(Canvas c, Hits hits, int x, int y, int w, int mx, int my) {
+        if(Circuits.get().submissions()==null)return y;
 		String a = I18n.tr("circuits.submit.title");
 		String b = I18n.tr("circuits.mine.title");
 		int aw = Math.min((w - 4) / 2, c.textWidth(a) + 16);
