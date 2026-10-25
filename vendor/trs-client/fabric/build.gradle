@@ -414,6 +414,7 @@ def prodFabricApi = configurations.detachedConfiguration(
 		dependencies.create("net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"))
 prodFabricApi.transitive = false
 tasks.register('runProdClient', TrsProdClientTask) {
+    useXVFB=false // The verification driver supplies the display; do not nest Xvfb in CI.
 	// A launcher task must execute again after quitting, even when inputs are unchanged.
 	outputs.upToDateWhen { false }
 	group = 'fabric'
