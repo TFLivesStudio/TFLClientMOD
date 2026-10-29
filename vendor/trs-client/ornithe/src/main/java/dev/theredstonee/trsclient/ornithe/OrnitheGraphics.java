@@ -127,7 +127,8 @@ public final class OrnitheGraphics implements GraphicsUi.Host {
     try {
       Object config = amplio.getField("CONFIG").get(null);
       Object wanted = requested.get(config), running = active.get(null);
-      return "Escalado solicitado: "
+      return (client.colors != null && client.modules.colors.isEnabled() && client.colors.upscalingRequested() ? "Colores pausado · " : "")
+          + "Escalado solicitado: "
           + wanted
           + " · Activo: "
           + running

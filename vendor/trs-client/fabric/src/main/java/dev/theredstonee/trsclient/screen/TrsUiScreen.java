@@ -62,7 +62,11 @@ public class TrsUiScreen extends TrsScreen {
 	protected boolean onKey(int key, int modifiers) {
 		// Strg+V / Strg+A (Cmd auf macOS) für Textfelder der Oberfläche.
 		if (SocialHooks.control() && !shiftDown()) {
-			if (key == Keys.code("key.keyboard.v") && ui.inputKey(key, UiKey.PASTE, false)) return true;
+			if (key == Keys.code("key.keyboard.v")) {
+				String clipboard = net.minecraft.client.Minecraft.getInstance().keyboardHandler.getClipboard();
+				if (clipboard != null) for (int i = 0; i < clipboard.length(); i++) ui.inputChar(clipboard.charAt(i));
+				return true;
+			}
 			if (key == Keys.code("key.keyboard.a") && ui.inputKey(key, UiKey.SELECT_ALL, false)) return true;
 		}
 		return ui.inputKey(key, Keys.ui(key), shiftDown());

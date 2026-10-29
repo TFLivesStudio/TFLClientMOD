@@ -176,7 +176,9 @@ public abstract class TrsScreen extends Screen {
 	//? if >=1.21.9 {
 	/*@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		return onClick(event.x(), event.y(), Keys.uiButton(event.button())) || super.mouseClicked(event, doubleClick);
+		boolean handled = onClick(event.x(), event.y(), Keys.uiButton(event.button())) || super.mouseClicked(event, doubleClick);
+		if (dev.theredstonee.trsclient.compat.Mc.screen() == this) keepTextInput();
+		return handled;
 	}
 
 	@Override
@@ -191,7 +193,9 @@ public abstract class TrsScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		return onKey(event.key(), event.modifiers()) || super.keyPressed(event);
+		boolean handled = onKey(event.key(), event.modifiers()) || super.keyPressed(event);
+		if (dev.theredstonee.trsclient.compat.Mc.screen() == this) keepTextInput();
+		return handled;
 	}
 
 	@Override

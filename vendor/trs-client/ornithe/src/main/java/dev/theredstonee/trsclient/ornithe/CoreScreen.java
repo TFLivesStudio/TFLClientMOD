@@ -59,7 +59,11 @@ public final class CoreScreen extends Screen {
   @Override
   protected void keyPressed(char typed, int raw) {
     UiKey key = logical(raw);
-    if (isControlDown() && raw == Keyboard.KEY_V) key = UiKey.PASTE;
+    if (isControlDown() && raw == Keyboard.KEY_V) {
+      String clipboard = Screen.getClipboard();
+      if (clipboard != null) for (int i = 0; i < clipboard.length(); i++) ui.inputChar(clipboard.charAt(i));
+      return;
+    }
     if (isControlDown() && raw == Keyboard.KEY_A) key = UiKey.SELECT_ALL;
     if (!ui.inputKey(raw, key, isShiftDown()) && key == UiKey.NONE && TextInput.allowed(typed))
       ui.inputChar(typed);

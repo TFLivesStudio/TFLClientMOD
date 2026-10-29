@@ -55,7 +55,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
    if(world!=null){Path home=folder;long session=epoch;disk.execute(()->{if(Files.isDirectory(home))try(var files=Files.newDirectoryStream(home,"*.bin.gz")){for(Path file:files){if(session!=epoch)break;String[] parts=file.getFileName().toString().replace(".bin.gz","").split("_");if(parts.length==2)try{stored.add(ChunkSnapshot.key(Integer.parseInt(parts[0]),Integer.parseInt(parts[1])));}catch(NumberFormatException ignored){}}}catch(IOException ignored){}});looks=buildLooks();client.map.fairPlay().resetServer();client.map.fairPlay().onServerText(client.mapPlatform.serverMotd());}
   }
   if(world==null||client.mc.player==null)return;
-  var requestedQuality=client.modules.worldMapCloudQuality.get();if(quality!=requestedQuality){quality=requestedQuality;TileBaker.setFast(quality==dev.theredstonee.trsclient.core.map.volume.CloudQuality.LOW);reload();}
+  var requestedQuality=client.modules.worldMapCloudQuality.get();if(quality!=requestedQuality){quality=requestedQuality;if(fog!=null)fog.close();fog=null;maskAt=0;}
   client.map.fairPlay().setManual(client.modules.minimapFairPlay.get());
   actorCount=0;client.mapPlatform.entities(()->actorCount>=actors.length?null:actors[actorCount++],128,!client.map.fairPlay().radarThroughWalls());
   for(int i=0;i<4;i++){ChunkSnapshot s=restored.poll();if(s==null)break;chunks.put(ChunkSnapshot.key(s.chunkX,s.chunkZ),s);revision++;}
