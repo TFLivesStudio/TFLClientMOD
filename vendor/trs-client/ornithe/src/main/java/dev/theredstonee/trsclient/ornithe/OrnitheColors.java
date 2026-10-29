@@ -17,7 +17,7 @@ public final class OrnitheColors {
   private PostPass pass;
   private int width = -1, height = -1;
   private boolean failed;
-  private java.lang.reflect.Field amplioConfig, amplioUpscaler;
+  private java.lang.reflect.Field amplioConfig, amplioUpscaler, amplioActive;
   private boolean amplioPresent, conflictLogged;
   public long applied;
 
@@ -28,6 +28,8 @@ public final class OrnitheColors {
       amplioPresent = true;
       amplioConfig = type.getField("CONFIG");
       amplioUpscaler = amplioConfig.get(null).getClass().getField("upscaler");
+      amplioActive = type.getDeclaredField("active");
+      amplioActive.setAccessible(true);
     } catch (ClassNotFoundException absent) {
       amplioPresent = false;
     } catch (ReflectiveOperationException | LinkageError unavailable) {
@@ -130,8 +132,9 @@ public final class OrnitheColors {
   public boolean upscalingRequested() {
     if (!amplioPresent) return false;
     try {
-      return amplioConfig == null || amplioUpscaler == null
-          || !"OFF".equals(String.valueOf(amplioUpscaler.get(amplioConfig.get(null))));
+      return amplioConfig == null || amplioUpscaler == null || amplioActive == null
+          || !"OFF".equals(String.valueOf(amplioUpscaler.get(amplioConfig.get(null))))
+          || !"OFF".equals(String.valueOf(amplioActive.get(null)));
     } catch (ReflectiveOperationException | RuntimeException unavailable) {
       return true;
     }
