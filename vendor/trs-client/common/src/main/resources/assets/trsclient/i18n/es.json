@@ -2617,5 +2617,12 @@
   "graphics.on": "Activado",
   "graphics.off": "Desactivado",
   "graphics.immediate": "Se guarda al cambiar. También disponible en los ajustes del cliente.",
-  "graphics.extraGamma": "Amplificación de gamma"
+  "graphics.extraGamma": "Amplificación de gamma",
+  "pause.resume": "Volver al juego",
+  "pause.options": "Opciones",
+  "pause.captures": "Capturas",
+  "pause.diagnostics": "Capacidades y diagnóstico",
+  "pause.saveQuit": "Guardar y salir",
+  "pause.disconnect": "Desconectar",
+  "pause.title": "TFL Client · Pausa"
 }

@@ -2617,5 +2617,12 @@
   "graphics.on": "Activé",
   "graphics.off": "Désactivé",
   "graphics.immediate": "Enregistré immédiatement. Disponible dans les réglages du client.",
-  "graphics.extraGamma": "Extended gamma level"
+  "graphics.extraGamma": "Extended gamma level",
+  "pause.resume": "Back to Game",
+  "pause.options": "Options",
+  "pause.captures": "Captures",
+  "pause.diagnostics": "Capabilities & Diagnostics",
+  "pause.saveQuit": "Save and Quit",
+  "pause.disconnect": "Disconnect",
+  "pause.title": "TFL Client · Paused"
 }

@@ -106,20 +106,20 @@ public final class OrnitheNavigation {
 
   public Screen pause() {
     var actions = new ArrayList<MenuAction>();
-    actions.add(new MenuAction("Back to Game", "play", () -> c.mc.openScreen(null)));
+    actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.resume"), "play", () -> c.mc.openScreen(null)));
     actions.add(new MenuAction("TFL Client", "settings", () -> c.openMenu(c.mc.screen)));
     actions.add(
         new MenuAction(
-            "Options",
+            dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.options"),
             "settings",
             () -> c.mc.openScreen(new OptionsScreen(c.mc.screen, c.mc.options))));
-    actions.add(new MenuAction("Captures", "image", () -> captures(c.mc.screen)));
+    actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.captures"), "image", () -> captures(c.mc.screen)));
     actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr(c.mc.isSingleplayer()?"pause.singleplayerWorldInformation":"pause.serverInformation"), "info", () -> serverInfo(c.mc.screen)));
     actions.add(
-        new MenuAction("Capabilities & Diagnostics", "activity", () -> diagnostics(c.mc.screen)));
+        new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"), "activity", () -> diagnostics(c.mc.screen)));
     actions.add(
         new MenuAction(
-            c.mc.isSingleplayer()?"Save and Quit":"Disconnect",
+            c.mc.isSingleplayer()?dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.saveQuit"):dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.disconnect"),
             "back",
             () -> {
               c.mc.world.disconnect();
@@ -128,7 +128,7 @@ public final class OrnitheNavigation {
             }));
     return new CoreScreen(
         new ActionListUi(
-            "TFL Client · Paused", actions, () -> c.mc.openScreen(null), c::clickSound).navigationRail(),
+            dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"), actions, () -> c.mc.openScreen(null), c::clickSound).navigationRail(),
         false);
   }
 

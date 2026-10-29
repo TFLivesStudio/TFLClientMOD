@@ -30,7 +30,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
  private dev.theredstonee.trsclient.core.map.volume.CloudQuality quality;
  private BlockLooks looks; private Object world;private String identity="";private volatile Path folder;
  private final int[] knownPrefix=new int[257*257],unknownPrefix=new int[257*257];
- private DioramaFog fog;private long maskAt;private double oldMaskU,oldMaskV,oldExtent;private long maskRevision;
+ private DioramaFog fog;private long maskAt;private double oldMaskU,oldMaskV,oldExtent;private long maskRevision,maskContentRevision;private int oldMaskLayer=Integer.MIN_VALUE,oldMaskLod=-1;
  private volatile long revision,epoch;private long lastCapture;private boolean closed;private TextureRef clouds;
  public long bakedTiles,bakeNanos;public volatile String failure="";
  private record Result(TileKey key,int[] pixels,long revision,long epoch){}
@@ -140,7 +140,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
   double extent=512*(1<<code),texel=extent/256;
   double maskU=Math.floor((centerX-extent/2)/texel)*texel,maskV=Math.floor((Projection.v(centerY,centerZ)-extent/2)/texel)*texel;
   int[] mask=null;long now=System.nanoTime();
-  if(now-maskAt>100_000_000L||maskU!=oldMaskU||maskV!=oldMaskV||extent!=oldExtent||maskRevision!=bakedTiles){
+  if(maskAt==0||maskU!=oldMaskU||maskV!=oldMaskV||extent!=oldExtent||maskRevision!=maskContentRevision||layer!=oldMaskLayer||maskLod!=oldMaskLod){
    mask=new int[256*256];
    for(int my=0;my<256;my++)for(int mx=0;mx<256;mx++){
     double u=maskU+(mx+.5)*texel,v=maskV+(my+.5)*texel;Tile tile=tiles.get(new TileKey(layer,(int)Math.floor(u/tileUnits),(int)Math.floor(v/tileUnits),maskLod));
@@ -148,7 +148,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
     mask[my*256+mx]=0xff000000|known<<16;
    }
    flagMask(mask,texel);
-   maskAt=now;oldMaskU=maskU;oldMaskV=maskV;oldExtent=extent;maskRevision=bakedTiles;
+   maskAt=now;oldMaskU=maskU;oldMaskV=maskV;oldExtent=extent;maskRevision=maskContentRevision;oldMaskLayer=layer;oldMaskLod=maskLod;
   }
   double left=centerX-width/(2*pixelsPerBlock),top=Projection.v(centerY,centerZ)-height/(2*pixelsPerBlock);
   if(quality!=dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF)fog.draw(x,y,width,height,mask,(left-maskU)/extent,(top-maskV)/extent,width/pixelsPerBlock/extent,height/pixelsPerBlock/extent,code,maskU,maskV,layer!=TileKey.SURFACE);
@@ -182,7 +182,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
  private void request(TileKey key){if(!baking.add(key))return;long version=revision,session=epoch;BlockLooks colors=looks;
   try{worker.execute(()->{try{long start=System.nanoTime();TileImage image=TileBaker.bake(key,this,colors,null,false);int[] p=image.mips()[0];for(int i=0;i<p.length;i++){int v=p[i];p[i]=v&0xFF00FF00|(v&255)<<16|(v>>>16&255);}if(session==epoch){completed.offer(new Result(key,p,version,session));bakeNanos+=System.nanoTime()-start;bakedTiles++;}}catch(Throwable e){failure=e.toString();}finally{baking.remove(key);}});}catch(RejectedExecutionException e){baking.remove(key);}
  }
- private void upload(){Result r;while((r=completed.poll())!=null){if(r.epoch!=epoch)continue;Tile tile=tiles.computeIfAbsent(r.key,k->new Tile());tile.texture=client.canvas.upload("diorama/tile-"+r.key.layer()+"-"+r.key.lod()+"-"+r.key.tileU()+"-"+r.key.tileV(),Projection.TILE_PIXELS,Projection.TILE_PIXELS,r.pixels);tile.revision=r.revision;tile.alpha=new byte[r.pixels.length];for(int i=0;i<r.pixels.length;i++)tile.alpha[i]=(byte)(r.pixels[i]>>>24);
+ private void upload(){Result r;while((r=completed.poll())!=null){if(r.epoch!=epoch)continue;maskContentRevision++;Tile tile=tiles.computeIfAbsent(r.key,k->new Tile());tile.texture=client.canvas.upload("diorama/tile-"+r.key.layer()+"-"+r.key.lod()+"-"+r.key.tileU()+"-"+r.key.tileV(),Projection.TILE_PIXELS,Projection.TILE_PIXELS,r.pixels);tile.revision=r.revision;tile.alpha=new byte[r.pixels.length];for(int i=0;i<r.pixels.length;i++)tile.alpha[i]=(byte)(r.pixels[i]>>>24);
   while(tiles.size()>64){var iterator=tiles.entrySet().iterator();Tile old=iterator.next().getValue();iterator.remove();if(old.texture!=null)client.canvas.release(old.texture);}
  }}
  private void save(Path path,ChunkSnapshot s){try{Files.createDirectories(path.getParent());Path temp=path.resolveSibling(path.getFileName()+".tmp");try(var out=new DataOutputStream(new java.util.zip.GZIPOutputStream(Files.newOutputStream(temp)))){out.writeInt(0x54464431);out.writeInt(s.chunkX);out.writeInt(s.chunkZ);out.writeInt(s.maxY);out.writeInt(s.floorY);for(int i=0;i<16;i++){int[] a=s.section(i);out.writeBoolean(a!=null);if(a!=null)for(int j=0;j<4096;j++){out.writeShort(a[j]);out.writeByte(s.blockLight(i,j&15,j>>8,j>>4&15)|(s.skyLight(i,j&15,j>>8,j>>4&15)<<4));}}for(int i:s.tints.grass())out.writeInt(i);}Files.move(temp,path,StandardCopyOption.REPLACE_EXISTING);if(path.getParent().equals(folder))stored.add(ChunkSnapshot.key(s.chunkX,s.chunkZ));}catch(IOException e){failure="Map save: "+e.getMessage();}}
