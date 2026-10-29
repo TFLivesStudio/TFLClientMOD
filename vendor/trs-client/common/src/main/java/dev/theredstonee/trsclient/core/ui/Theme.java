@@ -184,13 +184,13 @@ public final class Theme {
 			bevelDark = 0xFFB4B4C2;
 		} else {
 			// Tiefenschiefer: kühles, fast neutrales Grau – dunkel genug, dass Redstone leuchtet.
-			background = oled ? 0xFF000000 : 0xFF19191D;
-			surface = oled ? 0xFF0D0D10 : 0xFF222227;
-			surfaceHover = oled ? 0xFF18181C : 0xFF2B2B31;
-			surfaceHigh = oled ? 0xFF131317 : 0xFF26262B;
-			border = oled ? 0xFF26262C : 0xFF36363D;
-			text = 0xFFEDE9E4;
-			textDim = 0xFF8F8B89;
+			background = oled ? 0xFF000000 : 0xFF0B1120;
+			surface = oled ? 0xFF0D0D10 : 0xFF111B2C;
+			surfaceHover = oled ? 0xFF18181C : 0xFF20314B;
+			surfaceHigh = oled ? 0xFF131317 : 0xFF182439;
+			border = oled ? 0xFF26262C : 0xFF293B55;
+			text = 0xFFF1F5FB;
+			textDim = 0xFF9AA9BE;
 			on = 0xFFFFB84D;
 			off = oled ? 0xFF1C1C21 : 0xFF2E2E34;
 			scrim = 0xA80B0B0E;

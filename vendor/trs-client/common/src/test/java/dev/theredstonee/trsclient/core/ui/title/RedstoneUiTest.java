@@ -210,6 +210,13 @@ class RedstoneUiTest {
 		assertEquals(s, still.angle(), 0.01f);
 	}
 
+    @Test void publicHomeKeepsOnlyProductAndMinecraftVersion(){
+        FakeHost host=new FakeHost();CountingCanvas canvas=new CountingCanvas();TitleUi ui=new TitleUi(host);
+        for(int i=0;i<3;i++)ui.render(canvas,W,H,-1,-1);
+        assertTrue(canvas.texts.contains("TFL Client"));assertTrue(canvas.texts.contains("TFL Client 1.8.9"));
+        assertFalse(canvas.texts.stream().anyMatch(t->t.contains("0.4.0")||t.startsWith("Video ·")||t.contains("Experimental")));
+    }
+
 	private static void sleep() {
 		try {
 			Thread.sleep(5);
@@ -235,7 +242,7 @@ class RedstoneUiTest {
 		@Override public void mods() { }
 		@Override public void quit() { quit++; }
 		@Override public void classicTitle() { }
-		@Override public String versionLine() { return "Minecraft test"; }
+		@Override public String versionLine() { return dev.theredstonee.trsclient.core.product.Product.displayName("1.8.9"); }
 		@Override public void playClick() { clicks++; }
 		@Override public void narrate(String text) { narrated.add(text); }
 		@Override public boolean animated() { return true; }
@@ -244,9 +251,10 @@ class RedstoneUiTest {
 
 	private static final class CountingCanvas implements Canvas {
 		int fills;
+        final List<String> texts=new ArrayList<String>();
 
 		@Override public void fill(int x1, int y1, int x2, int y2, int argb) { fills++; }
-		@Override public void text(String text, int x, int y, int argb, boolean shadow) { }
+		@Override public void text(String text, int x, int y, int argb, boolean shadow) { texts.add(text); }
 		@Override public int textWidth(String text) { return text.length() * 6; }
 		@Override public int lineHeight() { return 9; }
 		@Override public String clip(String text, int maxWidth) { return text.substring(0, Math.max(0, Math.min(text.length(), maxWidth / 6))); }

@@ -1,0 +1,659 @@
+{
+  "video": {
+    "decoderImplementation": "Minecraft native JPEG parallel",
+    "mode": "HIGH",
+    "decoderState": "running",
+    "fallbackReason": "",
+    "failure": "",
+    "sessions": 1,
+    "framesDecoded": 453,
+    "framesUploaded": 452,
+    "framesPresented": 452,
+    "loops": 0,
+    "decodedFingerprint": -5460055981159642843,
+    "uploadedFingerprint": 3484240480860655545,
+    "decodeNanos": 4028509570,
+    "uploadNanos": 540104333,
+    "decoderCpuNanos": 3278412414,
+    "uploadBytes": 3749068800,
+    "discardedFrames": 0,
+    "elapsedNanos": 15106160635,
+    "pixelBufferAllocations": 8,
+    "imageBufferAllocations": 0,
+    "pendingFrames": 1,
+    "ownedTextures": 1,
+    "decoderFps": 29.98776531943055,
+    "presentationFps": 29.92117049777114,
+    "drawCalls": 873
+  },
+  "measuredVideoFps": 29.960595902283057,
+  "graphicsInventory": [
+    {
+      "id": "minecraft:framerateLimit",
+      "name": "Max Framerate",
+      "category": "Display",
+      "backend": "Minecraft OptionInstance: minecraft:framerateLimit"
+    },
+    {
+      "id": "minecraft:enableVsync",
+      "name": "VSync",
+      "category": "Display",
+      "backend": "Minecraft OptionInstance: minecraft:enableVsync"
+    },
+    {
+      "id": "minecraft:inactivityFpsLimit",
+      "name": "Reduce fps when",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:inactivityFpsLimit"
+    },
+    {
+      "id": "minecraft:guiScale",
+      "name": "GUI Scale",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:guiScale"
+    },
+    {
+      "id": "minecraft:fullscreen",
+      "name": "Fullscreen",
+      "category": "Display",
+      "backend": "Minecraft OptionInstance: minecraft:fullscreen"
+    },
+    {
+      "id": "minecraft:exclusiveFullscreen",
+      "name": "Exclusive Fullscreen",
+      "category": "Display",
+      "backend": "Minecraft OptionInstance: minecraft:exclusiveFullscreen"
+    },
+    {
+      "id": "minecraft:gamma",
+      "name": "Brightness",
+      "category": "Display",
+      "backend": "Minecraft OptionInstance: minecraft:gamma"
+    },
+    {
+      "id": "minecraft:preferredGraphicsBackend",
+      "name": "Graphics API",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:preferredGraphicsBackend"
+    },
+    {
+      "id": "minecraft:biomeBlendRadius",
+      "name": "Biome Blend",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:biomeBlendRadius"
+    },
+    {
+      "id": "minecraft:renderDistance",
+      "name": "Render Distance",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:renderDistance"
+    },
+    {
+      "id": "minecraft:prioritizeChunkUpdates",
+      "name": "Chunk Builder",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:prioritizeChunkUpdates"
+    },
+    {
+      "id": "minecraft:simulationDistance",
+      "name": "Simulation Distance",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:simulationDistance"
+    },
+    {
+      "id": "minecraft:ambientOcclusion",
+      "name": "Smooth Lighting",
+      "category": "Performance",
+      "backend": "Minecraft OptionInstance: minecraft:ambientOcclusion"
+    },
+    {
+      "id": "minecraft:cloudStatus",
+      "name": "Clouds",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:cloudStatus"
+    },
+    {
+      "id": "minecraft:particles",
+      "name": "Particles",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:particles"
+    },
+    {
+      "id": "minecraft:mipmapLevels",
+      "name": "Mipmap Levels",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:mipmapLevels"
+    },
+    {
+      "id": "minecraft:entityShadows",
+      "name": "Entity Shadows",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:entityShadows"
+    },
+    {
+      "id": "minecraft:entityDistanceScaling",
+      "name": "Entity Distance",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:entityDistanceScaling"
+    },
+    {
+      "id": "minecraft:menuBackgroundBlurriness",
+      "name": "Menu Background Blur",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:menuBackgroundBlurriness"
+    },
+    {
+      "id": "minecraft:cloudRange",
+      "name": "Cloud Distance",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:cloudRange"
+    },
+    {
+      "id": "minecraft:cutoutLeaves",
+      "name": "See-Through Leaves",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:cutoutLeaves"
+    },
+    {
+      "id": "minecraft:improvedTransparency",
+      "name": "Improved Transparency",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:improvedTransparency"
+    },
+    {
+      "id": "minecraft:textureFiltering",
+      "name": "Texture Filtering",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:textureFiltering"
+    },
+    {
+      "id": "minecraft:maxAnisotropyBit",
+      "name": "Anisotropic Filtering",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:maxAnisotropyBit"
+    },
+    {
+      "id": "minecraft:weatherRadius",
+      "name": "Weather Effect Radius",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:weatherRadius"
+    },
+    {
+      "id": "minecraft:showAutosaveIndicator",
+      "name": "Autosave Indicator",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:showAutosaveIndicator"
+    },
+    {
+      "id": "minecraft:vignette",
+      "name": "Show Vignette",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:vignette"
+    },
+    {
+      "id": "minecraft:attackIndicator",
+      "name": "Attack Indicator",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:attackIndicator"
+    },
+    {
+      "id": "minecraft:chunkSectionFadeInTime",
+      "name": "Chunk Fade Time",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:chunkSectionFadeInTime"
+    },
+    {
+      "id": "minecraft:display_control_29",
+      "name": "Exclusive Fullscreen Mode",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:display_control_29"
+    },
+    {
+      "id": "minecraft:graphicsPreset",
+      "name": "Preset",
+      "category": "Quality",
+      "backend": "Minecraft OptionInstance: minecraft:graphicsPreset"
+    },
+    {
+      "id": "tflcore:titleScreen/menuFpsLimit",
+      "name": "Menu animation FPS limit",
+      "category": "Display",
+      "backend": "TFL ConfigStore: titleScreen.menuFpsLimit"
+    },
+    {
+      "id": "tflcore:titleScreen/backgroundMode",
+      "name": "Menu background",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: titleScreen.backgroundMode"
+    },
+    {
+      "id": "tflcore:dynamicFps/enabled",
+      "name": "Dynamic FPS",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps"
+    },
+    {
+      "id": "tflcore:dynamicFps/unfocused",
+      "name": "FPS in the background",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.unfocused"
+    },
+    {
+      "id": "tflcore:dynamicFps/minimized",
+      "name": "FPS when minimized",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.minimized"
+    },
+    {
+      "id": "tflcore:dynamicFps/afkLimit",
+      "name": "FPS when AFK (0 \u003d off)",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.afkLimit"
+    },
+    {
+      "id": "tflcore:worldMap/cloudQuality",
+      "name": "Volumetric cloud quality",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: worldMap.cloudQuality"
+    },
+    {
+      "id": "tflcore:worldMap/cloudMotion",
+      "name": "Subtle atmospheric motion",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: worldMap.cloudMotion"
+    },
+    {
+      "id": "tflcore:miniPlayer/fpsLimit",
+      "name": "Widget FPS limit (0 \u003d unlimited)",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: miniPlayer.fpsLimit"
+    },
+    {
+      "id": "tflcore:fullbright/enabled",
+      "name": "Gamma",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: fullbright"
+    },
+    {
+      "id": "tflcore:fullbright/level",
+      "name": "Extended gamma level",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: fullbright.level"
+    }
+  ],
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real video advances",
+      "passed": true
+    },
+    {
+      "name": "source targets 30 fps",
+      "passed": true
+    },
+    {
+      "name": "Diorama session created",
+      "passed": true
+    },
+    {
+      "name": "Diorama owns full map",
+      "passed": true
+    },
+    {
+      "name": "shared pause rail",
+      "passed": true
+    },
+    {
+      "name": "reload completed",
+      "passed": true
+    },
+    {
+      "name": "Diorama remains available after reload",
+      "passed": true
+    },
+    {
+      "name": "Unified graphics with native provider",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:framerateLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:framerateLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:enableVsync",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:enableVsync",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:inactivityFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:inactivityFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:guiScale",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:guiScale",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:fullscreen",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:fullscreen",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:exclusiveFullscreen",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:exclusiveFullscreen",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:gamma",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:gamma",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:preferredGraphicsBackend",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:preferredGraphicsBackend",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:biomeBlendRadius",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:biomeBlendRadius",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:renderDistance",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:renderDistance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:prioritizeChunkUpdates",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:prioritizeChunkUpdates",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:simulationDistance",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:simulationDistance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:ambientOcclusion",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:ambientOcclusion",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:cloudStatus",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:cloudStatus",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:mipmapLevels",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:mipmapLevels",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:entityShadows",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:entityShadows",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:entityDistanceScaling",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:entityDistanceScaling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:menuBackgroundBlurriness",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:menuBackgroundBlurriness",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:cloudRange",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:cloudRange",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:cutoutLeaves",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:cutoutLeaves",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:improvedTransparency",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:improvedTransparency",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:textureFiltering",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:textureFiltering",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:maxAnisotropyBit",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:maxAnisotropyBit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:weatherRadius",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:weatherRadius",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:showAutosaveIndicator",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:showAutosaveIndicator",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:vignette",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:vignette",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:attackIndicator",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:attackIndicator",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:chunkSectionFadeInTime",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:chunkSectionFadeInTime",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:display_control_29",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:display_control_29",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:graphicsPreset",
+      "passed": true
+    },
+    {
+      "name": "graphics value minecraft:graphicsPreset",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:titleScreen/menuFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:titleScreen/menuFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:titleScreen/backgroundMode",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:titleScreen/backgroundMode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/enabled",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/unfocused",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/unfocused",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/minimized",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/minimized",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/afkLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/afkLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:worldMap/cloudQuality",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:worldMap/cloudQuality",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:worldMap/cloudMotion",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:worldMap/cloudMotion",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:miniPlayer/fpsLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:miniPlayer/fpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:fullbright/enabled",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:fullbright/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:fullbright/level",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:fullbright/level",
+      "passed": true
+    },
+    {
+      "name": "local screenshot editor available",
+      "passed": true
+    }
+  ]
+}

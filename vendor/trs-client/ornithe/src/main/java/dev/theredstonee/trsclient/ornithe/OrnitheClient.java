@@ -465,7 +465,7 @@ public final class OrnitheClient implements ModInitializer {
               }
 
               public String versionLine() {
-                return "Minecraft 1.8.9 · TFL Client · Experimental";
+                return Product.displayName("1.8.9");
               }
 
               public String clientVersion() {

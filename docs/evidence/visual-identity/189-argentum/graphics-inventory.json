@@ -1,0 +1,788 @@
+[
+  {
+    "id": "minecraft:render_distance",
+    "name": "Render Distance",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:brightness",
+    "name": "Brightness",
+    "category": "Display",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:gui_scale",
+    "name": "GUI Scale",
+    "category": "Display",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:fullscreen",
+    "name": "Fullscreen",
+    "category": "Display",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:max_frame_rate",
+    "name": "Max Framerate",
+    "category": "Display",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:vsync",
+    "name": "Use VSync",
+    "category": "Display",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:view_bobbing",
+    "name": "View Bobbing",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:graphics_mode",
+    "name": "Graphics",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:anaglyph",
+    "name": "3D Anaglyph",
+    "category": "Display",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:alternate_blocks",
+    "name": "Alternate Blocks",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:clouds",
+    "name": "Clouds",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:particles",
+    "name": "Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:smooth_lighting",
+    "name": "Smooth Lighting",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "argentum:fog_shape",
+    "name": "Fog Shape",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "minecraft:biome_blend",
+    "name": "Biome Blend",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:chunk_fade_in_duration",
+    "name": "Chunk Fade-In Duration",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "minecraft:entity_shadows",
+    "name": "Entity Shadows",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "minecraft:mipmap_levels",
+    "name": "Mipmap Levels",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+  },
+  {
+    "id": "celeritas:chunk_update_threads",
+    "name": "Chunk Update Threads",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:defer_chunk_updates",
+    "name": "Always Defer Chunk Updates",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:async_graph_search",
+    "name": "Async Occlusion Culling",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:block_face_culling",
+    "name": "Use Block Face Culling",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:raster_occlusion_culling",
+    "name": "Rasterized Occlusion Culling",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:fog_occlusion",
+    "name": "Use Fog Occlusion",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:entity_culling",
+    "name": "Use Entity Culling",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:entity_occlusion_interval",
+    "name": "Entity Occlusion Interval",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:particle_culling",
+    "name": "Particle Culling",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:entity_instancing",
+    "name": "Entity Instancing",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:bake_block_entities",
+    "name": "Bake Block Entities",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:name_tag_batching",
+    "name": "Name Tag Batching",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:animate_only_visible_textures",
+    "name": "Animate Only Visible Textures",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:font_batching",
+    "name": "Font Batching",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:gui_item_atlas",
+    "name": "Cache Item Icons",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:translucent_face_sorting",
+    "name": "Translucent Face Sorting",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:use_faster_clouds",
+    "name": "Use Faster Clouds",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:faster_end_portals",
+    "name": "Use Faster End Portals",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:faster_weather",
+    "name": "Use Faster Weather",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:safe_chunk_edges",
+    "name": "Safe Chunk Edges",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:render_pass_optimization",
+    "name": "Use Render Pass Optimization",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:compact_vertex_format",
+    "name": "Use Compact Vertex Format",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:greedy_render_thread",
+    "name": "Greedy Render Thread",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "celeritas:cpu_render_ahead_limit",
+    "name": "CPU Render-Ahead Limit",
+    "category": "Performance",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum:check_gl_errors",
+    "name": "OpenGL Error Checks",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "amplio:upscaler",
+    "name": "Upscaler",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.amplio.gui.AmplioOptionPage$1"
+  },
+  {
+    "id": "amplio:quality",
+    "name": "Quality",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.amplio.gui.AmplioOptionPage$1"
+  },
+  {
+    "id": "amplio:dlss_model",
+    "name": "DLSS Model",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.amplio.gui.AmplioOptionPage$1"
+  },
+  {
+    "id": "amplio:sharpness",
+    "name": "Sharpness",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.amplio.gui.AmplioOptionPage$1"
+  },
+  {
+    "id": "lucerna:shadow_distance",
+    "name": "Max Shadow Distance",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.lucerna.gui.option.IrisOptionPage$1"
+  },
+  {
+    "id": "lucerna:render_quality",
+    "name": "Render Quality",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.lucerna.gui.option.IrisOptionPage$1"
+  },
+  {
+    "id": "lucerna:shadow_quality",
+    "name": "Shadow Quality",
+    "category": "Shaders and upscaling",
+    "backend": "us.z1x.lucerna.gui.option.IrisOptionPage$1"
+  },
+  {
+    "id": "argentum-extras:cloud_render_distance",
+    "name": "Cloud Render Distance",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:cloud_height_offset",
+    "name": "Cloud Height",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:cloud_speed",
+    "name": "Cloud Speed",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:cloud_fog",
+    "name": "Cloud Fog",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:terrain_fog_density",
+    "name": "Terrain Fog Density",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:fluid_fog_density",
+    "name": "Fluid Fog Density",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:sky",
+    "name": "Sky",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:lower_sky",
+    "name": "Lower Sky",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:sun_and_moon",
+    "name": "Sun & Moon",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:stars",
+    "name": "Stars",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:weather_render_distance",
+    "name": "Weather Render Distance",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:weather_density",
+    "name": "Weather Density",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:leaf_quality",
+    "name": "Leaf Quality",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:dynamic_fov_strength",
+    "name": "Dynamic FOV Strength",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:portal_distortion_strength",
+    "name": "Portal Distortion Strength",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:view_bobbing_strength",
+    "name": "View Bobbing Strength",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:hurt_camera_strength",
+    "name": "Hurt Camera Strength",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:vignette_strength",
+    "name": "Vignette Strength",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:explosion_particles",
+    "name": "Explosion Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:spell_particles",
+    "name": "Spell Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:portal_particles",
+    "name": "Portal Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:smoke_and_flame_particles",
+    "name": "Smoke and Flame Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:redstone_particles",
+    "name": "Redstone Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:water_particles",
+    "name": "Water Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:miscellaneous_particles",
+    "name": "Miscellaneous Particles",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:steady_debug_hud",
+    "name": "Steady Debug HUD",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:debug_hud_refresh_interval",
+    "name": "Debug HUD Refresh Interval",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:debug_hud_scale",
+    "name": "Debug HUD Scale",
+    "category": "Advanced",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:fps_hud",
+    "name": "FPS HUD",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:entity_shadow_distance",
+    "name": "Entity Shadow Distance",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:armor",
+    "name": "Armor",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:armor_glint",
+    "name": "Armor Enchantment Glint",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:held_items",
+    "name": "Held Items",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:worn_heads",
+    "name": "Worn Heads",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:capes",
+    "name": "Capes",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:player_ears",
+    "name": "Special Player Ears",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:stuck_arrows",
+    "name": "Stuck Arrows",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:leashes",
+    "name": "Leashes",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:name_tags",
+    "name": "Name Tags",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:second_name_tag_layer",
+    "name": "Second Name Tag Layer",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:fxaa",
+    "name": "FXAA",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:smooth_block_outlines",
+    "name": "Smooth Block Outlines",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:scaled_block_outline",
+    "name": "Resolution Scaled Block Outline",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:block_outline_width",
+    "name": "Block Outline Width",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:disable_text_shadows",
+    "name": "Disable Text Shadows",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "argentum-extras:high_dpi_screen",
+    "name": "High-DPI Screen",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:better_grass",
+    "name": "Better Grass",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:connected_textures",
+    "name": "Connected Textures",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:dynamic_lights",
+    "name": "Dynamic Lights",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:natural_textures",
+    "name": "Natural Textures",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:emissive_textures",
+    "name": "Emissive Textures",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_block_layers",
+    "name": "Custom Block Layers",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:animated_textures",
+    "name": "Animated Textures",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_colors",
+    "name": "Custom Colors",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_lightmaps",
+    "name": "Custom Lightmaps",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_sky",
+    "name": "Custom Sky",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:random_entities",
+    "name": "Random Entities",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_items",
+    "name": "Custom Item Textures",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:optifine_cosmetics",
+    "name": "OptiFine Cosmetics",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_guis",
+    "name": "Custom GUIs",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:hd_fonts",
+    "name": "HD Fonts",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_panorama",
+    "name": "Custom Panorama",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "cera:custom_loading_screens",
+    "name": "Custom Loading Screens",
+    "category": "Quality",
+    "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+  },
+  {
+    "id": "tflcore:titleScreen/menuFpsLimit",
+    "name": "Menu animation FPS limit",
+    "category": "Display",
+    "backend": "TFL ConfigStore: titleScreen.menuFpsLimit"
+  },
+  {
+    "id": "tflcore:titleScreen/backgroundMode",
+    "name": "Menu background",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: titleScreen.backgroundMode"
+  },
+  {
+    "id": "tflcore:dynamicFps/enabled",
+    "name": "Dynamic FPS",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps"
+  },
+  {
+    "id": "tflcore:dynamicFps/unfocused",
+    "name": "FPS in the background",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps.unfocused"
+  },
+  {
+    "id": "tflcore:dynamicFps/minimized",
+    "name": "FPS when minimized",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps.minimized"
+  },
+  {
+    "id": "tflcore:dynamicFps/afkLimit",
+    "name": "FPS when AFK (0 = off)",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps.afkLimit"
+  },
+  {
+    "id": "tflcore:worldMap/cloudQuality",
+    "name": "Volumetric cloud quality",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: worldMap.cloudQuality"
+  },
+  {
+    "id": "tflcore:worldMap/cloudMotion",
+    "name": "Subtle atmospheric motion",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: worldMap.cloudMotion"
+  },
+  {
+    "id": "tflcore:miniPlayer/fpsLimit",
+    "name": "Widget FPS limit (0 = unlimited)",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: miniPlayer.fpsLimit"
+  },
+  {
+    "id": "tflcore:fullbright/enabled",
+    "name": "Gamma",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: fullbright"
+  },
+  {
+    "id": "tflcore:fullbright/level",
+    "name": "Extended gamma level",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: fullbright.level"
+  },
+  {
+    "id": "tflcore:colors/enabled",
+    "name": "Colors",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: colors"
+  },
+  {
+    "id": "tflcore:colors/saturation",
+    "name": "Color: Saturation",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: colors.saturation"
+  },
+  {
+    "id": "tflcore:colors/contrast",
+    "name": "Color: Contrast",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: colors.contrast"
+  },
+  {
+    "id": "tflcore:colors/brightness",
+    "name": "Color: Brightness",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: colors.brightness"
+  },
+  {
+    "id": "tflcore:colors/vibrance",
+    "name": "Color: Vibrance",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: colors.vibrance"
+  },
+  {
+    "id": "tflcore:colors/temperature",
+    "name": "Color: Color temperature",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: colors.temperature"
+  },
+  {
+    "id": "tflcore:gpu_info",
+    "name": "GPU",
+    "category": "Advanced",
+    "backend": "dev.theredstonee.trsclient.ornithe.OrnitheGraphics$1"
+  }
+]

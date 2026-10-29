@@ -3,6 +3,7 @@
   "id": "tflcore",
   "version": "${version}",
   "name": "TFL Client",
+  "icon": "assets/trsclient/branding/icon-256.png",
   "description": "TFL Client for Minecraft 1.8.9 with shared menus, HUD and map features.",
   "environment": "client",
   "license": "GPL-3.0-only",

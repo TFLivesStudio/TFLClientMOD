@@ -4,6 +4,10 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "MinecraftMixin",
+    "LucernaScreenMixin",
+    "LucernaControlsMixin",
+    "MinecraftResizeAccess",
+    "VideoOptionsAccess",
     "GameRendererMixin",
     "GameGuiMixin",
     "KeyBindingMixin",

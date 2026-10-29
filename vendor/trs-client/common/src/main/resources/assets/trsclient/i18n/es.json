@@ -2601,5 +2601,21 @@
   "screenshots.tool.line": "Línea",
   "screenshots.tool.fill": "Ocultar con color sólido",
   "screenshots.tool.highlight": "Resaltador",
-  "setting.titleScreen.menuFpsLimit": "FPS de las animaciones del menú"
+  "setting.titleScreen.menuFpsLimit": "FPS de las animaciones del menú",
+  "graphics.title": "Gráficos",
+  "graphics.search": "Buscar ajustes...",
+  "graphics.empty": "Sin resultados",
+  "graphics.back": "Volver",
+  "graphics.apply": "Aplicar",
+  "graphics.undo": "Deshacer",
+  "graphics.shaderPacks": "Paquetes de shaders",
+  "graphics.category.display": "Pantalla",
+  "graphics.category.quality": "Calidad",
+  "graphics.category.performance": "Rendimiento",
+  "graphics.category.shaders": "Shaders y escalado",
+  "graphics.category.advanced": "Avanzado",
+  "graphics.on": "Activado",
+  "graphics.off": "Desactivado",
+  "graphics.immediate": "Se guarda al cambiar. También disponible en los ajustes del cliente.",
+  "graphics.extraGamma": "Amplificación de gamma"
 }

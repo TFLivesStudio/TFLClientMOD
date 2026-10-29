@@ -7,6 +7,7 @@ public final class Product {
     public static final String SELECTION = "TFL Client";
     public static final String CONFIG = "tflcore/client.json";
     public static final String WAYPOINTS = "tflcore/waypoints.json";
+    public static String displayName(String minecraftVersion) { return NAME + " " + minecraftVersion; }
     private Product() {}
     /** Technical recovery switch. Not persisted and never exposed in navigation. */
     public static boolean safeMode() { return Boolean.getBoolean("tflcore.safeMode"); }

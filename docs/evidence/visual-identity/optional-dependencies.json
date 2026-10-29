@@ -1,0 +1,52 @@
+{
+  "testedOptional": [
+    {
+      "project": "argentum-extras",
+      "versionId": "WXFecncJ",
+      "version": "1.0.2",
+      "url": "https://cdn.modrinth.com/data/Tc8Lbsu7/versions/WXFecncJ/argentum-extras-1.0.2.jar",
+      "filename": "argentum-extras-1.0.2.jar",
+      "sha512": "f129c3acc4292936ab81b0e8578a72305df9db6539f7441a54b4625de8f175af86c7741d09820e8fa1e07bd028ac6ee244627005c73f3599880749f1aa087773"
+    },
+    {
+      "project": "cera",
+      "versionId": "aqSuvjyl",
+      "version": "1.0.2",
+      "url": "https://cdn.modrinth.com/data/z4ctq7MO/versions/aqSuvjyl/cera-1.0.2.jar",
+      "filename": "cera-1.0.2.jar",
+      "sha512": "727936ab8a962821e83ce181e20946dac7d217f130033fecd78316f84537ebc1edb47b10f73a5cd32981d7fac3c3c82020ba90bab2d5de66b4abaac1dc93c0ae"
+    },
+    {
+      "project": "soundfix",
+      "versionId": "HZ3MW8tG",
+      "version": "1.1.0+mc1.8.9",
+      "url": "https://cdn.modrinth.com/data/h2NAXCR5/versions/HZ3MW8tG/soundfix-1.1.0%2Bmc1.8.9.jar",
+      "filename": "soundfix-1.1.0+mc1.8.9.jar",
+      "sha512": "5baea044af713a160b1beaa65aabe776a6e920a0bf90ffe12a9090cbf69f3dc1525340ad6f431d0aa676a66cd0f981e400bda4d0b88577cc7a8b759810cc17e2"
+    },
+    {
+      "project": "lucerna",
+      "version": "0.1.1",
+      "url": "https://github.com/jonathanthxd/lucerna",
+      "commit": "deadbadf9f1ebe52785d124eb09557eafcbb1f77",
+      "artifactId": "12907955520",
+      "filename": "lucerna-0.1.1.jar",
+      "sha256": "f31e1961aa16ae16ae2eb6ae10f8bb5f0d211fad2689343c98dc97c15e158071"
+    },
+    {
+      "project": "amplio",
+      "version": "0.1.1",
+      "url": "https://github.com/jonathanthxd/amplio",
+      "commit": "deadbad272d6c0febcebd8e70a3ad0107b5a0915",
+      "artifactId": "12910890079",
+      "filename": "amplio-0.1.1+1.8.9.jar",
+      "sha256": "52d7587beaabd22be71d511a0fdf6774b4b6baad20115bd1e0fd233f7893bf8a"
+    }
+  ],
+  "notVerified": [
+    "Sarcio 1.1.1: exact artifact unavailable",
+    "Pulse 1.0.0: exact artifact unavailable"
+  ],
+  "baseStackManifest": "tools/ornithe/dependencies.json",
+  "modernStackManifest": "docs/evidence/depth-polish/optimizer-dependencies-263.json"
+}

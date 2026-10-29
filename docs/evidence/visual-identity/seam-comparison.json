@@ -1,0 +1,18 @@
+{
+  "before": {
+    "peakMeanRgbStepNearCutoff": 3.861111111111111,
+    "column": 828,
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "after": {
+    "peakMeanRgbStepNearCutoff": 1.367283950617284,
+    "column": 832,
+    "resolution": [
+      1920,
+      1080
+    ]
+  }
+}

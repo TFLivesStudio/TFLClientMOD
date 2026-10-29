@@ -35,9 +35,12 @@ public final class UnifiedSmoke {
     if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=80;return;
    case 8:
     AutoTest.shot(mc,"unified-diorama-reload");check("Diorama remains available after reload",dev.diorama.MapSession.get()!=null);
-    try{var type=Class.forName("net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen");var method=type.getMethod("createScreen",net.minecraft.client.gui.screens.Screen.class);Mc.setScreen((net.minecraft.client.gui.screens.Screen)method.invoke(null,Mc.screen()));phase++;wait=20;return;}catch(ClassNotFoundException absent){phase=10;return;}
+    try{var type=Class.forName("net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen");var method=type.getMethod("createScreen",net.minecraft.client.gui.screens.Screen.class);Mc.setScreen((net.minecraft.client.gui.screens.Screen)method.invoke(null,Mc.screen()));phase++;wait=20;return;}catch(ClassNotFoundException absent){Mc.setScreen(new net.minecraft.client.gui.screens.options.VideoSettingsScreen(Mc.screen(),mc,mc.options));phase=9;wait=20;return;}
    case 9:
-    AutoTest.shot(mc,"unified-sodium");check("Sodium remains native",Mc.screen().getClass().getName().contains("sodium"));phase=10;return;
+    AutoTest.shot(mc,"unified-sodium");check("Unified graphics with native provider",Mc.screen() instanceof dev.theredstonee.trsclient.screen.TrsUiScreen ui&&ui.ui() instanceof dev.theredstonee.trsclient.core.ui.graphics.GraphicsUi);
+    var graphics=(dev.theredstonee.trsclient.core.ui.graphics.GraphicsUi)((dev.theredstonee.trsclient.screen.TrsUiScreen)Mc.screen()).ui();report.add("graphicsInventory",new Gson().toJsonTree(graphics.inventory()));java.util.Set<String> ids=new java.util.HashSet<>();for(var option:graphics.provider().options()){check("unique graphics option "+option.id(),ids.add(option.id()));check("graphics value "+option.id(),option.value()!=null);}
+    for(var option:graphics.provider().options())if(option.name().toLowerCase(java.util.Locale.ROOT).contains("bobbing")&&option.available()){String before=option.value();option.step(1);graphics.provider().apply();check("native graphics apply",!before.equals(option.value()));option.step(1);graphics.provider().apply();check("graphics preference restored",before.equals(option.value()));break;}
+    AutoTest.shot(mc,"unified-graphics");phase=10;return;
    case 10:
     var shots=dev.theredstonee.trsclient.core.screenshot.Screenshots.get();check("local screenshot editor available",shots!=null);shots.platform().openUi("Screenshot editor",new dev.theredstonee.trsclient.core.ui.screenshot.ScreenshotEditorUi(shots,mc.gameDirectory.toPath().resolve("screenshots/unified-diorama-map.png")));phase++;wait=30;return;
    case 11:

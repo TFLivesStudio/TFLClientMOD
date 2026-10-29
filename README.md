@@ -9,13 +9,13 @@ Cliente de Minecraft en desarrollo, con una interfaz nativa compartida, HUD conf
 
 Argentum 1.0.2 + Legacy LWJGL3 1.4.10 en 1.8.9 y Sodium 0.9.2 en 26.3 son opciones separadas. Sus binarios no se incluyen. Forge y NeoForge se han retirado; el historial de Git conserva las versiones anteriores.
 
-La candidata actual es **0.4.0-unified.1**. Consulta [implementación, validación y límites](docs/UNIFIED_CLIENT.md). Una compilación o una prueba de menú no certifica todos los módulos ni garantiza una tasa de FPS en cualquier equipo.
+La candidata actual es **0.4.0-identity.1**. Consulta [implementación, validación y límites](docs/VISUAL_IDENTITY.md). Una compilación o una prueba de menú no certifica todos los módulos ni garantiza una tasa de FPS en cualquier equipo.
 
 ## Uso
 
 Instala un solo JAR TFL, correspondiente a tu versión y plataforma. Conserva una copia de tus ajustes antes de probar una candidata. `Right Shift` abre la configuración; `M`, el mapa. El editor del HUD permite mover y escalar sus elementos. ESC usa navegación transparente a la izquierda.
 
-El vídeo se distribuye a 30 FPS en 1080p, 720p y 480p. Calidad es el valor inicial; los modos de rendimiento, estático y desactivado son opciones explícitas. La tasa realmente presentada depende del equipo y se muestra en el menú. No se cambian silenciosamente tus preferencias guardadas.
+El vídeo se distribuye a 30 FPS en 1080p, 720p y 480p. Calidad es el valor inicial; los modos de rendimiento, estático y desactivado son opciones explícitas. La tasa realmente presentada depende del equipo; las métricas quedan en los diagnósticos. No se cambian silenciosamente tus preferencias guardadas.
 
 Capturas: `screenshots/`. Clips locales: `clips/`. La vista previa y edición de MP4 requieren FFmpeg y ffprobe instalados en PATH. No requieren servicios del launcher anterior y no descargan programas. Las ediciones se exportan a archivos nuevos.
 

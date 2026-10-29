@@ -2601,5 +2601,21 @@
   "screenshots.tool.line": "Line",
   "screenshots.tool.fill": "Solid redaction",
   "screenshots.tool.highlight": "Highlighter",
-  "setting.titleScreen.menuFpsLimit": "Menu animation FPS limit"
+  "setting.titleScreen.menuFpsLimit": "Menu animation FPS limit",
+  "graphics.title": "Grafik",
+  "graphics.search": "Einstellungen suchen...",
+  "graphics.empty": "Keine Ergebnisse",
+  "graphics.back": "Zurück",
+  "graphics.apply": "Anwenden",
+  "graphics.undo": "Verwerfen",
+  "graphics.shaderPacks": "Shader-Pakete",
+  "graphics.category.display": "Anzeige",
+  "graphics.category.quality": "Qualität",
+  "graphics.category.performance": "Leistung",
+  "graphics.category.shaders": "Shader und Skalierung",
+  "graphics.category.advanced": "Erweitert",
+  "graphics.on": "An",
+  "graphics.off": "Aus",
+  "graphics.immediate": "Wird sofort gespeichert. Auch in den Clienteinstellungen verfügbar.",
+  "graphics.extraGamma": "Extended gamma level"
 }

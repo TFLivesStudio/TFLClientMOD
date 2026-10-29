@@ -2601,5 +2601,21 @@
   "screenshots.tool.line": "Line",
   "screenshots.tool.fill": "Solid redaction",
   "screenshots.tool.highlight": "Highlighter",
-  "setting.titleScreen.menuFpsLimit": "Menu animation FPS limit"
+  "setting.titleScreen.menuFpsLimit": "Menu animation FPS limit",
+  "graphics.title": "Graphics",
+  "graphics.search": "Search settings...",
+  "graphics.empty": "No results",
+  "graphics.back": "Back",
+  "graphics.apply": "Apply",
+  "graphics.undo": "Undo",
+  "graphics.shaderPacks": "Shader packs",
+  "graphics.category.display": "Display",
+  "graphics.category.quality": "Quality",
+  "graphics.category.performance": "Performance",
+  "graphics.category.shaders": "Shaders and upscaling",
+  "graphics.category.advanced": "Advanced",
+  "graphics.on": "On",
+  "graphics.off": "Off",
+  "graphics.immediate": "Saved immediately. Also available in client settings.",
+  "graphics.extraGamma": "Extended gamma level"
 }

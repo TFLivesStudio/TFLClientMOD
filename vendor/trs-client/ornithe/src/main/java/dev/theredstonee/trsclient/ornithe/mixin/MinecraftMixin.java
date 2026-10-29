@@ -11,10 +11,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
+  @Inject(method="tick",at=@At("HEAD"))
+  private void tfl$windowIdentity(CallbackInfo ci){
+    if(!Product.safeMode())WindowIdentity.refresh();
+  }
+
   @Inject(method="renderLoadingScreen",at=@At("HEAD"),cancellable=true)
   private void tfl$boot(net.minecraft.client.render.texture.TextureManager textures,CallbackInfo ci){
     if(!Product.safeMode()){BootScreen.draw();ci.cancel();}
   }
+
+  @Inject(method="toggleFullscreen",at=@At("TAIL"))
+  private void tfl$refreshIcon(CallbackInfo ci){if(!Product.safeMode())WindowIdentity.windowChanged();}
 
   @Inject(method="startGame",at=@At("HEAD"))private void tfl$worldLoad(String id,String name,net.minecraft.world.WorldSettings settings,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null)c.worldLoadNanos=System.nanoTime();}
 
@@ -66,6 +74,8 @@ public abstract class MinecraftMixin {
   private void tfl$title(Screen screen, CallbackInfo ci) {
     OrnitheClient c = OrnitheClient.get();
     Minecraft mc = (Minecraft) (Object) this;
+    if(c!=null&&c.ready&&!Product.safeMode()&&mc.screen instanceof net.minecraft.client.gui.screen.menu.options.VideoOptionsScreen vanilla){mc.openScreen(new CoreScreen(new dev.theredstonee.trsclient.core.ui.graphics.GraphicsUi(new VanillaGraphics(c,vanilla)),false));return;}
+    if(c!=null&&c.ready&&!Product.safeMode()&&mc.screen!=null&&OrnitheGraphics.open(c,mc.screen))return;
     if (c != null
         && c.ready
         && c.navigation != null
