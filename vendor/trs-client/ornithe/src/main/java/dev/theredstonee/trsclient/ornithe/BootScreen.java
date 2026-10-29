@@ -5,6 +5,7 @@ import org.lwjgl.BufferUtils;
 public final class BootScreen {
  private BootScreen(){}
  public static void draw(){
+  WindowIdentity.refresh();
   int w=Display.getWidth(),h=Display.getHeight();
   GL11.glViewport(0,0,w,h);GL11.glClearColor(8/255f,13/255f,24/255f,1);GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
   int old=GL11.glGetInteger(GL11.GL_MATRIX_MODE),binding=GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D),texture=0;

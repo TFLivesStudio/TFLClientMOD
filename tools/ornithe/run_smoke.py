@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Real Linux/X11 client smoke driver. Focuses the native window for Robot input and verifies report status."""
 import argparse,ctypes as C,ctypes.util,json,os,pathlib,re,subprocess,time
-p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');p.add_argument('--large',action='store_true');p.add_argument('--production',action='store_true');p.add_argument('--unified',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');p.add_argument('--large',action='store_true');p.add_argument('--production',action='store_true');p.add_argument('--unified',action='store_true');p.add_argument('--graphics-mods-dir',type=pathlib.Path);a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];project=root/'vendor/trs-client/ornithe'
 report=project/'build/smoke'/('production' if a.production else a.stack)/('restart.json' if a.restart else 'report.json');report.unlink(missing_ok=True)
 cmd=[str(project/'gradlew'),'-p',str(project),'--no-daemon','--max-workers=2',('runProdClient' if a.production else 'runClient'),'-Psmoke',f'-PtestStack={a.stack}']
 if a.production:cmd.append('-PdepthNativeProbe')
 if a.unified:cmd.append('-PunifiedSmoke')
 if a.mods_dir:cmd.append(f'-PruntimeModsDir={a.mods_dir.resolve()}')
+if a.graphics_mods_dir:cmd.append(f'-PruntimeGraphicsModsDir={a.graphics_mods_dir.resolve()}')
 if a.restart:cmd.append('-Prestart')
 if a.large:cmd.append('-PuiSmokeLarge')
 x=C.CDLL(ctypes.util.find_library('X11'));x.XOpenDisplay.argtypes=[C.c_char_p];x.XOpenDisplay.restype=C.c_void_p
@@ -26,7 +27,7 @@ try:
  while proc.poll() is None:
   if time.monotonic()>deadline:proc.terminate();raise SystemExit('Gradle/client smoke timeout')
   tree=subprocess.run(['xwininfo','-root','-tree'],capture_output=True,text=True,timeout=5).stdout
-  win=re.search(r'(0x[0-9a-f]+) "(?:TFL Client · )?Minecraft',tree)
+  win=re.search(r'(0x[0-9a-f]+) "(?:(?:TFL Client · )?Minecraft|TFL Client 1\.8\.9)',tree)
   if win:x.XSetInputFocus(d,int(win.group(1),16),2,0);x.XFlush(d)
   time.sleep(.5)
 finally:x.XCloseDisplay(d)

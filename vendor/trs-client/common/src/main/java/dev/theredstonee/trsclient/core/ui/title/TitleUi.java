@@ -21,7 +21,6 @@ public final class TitleUi extends UiScreen {
     private float delay,frameMs,uiMicros;
     private boolean sceneEnabled=true;
     private TextureRef railShade;private int railGeneration=-1;
-    private long statusAt;private String videoStatus="";
     public TitleUi(final TitleHost host) {
         this.host=host; I18n.refresh();
         entries.add(new Entry("singleplayer",()->host.singleplayer()));
@@ -44,7 +43,7 @@ public final class TitleUi extends UiScreen {
         if(c.images()&&store!=null){
             int generation=store.resourceGeneration();
             if(railShade==null||generation!=railGeneration){int[] pixels=new int[256];for(int i=0;i<256;i++)pixels[i]=(Math.max(0,185-i*185/255)<<24)|0x060B14;railShade=store.upload("menu/rail-shade",256,1,pixels);railGeneration=generation;}
-            if(railShade!=null)Affine.image(c,railShade,0,0,width/2f,height,0,0,256,1,0xFFFFFFFF);
+            if(railShade!=null)Affine.image(c,railShade,0,0,width/2f,height,1,0,254,1,0xFFFFFFFF);
         }else for(int x=0;x<width/2;x+=4){int a=Math.max(0,185-x*370/Math.max(1,width));c.fill(x,0,Math.min(x+4,width/2),height,(a<<24)|0x060B14);}
 
         boolean compact=height<190;
@@ -53,7 +52,6 @@ public final class TitleUi extends UiScreen {
         int headingY=compact?7:Math.max(18,top-46);
         c.push();c.translate(left,headingY);c.scale(compact?1.15f:1.9f);
         c.text("TFL Client",0,0,t.text,false);c.pop();
-        if(!compact)c.text(host.clientVersion(),left,headingY+26,t.textDim,false);
         for(int i=0;i<entries.size();i++) {
             Entry e=entries.get(i);e.x=left;e.y=top+i*row;e.w=rail;e.h=Math.max(10,row-3);
             boolean selected=focus==i||inside(mx,my,e);
@@ -67,12 +65,6 @@ public final class TitleUi extends UiScreen {
             final int index=i;hits.add(e.x,e.y,e.w,e.h,()->activate(index));
         }
         if(!compact)c.text(c.clip(host.versionLine(),Math.max(0,width-24)),12,height-13,t.textDim,false);
-        if(m!=null&&!compact){
-            long now=System.currentTimeMillis();if(now-statusAt>500){videoStatus=MenuBackground.shared().status();statusAt=now;}
-            String label=c.clip(videoStatus,Math.max(70,width/2-16));int bw=c.textWidth(label)+12,bx=width-bw-8,by=height-29;
-            SelectionStyle.panel(c,bx,by,bw,17,0xA0101828,0x504D77A8);c.text(label,bx+6,by+4,t.textDim,false);
-            hits.add(bx,by,bw,17,()->{host.playClick();host.trsMenu();});
-        }
         if(pending>=0) {delay-=dt;if(delay<=0){int index=pending;pending=-1;entries.get(index).action.run();}}
         frames++;frameMs=dt*1000;float us=(System.nanoTime()-start)/1000f;uiMicros=frames==1?us:uiMicros+(us-uiMicros)*0.05f;
     }

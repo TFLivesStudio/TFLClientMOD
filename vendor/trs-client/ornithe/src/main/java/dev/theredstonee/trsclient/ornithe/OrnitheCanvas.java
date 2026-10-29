@@ -52,8 +52,9 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   private final java.util.Map<String, DynamicEntry> dynamic = new java.util.HashMap<>();
   private TextureRef opaqueVideo;
 
-  private final int[] advances = new int[384];
-  private static final int CELL = 104, COLS = 24, FIRST = 32, LAST = 384;
+  private static final int CELL = 104, COLS = 32, FIRST = 32, LAST = 1280;
+  private final int[] advances = new int[LAST],glyphSlots=new int[LAST];
+  private int fontAtlasHeight;
   private int width, height, scale = 1;
   private final Identifier still = new Identifier("trsclient:textures/menu/black-hole.png");
   private final Identifier icons = new Identifier("trsclient:textures/ui/icons.png");
@@ -76,9 +77,12 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
             .getResource(new Identifier("trsclient:font/nunito-regular.ttf"))
             .asStream()) {
       Font face = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(72f);
+      java.util.Arrays.fill(glyphSlots,-1);int glyphCount=0;
+      for(int ch=FIRST;ch<LAST;ch++)if(face.canDisplay(glyph(ch).charAt(0)))glyphSlots[ch]=glyphCount++;
+      fontAtlasHeight=Math.max(1,(glyphCount+COLS-1)/COLS)*CELL;
       BufferedImage image =
           new BufferedImage(
-              COLS * CELL, ((LAST - FIRST + COLS - 1) / COLS) * CELL, BufferedImage.TYPE_INT_ARGB);
+              COLS * CELL, fontAtlasHeight, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = image.createGraphics();
       try {
         g.setFont(face);
@@ -88,14 +92,14 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
         g.setRenderingHint(
             RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         for (int ch = FIRST; ch < LAST; ch++) {
-          int n = ch - FIRST;
+          int n = glyphSlots[ch];if(n<0)continue;
           advances[ch] =
               (int)
                   Math.ceil(
-                      face.getStringBounds(String.valueOf((char) ch), g.getFontRenderContext())
+                      face.getStringBounds(glyph(ch), g.getFontRenderContext())
                           .getWidth());
           g.drawString(
-              String.valueOf((char) ch),
+              glyph(ch),
               n % COLS * CELL + 4,
               n / COLS * CELL + 4 + g.getFontMetrics().getAscent());
         }
@@ -151,6 +155,9 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
       GlStateManager.pushMatrix();
     }
     GlStateManager.disableLighting();
+    // UI transparency is continuous coverage. Minecraft's 0.1 cutout threshold creates a seam in gradients.
+    // end() restores the captured alpha-test enable state before world rendering resumes.
+    GlStateManager.disableAlphaTest();
     GlStateManager.enableTexture();
     GlStateManager.enableBlend();
     GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -205,18 +212,21 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     GuiElement.fill(x1, y1, x2, y2, color);
   }
 
-  public boolean supportsText(String text){return text!=null&&font!=null&&!nativeFont(text.replaceAll("\u00a7.",""));}
+  public boolean supportsText(String text){return text!=null&&font!=null&&!nativeFont(normalizePunctuation(text).replaceAll("\u00a7.",""));}
   private boolean nativeFont(String text) {
     for (int i = 0; i < text.length(); i++) {
       char ch = text.charAt(i);
-      if (ch < FIRST || ch >= LAST) return true;
+      if (ch < FIRST || ch >= LAST || glyphSlots[ch]<0) return true;
     }
     return font == null;
   }
 
+  private static final String PUNCTUATION="…—–’“”←→↑↓✓";
+  private static String glyph(int ch){return ch>=127&&ch<127+PUNCTUATION.length()?String.valueOf(PUNCTUATION.charAt(ch-127)):String.valueOf((char)ch);}
+  private static String normalizePunctuation(String text){StringBuilder out=null;for(int i=0;i<text.length();i++){int index=PUNCTUATION.indexOf(text.charAt(i));if(index>=0){if(out==null)out=new StringBuilder(text);out.setCharAt(i,(char)(127+index));}}return out==null?text:out.toString();}
   private String privateText(String text) {
     var c = OrnitheClient.get();
-    return c != null && c.ready ? c.privacy.text(text) : text;
+    return normalizePunctuation(c != null && c.ready ? c.privacy.text(text) : text);
   }
 
   public void text(String text, int x, int y, int color, boolean shadow) {
@@ -234,7 +244,8 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
       }return;
     }
     if (nativeFont(text)) {
-      mc.textRenderer.draw(text, x, y, color, shadow);
+      boolean alpha=GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
+      try{mc.textRenderer.draw(text, x, y, color, shadow);}finally{if(!alpha)GlStateManager.disableAlphaTest();}
       return;
     }
     if (shadow) text(text, x + 1, y + 1, (color & 0xFF000000) | ((color & 0xFCFCFC) >> 2), false);
@@ -253,10 +264,10 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
         top = y - .5,
         size = CELL * .125,
         atlasW = COLS * CELL,
-        atlasH = ((LAST - FIRST + COLS - 1) / COLS) * CELL;
+        atlasH = fontAtlasHeight;
     for (int i = 0; i < text.length(); i++) {
       char ch = text.charAt(i);
-      int n = ch - FIRST;
+      int n = glyphSlots[ch];
       double u = (n % COLS * CELL) / atlasW,
           v = (n / COLS * CELL) / atlasH,
           du = CELL / atlasW,
@@ -388,13 +399,15 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
       mc.getTextureManager().bind((Identifier)entry.ref.id);
       GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
       GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+      GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE);
+      GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE);
       GlStateManager.bindTexture(previous);
     }
     return entry.ref;
   }
 
   public int ownedDynamicTextures(){return dynamic.size()+(font==null?0:1);}
-  public long ownedDynamicTextureBytes(){long bytes=font==null?0:(long)COLS*CELL*((LAST-FIRST+COLS-1)/COLS)*CELL*4;for(var entry:dynamic.values())bytes+=(long)entry.ref.width*entry.ref.height*4;return bytes;}
+  public long ownedDynamicTextureBytes(){long bytes=font==null?0:(long)COLS*CELL*fontAtlasHeight*4;for(var entry:dynamic.values())bytes+=(long)entry.ref.width*entry.ref.height*4;return bytes;}
 
   public void release(TextureRef texture) {
     if(texture==opaqueVideo)opaqueVideo=null;

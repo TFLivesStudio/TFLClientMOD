@@ -1,0 +1,254 @@
+[
+  {
+    "id": "minecraft:framerateLimit",
+    "name": "Max Framerate",
+    "category": "Display",
+    "backend": "Minecraft OptionInstance: minecraft:framerateLimit"
+  },
+  {
+    "id": "minecraft:enableVsync",
+    "name": "VSync",
+    "category": "Display",
+    "backend": "Minecraft OptionInstance: minecraft:enableVsync"
+  },
+  {
+    "id": "minecraft:inactivityFpsLimit",
+    "name": "Reduce fps when",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:inactivityFpsLimit"
+  },
+  {
+    "id": "minecraft:guiScale",
+    "name": "GUI Scale",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:guiScale"
+  },
+  {
+    "id": "minecraft:fullscreen",
+    "name": "Fullscreen",
+    "category": "Display",
+    "backend": "Minecraft OptionInstance: minecraft:fullscreen"
+  },
+  {
+    "id": "minecraft:exclusiveFullscreen",
+    "name": "Exclusive Fullscreen",
+    "category": "Display",
+    "backend": "Minecraft OptionInstance: minecraft:exclusiveFullscreen"
+  },
+  {
+    "id": "minecraft:gamma",
+    "name": "Brightness",
+    "category": "Display",
+    "backend": "Minecraft OptionInstance: minecraft:gamma"
+  },
+  {
+    "id": "minecraft:preferredGraphicsBackend",
+    "name": "Graphics API",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:preferredGraphicsBackend"
+  },
+  {
+    "id": "minecraft:biomeBlendRadius",
+    "name": "Biome Blend",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:biomeBlendRadius"
+  },
+  {
+    "id": "minecraft:renderDistance",
+    "name": "Render Distance",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:renderDistance"
+  },
+  {
+    "id": "minecraft:prioritizeChunkUpdates",
+    "name": "Chunk Builder",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:prioritizeChunkUpdates"
+  },
+  {
+    "id": "minecraft:simulationDistance",
+    "name": "Simulation Distance",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:simulationDistance"
+  },
+  {
+    "id": "minecraft:ambientOcclusion",
+    "name": "Smooth Lighting",
+    "category": "Performance",
+    "backend": "Minecraft OptionInstance: minecraft:ambientOcclusion"
+  },
+  {
+    "id": "minecraft:cloudStatus",
+    "name": "Clouds",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:cloudStatus"
+  },
+  {
+    "id": "minecraft:particles",
+    "name": "Particles",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:particles"
+  },
+  {
+    "id": "minecraft:mipmapLevels",
+    "name": "Mipmap Levels",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:mipmapLevels"
+  },
+  {
+    "id": "minecraft:entityShadows",
+    "name": "Entity Shadows",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:entityShadows"
+  },
+  {
+    "id": "minecraft:entityDistanceScaling",
+    "name": "Entity Distance",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:entityDistanceScaling"
+  },
+  {
+    "id": "minecraft:menuBackgroundBlurriness",
+    "name": "Menu Background Blur",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:menuBackgroundBlurriness"
+  },
+  {
+    "id": "minecraft:cloudRange",
+    "name": "Cloud Distance",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:cloudRange"
+  },
+  {
+    "id": "minecraft:cutoutLeaves",
+    "name": "See-Through Leaves",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:cutoutLeaves"
+  },
+  {
+    "id": "minecraft:improvedTransparency",
+    "name": "Improved Transparency",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:improvedTransparency"
+  },
+  {
+    "id": "minecraft:textureFiltering",
+    "name": "Texture Filtering",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:textureFiltering"
+  },
+  {
+    "id": "minecraft:maxAnisotropyBit",
+    "name": "Anisotropic Filtering",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:maxAnisotropyBit"
+  },
+  {
+    "id": "minecraft:weatherRadius",
+    "name": "Weather Effect Radius",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:weatherRadius"
+  },
+  {
+    "id": "minecraft:showAutosaveIndicator",
+    "name": "Autosave Indicator",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:showAutosaveIndicator"
+  },
+  {
+    "id": "minecraft:vignette",
+    "name": "Show Vignette",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:vignette"
+  },
+  {
+    "id": "minecraft:attackIndicator",
+    "name": "Attack Indicator",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:attackIndicator"
+  },
+  {
+    "id": "minecraft:chunkSectionFadeInTime",
+    "name": "Chunk Fade Time",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:chunkSectionFadeInTime"
+  },
+  {
+    "id": "minecraft:display_control_29",
+    "name": "Exclusive Fullscreen Mode",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:display_control_29"
+  },
+  {
+    "id": "minecraft:graphicsPreset",
+    "name": "Preset",
+    "category": "Quality",
+    "backend": "Minecraft OptionInstance: minecraft:graphicsPreset"
+  },
+  {
+    "id": "tflcore:titleScreen/menuFpsLimit",
+    "name": "Menu animation FPS limit",
+    "category": "Display",
+    "backend": "TFL ConfigStore: titleScreen.menuFpsLimit"
+  },
+  {
+    "id": "tflcore:titleScreen/backgroundMode",
+    "name": "Menu background",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: titleScreen.backgroundMode"
+  },
+  {
+    "id": "tflcore:dynamicFps/enabled",
+    "name": "Dynamic FPS",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps"
+  },
+  {
+    "id": "tflcore:dynamicFps/unfocused",
+    "name": "FPS in the background",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps.unfocused"
+  },
+  {
+    "id": "tflcore:dynamicFps/minimized",
+    "name": "FPS when minimized",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps.minimized"
+  },
+  {
+    "id": "tflcore:dynamicFps/afkLimit",
+    "name": "FPS when AFK (0 = off)",
+    "category": "Performance",
+    "backend": "TFL ConfigStore: dynamicFps.afkLimit"
+  },
+  {
+    "id": "tflcore:worldMap/cloudQuality",
+    "name": "Volumetric cloud quality",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: worldMap.cloudQuality"
+  },
+  {
+    "id": "tflcore:worldMap/cloudMotion",
+    "name": "Subtle atmospheric motion",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: worldMap.cloudMotion"
+  },
+  {
+    "id": "tflcore:miniPlayer/fpsLimit",
+    "name": "Widget FPS limit (0 = unlimited)",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: miniPlayer.fpsLimit"
+  },
+  {
+    "id": "tflcore:fullbright/enabled",
+    "name": "Gamma",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: fullbright"
+  },
+  {
+    "id": "tflcore:fullbright/level",
+    "name": "Extended gamma level",
+    "category": "Quality",
+    "backend": "TFL ConfigStore: fullbright.level"
+  }
+]

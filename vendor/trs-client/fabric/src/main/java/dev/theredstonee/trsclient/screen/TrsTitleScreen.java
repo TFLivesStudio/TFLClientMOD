@@ -76,7 +76,7 @@ public final class TrsTitleScreen extends TrsUiScreen {
 					.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("?");
 			String trsVersion = FabricLoader.getInstance().getModContainer(TrsClient.MOD_ID)
 					.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("?");
-			versionLine = "Minecraft " + mcVersion + " · TFL Client " + trsVersion;
+			versionLine = dev.theredstonee.trsclient.core.product.Product.displayName(mcVersion);
 		}
 
 		@Override

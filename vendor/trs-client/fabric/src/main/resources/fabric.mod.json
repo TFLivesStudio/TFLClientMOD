@@ -3,6 +3,7 @@
 	"id": "tflcore",
 	"version": "${version}",
 	"name": "TFL Client",
+  "icon": "assets/trsclient/branding/icon-256.png",
 	"description": "TFL Client: offline client utilities, HUD, maps and gameplay customization. Derived from TRS Client.",
 	"authors": [
 		"theredstonee (original TRS Client)", "TFLivesStudio (TFL modifications)"

@@ -123,3 +123,9 @@ dependencies {
 tasks.withType(Jar).configureEach {
     from('../../diorama/LICENSE') { into 'META-INF/licenses'; rename { 'diorama-MIT.txt' } }
 }
+// Optional exact graphics providers for integration tests; never included in distribution JARs.
+if (providers.gradleProperty('runtimeGraphicsModsDir').isPresent()) {
+    tasks.named('runProdClient') {
+        mods.from(fileTree(providers.gradleProperty('runtimeGraphicsModsDir').get()) { include 'amplio*.jar', 'lucerna*.jar', 'argentum-extras*.jar', 'cera*.jar', 'sarcio*.jar', 'pulse*.jar', 'soundfix*.jar' })
+    }
+}
