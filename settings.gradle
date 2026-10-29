@@ -1,2 +1,2 @@
 rootProject.name = 'tfl-core-distribution'
-// Fabric/legacy Stonecutter are independent builds, invoked by root lifecycle tasks.
+// Fabric/Ornithe Stonecutter are independent builds, invoked by root lifecycle tasks.

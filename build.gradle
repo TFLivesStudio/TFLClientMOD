@@ -1,5 +1,4 @@
-// The adopted TRS implementation is authoritative. The old src/ tree is retained only as
-// migration reference; it is not a source set and can never enter this build's artifacts.
+// The adopted TRS implementation is authoritative. Retired implementations are available in Git history.
 plugins { id 'base' }
 
 def adopted = layout.projectDirectory.dir('vendor/trs-client')
@@ -9,7 +8,7 @@ tasks.register('verifyAdoptedFabric', Exec) {
 }
 tasks.register('test') { dependsOn 'verifyAdoptedFabric' }
 tasks.named('check') { dependsOn 'verifyAdoptedFabric' }
-tasks.register('legacyBuild', Exec) {
-    workingDir adopted.dir('legacy')
-    commandLine 'bash', 'gradlew', '--no-daemon', '--max-workers=2', 'build', '-PtrsVersions=1.8.9'
+tasks.register('ornitheBuild', Exec) {
+    workingDir adopted.dir('ornithe')
+    commandLine 'bash', 'gradlew', '--no-daemon', '--max-workers=2', 'build'
 }
