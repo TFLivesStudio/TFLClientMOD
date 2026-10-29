@@ -21,5 +21,5 @@ TFL changes, including the 1.8.9 port, are in vendor/diorama; see UPSTREAM.md an
 The MIT notice is included in META-INF/licenses/diorama-MIT.txt. TFL's combined
 distribution remains GPL-3.0-only; MIT permits this combination.
 fastutil 8.5.15: Copyright Sebastiano Vigna, Apache License 2.0; nested only in the
-Ornithe artifact for the original Diorama tracer. Its original notices/license stay
-inside META-INF/jars/fastutil-8.5.15.jar. No optimizer binary is incorporated.
+Ornithe artifact for the original Diorama tracer. See META-INF/licenses/fastutil-Apache-2.0.txt. The original Maven JAR has no bundled
+license file; this distribution supplies the Apache license separately. No optimizer binary is incorporated.
