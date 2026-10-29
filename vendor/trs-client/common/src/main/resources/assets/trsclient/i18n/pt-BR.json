@@ -2596,5 +2596,10 @@
   "pause.serverInformation": "Server information",
   "map.perspective": "Tilt perspective (P)",
   "map.rotate": "Rotate map",
-  "map.minimapCloudMode": "Minimap clouds: simplified top integral"
+  "map.minimapCloudMode": "Minimap clouds: simplified top integral",
+  "screenshots.tool.ellipse": "Ellipse",
+  "screenshots.tool.line": "Line",
+  "screenshots.tool.fill": "Solid redaction",
+  "screenshots.tool.highlight": "Highlighter",
+  "setting.titleScreen.menuFpsLimit": "Menu animation FPS limit"
 }

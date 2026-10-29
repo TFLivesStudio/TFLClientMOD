@@ -17,7 +17,7 @@ public abstract class ScreenMixin {
         || !c.ready
         || c.navigation == null
         || dev.theredstonee.trsclient.core.product.Product.safeMode()
-        || !getClass().getName().startsWith("net.minecraft.")) return;
+        || (Object)this instanceof CoreScreen) return;
     c.canvas.begin(width, height, c.window().getScale());
     try {
       dev.theredstonee.trsclient.core.ui.menus.MenuSkin.background(

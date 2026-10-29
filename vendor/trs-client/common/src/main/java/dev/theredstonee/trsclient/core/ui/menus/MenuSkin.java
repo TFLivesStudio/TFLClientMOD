@@ -227,19 +227,10 @@ public final class MenuSkin {
 	 * Wie bei den Knöpfen immer dunkel – Vanilla schreibt hellgrau.
 	 */
 	public static void textField(Canvas c, int x, int y, int w, int h, boolean focused, boolean hover, boolean active) {
-		if (w < 3 || h < 3) return;
-		Theme t = Theme.get();
-		if (focused && active) Redstone.glow(c, x, y, w, h, t.glow, 0.45f);
-		int fieldEdge = t.halloween ? HalloweenPalette.BUTTON_EDGE : (t.winter ? ICE_FIELD_EDGE : FIELD_EDGE);
-		int edge = focused && active ? t.accent : (hover && active ? ColorMath.lerp(fieldEdge, t.accent, 0.4f) : fieldEdge);
-		Redstone.block(c, x, y, w, h, edge);
-		if (h < 5) return;
-		int fill = t.halloween ? (active ? HalloweenPalette.NIGHT : 0xFF0B0912) : (active ? (t.winter ? ICE_FIELD : FIELD) : (t.winter ? ICE_OFF : STONE_OFF));
-		c.fill(x + 1, y + 1, x + w - 1, y + h - 1, fill);
-		c.fill(x + 1, y + 1, x + w - 1, y + 2, t.winter ? FROST_DARK : BEVEL_DARK);
-		c.fill(x + 1, y + h - 2, x + w - 1, y + h - 1, ColorMath.lerp(fill, t.winter ? FROST_LIGHT : BEVEL_LIGHT, 0.35f));
-		if (focused && active && w > 8) Redstone.dustH(c, x + 2, x + w - 2, y + h - 1, t.dustOn, 0f);
-	}
+        if(w<3||h<3)return;
+        Theme t=Theme.get();
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(c,x,y,w,h,active?t.surface:t.surfaceHigh,focused&&active?t.accent:hover?t.textDim:t.border);
+    }
 
 	private static final int FIELD = 0xFF0C0A0B;
 	private static final int FIELD_EDGE = 0xFF4A4244;
@@ -413,17 +404,7 @@ public final class MenuSkin {
 			scare = dev.theredstonee.trsclient.core.halloween.Jumpscares.get().loading(progress, System.currentTimeMillis());
 			if (scare != null) progress = scare.progress;
 		}
-		if (t.halloween && inWorld) {
-			c.fill(0, 0, width, height, 0xE007060C);
-		} else if (t.halloween) {
-			scene(c, width, height, time);
-			c.fill(0, 0, width, height, 0x8C07060C);
-		} else if (inWorld) {
-			c.fill(0, 0, width, height, t.winter ? 0xE0060B16 : 0xE00A0708);
-		} else {
-			scene(c, width, height, time);
-			c.fill(0, 0, width, height, t.winter ? (t.light ? 0x30000000 : 0x50030814) : 0x60000000);
-		}
+        c.fill(0,0,width,height,0xFF080D18);
 		int cx = width / 2;
 		int[] layout = loadingLayout(height, avoidTop, avoidBottom);
 		int top = layout[0];
@@ -441,7 +422,11 @@ public final class MenuSkin {
 			c.text(s, cx - c.textWidth(s) / 2, y, t.text, true);
 		}
 		y += 16;
-		lamps(c, cx, y, Math.min(pw - 24, 176), progress, time);
+		int track=Math.min(pw-24,176),left=cx-track/2;
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,left,y,track,3,1,t.border);
+        int filled=progress<0?track/4:Math.round(track*Math.max(0,Math.min(1,progress)));
+        int offset=progress<0?(int)((Math.sin(time*2)*.5+.5)*(track-filled)):0;
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,left+offset,y,filled,3,1,t.accent);
 		y += 22;
 		if (detail != null && !detail.isEmpty()) {
 			String s = c.clip(detail, pw - 16);

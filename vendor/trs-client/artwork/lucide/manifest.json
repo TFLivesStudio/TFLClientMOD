@@ -127,7 +127,9 @@
     "countBow": "circle",
     "float": "waves",
     "zombie": "person-standing",
-    "howl": "audio-lines"
+    "howl": "audio-lines",
+    "circle": "circle",
+    "line": "minus"
   },
   "sources": {
     "angry.svg": "01a49350d5346fb43012641f2b7ff699d03b5bd6bd5b48c6e641908baf8b67d8",

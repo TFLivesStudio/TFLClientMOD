@@ -1,0 +1,69 @@
+{
+  "video": {
+    "decoderImplementation": "Minecraft native JPEG parallel",
+    "mode": "HIGH",
+    "decoderState": "running",
+    "fallbackReason": "",
+    "failure": "",
+    "sessions": 1,
+    "framesDecoded": 452,
+    "framesUploaded": 447,
+    "framesPresented": 447,
+    "loops": 0,
+    "decodedFingerprint": 3484240480860655545,
+    "uploadedFingerprint": 3484240480860655545,
+    "decodeNanos": 5997917048,
+    "uploadNanos": 1174559588,
+    "decoderCpuNanos": 4682386898,
+    "uploadBytes": 3707596800,
+    "discardedFrames": 5,
+    "elapsedNanos": 15094615426,
+    "pixelBufferAllocations": 9,
+    "imageBufferAllocations": 0,
+    "pendingFrames": 0,
+    "ownedTextures": 1,
+    "decoderFps": 29.94445285578089,
+    "presentationFps": 29.612805098586982,
+    "drawCalls": 600
+  },
+  "measuredVideoFps": 30.038179626318165,
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real video advances",
+      "passed": true
+    },
+    {
+      "name": "source targets 30 fps",
+      "passed": true
+    },
+    {
+      "name": "Diorama session created",
+      "passed": true
+    },
+    {
+      "name": "Diorama owns full map",
+      "passed": true
+    },
+    {
+      "name": "shared pause rail",
+      "passed": true
+    },
+    {
+      "name": "reload completed",
+      "passed": true
+    },
+    {
+      "name": "Diorama remains available after reload",
+      "passed": true
+    },
+    {
+      "name": "Sodium remains native",
+      "passed": true
+    },
+    {
+      "name": "local screenshot editor available",
+      "passed": true
+    }
+  ]
+}

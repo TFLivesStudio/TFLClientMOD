@@ -2596,5 +2596,10 @@
   "pause.serverInformation": "Serverinformationen",
   "map.perspective": "Perspektive neigen (P)",
   "map.rotate": "Karte drehen",
-  "map.minimapCloudMode": "Minimap-Wolken: vereinfachte Draufsicht"
+  "map.minimapCloudMode": "Minimap-Wolken: vereinfachte Draufsicht",
+  "screenshots.tool.ellipse": "Ellipse",
+  "screenshots.tool.line": "Line",
+  "screenshots.tool.fill": "Solid redaction",
+  "screenshots.tool.highlight": "Highlighter",
+  "setting.titleScreen.menuFpsLimit": "Menu animation FPS limit"
 }

@@ -1,6 +1,6 @@
 TFL Client is a modified distribution of TRS Client MOD.
 Original TRS Client: Copyright (C) 2026 Ohev Tamerin (Theredstonee).
-TFL modifications: Copyright (C) 2026 TFLivesStudio; modified 2026-10-23 through 2026-10-25.
+TFL modifications: Copyright (C) 2026 TFLivesStudio; modified 2026-10-23 through 2026-10-28.
 Code license: GPL-3.0-only. Original notices and MPL-2.0 Chat Heads headers remain applicable.
 Nunito and Inter typefaces: SIL Open Font License 1.1. See META-INF/licenses/Nunito-OFL.txt,
 Nunito-PROVENANCE.txt and Inter-OFL.txt.
@@ -15,3 +15,11 @@ Ornithe II adapters reuse GPL shared/legacy behavior and shaders. Local circuit 
 are derived from the vendored GPL catalogue. Native Chat Heads adapts the retained MPL-2.0
 shared sender/cache/layout code; corresponding source and MPL notice remain included.
 Argentum is an optional external runtime mod, not incorporated in this distribution.
+
+Diorama map engine: Copyright (c) Dara Adedeji, MIT license. Pinned original source and
+TFL changes, including the 1.8.9 port, are in vendor/diorama; see UPSTREAM.md and LICENSE.
+The MIT notice is included in META-INF/licenses/diorama-MIT.txt. TFL's combined
+distribution remains GPL-3.0-only; MIT permits this combination.
+fastutil 8.5.15: Copyright Sebastiano Vigna, Apache License 2.0; nested only in the
+Ornithe artifact for the original Diorama tracer. Its original notices/license stay
+inside META-INF/jars/fastutil-8.5.15.jar. No optimizer binary is incorporated.

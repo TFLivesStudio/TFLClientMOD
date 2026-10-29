@@ -26,6 +26,7 @@ public abstract class WindowUi extends UiScreen {
 	protected final int[] window = new int[4];
 
 	protected boolean screenScrim() {return true;}
+	protected boolean bareRail() {return false;}
 
 	protected abstract String title();
 
@@ -51,10 +52,10 @@ public abstract class WindowUi extends UiScreen {
 		Theme t = Theme.get();
 		Canvas c = FadeCanvas.of(raw, alpha());
 		if(screenScrim()) c.fill(0, 0, width, height, t.scrim);
-		int[] s = size(width, height);
+		int[] s = bareRail() ? new int[]{Math.min(200,Math.max(100,width/3)), Math.min(height-24,330)} : size(width, height);
 		int pw = s[0];
 		int ph = s[1];
-		int px = (width - pw) / 2;
+		int px = bareRail() ? Math.max(8,Math.min(40,width/16)) : (width - pw) / 2;
 		int py = (height - ph) / 2 + Math.round((1 - Anim.easeOut(open)) * 14);
 		window[0] = px;
 		window[1] = py;
@@ -62,7 +63,7 @@ public abstract class WindowUi extends UiScreen {
 		window[3] = ph;
 		c.push();
 		c.raise(300f);
-		Redstone.window(c, px, py, pw, ph);
+		if (!bareRail()) Redstone.window(c, px, py, pw, ph);
 		header(c, px, py, pw, mouseX, mouseY);
 		content(c, px + PAD, py + HEADER_H + 6, pw - PAD * 2, ph - HEADER_H - 6 - PAD, mouseX, mouseY, dt);
 		c.pop();
@@ -70,8 +71,8 @@ public abstract class WindowUi extends UiScreen {
 
 	private void header(Canvas c, int px, int py, int pw, int mx, int my) {
 		Theme t = Theme.get();
-		c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, dev.theredstonee.trsclient.core.ui.UiAppearance.glass(t.surfaceHigh));
-		c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
+		if (!bareRail()) c.fill(px + 1, py + 2, px + pw - 1, py + HEADER_H, dev.theredstonee.trsclient.core.ui.UiAppearance.glass(t.surfaceHigh));
+		if (!bareRail()) c.fill(px + 1, py + HEADER_H - 1, px + pw - 1, py + HEADER_H, t.border);
 		int lx = px + PAD;
 		int ly = py + (HEADER_H - PixelFont.HEIGHT * 2) / 2;
         c.strongText("TFL Client",lx,py+(HEADER_H-c.lineHeight())/2,t.text);
@@ -80,7 +81,7 @@ public abstract class WindowUi extends UiScreen {
 		int closeX = px + pw - PAD - closeSize;
 		int closeY = py + (HEADER_H - closeSize) / 2;
 		int right = headerExtras(c, closeX - 4, closeY, mx, my);
-		Paint.textClipped(c, title(), titleX, py + (HEADER_H - 8) / 2, right - titleX - 6, t.text, false);
+		if (!bareRail()) Paint.textClipped(c, title(), titleX, py + (HEADER_H - 8) / 2, right - titleX - 6, t.text, false);
 		Paint.iconButton(c, closeX, closeY, closeSize, "close", inside(mx, my, closeX, closeY, closeSize, closeSize), false);
 		hits.add(closeX, closeY, closeSize, closeSize, new Runnable() {
 			@Override

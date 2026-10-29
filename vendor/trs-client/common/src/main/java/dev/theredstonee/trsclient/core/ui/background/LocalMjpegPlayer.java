@@ -8,15 +8,24 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.*;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
-/** Local baseline Motion JPEG video, 24 fps. No native decoder, external program, download or audio.
- * Worker owns file IO/decode/resize; only latest() uploads on the render thread. One pending frame maximum. */
+/** Local baseline Motion JPEG video, 30 fps. Uses a bundled native codec when supplied, otherwise ImageIO. No downloads or audio.
+ * Worker owns file IO/decode/resize; only latest() uploads on the render thread. At most two queued frames absorb render-thread jitter without an unbounded backlog. */
 public final class LocalMjpegPlayer implements MenuBackground.Player {
+    /** Uses a game's bundled codec; never installs or downloads a decoder. */
+    public interface NativeDecoder {
+        PixelFrame decode(byte[] jpeg,int maxWidth,int maxHeight,int[] storage) throws IOException;
+    }
+    public static final class PixelFrame {
+        public final int width,height;public final int[] pixels;
+        public PixelFrame(int width,int height,int[] pixels){this.width=width;this.height=height;this.pixels=pixels;}
+    }
+    private static volatile NativeDecoder nativeDecoder;
+    public static void installNativeDecoder(NativeDecoder decoder){nativeDecoder=decoder;}
     private static final int MAX_FRAME=16*1024*1024;
     private final Path path;
     private volatile Work active;
@@ -28,16 +37,27 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
     private volatile String lastFailure="";
     private static final class Frame {
         final int w,h;final int[] pixels;final long fingerprint;
-        Frame(BufferedImage image,int[] storage){w=image.getWidth();h=image.getHeight();pixels=image.getRGB(0,0,w,h,storage,0,w);long hash=1469598103934665603L;for(int i=0;i<pixels.length;i+=Math.max(1,pixels.length/256))hash=(hash^pixels[i])*1099511628211L;fingerprint=hash;}
+        Frame(PixelFrame frame){w=frame.width;h=frame.height;pixels=frame.pixels;long hash=1469598103934665603L;for(int i=0;i<w*h;i+=Math.max(1,w*h/256))hash=(hash^pixels[i])*1099511628211L;fingerprint=hash;}
+        Frame(BufferedImage image,int[] storage){w=image.getWidth();h=image.getHeight();pixels=storage;
+            if(image.getType()==BufferedImage.TYPE_INT_RGB && image.getRaster().getDataBuffer() instanceof java.awt.image.DataBufferInt){
+                int[] source=((java.awt.image.DataBufferInt)image.getRaster().getDataBuffer()).getData();
+                for(int i=0;i<w*h;i++)pixels[i]=source[i]|0xFF000000;
+            }else if(image.getType()==BufferedImage.TYPE_3BYTE_BGR&&image.getRaster().getDataBuffer() instanceof java.awt.image.DataBufferByte){
+                byte[] bgr=((java.awt.image.DataBufferByte)image.getRaster().getDataBuffer()).getData();
+                for(int i=0,j=0;i<w*h;i++,j+=3)pixels[i]=0xff000000|(bgr[j+2]&255)<<16|(bgr[j+1]&255)<<8|(bgr[j]&255);
+            }else image.getRGB(0,0,w,h,storage,0,w);long hash=1469598103934665603L;for(int i=0;i<pixels.length;i+=Math.max(1,pixels.length/256))hash=(hash^pixels[i])*1099511628211L;fingerprint=hash;}
     }
     private static final class Work {
-        final int sourceFps;final String resource;Work(int fps,String resource){sourceFps=fps;this.resource=resource;}
+        final int sourceFps;final String resource;Work(int fps,String resource){sourceFps=fps;this.resource=resource;decoder=ThreadLocal.withInitial(()->{Work local=new Work(sourceFps,this.resource);decoders.add(local);return local;});}
+        final java.util.List<Work> decoders=java.util.Collections.synchronizedList(new java.util.ArrayList<Work>());
+        final ThreadLocal<Work> decoder;
+        volatile java.util.concurrent.ExecutorService executor;
         volatile boolean running=true;volatile Throwable failure;volatile InputStream stream;Thread thread;
-        final AtomicReference<Frame> pending=new AtomicReference<>();
+        final java.util.concurrent.ArrayBlockingQueue<Frame> pending=new java.util.concurrent.ArrayBlockingQueue<>(2);
         final java.util.ArrayDeque<int[]> pool=new java.util.ArrayDeque<int[]>();
-        BufferedImage sourceImage,scaledImage;volatile long pixelAllocations,imageAllocations;
+        BufferedImage sourceImage,scaledImage;volatile long pixelAllocations,imageAllocations,cpuNanos;
         synchronized int[] acquire(int count){while(!pool.isEmpty()){int[] p=pool.removeFirst();if(p.length==count)return p;}pixelAllocations++;return new int[count];}
-        synchronized void recycle(Frame frame){if(frame!=null&&pool.size()<3)pool.addLast(frame.pixels);}
+        synchronized void recycle(Frame frame){if(frame!=null&&pool.size()<10)pool.addLast(frame.pixels);}
 
     }
     public LocalMjpegPlayer(Path path){this.path=path;}
@@ -53,8 +73,8 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
         decoded=uploaded=uploadNanos=uploadBytes=decodeNanos=decoderCpuNanos=loops=discarded=0;decodedFingerprint=uploadedFingerprint=0;lastFailure="";sessions++;startedNanos=System.nanoTime();
         boolean custom=Files.exists(path,LinkOption.NOFOLLOW_LINKS);
         String resource=mode==MenuBackground.Mode.PERFORMANCE?"menu-performance.mjpeg":mode==MenuBackground.Mode.BALANCED?"menu-balanced.mjpeg":"menu.mjpeg";
-        final Work work=new Work(!custom&&mode==MenuBackground.Mode.PERFORMANCE?15:24,resource);active=work;
-        work.thread=new Thread(()->run(work,mode),"TFL-local-video");work.thread.setDaemon(true);work.thread.setPriority(Thread.MIN_PRIORITY);work.thread.start();
+        final Work work=new Work(custom?24:30,resource);active=work;
+        work.thread=new Thread(()->run(work,mode),"TFL-local-video");work.thread.setDaemon(true);work.thread.setPriority(Thread.NORM_PRIORITY);work.thread.start();
     }
     private InputStream openVideo(Work work) throws IOException {
         if(Files.exists(path,LinkOption.NOFOLLOW_LINKS)) {
@@ -66,39 +86,56 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
         return bundled;
     }
     private void run(Work work,MenuBackground.Mode mode) {
-        long due=System.nanoTime();
-        int phase=work.sourceFps-Math.min(work.sourceFps,Math.max(1,mode.fps));
+        java.util.concurrent.ExecutorService executor=java.util.concurrent.Executors.newFixedThreadPool(3,r->{Thread t=new Thread(r,"TFL-video-decode");t.setDaemon(true);return t;});
+        work.executor=executor;
+        java.util.ArrayDeque<java.util.concurrent.Future<Frame>> ahead=new java.util.ArrayDeque<>();
+        long due=0;
         try {
             while(work.running) {
                 int count=0;
-                try(InputStream in=new BufferedInputStream(openVideo(work))) {
+                try(InputStream in=new BufferedInputStream(openVideo(work),256*1024)) {
                     work.stream=in;
-                    byte[] jpeg;
-                    while(work.running&&(jpeg=readFrame(in))!=null) {
-                        count++;
-                        long now=System.nanoTime();
-                        phase+=Math.min(work.sourceFps,Math.max(1,mode.fps));
-                        if(phase>=work.sourceFps) {
-                            phase-=work.sourceFps;
-                            long begin=System.nanoTime();
-                            BufferedImage image=decode(jpeg,mode.width,mode.height,work);Frame frame=new Frame(image,work.acquire(image.getWidth()*image.getHeight()));
-                            decodeNanos+=System.nanoTime()-begin;
-                            java.lang.management.ThreadMXBean bean=java.lang.management.ManagementFactory.getThreadMXBean();if(bean.isCurrentThreadCpuTimeSupported())decoderCpuNanos=bean.getCurrentThreadCpuTime();
-                            if(work.running){Frame old=work.pending.getAndSet(frame);if(old!=null){discarded++;work.recycle(old);}decodedFingerprint=frame.fingerprint;decoded++;}else work.recycle(frame);
-
+                    boolean eof=false;
+                    while(work.running&&(!eof||!ahead.isEmpty())) {
+                        while(work.running&&!eof&&ahead.size()<6) {
+                            final byte[] jpeg=readFrame(in);
+                            if(jpeg==null){eof=true;break;}
+                            count++;
+                            ahead.add(executor.submit(()->{
+                                long begin=System.nanoTime();
+                                Work decoder=work.decoder.get();
+                                Frame frame;
+                                NativeDecoder accelerated=nativeDecoder;
+                                if(accelerated!=null){
+                                    int[] pixels=work.acquire(mode.width*mode.height);
+                                    frame=new Frame(accelerated.decode(jpeg,mode.width,mode.height,pixels));
+                                }else{
+                                    BufferedImage image=decode(jpeg,mode.width,mode.height,decoder);
+                                    frame=new Frame(image,work.acquire(image.getWidth()*image.getHeight()));
+                                }
+                                java.lang.management.ThreadMXBean bean=java.lang.management.ManagementFactory.getThreadMXBean();if(bean.isCurrentThreadCpuTimeSupported())decoder.cpuNanos=bean.getCurrentThreadCpuTime();
+                                synchronized(work){if(active==work&&work.running)decodeNanos+=System.nanoTime()-begin;}
+                                return frame;
+                            }));
                         }
-                        due+=1_000_000_000L/work.sourceFps;
+                        if(ahead.isEmpty())break;
+                        Frame frame=ahead.removeFirst().get();
+                        if(due==0)due=System.nanoTime();
                         long delay=due-System.nanoTime();
                         if(delay>0)LockSupport.parkNanos(delay);
-                        else if(delay< -1_000_000_000L)due=System.nanoTime();
-                        if(Thread.interrupted())work.running=false;
+                        if(!work.running||Thread.interrupted()){work.recycle(frame);break;}
+                        if(!work.pending.offer(frame)){Frame old=work.pending.poll();if(old!=null){discarded++;work.recycle(old);}work.pending.offer(frame);}
+                        decodedFingerprint=frame.fingerprint;decoded++;
+                        due+=1_000_000_000L/work.sourceFps;
+                        // Never stall the render thread or build an unbounded backlog.
+                        if(due<System.nanoTime()-1_000_000_000L)due=System.nanoTime();
                     }
                 } finally {work.stream=null;}
                 if(count==0)throw new IOException("Empty video");
                 if(work.running)loops++;
             }
         } catch(Exception | LinkageError e){if(work.running){work.failure=e;lastFailure=e.toString();}}
-        finally {work.running=false;work.pending.set(null);}
+        finally {work.running=false;executor.shutdownNow();work.pending.clear();}
     }
     /** Baseline JPEG marker/segment parser: APP metadata cannot be mistaken for frame delimiters. */
     static byte[] readFrame(InputStream in) throws IOException {
@@ -139,6 +176,10 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
                 reader.setInput(in);int w=reader.getWidth(0),h=reader.getHeight(0);
                 if(w<=0||h<=0||w>4096||h>4096||(long)w*h>8_388_608)throw new IOException("Video dimensions exceed bound");
                 javax.imageio.ImageReadParam parameters=reader.getDefaultReadParam();
+                if(work!=null&&work.sourceImage==null){
+                    Iterator<javax.imageio.ImageTypeSpecifier> types=reader.getImageTypes(0);
+                    while(types.hasNext()){javax.imageio.ImageTypeSpecifier type=types.next();if(type.getBufferedImageType()==BufferedImage.TYPE_3BYTE_BGR){work.sourceImage=type.createBufferedImage(w,h);work.imageAllocations++;break;}}
+                }
                 if(work!=null&&work.sourceImage!=null&&work.sourceImage.getWidth()==w&&work.sourceImage.getHeight()==h)parameters.setDestination(work.sourceImage);
                 BufferedImage image;
                 try{image=reader.read(0,parameters);}catch(IllegalArgumentException incompatible){parameters.setDestination(null);image=reader.read(0,parameters);}
@@ -158,18 +199,18 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
         if(work.failure!=null)throw new IllegalStateException("Local video failed",work.failure);
         Textures.Store store=Textures.store();if(store==null)return null;
         int current=store.resourceGeneration();if(current!=generation){texture=null;generation=current;}
-        Frame frame=work.pending.getAndSet(null);
+        Frame frame=work.pending.poll();
         if(frame!=null){long begin=System.nanoTime();try{texture=store.upload("menu-video",frame.w,frame.h,frame.pixels);}finally{work.recycle(frame);}uploadNanos+=System.nanoTime()-begin;
             if(texture==null)throw new IllegalStateException("Native video texture upload unavailable");uploaded++;uploadBytes+=(long)frame.w*frame.h*4;uploadedFingerprint=frame.fingerprint;}
         return texture;
     }
     public long uploadedSequence(){return uploaded;}
-    public PlaybackMetrics metrics(){PlaybackMetrics m=new PlaybackMetrics();Work w=active;m.pixelBufferAllocations=w==null?0:w.pixelAllocations;m.imageBufferAllocations=w==null?0:w.imageAllocations;m.decoderState=w==null?"stopped":w.failure!=null?"failed":w.running?"running":"stopped";m.failure=lastFailure;m.sessions=sessions;m.framesDecoded=decoded;m.framesUploaded=uploaded;m.loops=loops;m.decodedFingerprint=decodedFingerprint;m.uploadedFingerprint=uploadedFingerprint;m.decodeNanos=decodeNanos;m.uploadNanos=uploadNanos;m.decoderCpuNanos=decoderCpuNanos;m.uploadBytes=uploadBytes;m.discardedFrames=discarded;m.pendingFrames=w!=null&&w.pending.get()!=null?1:0;m.ownedTextures=texture==null?0:1;m.elapsedNanos=startedNanos==0?0:System.nanoTime()-startedNanos;m.decoderFps=w==null||m.elapsedNanos<=0?0:decoded*1e9/m.elapsedNanos;return m;}
+    public PlaybackMetrics metrics(){PlaybackMetrics m=new PlaybackMetrics();Work w=active;m.pixelBufferAllocations=w==null?0:w.pixelAllocations;m.imageBufferAllocations=0;if(w!=null)synchronized(w.decoders){for(Work decoder:w.decoders){m.imageBufferAllocations+=decoder.imageAllocations;m.decoderCpuNanos+=decoder.cpuNanos;}}m.decoderImplementation=nativeDecoder==null?"ImageIO parallel":"Minecraft native JPEG parallel";m.decoderState=w==null?"stopped":w.failure!=null?"failed":w.running?"running":"stopped";m.failure=lastFailure;m.sessions=sessions;m.framesDecoded=decoded;m.framesUploaded=uploaded;m.loops=loops;m.decodedFingerprint=decodedFingerprint;m.uploadedFingerprint=uploadedFingerprint;m.decodeNanos=decodeNanos;m.uploadNanos=uploadNanos;m.uploadBytes=uploadBytes;m.discardedFrames=discarded;m.pendingFrames=w==null?0:w.pending.size();m.ownedTextures=texture==null?0:1;m.elapsedNanos=startedNanos==0?0:System.nanoTime()-startedNanos;m.decoderFps=w==null||m.elapsedNanos<=0?0:decoded*1e9/m.elapsedNanos;return m;}
     public long decodedFrames(){return decoded;}
     public long uploadedFrames(){return uploaded;}
     public void close() {
         Work work=active;active=null;
-        if(work!=null){work.running=false;work.thread.interrupt();try{if(work.stream!=null)work.stream.close();}catch(IOException ignored){}work.pending.set(null);}
+        if(work!=null){work.running=false;if(work.executor!=null)work.executor.shutdownNow();work.thread.interrupt();try{if(work.stream!=null)work.stream.close();}catch(IOException ignored){}work.pending.clear();}
         if(texture!=null&&Textures.store()!=null)Textures.store().release(texture);texture=null;
     }
 }

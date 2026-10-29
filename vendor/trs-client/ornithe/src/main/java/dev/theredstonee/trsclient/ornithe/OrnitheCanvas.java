@@ -50,6 +50,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   private record DynamicEntry(DynamicTexture texture, TextureRef ref) {}
 
   private final java.util.Map<String, DynamicEntry> dynamic = new java.util.HashMap<>();
+  private TextureRef opaqueVideo;
 
   private final int[] advances = new int[384];
   private static final int CELL = 104, COLS = 24, FIRST = 32, LAST = 384;
@@ -113,6 +114,8 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     GlStateManager.color4f(1, 1, 1, 1);
   }
 
+  private int surfacePixelsHeight=-1;
+  public void withSurface(int width,int height,int scale,Runnable draw){int previousW=this.width,previousH=this.height,previousScale=this.scale,previousPixels=surfacePixelsHeight;surfacePixelsHeight=height*scale;begin(width,height,scale);try{draw.run();}finally{end();this.width=previousW;this.height=previousH;this.scale=previousScale;surfacePixelsHeight=previousPixels;}}
   public void begin(int width, int height, int scale) {
     this.width = width;
     this.height = height;
@@ -202,10 +205,11 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     GuiElement.fill(x1, y1, x2, y2, color);
   }
 
+  public boolean supportsText(String text){return text!=null&&font!=null&&!nativeFont(text.replaceAll("\u00a7.",""));}
   private boolean nativeFont(String text) {
     for (int i = 0; i < text.length(); i++) {
       char ch = text.charAt(i);
-      if (ch == '\u00a7' || ch < FIRST || ch >= LAST) return true;
+      if (ch < FIRST || ch >= LAST) return true;
     }
     return font == null;
   }
@@ -218,6 +222,17 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   public void text(String text, int x, int y, int color, boolean shadow) {
     text = privateText(text);
     if (text.isEmpty()) return;
+    if (font!=null&&text.indexOf('\u00a7')>=0){
+      int cursor=x,current=color;boolean bold=false;
+      for(int start=0;start<text.length();){
+        int mark=text.indexOf('\u00a7',start);if(mark<0)mark=text.length();
+        if(mark>start){String run=text.substring(start,mark);text(run,cursor,y,current,shadow);if(bold)text(run,cursor+1,y,current,false);cursor+=textWidth(run);}
+        if(mark+1>=text.length())break;char code=Character.toLowerCase(text.charAt(mark+1));int index="0123456789abcdef".indexOf(code);
+        if(index>=0){int bright=(index>>3&1)*85;int red=(index>>2&1)*170+bright,green=(index>>1&1)*170+bright,blue=(index&1)*170+bright;if(index==6)red+=85;current=(color&0xff000000)|red<<16|green<<8|blue;bold=false;}
+        else if(code=='r'){current=color;bold=false;}else if(code=='l')bold=true;
+        start=mark+2;
+      }return;
+    }
     if (nativeFont(text)) {
       mc.textRenderer.draw(text, x, y, color, shadow);
       return;
@@ -260,6 +275,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
 
   public int textWidth(String text) {
     text = privateText(text);
+    if(text.indexOf('\u00a7')>=0)text=text.replaceAll("\u00a7.","");
     if (nativeFont(text)) return mc.textRenderer.getWidth(text);
     double width = 0;
     for (int i = 0; i < text.length(); i++) width += advances[text.charAt(i)] / 8.0;
@@ -272,6 +288,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
 
   public String clip(String text, int max) {
     text = privateText(text);
+    if(text.indexOf('\u00a7')>=0)text=text.replaceAll("\u00a7.","");
     if (max <= 0) return "";
     if (nativeFont(text)) return mc.textRenderer.trim(text, max);
     double width = 0;
@@ -291,7 +308,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     GL11.glEnable(GL11.GL_SCISSOR_TEST);
     GL11.glScissor(
         x1 * scale,
-        mc.height - y2 * scale,
+        (surfacePixelsHeight<0?mc.height:surfacePixelsHeight) - y2 * scale,
         Math.max(0, (x2 - x1) * scale),
         Math.max(0, (y2 - y1) * scale));
   }
@@ -334,13 +351,16 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
 
   public void image(TextureRef tex, float u, float v, int w, int h, int color) {
     if(tex.id instanceof Integer)GlStateManager.bindTexture((Integer)tex.id);else mc.getTextureManager().bind((Identifier) tex.id);
-    GlStateManager.enableBlend();
+    // Baseline JPEG and the bundled still are opaque. Avoid a full framebuffer read per pixel.
+    boolean opaque=(color>>>24)==255&&(tex==opaqueVideo||tex.id.equals(still));
+    if(opaque)GlStateManager.disableBlend();else GlStateManager.enableBlend();
     GlStateManager.color4f(
         (color >> 16 & 255) / 255f,
         (color >> 8 & 255) / 255f,
         (color & 255) / 255f,
         (color >>> 24) / 255f);
     GuiElement.drawTexture(0, 0, u, v, w, h, tex.width, tex.height);
+    if(opaque)GlStateManager.enableBlend();
     GlStateManager.color4f(1, 1, 1, 1);
   }
 
@@ -360,9 +380,10 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
       entry = new DynamicEntry(texture, ref);
       dynamic.put(name, entry);
     }
+    if(name.equals("menu-video"))opaqueVideo=entry.ref;
     System.arraycopy(pixels, 0, entry.texture.getPixels(), 0, w * h);
     entry.texture.upload();
-    if(name.equals("menu-video")||name.equals("map/cloud-fog")||name.equals("map/volume")) {
+    if(name.startsWith("menu/")||name.startsWith("diorama/")||name.equals("menu-video")||name.equals("map/cloud-fog")||name.equals("map/volume")) {
       int previous=GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
       mc.getTextureManager().bind((Identifier)entry.ref.id);
       GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
@@ -376,6 +397,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   public long ownedDynamicTextureBytes(){long bytes=font==null?0:(long)COLS*CELL*((LAST-FIRST+COLS-1)/COLS)*CELL*4;for(var entry:dynamic.values())bytes+=(long)entry.ref.width*entry.ref.height*4;return bytes;}
 
   public void release(TextureRef texture) {
+    if(texture==opaqueVideo)opaqueVideo=null;
     dynamic.values().removeIf(e -> e.ref.id.equals(texture.id));
     mc.getTextureManager().close((Identifier) texture.id);
   }

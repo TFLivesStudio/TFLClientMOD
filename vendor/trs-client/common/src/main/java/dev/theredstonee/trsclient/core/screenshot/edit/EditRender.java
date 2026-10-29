@@ -137,6 +137,17 @@ public final class EditRender {
 	private static void shape(Graphics2D g, Shape s) {
 		float sw = s.size;
 		switch (s.kind) {
+            case ELLIPSE: case LINE: case FILL: case HIGHLIGHT: {
+                Shape.BoxTool box=(Shape.BoxTool)s;float[] bounds=box.bounds();
+                g.setStroke(new BasicStroke(sw,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+                if(s.kind==Shape.Kind.LINE)g.draw(new java.awt.geom.Line2D.Float(box.x1,box.y1,box.x2,box.y2));
+                else if(s.kind==Shape.Kind.ELLIPSE)g.draw(new java.awt.geom.Ellipse2D.Float(bounds[0],bounds[1],bounds[2]-bounds[0],bounds[3]-bounds[1]));
+                else {
+                    if(s.kind==Shape.Kind.HIGHLIGHT)g.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER,.30f));
+                    g.fill(new java.awt.geom.Rectangle2D.Float(bounds[0],bounds[1],bounds[2]-bounds[0],bounds[3]-bounds[1]));
+                }
+                return;
+            }
 			case ARROW: {
 				Shape.Arrow a = (Shape.Arrow) s;
 				double dx = a.x2 - a.x1, dy = a.y2 - a.y1;

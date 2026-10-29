@@ -70,7 +70,17 @@ public final class TextureStore implements Textures.Store {
 		}
 	}
 
-	private static void write(NativeImage img, int width, int height, int[] argb) {
+	private int[] nativePixels;
+    private void write(NativeImage img, int width, int height, int[] argb) {
+        //? if >=26.3 {
+        /*if(img.format()==NativeImage.Format.RGBA){
+            int count=width*height;
+            if(nativePixels==null||nativePixels.length<count)nativePixels=new int[count];
+            for(int i=0;i<count;i++){int p=argb[i];nativePixels[i]=(p&0xff00ff00)|(p&255)<<16|(p>>>16&255);}
+            img.getPixelBytes().order(java.nio.ByteOrder.LITTLE_ENDIAN).asIntBuffer().put(nativePixels,0,count);
+            return;
+        }
+        *///?}
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int c = argb[y * width + x];
@@ -91,6 +101,7 @@ public final class TextureStore implements Textures.Store {
 		}
 		if (found == null) return;
 		entries.remove(found);
+        if(entries.isEmpty())nativePixels=null;
 		try {
 			//? if >=1.21.11 {
 			/*Minecraft.getInstance().getTextureManager().release((net.minecraft.resources.Identifier) texture.id);

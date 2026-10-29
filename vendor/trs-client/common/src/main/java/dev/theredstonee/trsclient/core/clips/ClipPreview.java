@@ -280,6 +280,15 @@ public final class ClipPreview {
 		});
 	}
 
+    /** Offline gallery preview: no launcher connection or HTTP request. */
+    public void loadLocal(final Path path){
+        if(path==null)return;String name=path.toAbsolutePath().toString();
+        if(name.equals(clip)&&(state==State.LOADING||state==State.READY))return;
+        releaseTexture();final int gen=++generation;clip=name;pending=null;state=State.LOADING;code=null;
+        worker.execute(()->{try{Sheet result=LocalClipTools.preview(path);if(gen==generation)pending=result;}
+            catch(Exception e){fail(gen,"local_ffmpeg");}});
+    }
+
 	/** Neu anfordern (z. B. nach „Launcher beschäftigt“). */
 	public void retry() {
 		String c = clip;

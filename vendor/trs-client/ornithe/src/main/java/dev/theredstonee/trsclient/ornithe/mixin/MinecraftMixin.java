@@ -11,6 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
+  @Inject(method="renderLoadingScreen",at=@At("HEAD"),cancellable=true)
+  private void tfl$boot(net.minecraft.client.render.texture.TextureManager textures,CallbackInfo ci){
+    if(!Product.safeMode()){BootScreen.draw();ci.cancel();}
+  }
+
   @Inject(method="startGame",at=@At("HEAD"))private void tfl$worldLoad(String id,String name,net.minecraft.world.WorldSettings settings,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null)c.worldLoadNanos=System.nanoTime();}
 
   @Inject(method = "toggleFullscreen", at = @At("HEAD"))
@@ -41,7 +46,11 @@ public abstract class MinecraftMixin {
   private void tfl$limit(
       org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Integer> cir) {
     var c = OrnitheClient.get();
-    if (c != null && c.ready) cir.setReturnValue(c.performance.limit(cir.getReturnValue()));
+    if(c!=null&&c.ready){
+      int limit=cir.getReturnValue();
+      if(c.mc.world==null&&c.mc.screen instanceof CoreScreen)limit=c.modules.menuFpsLimit.getInt();
+      cir.setReturnValue(c.performance.limit(limit));
+    }
   }
 
   @Redirect(

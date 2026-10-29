@@ -128,7 +128,7 @@ public final class OrnitheNavigation {
             }));
     return new CoreScreen(
         new ActionListUi(
-            "TFL Client · Paused", actions, () -> c.mc.openScreen(null), c::clickSound).transparent(),
+            "TFL Client · Paused", actions, () -> c.mc.openScreen(null), c::clickSound).navigationRail(),
         false);
   }
 

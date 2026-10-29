@@ -100,6 +100,8 @@ public final class TrsClient implements ClientModInitializer {
 		// Farben des Launchers (config/trsclient/launcher-theme.json) – fehlt sie, gilt das Standard-Thema.
 		Theme.loadFrom(FabricLoader.getInstance().getConfigDir());
 		dev.theredstonee.trsclient.core.i18n.I18n.init(FabricLoader.getInstance().getConfigDir());
+        //? if >=26.3
+        /*dev.theredstonee.trsclient.ui.NativeVideoDecoder.install();*/
         dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().install(new dev.theredstonee.trsclient.core.ui.background.LocalMjpegPlayer(FabricLoader.getInstance().getConfigDir().resolve("tflcore/menu.mjpeg")));
 		dev.theredstonee.trsclient.core.clips.Clips.init(FabricLoader.getInstance().getConfigDir());
 		// Grafik-Modus „Schön“/„Max FPS“ (config/trsclient/fps-mode.json).
@@ -305,8 +307,12 @@ public final class TrsClient implements ClientModInitializer {
 		// Garderobe (Taste standardmäßig unbelegt)
 		while (TrsKeys.worldMap.consumeClick()) {
 			if (mc.player != null && modules.worldMap.isEnabled() && Mc.screen() == null) {
-				dev.theredstonee.trsclient.screen.WorldMapScreen screen = dev.theredstonee.trsclient.screen.WorldMapScreen.create();
-				if (screen != null) Mc.setScreen(screen);
+				//? if >=26.3 {
+                /*Mc.setScreen(new dev.diorama.MapScreen());
+                *///?} else {
+                dev.theredstonee.trsclient.screen.WorldMapScreen screen = dev.theredstonee.trsclient.screen.WorldMapScreen.create();
+                if(screen!=null)Mc.setScreen(screen);
+                //?}
 			}
 		}
 		if (modules.keyDefaults.needsWorldMapKeyCheck() && mc.options != null) {
@@ -347,6 +353,7 @@ public final class TrsClient implements ClientModInitializer {
 			moduleKeys.releaseAll();
 		}
 		waypoints.tick(mc);
+        dev.theredstonee.trsclient.map.TflDiorama.tick();
 		dev.theredstonee.trsclient.feature.AutoRefillHooks.tick();
 		chat.tick(mc);
 		dev.theredstonee.trsclient.qol.QolHooks.tick(mc);

@@ -128,6 +128,8 @@ final class ModernIcons {
         INDEX.put("float",119);
         INDEX.put("zombie",120);
         INDEX.put("howl",121);
+        INDEX.put("circle",122);
+        INDEX.put("line",123);
     }
     static boolean draw(Canvas c,String id,int x,int y,int px,int color) {
         Integer index=INDEX.get(id);

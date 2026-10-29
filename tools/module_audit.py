@@ -30,14 +30,14 @@ def generate(runtime=None):
     fields = dict((module_id, field) for field, module_id in re.findall(
         r'(\w+)\s*=\s*registry\.register\(new\s+(?:Hud)?Module\("([^"]+)"', registry))
     fields["miniPlayer"]="miniPlayer"
-    files = {target: evidence_files(BASE / target / "src/main/java") for target in ("fabric", "legacy")}
+    files = {target: evidence_files(BASE / target / "src/main/java") for target in ("fabric", "ornithe")}
     common = evidence_files(BASE / "common/src/main/java")
     runtime_rows = {r["id"]: r for r in (runtime or {}).get("modules", [])}
     result = []
     for source in inventory["modules"]:
         module_id = source["id"]
         field = fields[module_id]
-        unavailable = module_id in ("trsOnline", "social", "clips")
+        unavailable = module_id in ("trsOnline", "social")
         limits = ["Source references include inactive Stonecutter branches; a reference is not proof that a target hook executes.",
                   "Settings interactions, key input, external mod combinations and restart persistence require runtime verification."]
         availability = "registered; runtime Module.available() must be checked"
@@ -72,7 +72,7 @@ def generate(runtime=None):
                "deactivation": "not applicable: fixed client infrastructure" if fixed else "Module.setEnabled(false); verify camera/input/renderer restoration in target runtime",
                "persistence": "Module.write/read via ModuleRegistry.capture/apply and ConfigStore; module state/settings plus HUD layout where applicable",
                "targetHooks": {"fabric26.3SourceCandidates": references(files["fabric"], field),
-                               "forge1.8.9SourceCandidates": references(files["legacy"], field)},
+                               "ornithe1.8.9SourceCandidates": references(files["ornithe"], field)},
                "sharedHookCandidateFiles": sorted(set(r["file"] for r in references(common, field))),
                "results": {"sourceInspection": "registry entry and source reference candidates inspected",
                            "unitTests": "not executed by this audit; common test suite is independent evidence",

@@ -17,7 +17,7 @@ public final class MiniPlayerModule extends HudModule {
         angle=add(new ChoiceSetting<>("cameraAngle","Camera angle",Angle.class,Angle.FRONT));
         opacity=add(new NumberSetting("opacity","Model opacity",100,0,100,5,"","%"));
         rotation=add(new NumberSetting("rotation","Manual rotation",0,-180,180,5,"","°"));
-        fps=add(new NumberSetting("fpsLimit","Widget FPS limit (0 = unlimited)",30,0,60,5,""));
+        fps=add(new NumberSetting("fpsLimit","Widget FPS limit (0 = unlimited)",60,0,240,5,""));
         smoothing=add(new BoolSetting("smoothing","Animation smoothing",true));
         armor=add(new BoolSetting("showArmor","Show armor",true));heldItems=add(new BoolSetting("showHeldItems","Show held items",true));cape=add(new BoolSetting("showCape","Show authorized cape",true));
         hideF1=add(new BoolSetting("hideWithF1","Hide with F1",true));hideMenus=add(new BoolSetting("hideInMenus","Hide in menus",true));

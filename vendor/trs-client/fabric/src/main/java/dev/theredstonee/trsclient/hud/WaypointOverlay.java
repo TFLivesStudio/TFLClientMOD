@@ -31,6 +31,8 @@ public final class WaypointOverlay {
 	}
 
 	public void render(Gfx g, Font font) {
+        //? if >=26.3
+        /*if (true) return; // Diorama owns in-world pins; no duplicate beams.*/
 		if (!modules.waypoints.isEnabled()) return;
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.player == null || mc.level == null) return;

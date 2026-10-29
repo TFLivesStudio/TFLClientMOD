@@ -124,6 +124,7 @@ public final class ClipLibrary {
 	/** Blockierend: beide Ordner lesen. */
 	Listing scan() {
 		Path clips = ClipConfig.clipsDir(configDir, gameDir);
+        if(clips==null&&gameDir!=null)clips=gameDir.resolve("clips");
 		Path shots = screenshots(gameDir);
 		List<Entry> all = new ArrayList<>();
 		all.addAll(read(clips, Type.CLIP));

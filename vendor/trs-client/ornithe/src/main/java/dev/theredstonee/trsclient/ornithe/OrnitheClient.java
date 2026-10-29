@@ -88,6 +88,8 @@ public final class OrnitheClient implements ModInitializer {
   public dev.theredstonee.trsclient.core.waypoint.WaypointStore waypoints;
   public dev.theredstonee.trsclient.core.map.MapEngine map;
   public OrnitheMapPlatform mapPlatform;
+  public OrnitheDiorama diorama;
+  private final DioramaMinimapTarget minimapTarget=new DioramaMinimapTarget();
   private final dev.theredstonee.trsclient.core.map.MinimapRenderer minimapRenderer =
       new dev.theredstonee.trsclient.core.map.MinimapRenderer();
 
@@ -245,6 +247,8 @@ public final class OrnitheClient implements ModInitializer {
           if (latency != null) latency.close();
           if (colors != null) colors.release();
           if (cinematic != null) cinematic.detachView(false);
+          minimapTarget.close();
+          if (diorama != null)diorama.close();
           if (map != null) map.shutdown();
           try {
             waypoints.saveIfDirty();
@@ -293,7 +297,7 @@ public final class OrnitheClient implements ModInitializer {
         modules.titleScreen,
         limited,
         "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
-        List.of("animated","backgroundMode","panelOpacity","cornerRadius","menuAccent"),
+        List.of("animated","backgroundMode","menuFpsLimit","panelOpacity","cornerRadius","menuAccent"),
         "MinecraftMixin.openScreen",
         "OrnitheClient.title");
     var backend =
@@ -319,6 +323,8 @@ public final class OrnitheClient implements ModInitializer {
     if (canvas != null) canvas.prepare();
     rebuildCrosshair();
     if (mapPlatform != null) mapPlatform.reloaded();
+    minimapTarget.close();
+    if(diorama!=null)diorama.reload();
     if (map != null) {
       map.textures().clear();
       map.sprites().clear();
@@ -363,12 +369,12 @@ public final class OrnitheClient implements ModInitializer {
       capabilities.connect(
           m,
           limited,
-          "Received chunks only; native entity taxonomy and texture-color sampling are limited",
+          "Diorama voxel map over received chunks; connected legacy block bounds are approximated",
           m.settings().stream().map(setting -> setting.key()).toList(),
-          "MapEngine.tick",
+          "OrnitheDiorama.tick",
           "OrnitheMapPlatform",
-          "MinimapRenderer",
-          "WorldMapUi");
+          "DioramaMinimapTarget",
+          "OrnitheDioramaUi");
     capabilities.connect(
         modules.waypoints,
         limited,
@@ -384,40 +390,28 @@ public final class OrnitheClient implements ModInitializer {
           }
 
           public int width() {
-            return minimapRenderer.width(modules);
+            return modules.minimapSize.getInt();
           }
 
           public int height() {
-            return minimapRenderer.height(modules);
+            return modules.minimapSize.getInt()+6+(modules.minimapCoords.get()?12:0)+(modules.minimapBiome.get()?12:0);
           }
 
           public void draw(Canvas c) {
-            minimapRenderer.draw(c, map, !mapPlatform.inWorld(), modules.minimap.scale.get(), null);
+            if(diorama!=null&&mapPlatform.inWorld()&&map.fairPlay().minimapAllowed()){
+              int size=modules.minimapSize.getInt();
+              minimapTarget.draw(OrnitheClient.this,c,size,modules.minimapShape.get()==TrsModules.MapShape.ROUND,modules.minimapOpacity.getInt(),()->diorama.draw(c,0,0,size,size,mapPlatform.x(),mapPlatform.y(),mapPlatform.z(),modules.minimapZoom.get().pixelsPerBlock(),diorama.autoLayer()));
+              dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,size/2-2,size/2-2,5,5,2,Theme.get().accent);
+              if(modules.minimapCompass.get()){for(int i=0;i<4;i++){int[] cx={size/2,size-7,size/2,3},cy={3,size/2,size-10,size/2};c.text(new String[]{"N","E","S","W"}[i],cx[i],cy[i],0xfff4f7fc,true);}}
+              int textY=size+4;if(modules.minimapCoords.get()){c.text((int)mapPlatform.x()+", "+(int)mapPlatform.y()+", "+(int)mapPlatform.z(),3,textY,modules.minimap.textColor.argb(),true);textY+=12;}if(modules.minimapBiome.get())c.text(c.clip(mapPlatform.biome(),size-6),3,textY,modules.minimap.textColor.argb(),true);
+            }
           }
         });
   }
 
   public void openWorldMap(Screen parent) {
-    if (mapPlatform == null || !mapPlatform.inWorld()) return;
-    mc.openScreen(
-        new CoreScreen(
-            new dev.theredstonee.trsclient.core.map.WorldMapUi(
-                map,
-                new dev.theredstonee.trsclient.core.map.WorldMapUi.Host() {
-                  public void closeScreen() {
-                    map.setWorldMapOpen(false);
-                    mc.openScreen(parent);
-                  }
-
-                  public void playClick() {
-                    clickSound();
-                  }
-
-                  public boolean isMapKey(int key) {
-                    return key == mapKey.getKeyCode();
-                  }
-                }),
-            false));
+    if (mapPlatform == null || !mapPlatform.inWorld() || !map.fairPlay().minimapAllowed()) return;
+    mc.openScreen(new CoreScreen(new OrnitheDioramaUi(this,()->mc.openScreen(parent)),false));
   }
 
   public void clickSound() {
@@ -499,7 +493,9 @@ public final class OrnitheClient implements ModInitializer {
     if(mc.screen==null)dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
     synchronizeKeys();
     mapPlatform.updateIdentity();
-    map.tick(mapPlatform);
+    // Diorama owns terrain capture and tile work; the old engine remains a data migration reader.
+    if(diorama==null)diorama=new OrnitheDiorama(this);
+    diorama.tick();
     notes.tick(System.currentTimeMillis());
     boolean noteKey = OrnitheKeys.isDown(modules.notes.openKey.get());
     if (noteKey && !notesDown && mc.screen == null && capabilities.active(modules.notes.notes)) {

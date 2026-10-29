@@ -27,7 +27,12 @@ public abstract class FrameCapMixin {
 
 	@Inject(method = "getFramerateLimit", at = @At("RETURN"), cancellable = true, require = 0)
 	private void trsclient$noThrottleWhileSwitching(CallbackInfoReturnable<Integer> cir) {
-		if (!FastSwitch.active() || minecraft.getWindow().isIconified()) return;
+		//? if >=26.3 {
+        if(minecraft.level==null&&!minecraft.getWindow().isIconified()&&dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().videoActive()){
+            var client=dev.theredstonee.trsclient.TrsClient.get();if(client!=null){cir.setReturnValue(client.modules().menuFpsLimit.getInt());return;}
+        }
+        //?}
+        if (!FastSwitch.active() || minecraft.getWindow().isIconified()) return;
 		if (framerateLimit > cir.getReturnValue()) cir.setReturnValue(framerateLimit);
 	}
 	*///?} elif >=1.20.2 {

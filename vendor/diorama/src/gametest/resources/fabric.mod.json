@@ -1,0 +1,13 @@
+{
+	"schemaVersion": 1,
+	"id": "diorama-test",
+	"version": "1.0.0",
+	"name": "Diorama test",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": ["dev.diorama.test.DioramaClientTest"]
+	},
+	"depends": {
+		"diorama": "*"
+	}
+}

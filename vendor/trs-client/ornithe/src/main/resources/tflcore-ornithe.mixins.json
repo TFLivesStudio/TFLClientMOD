@@ -40,7 +40,10 @@
     "FastConnectSelectionMixin",
     "InventoryTutorialMixin",
     "MiniPlayerLayersMixin",
-    "MiniPlayerArmorLayerMixin"
+    "MiniPlayerArmorLayerMixin",
+    "ArgentumDrawMixin",
+    "MenuFontMixin",
+    "DioramaChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1
