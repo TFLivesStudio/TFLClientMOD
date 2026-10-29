@@ -18,20 +18,22 @@ public abstract class WorldDetailsMixin {
         && c.modules.detailNoSky.get()) ci.cancel();
   }
 
-  @Redirect(
+  // Preserve the original getStarBrightness invocation for Lucerna's render-phase hook.
+  // A @Redirect replaces that invocation entirely and can prevent other mixins from finding it.
+  @com.llamalad7.mixinextras.injector.ModifyExpressionValue(
       method = "renderSky",
       at =
           @At(
               value = "INVOKE",
               target = "Lnet/minecraft/client/world/ClientWorld;getStarBrightness(F)F"))
-  private float tfl$stars(net.minecraft.client.world.ClientWorld world, float partial) {
+  private float tfl$stars(float original) {
     var c = OrnitheClient.get();
     return c != null
             && c.ready
             && c.capabilities.active(c.modules.worldDetails)
             && c.modules.detailNoStars.get()
-        ? 0
-        : world.getStarBrightness(partial);
+        ? 0f
+        : original;
   }
 
   @ModifyArgs(
