@@ -1,7 +1,7 @@
 name: Unified TFL Client
 on:
   push:
-    branches: [feat/unified-client-diorama, feat/unified-visual-identity]
+    branches: [feat/unified-client-diorama, feat/unified-visual-identity, feat/stabilize-identity]
   pull_request:
     paths: ['vendor/**', 'tools/**', '.github/workflows/unified-client.yml']
   workflow_dispatch:
@@ -89,8 +89,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - {target: '1.8.9', stack: argentum, tag: v0.4.0-identity.1-ornithe189, title: 'TFL Client 1.8.9 — Visual identity preview'}
-          - {target: '26.3', stack: sodium, tag: v0.4.0-identity.1-fabric263, title: 'TFL Client 26.3 — Visual identity preview'}
+          - {target: '1.8.9', stack: argentum, tag: v0.4.0-stabilize.1-ornithe189, title: 'TFL Client 1.8.9 — Stabilization preview'}
+          - {target: '26.3', stack: sodium, tag: v0.4.0-stabilize.1-fabric263, title: 'TFL Client 26.3 — Stabilization preview'}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -102,4 +102,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ matrix.tag }}
           RELEASE_TITLE: ${{ matrix.title }}
-        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/VISUAL_IDENTITY.md
+        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/STABILIZATION.md

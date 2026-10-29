@@ -229,7 +229,21 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     return normalizePunctuation(c != null && c.ready ? c.privacy.text(text) : text);
   }
 
+  private boolean useNunito() {
+    return mc.screen instanceof CoreScreen screen
+        && (screen.ui instanceof dev.theredstonee.trsclient.core.ui.title.TitleUi
+            || screen.ui instanceof dev.theredstonee.trsclient.core.ui.menu.ModMenu);
+  }
+
   public void text(String text, int x, int y, int color, boolean shadow) {
+    if (!useNunito()) {
+      var client = OrnitheClient.get();
+      String visible = client != null && client.ready ? client.privacy.text(text) : text;
+      boolean alpha = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
+      try { mc.textRenderer.draw(visible, x, y, color, shadow); }
+      finally { if (!alpha) GlStateManager.disableAlphaTest(); }
+      return;
+    }
     text = privateText(text);
     if (text.isEmpty()) return;
     if (font!=null&&text.indexOf('\u00a7')>=0){
@@ -285,6 +299,10 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   }
 
   public int textWidth(String text) {
+    if (!useNunito()) {
+      var client = OrnitheClient.get();
+      return mc.textRenderer.getWidth(client != null && client.ready ? client.privacy.text(text) : text);
+    }
     text = privateText(text);
     if(text.indexOf('\u00a7')>=0)text=text.replaceAll("\u00a7.","");
     if (nativeFont(text)) return mc.textRenderer.getWidth(text);
@@ -298,6 +316,11 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   }
 
   public String clip(String text, int max) {
+    if (!useNunito()) {
+      var client = OrnitheClient.get();
+      String visible = client != null && client.ready ? client.privacy.text(text) : text;
+      return max <= 0 ? "" : mc.textRenderer.trim(visible, max);
+    }
     text = privateText(text);
     if(text.indexOf('\u00a7')>=0)text=text.replaceAll("\u00a7.","");
     if (max <= 0) return "";

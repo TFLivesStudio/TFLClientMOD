@@ -21,6 +21,7 @@ public final class GfxCanvas implements Canvas {
 	/** Seit dem letzten Textur-Bild wurden Flächen/Text gesammelt (Reihenfolge 1.20–1.21.1). */
 	private boolean pending = true;
 	private Font font;
+	private boolean nunito;
     // Native Minecraft font provider; no browser or separate font renderer.
     //? if >=1.16 {
     private final java.util.Map<String,net.minecraft.network.chat.Component> styledText = new java.util.LinkedHashMap<>();
@@ -50,6 +51,10 @@ public final class GfxCanvas implements Canvas {
 	public static GfxCanvas of(Gfx g, Font font) {
 		INSTANCE.g = g;
 		INSTANCE.font = font;
+        var screen = dev.theredstonee.trsclient.compat.Mc.screen();
+        INSTANCE.nunito = screen instanceof dev.theredstonee.trsclient.screen.TrsTitleScreen
+            || (screen instanceof dev.theredstonee.trsclient.screen.TrsUiScreen custom
+                && custom.ui() instanceof dev.theredstonee.trsclient.core.ui.menu.ModMenu);
 		INSTANCE.pending = true;
 		return INSTANCE;
 	}
@@ -79,7 +84,8 @@ public final class GfxCanvas implements Canvas {
 	@Override
 	public void text(String text, int x, int y, int argb, boolean shadow) {
 		//? if >=1.16 {
-        g.text(font, selectionText(text), x, y, argb, false);
+        if (nunito) g.text(font, selectionText(text), x, y, argb, false);
+        else g.text(font, text, x, y, argb, shadow);
         //?} else
         /*g.text(font,text,x,y,argb,shadow);*/
 		pending = true;
@@ -87,7 +93,8 @@ public final class GfxCanvas implements Canvas {
 
     @Override public void strongText(String text,int x,int y,int color) {
         //? if >=1.16 {
-        g.text(font,selectionText(text,"ui-bold"),x,y,color,false);
+        if (nunito) g.text(font,selectionText(text,"ui-bold"),x,y,color,false);
+        else g.text(font,text,x,y,color,false);
         //?} else
         /*text(text,x,y,color,false);*/
         pending=true;
@@ -96,7 +103,7 @@ public final class GfxCanvas implements Canvas {
 	@Override
 	public int textWidth(String text) {
 		//? if >=1.16 {
-        return font.width(selectionText(text));
+        return nunito ? font.width(selectionText(text)) : font.width(text);
         //?} else
         /*return font.width(text);*/
 	}

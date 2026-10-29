@@ -17,10 +17,23 @@ public final class OrnitheColors {
   private PostPass pass;
   private int width = -1, height = -1;
   private boolean failed;
+  private java.lang.reflect.Field amplioConfig, amplioUpscaler;
+  private boolean amplioPresent, conflictLogged;
   public long applied;
 
   public OrnitheColors(OrnitheClient c) {
     this.c = c;
+    try {
+      Class<?> type = Class.forName("us.z1x.amplio.Amplio");
+      amplioPresent = true;
+      amplioConfig = type.getField("CONFIG");
+      amplioUpscaler = amplioConfig.get(null).getClass().getField("upscaler");
+    } catch (ClassNotFoundException absent) {
+      amplioPresent = false;
+    } catch (ReflectiveOperationException | LinkageError unavailable) {
+      amplioPresent = true;
+      OrnitheClient.LOG.warn("Cannot inspect upscaler state; color grading will remain disabled", unavailable);
+    }
     c.capabilities.connect(
         c.modules.colors,
         State.EXPERIMENTAL,
@@ -39,6 +52,15 @@ public final class OrnitheColors {
       release();
       return;
     }
+    if (upscalingRequested()) {
+      release();
+      if (!conflictLogged) {
+        OrnitheClient.LOG.warn("Color grading paused while Amplio upscaling is enabled");
+        conflictLogged = true;
+      }
+      return;
+    }
+    conflictLogged = false;
     c.modules.colorGrade(grade);
     if (grade.identity() || c.mc.gameRenderer.hasShader() || !c.mc.options.fboEnable) return;
     try {
@@ -102,6 +124,16 @@ public final class OrnitheColors {
           State.CONFLICT,
           "Native shader initialization failed; original rendering retained. Check the client"
               + " log.");
+    }
+  }
+
+  public boolean upscalingRequested() {
+    if (!amplioPresent) return false;
+    try {
+      return amplioConfig == null || amplioUpscaler == null
+          || !"OFF".equals(String.valueOf(amplioUpscaler.get(amplioConfig.get(null))));
+    } catch (ReflectiveOperationException | RuntimeException unavailable) {
+      return true;
     }
   }
 
