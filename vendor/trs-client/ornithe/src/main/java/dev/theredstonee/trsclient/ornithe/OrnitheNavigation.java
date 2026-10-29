@@ -126,10 +126,8 @@ public final class OrnitheNavigation {
               c.mc.setWorld(null);
               c.mc.openScreen(c.title());
             }));
-    return new CoreScreen(
-        new ActionListUi(
-            dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"), actions, () -> c.mc.openScreen(null), c::clickSound).navigationRail(),
-        false);
+    return new PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(
+            dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"), actions, () -> c.mc.openScreen(null), c::clickSound));
   }
 
   public void captures(Screen parent) {

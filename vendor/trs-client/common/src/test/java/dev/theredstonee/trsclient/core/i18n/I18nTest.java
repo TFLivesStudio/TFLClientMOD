@@ -216,7 +216,7 @@ class I18nTest {
 	}
 
 	@Test
-	void launcherLanguageWinsOverMinecraftAndIsReReadWhenChanged() throws IOException {
+	void minecraftLanguageRemainsAuthoritativeWhenLegacyLauncherFileChanges() throws IOException {
 		Path game = dir.resolve("minecraft");
 		Path config = game.resolve("config");
 		Files.createDirectories(config.resolve("trsclient"));
@@ -228,7 +228,7 @@ class I18nTest {
 		Files.write(theme, "{\"version\":1,\"theme\":\"dark\",\"accent\":\"redstone\",\"language\":\"de\"}"
 				.getBytes(StandardCharsets.UTF_8));
 		I18n.refresh();
-		assertEquals("de", I18n.code(), "Launcher-Sprache hat Vorrang");
+		assertEquals("es", I18n.code(), "Legacy launcher state must not override Minecraft");
 		int gen = I18n.generation();
 		I18n.refresh();
 		assertEquals(gen, I18n.generation(), "unverändert → nichts neu laden");
@@ -236,7 +236,7 @@ class I18nTest {
 		Files.write(theme, "{\"version\":1,\"language\":\"pt-BR\"}".getBytes(StandardCharsets.UTF_8));
 		Files.setLastModifiedTime(theme, java.nio.file.attribute.FileTime.fromMillis(System.currentTimeMillis() + 5000));
 		I18n.refresh();
-		assertEquals("pt-BR", I18n.code());
+		assertEquals("es", I18n.code());
 
 		Files.delete(theme);
 		Files.write(game.resolve("options.txt"), Collections.singletonList("lang:en_us"), StandardCharsets.UTF_8);

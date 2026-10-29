@@ -13,7 +13,7 @@ public abstract class VanillaHudMixin {
   @Inject(method = "renderScoreboardObjective", at = @At("HEAD"), cancellable = true)
   private void tfl$score(ScoreboardObjective objective, Window win, CallbackInfo ci) {
     var c = OrnitheClient.get();
-    if (c != null && c.ready && c.capabilities.active(c.modules.qol.scoreboard)) ci.cancel();
+    if (c != null && c.ready && (c.mc.screen instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay || c.capabilities.active(c.modules.qol.scoreboard))) ci.cancel();
   }
 
   @Inject(method = "renderBossBars", at = @At("HEAD"), cancellable = true)

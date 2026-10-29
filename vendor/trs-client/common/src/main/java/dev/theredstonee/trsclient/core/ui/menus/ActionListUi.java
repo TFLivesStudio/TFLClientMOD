@@ -19,7 +19,7 @@ public class ActionListUi extends WindowUi {
   protected boolean screenScrim(){return scrim;}
   private final List<MenuAction> actions;
   private final Runnable close, click;
-  private int scroll, maxScroll, focus=-1;
+  private int scroll, maxScroll, focus=-1,rowHeight=25;
 
   public ActionListUi(String label, List<MenuAction> actions, Runnable close, Runnable click) {
     this.label = label;
@@ -43,7 +43,7 @@ public class ActionListUi extends WindowUi {
 
   protected void content(Canvas c, int x, int y, int w, int h, int mx, int my, float dt) {
     int row = bareRail() ? Math.max(16,Math.min(29,h/Math.max(1,actions.size()))) : 25;
-    maxScroll = Math.max(0, actions.size() * row - h);
+    rowHeight=row;maxScroll = Math.max(0, actions.size() * row - h);
     scroll = Math.min(scroll, maxScroll);
     c.scissor(x, y, x + w, y + h);
     hits.clip(x, y, w, h);
@@ -85,7 +85,7 @@ public class ActionListUi extends WindowUi {
   @Override public boolean keyPressed(int raw,UiKey key,boolean shift){
     if(actions.isEmpty())return super.keyPressed(raw,key,shift);
     int step=key==UiKey.DOWN||key==UiKey.RIGHT?1:key==UiKey.UP||key==UiKey.LEFT?-1:key==UiKey.TAB?(shift?-1:1):0;
-    if(step!=0){focus=focus<0?(step>0?0:actions.size()-1):(focus+step+actions.size())%actions.size();scroll=Math.max(0,Math.min(maxScroll,focus*25));return true;}
+    if(step!=0){focus=focus<0?(step>0?0:actions.size()-1):(focus+step+actions.size())%actions.size();scroll=Math.max(0,Math.min(maxScroll,focus*rowHeight));return true;}
     if(key==UiKey.ENTER&&focus>=0){playClick();actions.get(focus).run();return true;}
     return super.keyPressed(raw,key,shift);
   }

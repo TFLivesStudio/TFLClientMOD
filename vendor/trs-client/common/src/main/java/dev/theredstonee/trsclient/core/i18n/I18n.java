@@ -150,7 +150,7 @@ public final class I18n {
 		if (ts == themeStamp && os == optionsStamp) return;
 		themeStamp = ts;
 		optionsStamp = os;
-		use(resolve(readLauncherLanguage(theme), readMinecraftLanguage(options)));
+		use(resolve(null, readMinecraftLanguage(options)));
 	}
 
 	/**

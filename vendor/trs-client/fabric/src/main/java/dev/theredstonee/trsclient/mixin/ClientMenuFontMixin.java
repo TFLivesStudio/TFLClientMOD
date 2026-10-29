@@ -15,7 +15,11 @@ public abstract class ClientMenuFontMixin {
         if(!FontDescription.DEFAULT.equals(original))return original;
         net.minecraft.client.Minecraft mc=net.minecraft.client.Minecraft.getInstance();
         if(mc==null||mc.options==null||mc.options.forceUnicodeFont().get())return original;
-        return dev.theredstonee.trsclient.menus.VanillaMenus.styled(dev.theredstonee.trsclient.compat.Mc.screen())?TFL_MENU_FONT:original;
+        var screen=dev.theredstonee.trsclient.compat.Mc.screen();
+        boolean custom=screen instanceof dev.theredstonee.trsclient.screen.TrsTitleScreen
+            || (screen instanceof dev.theredstonee.trsclient.screen.TrsUiScreen ui
+                && ui.ui() instanceof dev.theredstonee.trsclient.core.ui.menu.ModMenu);
+        return custom?TFL_MENU_FONT:original;
     }
 }
 *///?} else {

@@ -1,0 +1,1202 @@
+{
+  "minecraft:framerateLimit": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Max Framerate",
+    "nameEs": "Límite de FPS"
+  },
+  "minecraft:enableVsync": {
+    "category": 0,
+    "group": "display",
+    "name": "VSync",
+    "nameEs": "Sincronización vertical"
+  },
+  "minecraft:inactivityFpsLimit": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "Reduce fps when",
+    "nameEs": "Reducir FPS al estar inactivo"
+  },
+  "minecraft:guiScale": {
+    "category": 0,
+    "group": "display",
+    "name": "GUI Scale",
+    "nameEs": "Escala de interfaz"
+  },
+  "minecraft:fullscreen": {
+    "category": 0,
+    "group": "display",
+    "name": "Fullscreen",
+    "nameEs": "Pantalla completa"
+  },
+  "minecraft:exclusiveFullscreen": {
+    "category": 0,
+    "group": "display",
+    "name": "Exclusive Fullscreen",
+    "nameEs": "Pantalla completa exclusiva"
+  },
+  "minecraft:gamma": {
+    "category": 0,
+    "group": "display",
+    "name": "Brightness",
+    "nameEs": "Brillo"
+  },
+  "minecraft:preferredGraphicsBackend": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Graphics API",
+    "nameEs": "API gráfica"
+  },
+  "minecraft:biomeBlendRadius": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Biome Blend",
+    "nameEs": "Mezcla de biomas"
+  },
+  "minecraft:renderDistance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Render Distance",
+    "nameEs": "Distancia de renderizado"
+  },
+  "minecraft:prioritizeChunkUpdates": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Builder",
+    "nameEs": "Constructor de chunks"
+  },
+  "minecraft:simulationDistance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Simulation Distance",
+    "nameEs": "Distancia de simulación"
+  },
+  "minecraft:ambientOcclusion": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Smooth Lighting",
+    "nameEs": "Iluminación suave"
+  },
+  "minecraft:cloudStatus": {
+    "category": 1,
+    "group": "environment",
+    "name": "Clouds",
+    "nameEs": "Nubes"
+  },
+  "minecraft:particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Particles",
+    "nameEs": "Partículas"
+  },
+  "minecraft:mipmapLevels": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Mipmap Levels",
+    "nameEs": "Niveles de mipmap"
+  },
+  "minecraft:entityShadows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadows",
+    "nameEs": "Sombras de entidades"
+  },
+  "minecraft:entityDistanceScaling": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Distance",
+    "nameEs": "Distancia de entidades"
+  },
+  "minecraft:menuBackgroundBlurriness": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Menu Background Blur",
+    "nameEs": "Desenfoque del fondo del menú"
+  },
+  "minecraft:cloudRange": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Distance",
+    "nameEs": "Distancia de nubes"
+  },
+  "minecraft:cutoutLeaves": {
+    "category": 1,
+    "group": "geometry",
+    "name": "See-Through Leaves",
+    "nameEs": "Transparencia de hojas"
+  },
+  "minecraft:improvedTransparency": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Improved Transparency",
+    "nameEs": "Transparencia mejorada"
+  },
+  "minecraft:textureFiltering": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Texture Filtering",
+    "nameEs": "Filtrado de texturas"
+  },
+  "minecraft:maxAnisotropyBit": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Anisotropic Filtering",
+    "nameEs": "Filtrado anisotrópico"
+  },
+  "minecraft:weatherRadius": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Effect Radius",
+    "nameEs": "Radio de efectos del clima"
+  },
+  "minecraft:showAutosaveIndicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Autosave Indicator",
+    "nameEs": "Indicador de guardado automático"
+  },
+  "minecraft:vignette": {
+    "category": 1,
+    "group": "camera",
+    "name": "Show Vignette",
+    "nameEs": "Mostrar viñeteado"
+  },
+  "minecraft:attackIndicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Attack Indicator",
+    "nameEs": "Indicador de ataque"
+  },
+  "minecraft:chunkSectionFadeInTime": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Chunk Fade Time",
+    "nameEs": "Tiempo de aparición de chunks"
+  },
+  "minecraft:display_control_29": {
+    "category": 0,
+    "group": "display",
+    "name": "Exclusive Fullscreen Mode",
+    "nameEs": "Modo de pantalla completa exclusiva"
+  },
+  "minecraft:graphicsPreset": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Preset",
+    "nameEs": "Preajuste"
+  },
+  "tflcore:titleScreen/menuFpsLimit": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Menu animation FPS limit",
+    "nameEs": "Límite de FPS del menú"
+  },
+  "tflcore:titleScreen/backgroundMode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Menu background",
+    "nameEs": "Fondo del menú"
+  },
+  "tflcore:dynamicFps/enabled": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "Dynamic FPS",
+    "nameEs": "FPS dinámicos"
+  },
+  "tflcore:dynamicFps/unfocused": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "FPS in the background",
+    "nameEs": "FPS en segundo plano"
+  },
+  "tflcore:dynamicFps/minimized": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "FPS when minimized",
+    "nameEs": "FPS al minimizar"
+  },
+  "tflcore:dynamicFps/afkLimit": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "FPS when AFK (0 = off)",
+    "nameEs": "FPS al estar inactivo (0 = desactivado)"
+  },
+  "tflcore:worldMap/cloudQuality": {
+    "category": 1,
+    "group": "environment",
+    "name": "Volumetric cloud quality",
+    "nameEs": "Calidad de nubes volumétricas"
+  },
+  "tflcore:worldMap/cloudMotion": {
+    "category": 1,
+    "group": "environment",
+    "name": "Subtle atmospheric motion",
+    "nameEs": "Movimiento atmosférico sutil"
+  },
+  "tflcore:miniPlayer/fpsLimit": {
+    "category": 1,
+    "group": "entities",
+    "name": "Widget FPS limit (0 = unlimited)",
+    "nameEs": "FPS del widget (0 = sin límite)"
+  },
+  "tflcore:fullbright/enabled": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Gamma",
+    "nameEs": "Gamma"
+  },
+  "tflcore:fullbright/level": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Extended gamma level",
+    "nameEs": "Nivel de gamma ampliada"
+  },
+  "minecraft:render_distance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Render Distance",
+    "nameEs": "Distancia de renderizado"
+  },
+  "minecraft:brightness": {
+    "category": 0,
+    "group": "display",
+    "name": "Brightness",
+    "nameEs": "Brillo"
+  },
+  "minecraft:gui_scale": {
+    "category": 0,
+    "group": "display",
+    "name": "GUI Scale",
+    "nameEs": "Escala de interfaz"
+  },
+  "minecraft:max_frame_rate": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Max Framerate",
+    "nameEs": "Límite de FPS"
+  },
+  "minecraft:vsync": {
+    "category": 0,
+    "group": "display",
+    "name": "Use VSync",
+    "nameEs": "Sincronización vertical"
+  },
+  "minecraft:view_bobbing": {
+    "category": 1,
+    "group": "camera",
+    "name": "View Bobbing",
+    "nameEs": "Balanceo de cámara"
+  },
+  "minecraft:graphics_mode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Graphics",
+    "nameEs": "Gráficos"
+  },
+  "minecraft:anaglyph": {
+    "category": 0,
+    "group": "display",
+    "name": "3D Anaglyph",
+    "nameEs": "Anaglifo 3D"
+  },
+  "minecraft:alternate_blocks": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Alternate Blocks",
+    "nameEs": "Variaciones de bloques"
+  },
+  "minecraft:clouds": {
+    "category": 1,
+    "group": "environment",
+    "name": "Clouds",
+    "nameEs": "Nubes"
+  },
+  "minecraft:smooth_lighting": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Smooth Lighting",
+    "nameEs": "Iluminación suave"
+  },
+  "argentum:fog_shape": {
+    "category": 1,
+    "group": "environment",
+    "name": "Fog Shape",
+    "nameEs": "Forma de la niebla"
+  },
+  "minecraft:biome_blend": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Biome Blend",
+    "nameEs": "Mezcla de biomas"
+  },
+  "celeritas:chunk_fade_in_duration": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Chunk Fade-In Duration",
+    "nameEs": "Duración de aparición de chunks"
+  },
+  "minecraft:entity_shadows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadows",
+    "nameEs": "Sombras de entidades"
+  },
+  "minecraft:mipmap_levels": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Mipmap Levels",
+    "nameEs": "Niveles de mipmap"
+  },
+  "celeritas:chunk_update_threads": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Update Threads",
+    "nameEs": "Hilos de actualización de chunks"
+  },
+  "celeritas:defer_chunk_updates": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Always Defer Chunk Updates",
+    "nameEs": "Aplazar actualizaciones de chunks"
+  },
+  "celeritas:async_graph_search": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Async Occlusion Culling",
+    "nameEs": "Descarte por oclusión asíncrono"
+  },
+  "celeritas:block_face_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Block Face Culling",
+    "nameEs": "Descartar caras ocultas de bloques"
+  },
+  "celeritas:raster_occlusion_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Rasterized Occlusion Culling",
+    "nameEs": "Descarte por oclusión rasterizada"
+  },
+  "celeritas:fog_occlusion": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Fog Occlusion",
+    "nameEs": "Descartar geometría tras la niebla"
+  },
+  "celeritas:entity_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Use Entity Culling",
+    "nameEs": "Descartar entidades ocultas"
+  },
+  "argentum:entity_occlusion_interval": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Entity Occlusion Interval",
+    "nameEs": "Intervalo de oclusión de entidades"
+  },
+  "argentum:particle_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Particle Culling",
+    "nameEs": "Descarte de partículas"
+  },
+  "argentum:entity_instancing": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Entity Instancing",
+    "nameEs": "Instancias de entidades"
+  },
+  "argentum:bake_block_entities": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Bake Block Entities",
+    "nameEs": "Precalcular entidades de bloque"
+  },
+  "argentum:name_tag_batching": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Name Tag Batching",
+    "nameEs": "Agrupar etiquetas de nombres"
+  },
+  "celeritas:animate_only_visible_textures": {
+    "category": 2,
+    "group": "processing",
+    "name": "Animate Only Visible Textures",
+    "nameEs": "Animar solo texturas visibles"
+  },
+  "argentum:font_batching": {
+    "category": 2,
+    "group": "processing",
+    "name": "Font Batching",
+    "nameEs": "Agrupar dibujo de texto"
+  },
+  "argentum:gui_item_atlas": {
+    "category": 2,
+    "group": "processing",
+    "name": "Cache Item Icons",
+    "nameEs": "Guardar iconos de objetos en caché"
+  },
+  "celeritas:translucent_face_sorting": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Translucent Face Sorting",
+    "nameEs": "Ordenación de caras translúcidas"
+  },
+  "celeritas:use_faster_clouds": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Faster Clouds",
+    "nameEs": "Optimizar dibujo de nubes"
+  },
+  "argentum:faster_end_portals": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Faster End Portals",
+    "nameEs": "Optimizar portales del End"
+  },
+  "argentum:faster_weather": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Faster Weather",
+    "nameEs": "Optimizar efectos del clima"
+  },
+  "argentum:safe_chunk_edges": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Safe Chunk Edges",
+    "nameEs": "Bordes de chunks seguros"
+  },
+  "celeritas:render_pass_optimization": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Render Pass Optimization",
+    "nameEs": "Optimizar pasadas de renderizado"
+  },
+  "celeritas:compact_vertex_format": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Use Compact Vertex Format",
+    "nameEs": "Formato compacto de vértices"
+  },
+  "argentum:greedy_render_thread": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Greedy Render Thread",
+    "nameEs": "Prioridad del hilo de renderizado"
+  },
+  "celeritas:cpu_render_ahead_limit": {
+    "category": 2,
+    "group": "processing",
+    "name": "CPU Render-Ahead Limit",
+    "nameEs": "Límite de fotogramas preparados por CPU"
+  },
+  "argentum:check_gl_errors": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "OpenGL Error Checks",
+    "nameEs": "Comprobación de errores OpenGL"
+  },
+  "amplio:upscaler": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "Upscaler",
+    "nameEs": "Escalador"
+  },
+  "amplio:quality": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "Quality",
+    "nameEs": "Calidad"
+  },
+  "amplio:dlss_model": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "DLSS Model",
+    "nameEs": "Modelo DLSS"
+  },
+  "amplio:sharpness": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "Sharpness",
+    "nameEs": "Nitidez"
+  },
+  "lucerna:shadow_distance": {
+    "category": 3,
+    "group": "shaders",
+    "name": "Max Shadow Distance",
+    "nameEs": "Distancia máxima de sombras"
+  },
+  "lucerna:render_quality": {
+    "category": 3,
+    "group": "shaders",
+    "name": "Render Quality",
+    "nameEs": "Calidad de renderizado"
+  },
+  "lucerna:shadow_quality": {
+    "category": 3,
+    "group": "shaders",
+    "name": "Shadow Quality",
+    "nameEs": "Calidad de sombras"
+  },
+  "argentum-extras:cloud_render_distance": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Render Distance",
+    "nameEs": "Distancia de nubes"
+  },
+  "argentum-extras:cloud_height_offset": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Height",
+    "nameEs": "Altura de nubes"
+  },
+  "argentum-extras:cloud_speed": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Speed",
+    "nameEs": "Velocidad de nubes"
+  },
+  "argentum-extras:cloud_fog": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Fog",
+    "nameEs": "Niebla en nubes"
+  },
+  "argentum-extras:terrain_fog_density": {
+    "category": 1,
+    "group": "environment",
+    "name": "Terrain Fog Density",
+    "nameEs": "Densidad de niebla del terreno"
+  },
+  "argentum-extras:fluid_fog_density": {
+    "category": 1,
+    "group": "environment",
+    "name": "Fluid Fog Density",
+    "nameEs": "Densidad de niebla en líquidos"
+  },
+  "argentum-extras:sky": {
+    "category": 1,
+    "group": "environment",
+    "name": "Sky",
+    "nameEs": "Cielo"
+  },
+  "argentum-extras:lower_sky": {
+    "category": 1,
+    "group": "environment",
+    "name": "Lower Sky",
+    "nameEs": "Cielo inferior"
+  },
+  "argentum-extras:sun_and_moon": {
+    "category": 1,
+    "group": "environment",
+    "name": "Sun & Moon",
+    "nameEs": "Sol y luna"
+  },
+  "argentum-extras:stars": {
+    "category": 1,
+    "group": "environment",
+    "name": "Stars",
+    "nameEs": "Estrellas"
+  },
+  "argentum-extras:weather_render_distance": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Render Distance",
+    "nameEs": "Distancia del clima"
+  },
+  "argentum-extras:weather_density": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Density",
+    "nameEs": "Densidad del clima"
+  },
+  "argentum-extras:leaf_quality": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Leaf Quality",
+    "nameEs": "Calidad de hojas"
+  },
+  "argentum-extras:dynamic_fov_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Dynamic FOV Strength",
+    "nameEs": "Intensidad del FOV dinámico"
+  },
+  "argentum-extras:portal_distortion_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Portal Distortion Strength",
+    "nameEs": "Intensidad de distorsión de portales"
+  },
+  "argentum-extras:view_bobbing_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "View Bobbing Strength",
+    "nameEs": "Intensidad del balanceo"
+  },
+  "argentum-extras:hurt_camera_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Hurt Camera Strength",
+    "nameEs": "Intensidad del movimiento por daño"
+  },
+  "argentum-extras:vignette_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Vignette Strength",
+    "nameEs": "Intensidad del viñeteado"
+  },
+  "argentum-extras:explosion_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Explosion Particles",
+    "nameEs": "Partículas de explosiones"
+  },
+  "argentum-extras:spell_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Spell Particles",
+    "nameEs": "Partículas de hechizos"
+  },
+  "argentum-extras:portal_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Portal Particles",
+    "nameEs": "Partículas de portales"
+  },
+  "argentum-extras:smoke_and_flame_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Smoke and Flame Particles",
+    "nameEs": "Partículas de humo y fuego"
+  },
+  "argentum-extras:redstone_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Redstone Particles",
+    "nameEs": "Partículas de redstone"
+  },
+  "argentum-extras:water_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Water Particles",
+    "nameEs": "Partículas de agua"
+  },
+  "argentum-extras:miscellaneous_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Miscellaneous Particles",
+    "nameEs": "Otras partículas"
+  },
+  "argentum-extras:steady_debug_hud": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Steady Debug HUD",
+    "nameEs": "Estabilizar panel de depuración"
+  },
+  "argentum-extras:debug_hud_refresh_interval": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Debug HUD Refresh Interval",
+    "nameEs": "Intervalo del panel de depuración"
+  },
+  "argentum-extras:debug_hud_scale": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Debug HUD Scale",
+    "nameEs": "Escala del panel de depuración"
+  },
+  "argentum-extras:fps_hud": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "FPS HUD",
+    "nameEs": "Indicador de FPS"
+  },
+  "argentum-extras:entity_shadow_distance": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadow Distance",
+    "nameEs": "Distancia de sombras de entidades"
+  },
+  "argentum-extras:armor": {
+    "category": 1,
+    "group": "entities",
+    "name": "Armor",
+    "nameEs": "Armadura"
+  },
+  "argentum-extras:armor_glint": {
+    "category": 1,
+    "group": "entities",
+    "name": "Armor Enchantment Glint",
+    "nameEs": "Brillo de encantamiento de armaduras"
+  },
+  "argentum-extras:held_items": {
+    "category": 1,
+    "group": "entities",
+    "name": "Held Items",
+    "nameEs": "Objetos en las manos"
+  },
+  "argentum-extras:worn_heads": {
+    "category": 1,
+    "group": "entities",
+    "name": "Worn Heads",
+    "nameEs": "Cabezas equipadas"
+  },
+  "argentum-extras:capes": {
+    "category": 1,
+    "group": "entities",
+    "name": "Capes",
+    "nameEs": "Capas"
+  },
+  "argentum-extras:player_ears": {
+    "category": 1,
+    "group": "entities",
+    "name": "Special Player Ears",
+    "nameEs": "Orejas especiales de jugadores"
+  },
+  "argentum-extras:stuck_arrows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Stuck Arrows",
+    "nameEs": "Flechas clavadas"
+  },
+  "argentum-extras:leashes": {
+    "category": 1,
+    "group": "entities",
+    "name": "Leashes",
+    "nameEs": "Correas"
+  },
+  "argentum-extras:name_tags": {
+    "category": 1,
+    "group": "entities",
+    "name": "Name Tags",
+    "nameEs": "Etiquetas de nombres"
+  },
+  "argentum-extras:second_name_tag_layer": {
+    "category": 1,
+    "group": "entities",
+    "name": "Second Name Tag Layer",
+    "nameEs": "Segunda capa de etiquetas"
+  },
+  "argentum-extras:fxaa": {
+    "category": 1,
+    "group": "geometry",
+    "name": "FXAA",
+    "nameEs": "Antialiasing FXAA"
+  },
+  "argentum-extras:smooth_block_outlines": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Smooth Block Outlines",
+    "nameEs": "Contornos de bloques suavizados"
+  },
+  "argentum-extras:scaled_block_outline": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Resolution Scaled Block Outline",
+    "nameEs": "Contorno ajustado a la resolución"
+  },
+  "argentum-extras:block_outline_width": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Block Outline Width",
+    "nameEs": "Grosor del contorno de bloques"
+  },
+  "argentum-extras:disable_text_shadows": {
+    "category": 1,
+    "group": "camera",
+    "name": "Disable Text Shadows",
+    "nameEs": "Desactivar sombras del texto"
+  },
+  "argentum-extras:high_dpi_screen": {
+    "category": 0,
+    "group": "display",
+    "name": "High-DPI Screen",
+    "nameEs": "Pantalla de alta densidad"
+  },
+  "cera:better_grass": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Better Grass",
+    "nameEs": "Césped mejorado"
+  },
+  "cera:connected_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Connected Textures",
+    "nameEs": "Texturas conectadas"
+  },
+  "cera:dynamic_lights": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Dynamic Lights",
+    "nameEs": "Luces dinámicas"
+  },
+  "cera:natural_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Natural Textures",
+    "nameEs": "Texturas naturales"
+  },
+  "cera:emissive_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Emissive Textures",
+    "nameEs": "Texturas emisivas"
+  },
+  "cera:custom_block_layers": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Block Layers",
+    "nameEs": "Capas de bloques personalizadas"
+  },
+  "cera:animated_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Animated Textures",
+    "nameEs": "Texturas animadas"
+  },
+  "cera:custom_colors": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Custom Colors",
+    "nameEs": "Colores personalizados"
+  },
+  "cera:custom_lightmaps": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Custom Lightmaps",
+    "nameEs": "Mapas de iluminación personalizados"
+  },
+  "cera:custom_sky": {
+    "category": 1,
+    "group": "environment",
+    "name": "Custom Sky",
+    "nameEs": "Cielo personalizado"
+  },
+  "cera:random_entities": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Random Entities",
+    "nameEs": "Variantes de entidades"
+  },
+  "cera:custom_items": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Item Textures",
+    "nameEs": "Texturas de objetos personalizadas"
+  },
+  "cera:optifine_cosmetics": {
+    "category": 1,
+    "group": "geometry",
+    "name": "OptiFine Cosmetics",
+    "nameEs": "Cosméticos de OptiFine"
+  },
+  "cera:custom_guis": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom GUIs",
+    "nameEs": "Interfaces de paquetes de recursos"
+  },
+  "cera:hd_fonts": {
+    "category": 1,
+    "group": "geometry",
+    "name": "HD Fonts",
+    "nameEs": "Fuentes de alta resolución"
+  },
+  "cera:custom_panorama": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Panorama",
+    "nameEs": "Panorama personalizado"
+  },
+  "cera:custom_loading_screens": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Loading Screens",
+    "nameEs": "Pantallas de carga personalizadas"
+  },
+  "tflcore:colors/enabled": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Colors",
+    "nameEs": "Colores"
+  },
+  "tflcore:colors/saturation": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Saturation",
+    "nameEs": "Color: saturación"
+  },
+  "tflcore:colors/contrast": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Contrast",
+    "nameEs": "Color: contraste"
+  },
+  "tflcore:colors/brightness": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Brightness",
+    "nameEs": "Color: brillo"
+  },
+  "tflcore:colors/vibrance": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Vibrance",
+    "nameEs": "Color: intensidad"
+  },
+  "tflcore:colors/temperature": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Color temperature",
+    "nameEs": "Color: temperatura"
+  },
+  "tflcore:gpu_info": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "GPU",
+    "nameEs": "GPU"
+  },
+  "sodium:general.render_distance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Render Distance",
+    "nameEs": "Distancia de renderizado"
+  },
+  "sodium:general.simulation_distance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Simulation Distance",
+    "nameEs": "Distancia de simulación"
+  },
+  "sodium:general.gamma": {
+    "category": 0,
+    "group": "display",
+    "name": "Brightness",
+    "nameEs": "Brillo"
+  },
+  "sodium:general.gui_scale": {
+    "category": 0,
+    "group": "display",
+    "name": "GUI Scale",
+    "nameEs": "Escala de interfaz"
+  },
+  "sodium:general.fullscreen_mode": {
+    "category": 0,
+    "group": "display",
+    "name": "Fullscreen Mode",
+    "nameEs": "Modo de pantalla completa"
+  },
+  "sodium:general.fullscreen_resolution": {
+    "category": 0,
+    "group": "display",
+    "name": "Fullscreen Resolution",
+    "nameEs": "Resolución de pantalla completa"
+  },
+  "sodium:general.vsync": {
+    "category": 0,
+    "group": "display",
+    "name": "VSync",
+    "nameEs": "Sincronización vertical"
+  },
+  "sodium:general.framerate_limit": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Max Framerate",
+    "nameEs": "Límite de FPS"
+  },
+  "sodium:general.attack_indicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Attack Indicator",
+    "nameEs": "Indicador de ataque"
+  },
+  "sodium:general.autosave_indicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Autosave Indicator",
+    "nameEs": "Indicador de guardado automático"
+  },
+  "sodium:general.graphics_api": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Graphics API",
+    "nameEs": "API gráfica"
+  },
+  "sodium:quality.graphics": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Improved Transparency",
+    "nameEs": "Transparencia mejorada"
+  },
+  "sodium:quality.clouds": {
+    "category": 1,
+    "group": "environment",
+    "name": "Clouds",
+    "nameEs": "Nubes"
+  },
+  "sodium:quality.render_cloud_distance": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Distance",
+    "nameEs": "Distancia de nubes"
+  },
+  "sodium:quality.weather": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Effect Radius",
+    "nameEs": "Radio de efectos del clima"
+  },
+  "sodium:quality.leaves": {
+    "category": 1,
+    "group": "geometry",
+    "name": "See-Through Leaves",
+    "nameEs": "Transparencia de hojas"
+  },
+  "sodium:quality.particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Particles",
+    "nameEs": "Partículas"
+  },
+  "sodium:quality.ao": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Smooth Lighting",
+    "nameEs": "Iluminación suave"
+  },
+  "sodium:quality.biome_blend": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Biome Blend",
+    "nameEs": "Mezcla de biomas"
+  },
+  "sodium:quality.entity_distance": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Distance",
+    "nameEs": "Distancia de entidades"
+  },
+  "sodium:quality.entity_shadows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadows",
+    "nameEs": "Sombras de entidades"
+  },
+  "sodium:quality.vignette": {
+    "category": 1,
+    "group": "camera",
+    "name": "Show Vignette",
+    "nameEs": "Mostrar viñeteado"
+  },
+  "sodium:quality.fade_time": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Chunk Fade Time",
+    "nameEs": "Tiempo de aparición de chunks"
+  },
+  "sodium:quality.mipmap_levels": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Mipmap Levels",
+    "nameEs": "Niveles de mipmap"
+  },
+  "sodium:quality.filtering_mode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Texture Filtering",
+    "nameEs": "Filtrado de texturas"
+  },
+  "sodium:quality.anisotropy_bit": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Anisotropic Filtering",
+    "nameEs": "Filtrado anisotrópico"
+  },
+  "sodium:quality.pixel_filtering_mode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Texel Interpolation",
+    "nameEs": "Interpolación de téxeles"
+  },
+  "sodium:quality.hidden_fluid_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Fluid Culling",
+    "nameEs": "Descarte de líquidos ocultos"
+  },
+  "sodium:quality.improved_fluid_shaping": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Fluid Shaping",
+    "nameEs": "Forma de los líquidos"
+  },
+  "sodium:quality.closest_point_entity_sort": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Entity Sorting",
+    "nameEs": "Ordenación de entidades"
+  },
+  "sodium:performance.chunk_update_threads": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Update Threads",
+    "nameEs": "Hilos de actualización de chunks"
+  },
+  "sodium:performance.always_defer_chunk_updates": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Updates",
+    "nameEs": "Actualizaciones de chunks"
+  },
+  "sodium:performance.use_block_face_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Block Face Culling",
+    "nameEs": "Descartar caras ocultas de bloques"
+  },
+  "sodium:performance.use_fog_occlusion": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Fog Occlusion",
+    "nameEs": "Descartar geometría tras la niebla"
+  },
+  "sodium:performance.use_entity_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Use Entity Culling",
+    "nameEs": "Descartar entidades ocultas"
+  },
+  "sodium:performance.animate_only_visible_textures": {
+    "category": 2,
+    "group": "processing",
+    "name": "Animate Only Visible Textures",
+    "nameEs": "Animar solo texturas visibles"
+  },
+  "sodium:performance.use_no_error_context": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Use No Error Context",
+    "nameEs": "Contexto sin comprobación de errores"
+  },
+  "sodium:performance.inactivity_fps_limit": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "Reduce fps when",
+    "nameEs": "Reducir FPS al estar inactivo"
+  },
+  "sodium:performance.quad_splitting": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Block Transparency Limits",
+    "nameEs": "Límites de transparencia de bloques"
+  },
+  "sodium:particle_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Particle Culling",
+    "nameEs": "Descarte de partículas"
+  }
+}

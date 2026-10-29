@@ -211,6 +211,7 @@ public final class TrsClient implements ClientModInitializer {
 
 	/** HUD zeichnen – aus dem HUD-Callback bzw. in 1.14 aus HudMixin. */
 	public void renderHud(Gfx g) {
+        dev.theredstonee.trsclient.core.performance.UiProfiler.worldFrame();
 		hud.render(g);
 	}
 

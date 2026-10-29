@@ -9,6 +9,8 @@ package dev.theredstonee.trsclient.core.ui;
 public interface Canvas {
 	/** Rechteck von (x1, y1) bis ausschließlich (x2, y2) in ARGB. */
 	default int pixelScale() { return 1; }
+	/** Optional cached rounded geometry; false retains the shared coverage renderer. */
+	default boolean rounded(int x,int y,int w,int h,int radius,int color){return false;}
 
 	void fill(int x1, int y1, int x2, int y2, int argb);
 

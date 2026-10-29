@@ -52,13 +52,13 @@ public abstract class QolGuiMixin implements QolGuiAccess {
 	/*@Inject(method = "displayScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/scores/Objective;)V",
 			at = @At("HEAD"), cancellable = true, require = 1)
 	private void trsclient$sidebar(net.minecraft.client.gui.GuiGraphicsExtractor g, Objective objective, CallbackInfo ci) {
-		if (QolHuds.sidebar(Gfx.of(g), objective)) ci.cancel();
+		if (dev.theredstonee.trsclient.compat.Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay || QolHuds.sidebar(Gfx.of(g), objective)) ci.cancel();
 	}
 	*///?} elif >=1.20 {
 	@Inject(method = "displayScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/scores/Objective;)V",
 			at = @At("HEAD"), cancellable = true, require = 1)
 	private void trsclient$sidebar(net.minecraft.client.gui.GuiGraphics g, Objective objective, CallbackInfo ci) {
-		if (QolHuds.sidebar(Gfx.of(g), objective)) ci.cancel();
+		if (dev.theredstonee.trsclient.compat.Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay || QolHuds.sidebar(Gfx.of(g), objective)) ci.cancel();
 	}
 	//?} elif >=1.16 {
 	/*@Inject(method = "displayScoreboardSidebar(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/scores/Objective;)V",

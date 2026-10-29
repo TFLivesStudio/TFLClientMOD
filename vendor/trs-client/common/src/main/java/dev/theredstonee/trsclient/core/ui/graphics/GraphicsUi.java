@@ -49,6 +49,9 @@ public final class GraphicsUi extends WindowUi {
     List<Option> options();
 
     void apply();
+    default String applyConfirmation(){return "";}
+    default String confirmation(Option option,int direction){return "";}
+    default void change(Option option,int direction){option.step(direction);}
 
     default void revert() {
       for (Option option : options()) option.revert();
@@ -87,9 +90,12 @@ public final class GraphicsUi extends WindowUi {
   private int category, scroll, focus, focusZone, actionFocus, visibleRows = 1;
   private List<Option> shown = Collections.emptyList();
   private String error = "";
+  private String selectedGroup="";
+  private Runnable pending;private String confirmation="";
 
   public GraphicsUi(Host host) {
     this.host = host;
+    I18n.refresh();
   }
 
   protected String title() {
@@ -104,6 +110,12 @@ public final class GraphicsUi extends WindowUi {
 
   protected void content(Canvas c, int x, int y, int w, int h, int mx, int my, float dt) {
     Theme t = Theme.get();
+    if(pending!=null){
+      int row=y+10;for(String line:Paint.wrap(c,confirmation,w-20)){c.text(line,x+10,row,t.text,false);row+=12;}
+      button(c,x+10,Math.min(y+h-28,row+15),90,22,I18n.tr("graphics.confirm"),true,true,mx,my,()->confirm());
+      button(c,x+105,Math.min(y+h-28,row+15),90,22,I18n.tr("graphics.cancel"),false,true,mx,my,()->{pending=null;});
+      return;
+    }
     int side = Math.min(108, Math.max(64, w / 4)), right = x + side + 10, bodyW = w - side - 10;
     MenuSkin.textField(c, right, y, bodyW, 20, search.focused(), false, true);
     c.text(
@@ -152,18 +164,23 @@ public final class GraphicsUi extends WindowUi {
             search.setFocused(false);
           });
     }
+    List<String> groups=new ArrayList<String>();groups.add("");
+    for(Option option:host.options())if(option.category()==category&&!groups.contains(GraphicsPurpose.group(option.id())))groups.add(GraphicsPurpose.group(option.id()));
+    if(!groups.contains(selectedGroup))selectedGroup="";
+    String groupLabel=I18n.tr("graphics.group."+(selectedGroup.isEmpty()?"all":selectedGroup));
+    button(c,right,y+24,bodyW,18,groupLabel+"  ▾",false,true,mx,my,()->{selectedGroup=groups.get((groups.indexOf(selectedGroup)+1)%groups.size());scroll=focus=0;});
     String query = search.text().toLowerCase(Locale.ROOT);
     shown = new ArrayList<Option>();
     for (Option o : host.options())
       if ((query.isEmpty()
-          ? o.category() == category
-          : (o.id() + " " + o.name() + " " + o.description() + " " + searchAliases(o.id()))
+          ? o.category() == category && (selectedGroup.isEmpty() || selectedGroup.equals(GraphicsPurpose.group(o.id())))
+          : (o.id() + " " + GraphicsPurpose.name(o.id(),o.name()) + " " + o.name() + " " + o.description() + " " + searchAliases(o.id()))
               .toLowerCase(Locale.ROOT)
               .contains(query))) shown.add(o);
-    int rows = Math.max(1, (h - (category == 3 && host.hasShaders() ? 110 : 80)) / 30);
+    int rows = Math.max(1, (h - (category == 3 && host.hasShaders() ? 130 : 100)) / 30);
     visibleRows = rows;
     scroll = Math.max(0, Math.min(scroll, Math.max(0, shown.size() - rows)));
-    int top = y + 28;
+    int top = y + 47;
     sliders.clear();
     String tooltip = "";
     for (int i = scroll; i < Math.min(shown.size(), scroll + rows); i++) {
@@ -174,7 +191,7 @@ public final class GraphicsUi extends WindowUi {
       if (focusZone == 2 && focus == i) c.fill(right, row, right + bodyW, row + 27, t.surfaceHigh);
       int control = Math.min(95, bodyW / 2);
       c.text(
-          c.clip(o.name(), bodyW - control - 12),
+          c.clip(GraphicsPurpose.name(o.id(),o.name()), bodyW - control - 12),
           right + 3,
           row + 4,
           active ? t.text : t.textDim,
@@ -231,14 +248,7 @@ public final class GraphicsUi extends WindowUi {
         dirty(),
         mx,
         my,
-        () -> {
-          try {
-            host.apply();
-            error = "";
-          } catch (RuntimeException e) {
-            error = "No se pudo aplicar: " + e.getMessage();
-          }
-        });
+        this::applyRequested);
     button(
         c,
         right + 80,
@@ -338,13 +348,16 @@ public final class GraphicsUi extends WindowUi {
     return false;
   }
 
+  private void ask(String message,Runnable action){if(message==null||message.isEmpty())action.run();else{confirmation=message;pending=action;}}
+  private void confirm(){Runnable action=pending;pending=null;try{action.run();error="";}catch(RuntimeException e){error=I18n.tr("graphics.error.apply",e.getMessage());}}
+  private void applyRequested(){try{ask(host.applyConfirmation(),()->host.apply());}catch(RuntimeException e){error=I18n.tr("graphics.error.apply",e.getMessage());}}
   private void change(Option option, int direction) {
     search.setFocused(false);
     try {
-      option.step(direction);
+      ask(host.confirmation(option,direction),()->host.change(option,direction));
       error = "";
     } catch (RuntimeException e) {
-      error = "Cambio rechazado: " + e.getMessage();
+      error = I18n.tr("graphics.error.change",e.getMessage());
     }
   }
 
@@ -367,7 +380,7 @@ public final class GraphicsUi extends WindowUi {
     try {
       dragging.option.setFraction(Math.max(0, Math.min(1, (x - dragging.x) / dragging.w)));
     } catch (RuntimeException e) {
-      error = "Valor rechazado: " + e.getMessage();
+      error = I18n.tr("graphics.error.value",e.getMessage());
     }
   }
 
@@ -410,14 +423,16 @@ public final class GraphicsUi extends WindowUi {
 
   @Override
   public void requestClose() {
+    if(pending!=null){pending=null;return;}
     if (dirty()) {
-      error = "Apply or undo your changes before leaving.";
+      error = I18n.tr("graphics.pending");
       return;
     }
     super.requestClose();
   }
 
   public boolean keyPressed(int raw, UiKey key, boolean shift) {
+    if(pending!=null){if(key==UiKey.ENTER)confirm();else if(key==UiKey.ESCAPE)pending=null;return true;}
     if (key == UiKey.ESCAPE) return super.keyPressed(raw, key, shift);
     if (key == UiKey.TAB) {
       focusZone = Math.floorMod(focusZone + (shift ? -1 : 1), 4);
@@ -452,12 +467,7 @@ public final class GraphicsUi extends WindowUi {
       }
       if (key == UiKey.ENTER) {
         if (actionFocus == 0 && dirty()) {
-          try {
-            host.apply();
-            error = "";
-          } catch (RuntimeException e) {
-            error = "Apply failed: " + e.getMessage();
-          }
+          applyRequested();
         } else if (actionFocus == 1) {
           host.revert();
         } else requestClose();

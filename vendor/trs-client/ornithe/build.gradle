@@ -129,3 +129,10 @@ if (providers.gradleProperty('runtimeGraphicsModsDir').isPresent()) {
         mods.from(fileTree(providers.gradleProperty('runtimeGraphicsModsDir').get()) { include 'amplio*.jar', 'lucerna*.jar', 'argentum-extras*.jar', 'cera*.jar', 'sarcio*.jar', 'pulse*.jar', 'soundfix*.jar' })
     }
 }
+if (project.hasProperty('tflAuditProfile')) {
+    tasks.named('runProdClient') {
+        def recording=layout.buildDirectory.file('profiles/right-shift.jfr').get().asFile
+        doFirst { recording.parentFile.mkdirs() }
+        jvmArgs.add("-XX:StartFlightRecording=filename=${recording.absolutePath},settings=profile,dumponexit=true,maxsize=64m")
+    }
+}

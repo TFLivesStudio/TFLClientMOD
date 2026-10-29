@@ -29,9 +29,7 @@ public final class GlassPause {
             if(button==options||button==disconnect||button.getMessage().getString().equals(resume))continue;
             rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(button.getMessage().getString(),"settings",()->button.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
         }
-        final Screen next=new dev.theredstonee.trsclient.screen.TrsUiScreen(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"),new dev.theredstonee.trsclient.core.ui.menus.ActionListUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"),rows,()->Mc.setScreen(null),()->{}).navigationRail()) {
-            @Override protected boolean customBackground(){return true;}
-        };
+        final Screen next=new dev.theredstonee.trsclient.screen.PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"),rows,()->Mc.setScreen(null),()->{}));
         Mc.mc().execute(()->{if(Mc.screen()==parent)Mc.setScreen(next);});
         *///?}
     }

@@ -1,0 +1,8 @@
+{
+  "samples": 15,
+  "renderCallbackIntervalP95Ms": 736.641392,
+  "renderCallbackIntervalP99Ms": 736.641392,
+  "uiThreadCpuP95Ms": 72.796279,
+  "uiThreadCpuP99Ms": 72.796279,
+  "gpuTimingMeasured": false
+}

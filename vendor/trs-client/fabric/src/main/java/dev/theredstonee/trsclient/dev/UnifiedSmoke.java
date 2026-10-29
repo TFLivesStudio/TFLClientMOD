@@ -30,7 +30,11 @@ public final class UnifiedSmoke {
    case 5:
     AutoTest.shot(mc,"unified-map-settings");Mc.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));phase++;wait=15;return;
    case 6:
-    check("shared pause rail",Mc.screen() instanceof dev.theredstonee.trsclient.screen.TrsUiScreen);AutoTest.shot(mc,"unified-pause");Mc.setScreen(null);mc.reloadResourcePacks();phase++;wait=40;return;
+    check("shared pause rail",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);
+    var nativeChat=(dev.theredstonee.trsclient.screen.PauseChatScreen)Mc.screen();
+    var field=net.minecraft.client.gui.screens.ChatScreen.class.getDeclaredField("input");field.setAccessible(true);((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).setValue("/help");
+    nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(257,0,0));
+    check("chat submission retains pause",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);check("native chat history retained",mc.gui.hud.getChat().getRecentChat().contains("/help"));AutoTest.shot(mc,"unified-pause");Mc.setScreen(null);mc.reloadResourcePacks();phase++;wait=40;return;
    case 7:
     if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=80;return;
    case 8:
@@ -46,7 +50,15 @@ public final class UnifiedSmoke {
    case 11:
     AutoTest.shot(mc,"unified-screenshot-editor");dev.theredstonee.trsclient.core.screenshot.Screenshots.get().platform().openUi("Clip editor",new dev.theredstonee.trsclient.core.ui.clips.ClipEditorUi(mc.gameDirectory.toPath().resolve("clips/native-editor-test.mp4"),16667,()->Mc.setScreen(null)));phase++;wait=15;return;
    case 12:
-    AutoTest.shot(mc,"unified-clip-editor");finish(mc,null);phase=99;return;
+    AutoTest.shot(mc,"unified-clip-editor");Mc.setScreen(new dev.theredstonee.trsclient.screen.TrsUiScreen("TFL Client",new dev.theredstonee.trsclient.core.ui.menu.ModMenu(new dev.theredstonee.trsclient.screen.TrsMenuHost(null))));phase=40;wait=40;return;
+   case 40:
+    dev.theredstonee.trsclient.core.performance.UiProfiler.start();at=System.nanoTime();phase=41;return;
+   case 41:
+    if(System.nanoTime()-at<8_000_000_000L)return;report.add("rightShiftProfile",new Gson().toJsonTree(dev.theredstonee.trsclient.core.performance.UiProfiler.stop()));AutoTest.shot(mc,"unified-right-shift-profile");Mc.setScreen(null);phase=42;wait=40;return;
+   case 42:
+    dev.theredstonee.trsclient.core.performance.UiProfiler.start();at=System.nanoTime();phase=43;return;
+   case 43:
+    if(System.nanoTime()-at<8_000_000_000L)return;report.add("worldWithoutMenuProfile",new Gson().toJsonTree(dev.theredstonee.trsclient.core.performance.UiProfiler.stop()));finish(mc,null);phase=99;return;
   }
  }catch(Throwable error){finish(mc,error);phase=99;}}
  private void finish(Minecraft mc,Throwable error){report.addProperty("status",error==null?"passed":"failed");report.add("checks",checks);if(error!=null){report.addProperty("error",error.toString());error.printStackTrace();}try{Files.write(mc.gameDirectory.toPath().resolve("unified-smoke.json"),new GsonBuilder().setPrettyPrinting().create().toJson(report).getBytes(java.nio.charset.StandardCharsets.UTF_8));}catch(Exception e){throw new RuntimeException(e);}mc.stop();}

@@ -261,7 +261,7 @@ if (stonecutter.eval(mc, '<1.19.4')) mixinClasses << 'LoadingScreenMixin'
 // Sozial-Toasts über Vanilla-Menüs: bis 1.19.3 nach dem Bildschirm im GameRenderer (ab 1.19.4 über MenuScreenMixin).
 if (stonecutter.eval(mc, '<1.19.4')) mixinClasses << 'ScreenToastMixin'
 if (stonecutter.eval(mc, '>=26.1')) mixinClasses << 'PauseBackgroundMixin'
-if (stonecutter.eval(mc, '>=26.3')) mixinClasses.addAll(['SodiumVisualMixin','SodiumGraphicsMixin','VanillaGraphicsMixin','ClientSliderMixin','ClientFirstRunMixin','ClientTitleMixin','ClientMenuFontMixin','MiniPlayerGraphicsAccessor','MiniPlayerTextureAccessor','MiniPlayerGuiRendererMixin','MiniPlayerHiddenHudMixin','InventoryTutorialMixin'])
+if (stonecutter.eval(mc, '>=26.3')) mixinClasses.addAll(['PauseChatMixin','SodiumVisualMixin','SodiumGraphicsMixin','VanillaGraphicsMixin','ClientSliderMixin','ClientFirstRunMixin','ClientTitleMixin','ClientMenuFontMixin','MiniPlayerGraphicsAccessor','MiniPlayerTextureAccessor','MiniPlayerGuiRendererMixin','MiniPlayerHiddenHudMixin','InventoryTutorialMixin'])
 // Leistung: Dynamische FPS/FPS-Messung, Partikel, Entity-Culling, Welt-Details (alle require = 0).
 mixinClasses += ['FramePaceMixin', 'WindowMixin', 'ParticleLimitMixin', 'EntityCullMixin', 'BlockEntityCullMixin', 'NameTagCullMixin',
 		'LivingNameTagCullMixin', 'TextureAnimationMixin', 'SkyMixin', 'StarsMixin']
@@ -471,5 +471,12 @@ if (mc == '26.3') {
     tasks.named('processResources') {
         duplicatesStrategy=DuplicatesStrategy.EXCLUDE
         filesMatching('diorama.mixins.json') { expand(java:25) }
+    }
+}
+if (project.hasProperty('tflAuditProfile')) {
+    tasks.named('runProdClient') {
+        def recording=layout.buildDirectory.file('profiles/right-shift.jfr').get().asFile
+        doFirst { recording.parentFile.mkdirs() }
+        jvmArgs.add("-XX:StartFlightRecording=filename=${recording.absolutePath},settings=profile,dumponexit=true,maxsize=64m")
     }
 }

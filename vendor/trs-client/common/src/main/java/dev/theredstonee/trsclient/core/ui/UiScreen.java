@@ -23,6 +23,7 @@ public abstract class UiScreen {
 	/** Zeichnet den Bildschirm. */
 	public final void render(Canvas c, int width, int height, int mouseX, int mouseY) {
 		long now = System.nanoTime();
+		long profileCpu=dev.theredstonee.trsclient.core.performance.UiProfiler.cpuTime();
 		float dt = lastNanos == 0 ? 1f / 60f : Math.min(0.25f, (now - lastNanos) / 1_000_000_000f);
 		lastNanos = now;
 		open = Anim.approach(open, closing ? 0f : 1f, dt, OPEN_TIME / 2.2f);
@@ -39,6 +40,7 @@ public abstract class UiScreen {
 		draw(c, width, height, mouseX, mouseY, dt);
 		// Halloween (nur während des Events): Filmkorn, Hinweise, Toasts „Kürbis gefunden!“.
 		dev.theredstonee.trsclient.core.halloween.HalloweenOverlay.afterScreen(c, hits, width, height, mouseX, mouseY, overlay());
+		dev.theredstonee.trsclient.core.performance.UiProfiler.frame(now,profileCpu);
 	}
 
 	// --- Touch-Modus (nur mit -Dtrs.touch=true; sonst laufen alle Eingaben unverändert durch) ---

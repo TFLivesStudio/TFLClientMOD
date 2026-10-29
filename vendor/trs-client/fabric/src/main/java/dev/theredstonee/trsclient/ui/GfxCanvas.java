@@ -22,6 +22,35 @@ public final class GfxCanvas implements Canvas {
 	private boolean pending = true;
 	private Font font;
 	private boolean nunito;
+    private final TextureRef[] roundedMasks=new TextureRef[132];
+    private int maskGeneration=-1;
+    @Override public boolean rounded(int x,int y,int w,int h,int radius,int color){
+      int r=Math.max(0,Math.min(radius,Math.min(w,h)/2));
+      if(r==0){fill(x,y,x+w,y+h,color);return true;}
+      if(r>32)return false;
+      int scale=Math.max(1,Math.min(4,pixelScale())), key=(scale-1)*33+r;
+      int generation=TextureStore.INSTANCE.resourceGeneration();
+      if(generation!=maskGeneration){java.util.Arrays.fill(roundedMasks,null);maskGeneration=generation;}
+      TextureRef texture=roundedMasks[key];int edge=2*r+2,size=edge*scale;
+      if(texture==null){
+        int[] pixels=new int[size*size];double cr=r*scale;
+        for(int py=0;py<size;py++)for(int px=0;px<size;px++){
+          double dx=Math.max(cr-(px+.5),Math.max(0,px+.5-(size-cr)));
+          double dy=Math.max(cr-(py+.5),Math.max(0,py+.5-(size-cr)));
+          int a=(int)Math.round(255*Math.max(0,Math.min(1,cr+.5-Math.hypot(dx,dy))));
+          pixels[py*size+px]=(a<<24)|0xffffff;
+        }
+        texture=TextureStore.INSTANCE.upload("ui/rounded-"+r+"-"+scale,size,size,pixels);roundedMasks[key]=texture;
+      }
+      for(int row=0;row<3;row++)for(int col=0;col<3;col++){
+        int dx=col==0?x:col==1?x+r:x+w-r,dy=row==0?y:row==1?y+r:y+h-r;
+        int dw=col==1?w-2*r:r,dh=row==1?h-2*r:r;
+        int u=(col==0?0:col==1?r:r+2)*scale,v=(row==0?0:row==1?r:r+2)*scale;
+        int sw=(col==1?2:r)*scale,sh=(row==1?2:r)*scale;
+        if(dw>0&&dh>0)dev.theredstonee.trsclient.core.ui.Affine.image(this,texture,dx,dy,dw,dh,u,v,sw,sh,color);
+      }
+      return true;
+    }
     // Native Minecraft font provider; no browser or separate font renderer.
     //? if >=1.16 {
     private final java.util.Map<String,net.minecraft.network.chat.Component> styledText = new java.util.LinkedHashMap<>();
