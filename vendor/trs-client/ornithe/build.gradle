@@ -113,3 +113,13 @@ tasks.named('test') {
 tasks.named('runClient') { useXvfb.set(false) }
 
 apply from: file("../../../tools/verification/depth-native.gradle")
+
+// Pinned Diorama ray tracer, ported to immutable 1.8.9 client snapshots.
+sourceSets.main.java.srcDir '../../diorama/ornithe/src/main/java'
+dependencies {
+    implementation 'org.jspecify:jspecify:1.0.0'
+    include(implementation('it.unimi.dsi:fastutil:8.5.15'))
+}
+tasks.withType(Jar).configureEach {
+    from('../../diorama/LICENSE') { into 'META-INF/licenses'; rename { 'diorama-MIT.txt' } }
+}

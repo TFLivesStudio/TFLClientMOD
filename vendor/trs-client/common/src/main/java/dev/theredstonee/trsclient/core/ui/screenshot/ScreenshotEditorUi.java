@@ -45,7 +45,11 @@ public final class ScreenshotEditorUi extends UiScreen {
 		RECT("rect", "screenshots.tool.rect"),
 		TEXT("text", "screenshots.tool.text"),
 		PIXELATE("pixelate", "screenshots.tool.pixelate"),
-		PEN("pencil", "screenshots.tool.pen");
+		PEN("pencil", "screenshots.tool.pen"),
+        ELLIPSE("circle", "screenshots.tool.ellipse"),
+        LINE("line", "screenshots.tool.line"),
+        FILL("bucket", "screenshots.tool.fill"),
+        HIGHLIGHT("brush", "screenshots.tool.highlight");
 
 		final String icon;
 		final String label;
@@ -61,10 +65,10 @@ public final class ScreenshotEditorUi extends UiScreen {
 	static final float[] STROKE = {1f, 2f, 3.5f};
 	static final float[] TEXT = {0.75f, 1f, 1.6f};
 	static final float[] BLOCK = {0.6f, 1f, 1.7f};
-	static final int PREVIEW_MAX_W = 1600;
-	static final int PREVIEW_MAX_H = 900;
+	static final int PREVIEW_MAX_W = 2560;
+	static final int PREVIEW_MAX_H = 1440;
 	static final int HEADER_H = 26;
-	static final int TOOLS_H = 24;
+	static final int TOOLS_H = 48;
 	static final int HANDLE = 6;
 	private static int textureCounter;
 
@@ -461,8 +465,7 @@ public final class ScreenshotEditorUi extends UiScreen {
 				x += size + 2;
 			}
 		}
-		x += 6;
-		c.fill(x - 4, y + 2, x - 3, y + size - 2, t.border);
+		x = 6; y += 24;
 		// Farben (ab 360 px alle, darunter die ersten sechs)
 		int colors = width >= 360 ? COLORS.length : 6;
 		for (int i = 0; i < colors; i++) {
@@ -595,6 +598,16 @@ public final class ScreenshotEditorUi extends UiScreen {
 		if (shape == null) return;
 		float th = Math.max(1f, shape.size * scale);
 		switch (shape.kind) {
+            case ELLIPSE: case LINE: case FILL: case HIGHLIGHT: {
+                Shape.BoxTool box=(Shape.BoxTool)shape;float[] bounds=box.bounds();
+                float x1=scrX(bounds[0]),y1=scrY(bounds[1]),x2=scrX(bounds[2]),y2=scrY(bounds[3]);
+                if(shape.kind==Shape.Kind.LINE)line(c,scrX(box.x1),scrY(box.y1),scrX(box.x2),scrY(box.y2),th,shape.color);
+                else if(shape.kind==Shape.Kind.ELLIPSE){
+                    float cx=(x1+x2)/2,cy=(y1+y2)/2,rx=(x2-x1)/2,ry=(y2-y1)/2;
+                    for(int i=0;i<96;i++){double a=i*Math.PI*2/96,b=(i+1)*Math.PI*2/96;line(c,cx+rx*(float)Math.cos(a),cy+ry*(float)Math.sin(a),cx+rx*(float)Math.cos(b),cy+ry*(float)Math.sin(b),th,shape.color);}
+                }else c.fill(Math.round(x1),Math.round(y1),Math.round(x2),Math.round(y2),shape.kind==Shape.Kind.HIGHLIGHT?ColorMath.withAlpha(shape.color,77):shape.color);
+                return;
+            }
 			case ARROW: {
 				Shape.Arrow a = (Shape.Arrow) shape;
 				float x1 = scrX(a.x1), y1 = scrY(a.y1), x2 = scrX(a.x2), y2 = scrY(a.y2);
@@ -981,6 +994,8 @@ public final class ScreenshotEditorUi extends UiScreen {
 	private Shape current() {
 		int col = color;
 		switch (tool) {
+            case ELLIPSE: case LINE: case FILL: case HIGHLIGHT:
+                return new Shape.BoxTool(Shape.Kind.valueOf(tool.name()),startX,startY,curX,curY,col,strokeSize());
 			case ARROW:
 				return new Shape.Arrow(startX, startY, curX, curY, col, strokeSize());
 			case RECT:

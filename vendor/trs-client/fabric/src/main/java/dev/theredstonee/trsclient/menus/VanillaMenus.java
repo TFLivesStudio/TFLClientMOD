@@ -81,7 +81,9 @@ public final class VanillaMenus {
 
 	/** Art des Menüs oder null. */
 	public static MenuStyle.Kind kind(Screen s) {
-		if (s == null || !s.getClass().getName().startsWith("net.minecraft.")) return null;
+		if (s == null) return null;
+        String owner=s.getClass().getName();
+        if(owner.startsWith("dev.diorama.")||owner.startsWith("me.jellysquid.mods.sodium.")||owner.startsWith("net.caffeinemc.mods.sodium.")||owner.startsWith("net.ornithemc.argentum.")) return MenuStyle.Kind.OPTIONS;
 		if (dialog(s)) return dialogKind(s);
 		if (s instanceof PauseScreen || lanScreen(s)) return MenuStyle.Kind.PAUSE;
 		if (s instanceof JoinMultiplayerScreen || serverForm(s) || multiplayerNotice(s)) return MenuStyle.Kind.MULTIPLAYER;
@@ -92,7 +94,7 @@ public final class VanillaMenus {
 		}
 		if (loading(s)) return MenuStyle.Kind.LOADING;
 		if (s instanceof net.minecraft.client.gui.screens.DisconnectedScreen) return MenuStyle.Kind.ERROR;
-		return null;
+        return s instanceof dev.theredstonee.trsclient.screen.TrsScreen?null:MenuStyle.Kind.OPTIONS;
 	}
 
 	/** Formulare der Serverliste: „Direkt verbinden“ und „Server hinzufügen/bearbeiten“. */
@@ -248,7 +250,7 @@ public final class VanillaMenus {
 				public void run() {
 					MenuSkin.background(c, w, h, world, header, footer);
                     //? if >=26.3 {
-                    /*if(k==MenuStyle.Kind.PAUSE) {
+                    /*if(k==MenuStyle.Kind.PAUSE && !(s instanceof PauseScreen)) {
                         dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(c,16,16,w-32,h-32,0xED101A2A,0xFF26374E);
                         c.strongText("TFL Client",30,28,0xFFF1F5FC);
                         c.text(s.getTitle().getString(),30,44,0xFF93A5BE,false);

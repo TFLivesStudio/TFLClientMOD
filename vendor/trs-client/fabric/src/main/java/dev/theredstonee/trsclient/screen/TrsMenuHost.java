@@ -163,9 +163,22 @@ public final class TrsMenuHost implements MenuHost {
 		return true;
 	}
 
+    @Override public java.util.List<dev.theredstonee.trsclient.core.module.Setting> settings(Module module){
+        //? if >=26.3 {
+        /*if(module==modules().worldMap)return module.settings().stream().filter(s->java.util.Set.of("key","cloudQuality","cloudMotion","showWaypoints","showPlayers","showHostile","showPassive").contains(s.key())).toList();
+        if(module==modules().minimap)return module.settings().stream().filter(s->java.util.Set.of("shape","size","zoom","opacity","caveMode","showWaypoints","showPlayers","showHostile","showPassive","mobIcons","compass","coords","biome").contains(s.key())).toList();
+        *///?}
+        return module.settings();
+    }
 	@Override
 	public List<MenuAction> actions(Module module) {
 		List<MenuAction> actions = new ArrayList<>();
+        //? if >=26.3 {
+        /*if(module==modules().worldMap||module==modules().minimap||module==modules().waypoints){
+            actions.add(new MenuAction("Diorama map settings","map",()->Mc.setScreen(new dev.diorama.SettingsScreen(Mc.screen()))));
+            if(inWorld())actions.add(new MenuAction("Open world map","map",()->Mc.setScreen(new dev.diorama.MapScreen())));
+        }
+        *///?}
 		if (module == modules().crosshair) {
 			actions.add(new MenuAction(I18n.tr("crosshairEditor.title"), "crosshair", new Runnable() {
 				@Override
@@ -178,7 +191,11 @@ public final class TrsMenuHost implements MenuHost {
 			actions.add(new MenuAction(I18n.tr("menu.action.waypoints"), "compass", new Runnable() {
 				@Override
 				public void run() {
-					Mc.setScreen(new WaypointListScreen(new TrsMenuScreen(parent)));
+					//? if >=26.3 {
+                    /*Mc.setScreen(new dev.diorama.waypoint.WaypointListScreen(new TrsMenuScreen(parent)));
+                    *///?} else {
+                    Mc.setScreen(new WaypointListScreen(new TrsMenuScreen(parent)));
+                    //?}
 				}
 			}));
 		}

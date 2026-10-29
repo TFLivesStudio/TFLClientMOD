@@ -218,6 +218,7 @@ public final class TrsModules {
 	/** Startbildschirm: animierte Redstone-Schaltung im Hintergrund (aus = ruhiges Standbild). */
 	public final BoolSetting titleAnimated;
 	public final ChoiceSetting<dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode> menuBackground;
+    public final NumberSetting menuFpsLimit;
 	public final BoolSetting menuPause;
 	public final BoolSetting menuPauseButtons;
 	public final BoolSetting menuMultiplayer;
@@ -539,7 +540,7 @@ public final class TrsModules {
 				new HudPosition(HudAnchor.CENTER_LEFT, 0.005, -0.18)));
 		minimap = registry.register(new HudModule("minimap", "Minimap",
 				"Smooth map of your surroundings with real block colors, relief shading, waypoints, players and "
-						+ "an automatic cave view underground. Fair Play turns off everything beyond vanilla sight.", false,
+						+ "an automatic cave view underground. Fair Play turns off everything beyond vanilla sight.", true,
 				new HudPosition(HudAnchor.TOP_RIGHT, -0.005, 0.01)));
 		worldMap = registry.register(new Module("worldMap", "World map",
 				"Fullscreen map of everything you have explored (saved per world, server and dimension): drag, zoom, "
@@ -797,6 +798,7 @@ public final class TrsModules {
 		hitColorOpacity = hitColor.add(new NumberSetting("opacity", "Opacity (%)", 70, 10, 100, 10, ""));
 		dev.theredstonee.trsclient.core.ui.UiAppearance.bind(titleScreen);
         titleAnimated = titleScreen.add(new BoolSetting("animated", "Animated background", true));
+        menuFpsLimit=titleScreen.add(new NumberSetting("menuFpsLimit","Menu animation FPS limit",60,30,240,30,""," FPS"));
         menuBackground=titleScreen.add(new ChoiceSetting<>("backgroundMode","Menu background",dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.class,dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.HIGH));
 		// Aussehen (Design Redstone | Winternacht, Farbschema, Akzent) auf den Seiten „Startbildschirm“ und „Menü-Stil“.
 		dev.theredstonee.trsclient.core.intro.LookPanel look = new dev.theredstonee.trsclient.core.intro.LookPanel(this);
@@ -887,13 +889,13 @@ public final class TrsModules {
 		minimapCoords = minimap.add(new BoolSetting("coords", "Coordinates below the map", true));
 		minimapBiome = minimap.add(new BoolSetting("biome", "Biome below the map", true));
 		minimapTime = minimap.add(new BoolSetting("time", "Time of day below the map", false));
-		worldMapCloudQuality=worldMap.add(new ChoiceSetting<>("cloudQuality","Volumetric cloud quality",dev.theredstonee.trsclient.core.map.volume.CloudQuality.class,dev.theredstonee.trsclient.core.map.volume.CloudQuality.BALANCED));
+		worldMapCloudQuality=worldMap.add(new ChoiceSetting<>("cloudQuality","Volumetric cloud quality",dev.theredstonee.trsclient.core.map.volume.CloudQuality.class,dev.theredstonee.trsclient.core.map.volume.CloudQuality.HIGH));
         worldMapTilt=worldMap.add(new NumberSetting("tilt","Perspective tilt",0,0,55,1,"","°"));
         worldMapRotation=worldMap.add(new NumberSetting("rotation","Map rotation",0,-180,180,1,"","°"));
         worldMapCloudHeight=worldMap.add(new NumberSetting("cloudHeight","Cloud layer height",48,8,128,4,""));
         worldMapCloudDensity=worldMap.add(new NumberSetting("cloudDensity","Cloud density",100,20,200,5,"","%"));
         worldMapCloudDistance=worldMap.add(new NumberSetting("cloudDistance","Cloud draw distance",4096,128,16384,128,""));
-        worldMapCloudMotion=worldMap.add(new BoolSetting("cloudMotion","Subtle atmospheric motion",false));
+        worldMapCloudMotion=worldMap.add(new BoolSetting("cloudMotion","Subtle atmospheric motion",true));
         worldMapKey = worldMap.add(new KeySetting("key", "Open world map", "key.keyboard.m"));
 		worldMapWaypoints = worldMap.add(new BoolSetting("showWaypoints", "Show waypoints", true));
 		worldMapPlayers = worldMap.add(new BoolSetting("showPlayers", "Show players", true));
@@ -966,7 +968,7 @@ public final class TrsModules {
 				dev.theredstonee.trsclient.core.perf.LowLatency.Mode.class, dev.theredstonee.trsclient.core.perf.LowLatency.Mode.BALANCED));
 		lowLatencyLatePoll = lowLatency.add(new BoolSetting("latePoll", "Read input right before the frame", true));
 
-		dynamicFpsUnfocused = dynamicFps.add(new NumberSetting("unfocused", "FPS in the background", 15, 1, 60, 1, "", " FPS"));
+		dynamicFpsUnfocused = dynamicFps.add(new NumberSetting("unfocused", "FPS in the background", 60, 1, 60, 1, "", " FPS"));
 		dynamicFpsMinimized = dynamicFps.add(new NumberSetting("minimized", "FPS when minimized", 1, 1, 30, 1, "", " FPS"));
 		// Neuer Schlüssel „afkLimit“ (Standard aus): alte Werte von „afk“ (früher 30) gelten nicht mehr –
 		// eine AFK-Bremse verfälscht sonst FPS-Messungen und Aufnahmen, ohne dass man es merkt.

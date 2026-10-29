@@ -125,6 +125,7 @@ public final class OrnitheMapPlatform implements MapPlatform, ChunkReader {
           entity.yaw);
       out.uuid = entity.getUuid();
       out.name = entity.getName();
+      out.kind=net.minecraft.entity.Entities.getKey(entity);
     }
   }
 

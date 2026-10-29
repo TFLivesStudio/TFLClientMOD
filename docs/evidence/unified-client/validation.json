@@ -1,0 +1,24 @@
+{
+  "commonTests": {
+    "tests": 1157,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "ornitheContracts": {
+    "tests": 9,
+    "failures": 0
+  },
+  "pythonTests": {
+    "tests": 6,
+    "failures": 0
+  },
+  "sourceVideoFps": "30/1 (ffprobe original MP4)",
+  "nativeVideoFps": {
+    "1.8.9": 29.18277246661818,
+    "26.3": 29.883846910975254
+  },
+  "hardware": "Mesa software rendering, 4 CPU quota",
+  "physicalGpuCertified": false,
+  "finalJarChangeAfterNative": "Only license resources and notices; executable class hashes verified unchanged."
+}

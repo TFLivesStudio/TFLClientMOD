@@ -69,7 +69,10 @@ public final class OrnitheMenuHost implements MenuHost {
   }
 
   public java.util.List<dev.theredstonee.trsclient.core.module.Setting> settings(Module m) {
-    return client.capabilities.settings(m);
+    var settings=client.capabilities.settings(m);
+    if(m==client.modules.worldMap)return settings.stream().filter(setting->java.util.Set.of("key","cloudQuality","cloudMotion","showWaypoints","showPlayers","showHostile","showPassive").contains(setting.key())).toList();
+    if(m==client.modules.minimap)return settings.stream().filter(setting->java.util.Set.of("shape","size","zoom","opacity","caveMode","showWaypoints","showPlayers","showHostile","showPassive","mobIcons","compass","coords","biome","fairPlay","scale","textColor","backgroundColor","background","shadow","padding","rounding","opacityHud").contains(setting.key())).toList();
+    return settings;
   }
 
   public String capabilityDetail(Module m) {

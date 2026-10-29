@@ -30,7 +30,7 @@ class LocalVideoTest {
             while(player.decodedFrames()<2 && System.nanoTime()<until)Thread.sleep(10);
             assertTrue(player.decodedFrames()>=2,"worker must decode and loop real frames");
             assertEquals(0,player.uploadedFrames(),"worker must never touch GPU");
-            PlaybackMetrics m=player.metrics();assertTrue(m.pixelBufferAllocations<=3,"reuse bounded frame buffers");assertEquals(1,m.imageBufferAllocations,"reuse JPEG destination image across loops");
+            PlaybackMetrics m=player.metrics();assertTrue(m.pixelBufferAllocations<=10,"reuse bounded frame buffers");assertTrue(m.imageBufferAllocations<=3,"one reusable destination per parallel decoder");
         } finally {player.close();player.close();}
     }
 }

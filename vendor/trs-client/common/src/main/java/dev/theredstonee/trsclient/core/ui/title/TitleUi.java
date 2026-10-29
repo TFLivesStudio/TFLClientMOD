@@ -20,6 +20,7 @@ public final class TitleUi extends UiScreen {
     private int focus=-1,pending=-1,frames;
     private float delay,frameMs,uiMicros;
     private boolean sceneEnabled=true;
+    private TextureRef railShade;private int railGeneration=-1;
     private long statusAt;private String videoStatus="";
     public TitleUi(final TitleHost host) {
         this.host=host; I18n.refresh();
@@ -39,10 +40,13 @@ public final class TitleUi extends UiScreen {
         int left=Math.max(12,Math.min(48,width/14));
         int rail=Math.min(180,Math.max(80,width/2-left));
         // The transparent rail leaves the event horizon visible and keeps navigation quiet.
-        for(int x=0;x<width/2;x+=4) {
-            int a=Math.max(0,185-x*370/Math.max(1,width));
-            c.fill(x,0,Math.min(x+4,width/2),height,(a<<24)|0x060B14);
-        }
+        Textures.Store store=Textures.store();
+        if(c.images()&&store!=null){
+            int generation=store.resourceGeneration();
+            if(railShade==null||generation!=railGeneration){int[] pixels=new int[256];for(int i=0;i<256;i++)pixels[i]=(Math.max(0,185-i*185/255)<<24)|0x060B14;railShade=store.upload("menu/rail-shade",256,1,pixels);railGeneration=generation;}
+            if(railShade!=null)Affine.image(c,railShade,0,0,width/2f,height,0,0,256,1,0xFFFFFFFF);
+        }else for(int x=0;x<width/2;x+=4){int a=Math.max(0,185-x*370/Math.max(1,width));c.fill(x,0,Math.min(x+4,width/2),height,(a<<24)|0x060B14);}
+
         boolean compact=height<190;
         int row=Math.min(28,Math.max(11,(height-(compact?34:100))/entries.size()));
         int top=compact?25:Math.max(70,(height-row*entries.size())/2);
@@ -85,6 +89,7 @@ public final class TitleUi extends UiScreen {
     }
     @Override public boolean mouseClicked(double x,double y,int button){boolean hit=super.mouseClicked(x,y,button);if(!hit)focus=-1;return hit;}
     @Override public boolean wantsTextInput(){return false;}
+    @Override public void removed(){if(railShade!=null&&Textures.store()!=null)Textures.store().release(railShade);railShade=null;}
     @Override public void requestClose(){}
     @Override protected void onClosed(){}
     public void setSceneEnabled(boolean enabled){sceneEnabled=enabled;}

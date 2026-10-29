@@ -301,7 +301,7 @@
       "name": "Minimap",
       "category": "WORLD",
       "hud": true,
-      "defaultEnabled": false,
+      "defaultEnabled": true,
       "classification": "registered; offline logic covered where tests exist; in-game verification pending",
       "settings": [
         "textColor",
@@ -456,6 +456,7 @@
         "cornerRadius",
         "menuAccent",
         "animated",
+        "menuFpsLimit",
         "backgroundMode"
       ]
     },
@@ -731,7 +732,7 @@
     },
     {
       "id": "clips",
-      "name": "Clips & Recording",
+      "name": "Clips \u0026 Recording",
       "category": "MISC",
       "hud": true,
       "defaultEnabled": true,
@@ -945,7 +946,7 @@
     },
     {
       "id": "queueAlerts",
-      "name": "Queue & Alerts",
+      "name": "Queue \u0026 Alerts",
       "category": "MISC",
       "hud": false,
       "defaultEnabled": false,
@@ -1263,11 +1264,5 @@
         "spookySounds"
       ]
     }
-  ],
-  "targetDefaultOverrides": {
-    "ornithe189": {
-      "fastConnect": false,
-      "netOptimize": false
-    }
-  }
+  ]
 }

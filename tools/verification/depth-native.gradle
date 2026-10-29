@@ -31,6 +31,7 @@ if (project.hasProperty('depthNativeProbe')) {
             jvmArgs.addAll('-Dtflcore.ornithe.smoke=true',"-Dtflcore.ornithe.report=${layout.buildDirectory.dir('smoke/production').get().asFile}",'-Dtflcore.ui.smoke.large=true')
             programArgs.addAll('--width','1920','--height','1080')
             if(project.hasProperty('restart'))jvmArgs.add('-Dtflcore.ornithe.restart=true')
+            if(project.hasProperty('unifiedSmoke'))jvmArgs.add('-Dtflcore.unified.smoke=true')
         }
     }
 }

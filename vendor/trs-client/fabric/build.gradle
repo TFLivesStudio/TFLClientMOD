@@ -261,7 +261,7 @@ if (stonecutter.eval(mc, '<1.19.4')) mixinClasses << 'LoadingScreenMixin'
 // Sozial-Toasts über Vanilla-Menüs: bis 1.19.3 nach dem Bildschirm im GameRenderer (ab 1.19.4 über MenuScreenMixin).
 if (stonecutter.eval(mc, '<1.19.4')) mixinClasses << 'ScreenToastMixin'
 if (stonecutter.eval(mc, '>=26.1')) mixinClasses << 'PauseBackgroundMixin'
-if (stonecutter.eval(mc, '>=26.3')) mixinClasses.addAll(['ClientSliderMixin','ClientFirstRunMixin','ClientTitleMixin','ClientMenuFontMixin','MiniPlayerGraphicsAccessor','MiniPlayerTextureAccessor','MiniPlayerGuiRendererMixin','MiniPlayerHiddenHudMixin','InventoryTutorialMixin'])
+if (stonecutter.eval(mc, '>=26.3')) mixinClasses.addAll(['SodiumVisualMixin','ClientSliderMixin','ClientFirstRunMixin','ClientTitleMixin','ClientMenuFontMixin','MiniPlayerGraphicsAccessor','MiniPlayerTextureAccessor','MiniPlayerGuiRendererMixin','MiniPlayerHiddenHudMixin','InventoryTutorialMixin'])
 // Leistung: Dynamische FPS/FPS-Messung, Partikel, Entity-Culling, Welt-Details (alle require = 0).
 mixinClasses += ['FramePaceMixin', 'WindowMixin', 'ParticleLimitMixin', 'EntityCullMixin', 'BlockEntityCullMixin', 'NameTagCullMixin',
 		'LivingNameTagCullMixin', 'TextureAnimationMixin', 'SkyMixin', 'StarsMixin']
@@ -314,7 +314,9 @@ processResources {
 			mixins      : mixinClasses.collect { "\"${it}\"" }.join(', '),
 			// Abhängig von den einzelnen Fabric-API-Modulen statt "fabric-api": bis ~1.19 hieß die
 			// Fabric API selbst noch "fabric" – die Modul-IDs sind dagegen in allen Versionen gleich.
-			fapiDepends : (fapiModules.collect { "\"${it}\": \"*\"" } + (mc.toString() == '26.3' ? ["\"fabric-api\": \"${project.fabric_api_version}\""] : [])).join(', '),
+			dioramaClient: mc.toString()=='26.3' ? ', "dev.diorama.fabric.DioramaFabric"' : '',
+            dioramaMixin: mc.toString()=='26.3' ? '"diorama.mixins.json",' : '',
+            fapiDepends : (fapiModules.collect { "\"${it}\": \"*\"" } + (mc.toString() == '26.3' ? ["\"fabric-api\": \"${project.fabric_api_version}\""] : [])).join(', '),
 			version     : project.version,
 			minecraft   : mc,
 			java        : "${javaVersion}",
@@ -454,3 +456,20 @@ tasks.named('jar') { from(rootProject.file('licenses/Nunito-OFL.txt')) { into 'M
 tasks.withType(Jar).configureEach { from(rootProject.file('licenses/Lucide-LICENSE.txt')) { into 'META-INF/licenses' } }
 
 apply from: rootProject.file("../../tools/verification/depth-native.gradle")
+
+// Diorama is compiled from pinned MIT source, inside TFL. Never load a second map mod.
+if (mc == '26.3') {
+    sourceSets.main.java.srcDir(rootProject.file('../diorama/src/main/java'))
+    sourceSets.main.java.exclude('dev/diorama/neoforge/**')
+    sourceSets.main.resources.srcDir(rootProject.file('../diorama/src/main/resources/assets').parentFile)
+    sourceSets.main.resources.exclude('META-INF/neoforge.mods.toml')
+    dependencies { implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}" }
+    tasks.withType(Jar).configureEach {
+        exclude 'com/terraformersmc/**'
+        from(rootProject.file('../diorama/LICENSE')) { into 'META-INF/licenses'; rename { 'diorama-MIT.txt' } }
+    }
+    tasks.named('processResources') {
+        duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+        filesMatching('diorama.mixins.json') { expand(java:25) }
+    }
+}

@@ -15,6 +15,8 @@ import net.minecraft.client.gui.Font;
  * ({@link MapEngine}, {@link MinimapRenderer}) und sind in allen Versionen gleich.
  */
 public final class MinimapHud extends HudElement {
+    //? if >=26.3
+    /*private final dev.diorama.MinimapHud nativeMap=new dev.diorama.MinimapHud();*/
 	private final TrsModules modules;
 	private final MapBridge bridge = new MapBridge();
 	private final MinimapRenderer renderer = new MinimapRenderer();
@@ -52,8 +54,12 @@ public final class MinimapHud extends HudElement {
 
 	@Override
 	public boolean visible() {
+        //? if >=26.3
+        /*return mc.level!=null&&mc.player!=null&&dev.diorama.MapSession.get()!=null&&dev.diorama.ServerRules.minimapAllowed();*/
+        //? if <26.3 {
 		MapEngine e = MapEngine.get();
 		return mc.level != null && mc.player != null && (e == null || e.fairPlay().minimapAllowed());
+        //?}
 	}
 
 	@Override
@@ -69,7 +75,8 @@ public final class MinimapHud extends HudElement {
 	/** Einmal je Client-Tick: Karte abtasten (Zeitbudget), Spieler/Kreaturen merken. */
 	public void tick() {
 		MapEngine e = MapEngine.get();
-		if (e != null) e.tick(bridge);
+		//? if <26.3
+        if (e != null) e.tick(bridge);
 	}
 
 	public void onWorldChange() {
@@ -78,6 +85,12 @@ public final class MinimapHud extends HudElement {
 
 	@Override
 	public void draw(Gfx g, Font font, boolean preview) {
+        //? if >=26.3 {
+        /*if(mc.level!=null&&mc.player!=null&&dev.diorama.MapSession.get()!=null){
+            nativeMap.drawAt((net.minecraft.client.gui.GuiGraphicsExtractor)g.raw(),mc.getDeltaTracker().getGameTimeDeltaPartialTick(true),modules.minimapSize.getInt());
+            return;
+        }
+        *///?}
 		MapEngine e = MapEngine.get();
 		if (e == null) return;
 		double scale = Mc.window().getGuiScale() * module.scale.getFloat();

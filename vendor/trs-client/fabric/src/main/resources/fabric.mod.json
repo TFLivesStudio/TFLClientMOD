@@ -14,13 +14,13 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"dev.theredstonee.trsclient.TrsClient"
+			"dev.theredstonee.trsclient.TrsClient"${dioramaClient}
 		],
 		"preLaunch": [
 			"dev.theredstonee.trsclient.TrsPreLaunch"
 		]
 	},
-	"mixins": [
+	"mixins": [ ${dioramaMixin}
 		{
 			"config": "trsclient.mixins.json",
 			"environment": "client"

@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "dev.diorama.mixin",
+	"compatibilityLevel": "JAVA_${java}",
+	"client": [
+		"BiomeManagerAccessor",
+		"ChatComponentMixin",
+		"ClientChunkCacheMixin",
+		"ClientPacketListenerMixin",
+		"DeathPacketMixin",
+		"FtbChunksUpdateMixin",
+		"GameRendererMixin",
+		"LevelChunkMixin",
+		"RealmsServerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

@@ -6,7 +6,7 @@ package dev.theredstonee.trsclient.core.screenshot.edit;
  */
 public abstract class Shape {
 	public enum Kind {
-		ARROW, RECT, PEN, TEXT, PIXELATE
+		ARROW, RECT, PEN, TEXT, PIXELATE, ELLIPSE, LINE, FILL, HIGHLIGHT
 	}
 
 	public final Kind kind;
@@ -35,6 +35,18 @@ public abstract class Shape {
 	static float ry(float x, float y, int oldH) {
 		return x;
 	}
+
+    /** Shape tools share a normalized bounding box, transformed with the image. */
+    public static final class BoxTool extends Shape {
+        public final float x1,y1,x2,y2;
+        public BoxTool(Kind kind,float x1,float y1,float x2,float y2,int color,float size){
+            super(kind,color,size);
+            if(kind!=Kind.ELLIPSE&&kind!=Kind.LINE&&kind!=Kind.FILL&&kind!=Kind.HIGHLIGHT)throw new IllegalArgumentException("box tool");
+            this.x1=x1;this.y1=y1;this.x2=x2;this.y2=y2;
+        }
+        public Shape rotated(int oldH){return new BoxTool(kind,rx(x1,y1,oldH),ry(x1,y1,oldH),rx(x2,y2,oldH),ry(x2,y2,oldH),color,size);}
+        public float[] bounds(){return new float[]{Math.min(x1,x2),Math.min(y1,y2),Math.max(x1,x2),Math.max(y1,y2)};}
+    }
 
 	/** Pfeil von (x1, y1) nach (x2, y2); Spitze am Ende. */
 	public static final class Arrow extends Shape {

@@ -93,8 +93,10 @@ public final class SmokeHarness implements Runnable {
     Screenshot.take(out.toFile(), name + ".png", c.mc.width, c.mc.height, c.mc.getRenderTarget());
   }
 
+  private UnifiedSmoke unified;
   @Override
   public void run() {
+    if(Boolean.getBoolean("tflcore.unified.smoke")){if(unified==null)unified=new UnifiedSmoke(c,out);unified.run();return;}
     try {
       tick++;
       if (System.nanoTime() - started > 300_000_000_000L)

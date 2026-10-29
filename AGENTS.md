@@ -1,3 +1,13 @@
+# Active targets (user decision, 2026-10-28)
+
+- Minecraft 1.8.9: Ornithe Gen2 + optional Argentum; modern versions: Fabric.
+- Forge, NeoForge, other legacy adapters and the old root src tree have been retired. Do not reintroduce them.
+- Diorama (MIT) is the map engine; preserve vendor/diorama/LICENSE and pinned UPSTREAM.md.
+- Visual quality, animation and full UI identity are the default; performance reductions are explicit options.
+- Preserve user data and the shared module/settings stack. Test both current targets before claiming parity.
+
+The following adoption-stage notes are historical where they mention retired targets.
+
 # Coding agent instructions — TRS Client adoption branch
 
 This branch contains a full snapshot of the independent **TRS Client mod** from https://github.com/theredstonee/TRS-Launcher (commit `c52087ddb6b73b9d1287ef6d7f9d31010fcb5702`) under `vendor/trs-client/`.
@@ -8,12 +18,12 @@ This branch contains a full snapshot of the independent **TRS Client mod** from 
 1. `docs/TRS_ADOPTION.md` (migration gates and licensing).
 2. `vendor/trs-client/README.md`.
 3. `vendor/TRS-UPSTREAM-NOTICE.txt`.
-4. `vendor/trs-client/fabric/versions/26.3/gradle.properties`, `vendor/trs-client/legacy/versions/1.8.9/gradle.properties`.
+4. `vendor/trs-client/fabric/versions/26.3/gradle.properties`, `vendor/trs-client/ornithe/gradle.properties`.
 5. Original TFL Core 0.3 docs for current config and user-data continuity.
 
 ## Priority order
 1. **Verify vendored upstream Fabric 26.3 build** and runtime in clean Minecraft; fix only reproducible build problems.
-2. Verify Forge 1.8.9 separately. Gradle/Stonecutter must run on JDK 21+ (Java 25 works); compile 1.8.9 bytecode for its required Java version/toolchain.
+2. Verify Ornithe Gen2 1.8.9 separately. Gradle/Stonecutter must run on JDK 21+ (Java 25 works); compile 1.8.9 bytecode for its required Java version/toolchain.
 3. Map every TRS optional online service, TRS Launcher IPC, hardcoded TRS host, updater and sensitive capability; disable by default in future TFL build, preserving audited offline features. Do not silently substitute TFL credentials.
 4. Choose one authoritative module/HUD/render stack from TRS; retire the old TFL stack only after working TFL build is demonstrated.
 5. Replace **all redstone/retro/pixel UI** with modern Headless-UI-inspired native desktop design, legible typography and accessible interaction. Preserve module features and don't hide defects behind visuals.
@@ -31,12 +41,11 @@ This branch contains a full snapshot of the independent **TRS Client mod** from 
 
 ## Operation Modpack Ready — active TFL distribution
 
-The root build delegates to the adopted implementation; `src/` is historical migration reference,
-not an active source set. Build current TFL with `vendor/trs-client/gradlew -p vendor/trs-client
+The root build delegates to the adopted implementation; the inactive root `src/` has been retired. Build current TFL with `vendor/trs-client/gradlew -p vendor/trs-client
 :common:test :fabric:26.3:build -PtrsVersions=26.3`, then `python3 tools/distribution.py package <jar>`.
 The original Java package/resource namespace `trsclient` is deliberate; public loader ID is `tflcore`.
 Do not re-enable TRS services or bundle optimization binaries without a separately approved audit.
-Keep common compatible with Java 8 and Gson 2.2.4 for Forge 1.8.9.
+Keep common compatible with Java 8 and Gson 2.2.4; the active Ornithe adapter itself requires Java 25.
 Read docs/RELEASE_READINESS.md and docs/CONTINUATION.md for actual evidence and open gates.
 
 ## Shared UI parity (active user requirement)
@@ -45,6 +54,6 @@ New menu/HUD/map features must be implemented for both active targets: Minecraft
 and Fabric 26.3. Keep presentation, settings IDs/defaults/persistence and behavior in common;
 platform-specific rendering/input hooks may differ. Exercise both adapters when a shared
 feature changes. The existing 1.8.9 capability audit still applies: do not claim complete
-functional equivalence for adapters whose options remain limited. Use `.github/workflows/ui-parity.yml`
+functional equivalence for adapters whose options remain limited. Use `.github/workflows/unified-client.yml`
 for shared regressions and record any unverified behavior explicitly. Visible menus use TFL
 branding; retain technical loader identities, dependency declarations and legal notices.

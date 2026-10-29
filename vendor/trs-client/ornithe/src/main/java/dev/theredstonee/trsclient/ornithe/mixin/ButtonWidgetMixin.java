@@ -24,8 +24,7 @@ public abstract class ButtonWidgetMixin {
         || !c.ready
         || c.navigation == null
         || dev.theredstonee.trsclient.core.product.Product.safeMode()
-        || mc.screen == null
-        || !mc.screen.getClass().getName().startsWith("net.minecraft.")) return;
+        || mc.screen == null) return;
     if (visible) {
       hovered = mx >= x && mx < x + width && my >= y && my < y + height;
       var canvas = c.canvas;

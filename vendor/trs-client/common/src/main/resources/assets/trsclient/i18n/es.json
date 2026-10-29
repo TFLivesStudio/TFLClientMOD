@@ -2596,5 +2596,10 @@
   "pause.serverInformation": "Información del servidor",
   "map.perspective": "Inclinar perspectiva (P)",
   "map.rotate": "Rotar mapa",
-  "map.minimapCloudMode": "Nubes del minimapa: vista superior simplificada"
+  "map.minimapCloudMode": "Nubes del minimapa: vista superior simplificada",
+  "screenshots.tool.ellipse": "Elipse",
+  "screenshots.tool.line": "Línea",
+  "screenshots.tool.fill": "Ocultar con color sólido",
+  "screenshots.tool.highlight": "Resaltador",
+  "setting.titleScreen.menuFpsLimit": "FPS de las animaciones del menú"
 }

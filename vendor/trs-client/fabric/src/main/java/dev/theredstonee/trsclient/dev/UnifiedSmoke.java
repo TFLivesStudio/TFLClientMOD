@@ -1,0 +1,51 @@
+//? if >=26.3 {
+/*package dev.theredstonee.trsclient.dev;
+import dev.theredstonee.trsclient.TrsClient;
+import dev.theredstonee.trsclient.compat.Mc;
+import dev.theredstonee.trsclient.core.ui.background.*;
+import net.minecraft.client.Minecraft;
+import com.google.gson.*;
+import java.nio.file.*;
+public final class UnifiedSmoke {
+ private int phase,wait;private long at,sequence;private final long started=System.nanoTime();
+ private final JsonObject report=new JsonObject();private final JsonArray checks=new JsonArray();
+ public static void install(){UnifiedSmoke test=new UnifiedSmoke();net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(test::tick);}
+ private void check(String name,boolean pass){JsonObject item=new JsonObject();item.addProperty("name",name);item.addProperty("passed",pass);checks.add(item);if(!pass)throw new AssertionError(name);}
+ private void tick(Minecraft mc){if(wait-->0)return;try{
+  if(System.nanoTime()-started>240_000_000_000L)throw new AssertionError("unified timeout phase "+phase);
+  var client=TrsClient.get();var modules=client.modules();
+  switch(phase){
+   case 0:
+    if(Mc.overlay()!=null||Mc.screen()==null)return;
+    mc.options.pauseOnLostFocus=false;modules.dynamicFps.setEnabled(false);org.lwjgl.sdl.SDLVideo.SDL_SetWindowSize(Mc.window().handle(),1920,1080);mc.options.guiScale().set(4);mc.resizeGui();modules.titleAnimated.set(true);modules.menuBackground.set(MenuBackground.Mode.HIGH);phase++;wait=40;return;
+   case 1:
+    if(MenuBackground.shared().metrics().framesPresented<2)return;at=System.nanoTime();sequence=MenuBackground.shared().metrics().framesPresented;AutoTest.shot(mc,"unified-video-a");phase++;return;
+   case 2:
+    if(System.nanoTime()-at<12_000_000_000L)return;
+    var video=MenuBackground.shared().metrics();report.add("video",new Gson().toJsonTree(video));report.addProperty("measuredVideoFps",(video.framesPresented-sequence)*1e9/(System.nanoTime()-at));check("real video advances",video.framesPresented-sequence>80);check("source targets 30 fps",MenuBackground.Mode.HIGH.fps==30);AutoTest.shot(mc,"unified-video-b");modules.minimap.setEnabled(true);AutoTest.startWorld(mc);phase++;return;
+   case 3:
+    if(mc.level==null||mc.player==null||Mc.overlay()!=null||Mc.screen()!=null)return;mc.options.guiScale().set(4);mc.resizeGui();check("Diorama session created",dev.diorama.MapSession.get()!=null);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=300;return;
+   case 4:
+    check("Diorama owns full map",Mc.screen() instanceof dev.diorama.MapScreen);AutoTest.shot(mc,"unified-diorama-map");Mc.setScreen(new dev.diorama.SettingsScreen(new dev.diorama.MapScreen()));phase++;wait=15;return;
+   case 5:
+    AutoTest.shot(mc,"unified-map-settings");Mc.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));phase++;wait=15;return;
+   case 6:
+    check("shared pause rail",Mc.screen() instanceof dev.theredstonee.trsclient.screen.TrsUiScreen);AutoTest.shot(mc,"unified-pause");Mc.setScreen(null);mc.reloadResourcePacks();phase++;wait=40;return;
+   case 7:
+    if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=80;return;
+   case 8:
+    AutoTest.shot(mc,"unified-diorama-reload");check("Diorama remains available after reload",dev.diorama.MapSession.get()!=null);
+    try{var type=Class.forName("net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen");var method=type.getMethod("createScreen",net.minecraft.client.gui.screens.Screen.class);Mc.setScreen((net.minecraft.client.gui.screens.Screen)method.invoke(null,Mc.screen()));phase++;wait=20;return;}catch(ClassNotFoundException absent){phase=10;return;}
+   case 9:
+    AutoTest.shot(mc,"unified-sodium");check("Sodium remains native",Mc.screen().getClass().getName().contains("sodium"));phase=10;return;
+   case 10:
+    var shots=dev.theredstonee.trsclient.core.screenshot.Screenshots.get();check("local screenshot editor available",shots!=null);shots.platform().openUi("Screenshot editor",new dev.theredstonee.trsclient.core.ui.screenshot.ScreenshotEditorUi(shots,mc.gameDirectory.toPath().resolve("screenshots/unified-diorama-map.png")));phase++;wait=30;return;
+   case 11:
+    AutoTest.shot(mc,"unified-screenshot-editor");dev.theredstonee.trsclient.core.screenshot.Screenshots.get().platform().openUi("Clip editor",new dev.theredstonee.trsclient.core.ui.clips.ClipEditorUi(mc.gameDirectory.toPath().resolve("clips/native-editor-test.mp4"),16667,()->Mc.setScreen(null)));phase++;wait=15;return;
+   case 12:
+    AutoTest.shot(mc,"unified-clip-editor");finish(mc,null);phase=99;return;
+  }
+ }catch(Throwable error){finish(mc,error);phase=99;}}
+ private void finish(Minecraft mc,Throwable error){report.addProperty("status",error==null?"passed":"failed");report.add("checks",checks);if(error!=null){report.addProperty("error",error.toString());error.printStackTrace();}try{Files.write(mc.gameDirectory.toPath().resolve("unified-smoke.json"),new GsonBuilder().setPrettyPrinting().create().toJson(report).getBytes(java.nio.charset.StandardCharsets.UTF_8));}catch(Exception e){throw new RuntimeException(e);}mc.stop();}
+}
+*///?}

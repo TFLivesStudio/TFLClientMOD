@@ -15,7 +15,11 @@ with zipfile.ZipFile(p) as z:
     assert 'assets/minecraft/shaders/program/trsclient_color.fsh' in names
     assert 'circuits/index.json' in names
     assert len(json.loads(z.read('circuits/index.json'))['circuits']) >= 3
-    assert not any(n.endswith('.jar') or '/ornithe/dev/' in n or '/forge/' in n or n=='mcmod.info' for n in names)
+    nested={n for n in names if n.endswith('.jar')}
+    assert all(n.startswith('META-INF/jars/fastutil-8.5.15') for n in nested),nested
+    assert 'META-INF/licenses/diorama-MIT.txt' in names
+    assert 'dev/diorama/bake/TileBaker.class' in names
+    assert not any('/ornithe/dev/' in n or '/forge/' in n or n=='mcmod.info' for n in names)
     classes=[z.read(n) for n in names if n.endswith('.class')]
     assert all(struct.unpack('>H',b[6:8])[0]==69 for b in classes)
     adapters=[z.read(n) for n in names if '/ornithe/' in n and n.endswith('.class')]

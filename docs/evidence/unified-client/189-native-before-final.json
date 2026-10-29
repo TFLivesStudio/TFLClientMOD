@@ -1,0 +1,67 @@
+{
+  "checks": [
+    {
+      "name": "real video frames advance",
+      "passed": true
+    },
+    {
+      "name": "source targets 30 fps",
+      "passed": true
+    },
+    {
+      "name": "received chunks captured",
+      "passed": true
+    },
+    {
+      "name": "original Diorama voxel tiles baked",
+      "passed": true
+    },
+    {
+      "name": "Diorama worker healthy",
+      "passed": true
+    },
+    {
+      "name": "native Diorama map owns screen",
+      "passed": true
+    },
+    {
+      "name": "shared pause rail",
+      "passed": true
+    },
+    {
+      "name": "Argentum remains native",
+      "passed": true
+    }
+  ],
+  "measuredVideoFps": 15.557507844382478,
+  "video": {
+    "decoderImplementation": "ImageIO parallel",
+    "mode": "HIGH",
+    "decoderState": "running",
+    "fallbackReason": "",
+    "failure": "",
+    "sessions": 2,
+    "framesDecoded": 422,
+    "framesUploaded": 221,
+    "framesPresented": 221,
+    "loops": 0,
+    "decodedFingerprint": 7993745861033264044,
+    "uploadedFingerprint": 228919391949864636,
+    "decodeNanos": 38342650023,
+    "uploadNanos": 855785523,
+    "decoderCpuNanos": 24219998879,
+    "uploadBytes": 1833062400,
+    "discardedFrames": 200,
+    "elapsedNanos": 14213669361,
+    "pixelBufferAllocations": 7,
+    "imageBufferAllocations": 3,
+    "pendingFrames": 1,
+    "ownedTextures": 1,
+    "decoderFps": 29.689729603384432,
+    "presentationFps": 15.548278072765791,
+    "drawCalls": 228
+  },
+  "bakedTiles": 62,
+  "meanBakeMs": 219.19748106451613,
+  "status": "passed"
+}

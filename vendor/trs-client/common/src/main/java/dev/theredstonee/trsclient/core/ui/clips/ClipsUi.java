@@ -155,13 +155,11 @@ public final class ClipsUi extends WindowUi {
 
 	@Override
 	protected void onClosed() {
-		clipPreview.release();
-		thumbs.releaseAll();
-		large.releaseAll();
-		worker.shutdown();
-		host.closeScreen();
+        removed();
+        host.closeScreen();
 	}
 
+    @Override public void removed(){clipPreview.release();thumbs.releaseAll();large.releaseAll();worker.shutdownNow();}
 	@Override
 	protected int[] size(int width, int height) {
 		int pw = Math.min(width - 12, Math.max(Math.min(340, width - 12), Math.round(width * 0.86f)));
@@ -541,7 +539,7 @@ public final class ClipsUi extends WindowUi {
 		int py = window[1] + HEADER_H;
 		int pw = window[2] - 8;
 		int ph = window[3] - HEADER_H - 4;
-		c.fill(px, py, px + pw, py + ph, 0xFF0A0808);
+		c.fill(px, py, px + pw, py + ph, Theme.get().background);
 		final ClipLibrary.Entry e = list.get(preview);
 		int barH = 22;
 		int ix = px + 6;
@@ -556,7 +554,7 @@ public final class ClipsUi extends WindowUi {
 			Paint.textCentered(c, I18n.tr("clips.loading"), ix + iw / 2, iy + ih / 2 - 4, t.textDim, false);
 		}
 		int by = py + ph - barH;
-		c.fill(px, by, px + pw, py + ph, 0xFF151112);
+		c.fill(px, by, px + pw, py + ph, Theme.get().surfaceHigh);
 		Redstone.dustH(c, px, px + pw, by, t.dustOff, 0f);
 		int bx = px + 6;
 		iconButton(c, bx, by + 4, 14, "back", false, mx, my, new Runnable() {
@@ -668,7 +666,7 @@ public final class ClipsUi extends WindowUi {
             return;
         }
 		clipView = index;
-		clipPreview.load(e.name);
+		clipPreview.loadLocal(e.path);
 		seen(NewSince.CLIPS_PREVIEW);
 	}
 
@@ -697,7 +695,7 @@ public final class ClipsUi extends WindowUi {
 		int py = window[1] + HEADER_H;
 		int pw = window[2] - 8;
 		int ph = window[3] - HEADER_H - 4;
-		c.fill(px, py, px + pw, py + ph, 0xFF0A0808);
+		c.fill(px, py, px + pw, py + ph, Theme.get().background);
 		final ClipLibrary.Entry e = list.get(clipView);
 		int barH = 22;
 		int timeH = 14;
@@ -756,7 +754,7 @@ public final class ClipsUi extends WindowUi {
 		int timeW = c.textWidth(time);
 		final int trackX = ix;
 		final int trackW = Math.max(10, iw - timeW - 8);
-		c.fill(trackX, ty + 4, trackX + trackW, ty + 7, 0xFF2A2224);
+		c.fill(trackX, ty + 4, trackX + trackW, ty + 7, Theme.get().border);
 		if (sheet != null) {
 			int filled = Math.round(trackW * anim.progress());
 			c.fill(trackX, ty + 4, trackX + filled, ty + 7, t.dustOn);
@@ -773,7 +771,7 @@ public final class ClipsUi extends WindowUi {
 
 		// Leiste unten: blättern, abspielen, Name – rechts „Im Launcher öffnen“, System-Player, Löschen, Schließen.
 		int by = py + ph - barH;
-		c.fill(px, by, px + pw, py + ph, 0xFF151112);
+		c.fill(px, by, px + pw, py + ph, Theme.get().surfaceHigh);
 		Redstone.dustH(c, px, px + pw, by, t.dustOff, 0f);
 		int bx = px + 6;
 		iconButton(c, bx, by + 4, 14, "back", false, mx, my, new Runnable() {
@@ -822,26 +820,13 @@ public final class ClipsUi extends WindowUi {
 				if (!OpenPath.open(e.path)) setNotice(I18n.tr("clips.openFailed"), true);
 			}
 		});
-		String openLabel = I18n.tr("clips.preview.openLauncher");
-		int ow = Math.min(150, c.textWidth(openLabel) + 16);
-		int ox = external - 6 - ow;
-		boolean canOpen = clipPreview.unavailableReason() == null;
-		if (ox > bx + 40) {
-			button(c, ox, by + 3, ow, 16, openLabel, true, canOpen, mx, my, new Runnable() {
-				@Override
-				public void run() {
-					clipPreview.openInLauncher(e.name, new ClipPreview.OpenResult() {
-						@Override
-						public void done(String code) {
-							openResult = code == null ? "" : code;
-						}
-					});
-				}
-			});
-			if (isNew(NewSince.CLIPS_PREVIEW)) NewBadge.draw(c, ox + ow - NewBadge.width(c) + 2, by - 6);
-		} else {
-			ox = external;
-		}
+        String openLabel="Edit clip";
+        int ow=70,ox=external-6-ow;
+        button(c,ox,by+3,ow,16,openLabel,true,true,mx,my,()->{
+            final dev.theredstonee.trsclient.core.screenshot.Screenshots shots=dev.theredstonee.trsclient.core.screenshot.Screenshots.get();
+            if(shots!=null)shots.platform().openUi("TFL Clip editor",new ClipEditorUi(e.path,sheet!=null?sheet.durationMs:e.durationMs,()->shots.platform().openUi("Captures",new ClipsUi(host))));
+        });
+
 		// Meldung (z. B. „Im Launcher geöffnet“) statt Name, solange sie frisch ist.
 		boolean fresh = notice != null && now - noticeAt < 4_000L;
 		Paint.textClipped(c, fresh ? notice : stem(e.name) + "  ·  " + meta(e), bx, by + 7, ox - 6 - bx,
@@ -853,7 +838,8 @@ public final class ClipsUi extends WindowUi {
 		if ("no_launcher".equals(code)) return I18n.tr("clips.preview.noLauncher");
 		if ("old_launcher".equals(code)) return I18n.tr("clips.preview.oldLauncher");
 		if ("offline".equals(code) || "timeout".equals(code)) return I18n.tr("clips.preview.offline");
-		if ("no_ffmpeg".equals(code)) return I18n.tr("clips.preview.noFfmpeg");
+		if ("local_ffmpeg".equals(code))return "Install FFmpeg and ffprobe locally to preview or edit MP4 clips.";
+        if ("no_ffmpeg".equals(code)) return I18n.tr("clips.preview.noFfmpeg");
 		if ("unknown_clip".equals(code)) return I18n.tr("clips.preview.gone");
 		if ("busy".equals(code) || "rate_limited".equals(code)) return I18n.tr("clips.preview.busy");
 		return I18n.tr(opening ? "clips.preview.openFailed" : "clips.preview.failed");

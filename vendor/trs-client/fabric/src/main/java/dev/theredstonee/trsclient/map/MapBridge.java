@@ -240,10 +240,14 @@ public final class MapBridge implements MapPlatform {
 
 	@Override
 	public boolean openWorldMap() {
+        //? if >=26.3 {
+        /*Mc.setScreen(new dev.diorama.MapScreen());return true;
+        *///?} else {
 		dev.theredstonee.trsclient.screen.WorldMapScreen screen = dev.theredstonee.trsclient.screen.WorldMapScreen.create();
 		if (screen == null) return false;
 		Mc.setScreen(screen);
 		return true;
+        //?}
 	}
 
 	@Override
