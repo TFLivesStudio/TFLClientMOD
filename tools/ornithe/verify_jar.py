@@ -18,6 +18,7 @@ with zipfile.ZipFile(p) as z:
     nested={n for n in names if n.endswith('.jar')}
     assert all(n.startswith('META-INF/jars/fastutil-8.5.15') for n in nested),nested
     assert 'META-INF/licenses/diorama-MIT.txt' in names
+    assert not any(n.endswith('/MenuFontMixin.class') or n.endswith('/ClientMenuFontMixin.class') for n in names)
     assert 'dev/diorama/bake/TileBaker.class' in names
     assert not any('/ornithe/dev/' in n or '/forge/' in n or n=='mcmod.info' for n in names)
     classes=[z.read(n) for n in names if n.endswith('.class')]

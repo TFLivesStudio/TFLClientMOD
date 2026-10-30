@@ -9,7 +9,7 @@ Cliente de Minecraft en desarrollo, con una interfaz nativa compartida, HUD conf
 
 Argentum 1.0.2 + Legacy LWJGL3 1.4.10 en 1.8.9 y Sodium 0.9.2 en 26.3 son opciones separadas. Sus binarios no se incluyen. Forge y NeoForge se han retirado; el historial de Git conserva las versiones anteriores.
 
-La candidata actual es **0.4.0-identity.1**. Consulta [implementación, validación y límites](docs/VISUAL_IDENTITY.md). Una compilación o una prueba de menú no certifica todos los módulos ni garantiza una tasa de FPS en cualquier equipo.
+La candidata actual es **0.4.0-audit.1**. Consulta [correcciones de auditoría, validación y límites](docs/AUDIT_COMPLETION.md). Una compilación o una prueba de menú no certifica todos los módulos ni garantiza una tasa de FPS en cualquier equipo.
 
 ## Uso
 

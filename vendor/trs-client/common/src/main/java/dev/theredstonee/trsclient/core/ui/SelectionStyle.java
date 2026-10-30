@@ -9,6 +9,7 @@ public final class SelectionStyle {
     /** Bounded scanline rounded rectangle; no textures, allocations or GL state changes. */
     public static void rounded(Canvas c,int x,int y,int w,int h,int radius,int color) {
         if(w<=0||h<=0||(color>>>24)==0) return;
+        if(c.rounded(x,y,w,h,radius,color))return;
         int sub=Math.max(1,Math.min(4,c.pixelScale()));
         if(sub==1){drawRounded(c,x,y,w,h,radius,color);return;}
         c.push();

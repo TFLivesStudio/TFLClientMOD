@@ -1,0 +1,27 @@
+{
+  "target189": {
+    "report": "native-189-expanded.json",
+    "passedChecks": 166,
+    "stack": [
+      "Ornithe Gen2",
+      "Argentum 1.0.2",
+      "Lucerna 0.1.1",
+      "Amplio 0.1.1",
+      "Cera 1.0.2",
+      "Argentum Extras 1.0.2",
+      "Legacy LWJGL3 1.4.10"
+    ]
+  },
+  "renderer": "Mesa llvmpipe / Lavapipe",
+  "physicalGpuCertified": false,
+  "target263": {
+    "report": "native-263-sodium.json",
+    "passedChecks": 115,
+    "stack": [
+      "Fabric",
+      "Sodium"
+    ],
+    "worldAndMenuProfile": true
+  },
+  "note": "Local native evidence immediately before removal of redundant global font mixins; release workflow validates the final commit separately."
+}

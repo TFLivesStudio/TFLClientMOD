@@ -27,6 +27,9 @@ public abstract class WindowUi extends UiScreen {
 
 	protected boolean screenScrim() {return true;}
 	protected boolean bareRail() {return false;}
+	protected boolean topRail() {return false;}
+	protected int railHeight(int height) {return Math.min(height-24,330);}
+	private int fullWidth;
 
 	protected abstract String title();
 
@@ -50,13 +53,14 @@ public abstract class WindowUi extends UiScreen {
 	@Override
 	protected final void draw(Canvas raw, int width, int height, int mouseX, int mouseY, float dt) {
 		Theme t = Theme.get();
+		fullWidth = width;
 		Canvas c = FadeCanvas.of(raw, alpha());
 		if(screenScrim()) c.fill(0, 0, width, height, t.scrim);
-		int[] s = bareRail() ? new int[]{Math.min(200,Math.max(100,width/3)), Math.min(height-24,330)} : size(width, height);
+		int[] s = bareRail() ? new int[]{Math.min(200,Math.max(100,width/3)), railHeight(height)} : size(width, height);
 		int pw = s[0];
 		int ph = s[1];
 		int px = bareRail() ? Math.max(8,Math.min(40,width/16)) : (width - pw) / 2;
-		int py = (height - ph) / 2 + Math.round((1 - Anim.easeOut(open)) * 14);
+		int py = (topRail() ? 6 : (height - ph) / 2) + Math.round((1 - Anim.easeOut(open)) * 14);
 		window[0] = px;
 		window[1] = py;
 		window[2] = pw;
@@ -78,8 +82,8 @@ public abstract class WindowUi extends UiScreen {
         c.strongText("TFL Client",lx,py+(HEADER_H-c.lineHeight())/2,t.text);
         int titleX=lx+c.textWidth("TFL Client")+12;
 		int closeSize = 16;
-		int closeX = px + pw - PAD - closeSize;
-		int closeY = py + (HEADER_H - closeSize) / 2;
+		int closeX = topRail() ? fullWidth - PAD - closeSize : px + pw - PAD - closeSize;
+		int closeY = topRail() ? 8 : py + (HEADER_H - closeSize) / 2;
 		int right = headerExtras(c, closeX - 4, closeY, mx, my);
 		if (!bareRail()) Paint.textClipped(c, title(), titleX, py + (HEADER_H - 8) / 2, right - titleX - 6, t.text, false);
 		Paint.iconButton(c, closeX, closeY, closeSize, "close", inside(mx, my, closeX, closeY, closeSize, closeSize), false);

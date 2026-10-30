@@ -99,11 +99,61 @@ public final class OrnitheGraphics implements GraphicsUi.Host {
     return options;
   }
 
-  public void apply() {
-    call(controller, "applyChanges");
+  public String applyConfirmation() {
+    Object option = byId.get("amplio:upscaler");
+    return option != null
+            && client.modules.colors.isEnabled()
+            && !"OFF".equals(String.valueOf(call(option, "getValue")))
+        ? dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.conflict.disableColors")
+        : "";
   }
 
-  public void revert(){call(controller,"undoChanges");}
+  public void apply() {
+    boolean colors = client.modules.colors.isEnabled();
+    if (!applyConfirmation().isEmpty()) {
+      client.colors.release();
+      client.modules.colors.setEnabled(false);
+    }
+    try {
+      call(controller, "applyChanges");
+      client.save();
+    } catch (RuntimeException e) {
+      client.modules.colors.setEnabled(colors);
+      client.save();
+      throw e;
+    }
+  }
+
+  public String confirmation(GraphicsUi.Option option, int direction) {
+    return option.id().equals("tflcore:colors/enabled")
+            && !client.modules.colors.isEnabled()
+            && client.colors.upscalingRequested()
+        ? dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.conflict.disableScaler")
+        : "";
+  }
+
+  public void change(GraphicsUi.Option option, int direction) {
+    if (!confirmation(option, direction).isEmpty()) {
+      for (GraphicsUi.Option pending : options)
+        if (pending.changed())
+          throw new IllegalStateException(
+              dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.pending"));
+      Object nativeOption = byId.get("amplio:upscaler");
+      if (nativeOption == null) throw new IllegalStateException("Upscaler option unavailable");
+      Object current = call(nativeOption, "getValue");
+      Object off = null;
+      for (Object value : current.getClass().getEnumConstants())
+        if (value.toString().equals("OFF")) off = value;
+      if (off == null) throw new IllegalStateException("Upscaler OFF value unavailable");
+      invoke(nativeOption, "setValue", off);
+      call(controller, "applyChanges");
+    }
+    option.step(direction);
+  }
+
+  public void revert() {
+    call(controller, "undoChanges");
+  }
 
   public void close() {
     client.mc.openScreen((Screen) field(nativeScreen, "parent"));
@@ -127,16 +177,23 @@ public final class OrnitheGraphics implements GraphicsUi.Host {
     try {
       Object config = amplio.getField("CONFIG").get(null);
       Object wanted = requested.get(config), running = active.get(null);
-      return (client.colors != null && client.modules.colors.isEnabled() && client.colors.upscalingRequested() ? "Colores pausado · " : "")
-          + "Escalado solicitado: "
+      return (client.colors != null
+                  && client.modules.colors.isEnabled()
+                  && client.colors.upscalingRequested()
+              ? dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.colorsPaused") + " · "
+              : "")
+          + dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.scalerRequested")
+          + ": "
           + wanted
-          + " · Activo: "
+          + " · "
+          + dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.scalerActive")
+          + ": "
           + running
           + (wanted.toString().equals("DLSS") && running.toString().equals("FSR1")
               ? " (fallback)"
               : "");
     } catch (ReflectiveOperationException e) {
-      return "No se pudo consultar el escalador activo";
+      return dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.scalerUnavailable");
     }
   }
 
@@ -184,8 +241,8 @@ public final class OrnitheGraphics implements GraphicsUi.Host {
     public String description() {
       return id.equals("amplio:upscaler")
           ? description
-              + " · DLSS requires compatible NVIDIA hardware and OpenGL/Vulkan memory sharing. FSR1"
-              + " is used if the backend rejects it."
+              + " · "
+              + dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.dlssRequirements")
           : description;
     }
 

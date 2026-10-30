@@ -155,7 +155,7 @@ public final class OrnitheVanillaHuds {
   public void tick() {
     scores.clear();
     scoreWidth = 1;
-    if (!c.capabilities.active(c.modules.qol.scoreboard)
+    if (c.mc.screen instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay || !c.capabilities.active(c.modules.qol.scoreboard)
         || c.mc.world == null
         || c.mc.player == null) return;
     var board = c.mc.world.getScoreboard();

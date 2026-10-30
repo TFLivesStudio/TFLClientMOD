@@ -193,7 +193,7 @@ public final class TrsClient implements ClientModInitializer {
 	 */
 	private void registerHud() {
 		//? if >=1.21.6 {
-		/*HudElementRegistry.addLast(id("hud"), (g, delta) -> hud.render(Gfx.of(g)));
+		/*HudElementRegistry.addLast(id("hud"), (g, delta) -> renderHud(Gfx.of(g)));
 		HudElementRegistry.replaceElement(VanillaHudElements.CROSSHAIR, vanilla -> (g, delta) -> {
 			if (hud.crosshair().replacesVanilla()) hud.crosshair().drawInGame(Gfx.of(g));
 			//? if >=26.1 {
@@ -202,7 +202,7 @@ public final class TrsClient implements ClientModInitializer {
 			else vanilla.render(g, delta);
 		});
 		*///?} elif >=1.16 {
-		HudRenderCallback.EVENT.register((g, delta) -> hud.render(Gfx.of(g)));
+		HudRenderCallback.EVENT.register((g, delta) -> renderHud(Gfx.of(g)));
 		//?} elif >=1.15 {
 		/*HudRenderCallback.EVENT.register(delta -> hud.render(Gfx.of()));
 		*///?}
@@ -211,6 +211,7 @@ public final class TrsClient implements ClientModInitializer {
 
 	/** HUD zeichnen – aus dem HUD-Callback bzw. in 1.14 aus HudMixin. */
 	public void renderHud(Gfx g) {
+        dev.theredstonee.trsclient.core.performance.UiProfiler.worldFrame();
 		hud.render(g);
 	}
 

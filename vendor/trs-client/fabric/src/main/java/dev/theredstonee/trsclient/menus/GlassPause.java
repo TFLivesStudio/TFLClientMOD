@@ -14,13 +14,13 @@ public final class GlassPause {
         if(options==null||exit==null)return;
         final net.minecraft.client.gui.components.Button disconnect=exit;
         final java.util.List<dev.theredstonee.trsclient.core.ui.menu.MenuAction> rows=new java.util.ArrayList<>();
-        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction("Back to Game","play",()->Mc.setScreen(null)));
+        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.resume"),"play",()->Mc.setScreen(null)));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction("TFL Client","settings",()->VanillaMenus.openFromPause(Mc.screen(),"core")));
-        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction("Options","settings",()->options.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
-        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction("Captures","image",()->VanillaMenus.openFromPause(Mc.screen(),"clips")));
+        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.options"),"settings",()->options.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
+        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.captures"),"image",()->VanillaMenus.openFromPause(Mc.screen(),"clips")));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr(Mc.mc().hasSingleplayerServer()?"pause.singleplayerWorldInformation":"pause.serverInformation"),"info",()->VanillaMenus.openFromPause(Mc.screen(),"serverInfo")));
-        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction("Capabilities & Diagnostics","activity",()->Mc.setScreen(new dev.theredstonee.trsclient.screen.TrsUiScreen("Diagnostics",new dev.theredstonee.trsclient.core.ui.menus.ActionListUi("Capabilities & Diagnostics","Minecraft 26.3 · TFL Client · "+dev.theredstonee.trsclient.TrsClient.get().modules().registry.all().size()+" shared modules. Open Client settings to configure each module.",()->Mc.setScreen(parent),()->{})))));
-        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(Mc.mc().hasSingleplayerServer()?"Save and Quit":"Disconnect","back",()->disconnect.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
+        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"),"activity",()->Mc.setScreen(new dev.theredstonee.trsclient.screen.TrsUiScreen("Diagnostics",new dev.theredstonee.trsclient.core.ui.menus.ActionListUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"),"Minecraft 26.3 · TFL Client · "+dev.theredstonee.trsclient.TrsClient.get().modules().registry.all().size()+" shared modules. Open Client settings to configure each module.",()->Mc.setScreen(parent),()->{})))));
+        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(Mc.mc().hasSingleplayerServer()?dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.saveQuit"):dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.disconnect"),"back",()->disconnect.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
         // Preserve version-specific native actions (statistics, advancements, LAN, etc.).
         final java.util.List<net.minecraft.client.gui.components.Button> extras=new java.util.ArrayList<>();
         collect(parent,extras,0);
@@ -29,9 +29,7 @@ public final class GlassPause {
             if(button==options||button==disconnect||button.getMessage().getString().equals(resume))continue;
             rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(button.getMessage().getString(),"settings",()->button.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
         }
-        final Screen next=new dev.theredstonee.trsclient.screen.TrsUiScreen("TFL Client · Paused",new dev.theredstonee.trsclient.core.ui.menus.ActionListUi("TFL Client · Paused",rows,()->Mc.setScreen(null),()->{}).navigationRail()) {
-            @Override protected boolean customBackground(){return true;}
-        };
+        final Screen next=new dev.theredstonee.trsclient.screen.PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"),rows,()->Mc.setScreen(null),()->{}));
         Mc.mc().execute(()->{if(Mc.screen()==parent)Mc.setScreen(next);});
         *///?}
     }

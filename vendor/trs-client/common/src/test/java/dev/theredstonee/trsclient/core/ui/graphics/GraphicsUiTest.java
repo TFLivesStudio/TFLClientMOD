@@ -10,8 +10,9 @@ class GraphicsUiTest {
   public String id(){return id;}public String name(){return name;}public String description(){return "Native option";}public String value(){return value?"On":"Off";}public int category(){return category;}public boolean available(){return enabled;}public boolean changed(){return value!=saved;}public void step(int direction){value=!value;}public void revert(){value=saved;}
  }
  static final class Host implements GraphicsUi.Host {
-  final Model display=new Model("minecraft:brightness","Brightness",0),scaler=new Model("amplio:upscaler","Upscaler",3);int applied;
+  final Model display=new Model("minecraft:brightness","Brightness",0),scaler=new Model("amplio:upscaler","Upscaler",3);int applied;boolean confirm;
   public List<GraphicsUi.Option> options(){return Arrays.<GraphicsUi.Option>asList(display,scaler);}
+  public String applyConfirmation(){return confirm?"Provider warning":"";}
   public void apply(){display.saved=display.value;scaler.saved=scaler.value;applied++;}public void close(){}public void shaders(){}public boolean hasShaders(){return false;}public String status(){return "";}
  }
  static final class Draw implements Canvas {
@@ -30,5 +31,15 @@ class GraphicsUiTest {
  }
  @Test void purposeSearchFindsAnOptionOutsideTheSelectedCategory(){
   Host host=new Host();GraphicsUi ui=new GraphicsUi(host);Draw draw=new Draw();ui.render(draw,480,270,-1,-1);ui.keyPressed(0,UiKey.TAB,false);for(char c:"fsr1".toCharArray())assertTrue(ui.charTyped(c));draw.text.clear();ui.render(draw,480,270,-1,-1);assertTrue(draw.text.contains("Upscaler"));assertFalse(draw.text.contains("Brightness"));
+ }
+
+ @Test void confirmationCanBeCancelledWithoutApplyingAndRequiresExplicitAcceptance(){
+  Host host=new Host();host.confirm=true;host.display.value=true;GraphicsUi ui=new GraphicsUi(host);
+  ui.render(new Draw(),480,270,-1,-1);
+  for(int i=0;i<3;i++)ui.keyPressed(0,UiKey.TAB,false);
+  ui.keyPressed(0,UiKey.ENTER,false);assertEquals(0,host.applied);
+  ui.keyPressed(0,UiKey.ESCAPE,false);assertEquals(0,host.applied);assertTrue(host.display.changed());
+  ui.keyPressed(0,UiKey.ENTER,false);assertEquals(0,host.applied);
+  ui.keyPressed(0,UiKey.ENTER,false);assertEquals(1,host.applied);assertFalse(host.display.changed());
  }
 }

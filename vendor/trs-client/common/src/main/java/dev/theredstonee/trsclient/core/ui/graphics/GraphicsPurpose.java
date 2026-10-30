@@ -1,23 +1,24 @@
 package dev.theredstonee.trsclient.core.ui.graphics;
-
-import java.util.Locale;
-
-/** Stable provider IDs, rather than translated labels or mod names, determine navigation. */
+import com.google.gson.*;
+import java.io.*;
+import java.util.*;
+/** Reviewed exact IDs. Unknown extension options remain visible in Advanced. */
 public final class GraphicsPurpose {
-  private GraphicsPurpose() {}
+  private static final Map<String,JsonObject> ENTRIES=load();
+  private static final Map<String,String> SPANISH=spanish();
+  private static Map<String,String> spanish(){try(Reader reader=new InputStreamReader(GraphicsPurpose.class.getResourceAsStream("/assets/trsclient/provider-es.json"),"UTF-8")){Map<String,String> out=new HashMap<String,String>();for(Map.Entry<String,JsonElement> e:new JsonParser().parse(reader).getAsJsonObject().entrySet())out.put(e.getKey(),e.getValue().getAsString());return out;}catch(IOException e){throw new ExceptionInInitializerError(e);}}
+  public static String text(String source){if(!dev.theredstonee.trsclient.core.i18n.I18n.code().equals("es"))return source;String value=SPANISH.get(source);return value==null?source:value;}
 
-  public static int category(String id) {
-    String key = id.toLowerCase(Locale.ROOT);
-    if (key.contains("amplio:") || key.contains("iris:") || key.contains("lucerna:")) return 3;
-    if (key.matches(
-        ".*(vsync|fullscreen|resolution|framerate|frame_rate|fps_limit|gui_scale|guiscale|brightness|gamma|anaglyph).*"))
-      return 0;
-    if (key.matches(
-        ".*(debug|error|context|unsafe|advanced|safe_chunk_edges|compact_vertex_format|greedy_render_thread).*"))
-      return 4;
-    if (key.matches(
-        ".*(cull|cache|thread|instanc|batch|occlusion|bake|atlas|chunk_builder|defer_chunk_updates|async_graph_search|animate_only_visible|face_sorting|faster_|render_pass_optimization|cpu_render_ahead|inactivityfps|prioritizechunk).*"))
-      return 2;
-    return 1;
+  private GraphicsPurpose(){}
+  private static Map<String,JsonObject> load(){
+    try(Reader reader=new InputStreamReader(GraphicsPurpose.class.getResourceAsStream("/assets/trsclient/graphics-catalog.json"),"UTF-8")){
+      Map<String,JsonObject> out=new HashMap<String,JsonObject>();
+      for(Map.Entry<String,JsonElement> e:new JsonParser().parse(reader).getAsJsonObject().entrySet())out.put(e.getKey(),e.getValue().getAsJsonObject());
+      return Collections.unmodifiableMap(out);
+    }catch(IOException e){throw new ExceptionInInitializerError(e);}
   }
+  public static String description(String id,String original){JsonObject row=ENTRIES.get(id);return row!=null&&row.has("descriptionEs")&&dev.theredstonee.trsclient.core.i18n.I18n.code().equals("es")?row.get("descriptionEs").getAsString():text(original);}
+  public static String name(String id,String fallback){JsonObject row=ENTRIES.get(id);return row!=null&&dev.theredstonee.trsclient.core.i18n.I18n.code().equals("es")?row.get("nameEs").getAsString():fallback;}
+  public static int category(String id){JsonObject row=ENTRIES.get(id);return row==null?4:row.get("category").getAsInt();}
+  public static String group(String id){JsonObject row=ENTRIES.get(id);return row==null?"diagnostics":row.get("group").getAsString();}
 }

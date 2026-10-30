@@ -1,7 +1,7 @@
 name: Unified TFL Client
 on:
   push:
-    branches: [feat/unified-client-diorama, feat/unified-visual-identity, feat/stabilize-identity]
+    branches: [feat/unified-client-diorama, feat/unified-visual-identity, feat/stabilize-identity, feat/audit-completion]
   pull_request:
     paths: ['vendor/**', 'tools/**', '.github/workflows/unified-client.yml']
   workflow_dispatch:
@@ -59,14 +59,16 @@ jobs:
       - name: Installed 1.8.9 client and separate probe
         if: matrix.target == '1.8.9'
         run: |
-          xvfb-run -a -s '-screen 0 1920x1080x24' python3 tools/ornithe/run_smoke.py --production --large --unified --stack '${{ matrix.stack }}' --mods-dir "$RUNNER_TEMP/ornithe-mods"
+          profile=()
+          if [ '${{ matrix.stack }}' = argentum ]; then profile+=(--profile); fi
+          xvfb-run -a -s '-screen 0 1920x1080x24' python3 tools/ornithe/run_smoke.py "${profile[@]}" --production --large --unified --stack '${{ matrix.stack }}' --mods-dir "$RUNNER_TEMP/ornithe-mods"
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test --no-daemon --max-workers=2
           python3 tools/ornithe/verify_jar.py "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties).jar"
       - name: Installed 26.3 client, Diorama, loading and native graphics settings
         if: matrix.target == '26.3'
         run: |
           extra=()
-          if [ '${{ matrix.stack }}' = sodium ]; then extra+=("-PdepthRuntimeModsDir=$RUNNER_TEMP/sodium-mods"); fi
+          if [ '${{ matrix.stack }}' = sodium ]; then extra+=("-PdepthRuntimeModsDir=$RUNNER_TEMP/sodium-mods" "-PtflAuditProfile"); fi
           xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runProdClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=unified -PdepthNativeProbe "${extra[@]}" --no-daemon --max-workers=2
           python3 tools/verification/check_unified.py vendor/trs-client/run/prod-26.3/unified-smoke.json
       - uses: actions/upload-artifact@v4
@@ -77,6 +79,8 @@ jobs:
             vendor/trs-client/ornithe/build/libs/*.jar
             vendor/trs-client/ornithe/build/smoke/
             vendor/trs-client/ornithe/build/test-results/
+            vendor/trs-client/ornithe/build/profiles/*-public.jfr
+            vendor/trs-client/fabric/versions/26.3/build/profiles/*-public.jfr
             vendor/trs-client/fabric/versions/26.3/build/libs/*.jar
             vendor/trs-client/run/prod-26.3/unified-smoke.json
             vendor/trs-client/run/prod-26.3/screenshots/
@@ -89,8 +93,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - {target: '1.8.9', stack: argentum, tag: v0.4.0-stabilize.1-ornithe189, title: 'TFL Client 1.8.9 — Stabilization preview'}
-          - {target: '26.3', stack: sodium, tag: v0.4.0-stabilize.1-fabric263, title: 'TFL Client 26.3 — Stabilization preview'}
+          - {target: '1.8.9', stack: argentum, tag: v0.4.0-audit.1-ornithe189, title: 'TFL Client 1.8.9 — Audit update preview'}
+          - {target: '26.3', stack: sodium, tag: v0.4.0-audit.1-fabric263, title: 'TFL Client 26.3 — Audit update preview'}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -102,4 +106,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ matrix.tag }}
           RELEASE_TITLE: ${{ matrix.title }}
-        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/STABILIZATION.md
+        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/AUDIT_COMPLETION.md

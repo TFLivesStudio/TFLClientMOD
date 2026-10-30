@@ -1,0 +1,1377 @@
+{
+  "minecraft:framerateLimit": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Max Framerate",
+    "nameEs": "Límite de FPS",
+    "descriptionEs": "Limita la velocidad de renderizado. Un límite reduce consumo y carga; VSync puede añadir latencia."
+  },
+  "minecraft:enableVsync": {
+    "category": 0,
+    "group": "display",
+    "name": "VSync",
+    "nameEs": "Sincronización vertical",
+    "descriptionEs": "Sincroniza los fotogramas con la pantalla para reducir el desgarro; puede aumentar la latencia de entrada."
+  },
+  "minecraft:inactivityFpsLimit": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "Reduce fps when",
+    "nameEs": "Reducir FPS al estar inactivo",
+    "descriptionEs": "Configura cuándo limitar los FPS por inactividad."
+  },
+  "minecraft:guiScale": {
+    "category": 0,
+    "group": "display",
+    "name": "GUI Scale",
+    "nameEs": "Escala de interfaz",
+    "descriptionEs": "Define el tamaño de los controles. La escala automática utiliza el mayor tamaño que permita la ventana."
+  },
+  "minecraft:fullscreen": {
+    "category": 0,
+    "group": "display",
+    "name": "Fullscreen",
+    "nameEs": "Pantalla completa",
+    "descriptionEs": "Activa la pantalla completa disponible en el sistema."
+  },
+  "minecraft:exclusiveFullscreen": {
+    "category": 0,
+    "group": "display",
+    "name": "Exclusive Fullscreen",
+    "nameEs": "Pantalla completa exclusiva",
+    "descriptionEs": "Activa el modo exclusivo de pantalla completa; puede afectar al cambio entre ventanas y a los métodos de entrada."
+  },
+  "minecraft:gamma": {
+    "category": 0,
+    "group": "display",
+    "name": "Brightness",
+    "nameEs": "Brillo",
+    "descriptionEs": "Ajusta el brillo general mediante gamma, sin alterar la iluminación almacenada en el mundo."
+  },
+  "minecraft:preferredGraphicsBackend": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Graphics API",
+    "nameEs": "API gráfica",
+    "descriptionEs": "Selecciona el backend gráfico disponible; puede requerir reiniciar y depende del controlador."
+  },
+  "minecraft:biomeBlendRadius": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Biome Blend",
+    "nameEs": "Mezcla de biomas",
+    "descriptionEs": "Amplía el área utilizada al mezclar los colores de biomas. Los valores elevados encarecen la construcción de chunks."
+  },
+  "minecraft:renderDistance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Render Distance",
+    "nameEs": "Distancia de renderizado",
+    "descriptionEs": "Determina cuánto terreno se dibuja alrededor del jugador; distancias mayores aumentan la carga y la memoria necesarias."
+  },
+  "minecraft:prioritizeChunkUpdates": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Builder",
+    "nameEs": "Constructor de chunks",
+    "descriptionEs": "Configura el procesamiento de construcción de chunks."
+  },
+  "minecraft:simulationDistance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Simulation Distance",
+    "nameEs": "Distancia de simulación",
+    "descriptionEs": "Controla la distancia de simulación del mundo, independiente de la distancia visible."
+  },
+  "minecraft:ambientOcclusion": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Smooth Lighting",
+    "nameEs": "Iluminación suave",
+    "descriptionEs": "Suaviza la iluminación de los bloques; su cálculo añade trabajo al construir la geometría del terreno."
+  },
+  "minecraft:cloudStatus": {
+    "category": 1,
+    "group": "environment",
+    "name": "Clouds",
+    "nameEs": "Nubes",
+    "descriptionEs": "Configura la representación de las nubes del cielo."
+  },
+  "minecraft:particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Particles",
+    "nameEs": "Partículas",
+    "descriptionEs": "Controla la cantidad de partículas visibles."
+  },
+  "minecraft:mipmapLevels": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Mipmap Levels",
+    "nameEs": "Niveles de mipmap",
+    "descriptionEs": "Ajusta los niveles reducidos de las texturas usados a distancia; las animaciones pueden resultar más costosas."
+  },
+  "minecraft:entityShadows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadows",
+    "nameEs": "Sombras de entidades",
+    "descriptionEs": "Dibuja sombras simples bajo las entidades."
+  },
+  "minecraft:entityDistanceScaling": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Distance",
+    "nameEs": "Distancia de entidades",
+    "descriptionEs": "Multiplica la distancia visible de entidades."
+  },
+  "minecraft:menuBackgroundBlurriness": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Menu Background Blur",
+    "nameEs": "Desenfoque del fondo del menú",
+    "descriptionEs": "Configura el desenfoque nativo del fondo de los menús."
+  },
+  "minecraft:cloudRange": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Distance",
+    "nameEs": "Distancia de nubes",
+    "descriptionEs": "Establece la distancia visible de las nubes."
+  },
+  "minecraft:cutoutLeaves": {
+    "category": 1,
+    "group": "geometry",
+    "name": "See-Through Leaves",
+    "nameEs": "Transparencia de hojas",
+    "descriptionEs": "Controla la transparencia visual de las hojas."
+  },
+  "minecraft:improvedTransparency": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Improved Transparency",
+    "nameEs": "Transparencia mejorada",
+    "descriptionEs": "Configura el tratamiento de superficies transparentes."
+  },
+  "minecraft:textureFiltering": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Texture Filtering",
+    "nameEs": "Filtrado de texturas",
+    "descriptionEs": "Selecciona cómo se filtran las texturas."
+  },
+  "minecraft:maxAnisotropyBit": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Anisotropic Filtering",
+    "nameEs": "Filtrado anisotrópico",
+    "descriptionEs": "Mejora el filtrado de texturas vistas en ángulos oblicuos; requiere soporte del backend."
+  },
+  "minecraft:weatherRadius": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Effect Radius",
+    "nameEs": "Radio de efectos del clima",
+    "descriptionEs": "Establece el radio de los efectos del clima."
+  },
+  "minecraft:showAutosaveIndicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Autosave Indicator",
+    "nameEs": "Indicador de guardado automático",
+    "descriptionEs": "Controla el aviso de guardado automático."
+  },
+  "minecraft:vignette": {
+    "category": 1,
+    "group": "camera",
+    "name": "Show Vignette",
+    "nameEs": "Mostrar viñeteado",
+    "descriptionEs": "Controla el oscurecimiento de los bordes de la imagen."
+  },
+  "minecraft:attackIndicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Attack Indicator",
+    "nameEs": "Indicador de ataque",
+    "descriptionEs": "Configura el indicador de recuperación del ataque."
+  },
+  "minecraft:chunkSectionFadeInTime": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Chunk Fade Time",
+    "nameEs": "Tiempo de aparición de chunks",
+    "descriptionEs": "Establece la duración de aparición del terreno recién cargado."
+  },
+  "minecraft:display_control_29": {
+    "category": 0,
+    "group": "display",
+    "name": "Exclusive Fullscreen Mode",
+    "nameEs": "Modo de pantalla completa exclusiva",
+    "descriptionEs": "Selecciona un modo de resolución exclusivo compatible con la pantalla."
+  },
+  "minecraft:graphicsPreset": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Preset",
+    "nameEs": "Preajuste",
+    "descriptionEs": "Aplica un conjunto nativo de ajustes gráficos."
+  },
+  "tflcore:titleScreen/menuFpsLimit": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Menu animation FPS limit",
+    "nameEs": "Límite de FPS del menú"
+  },
+  "tflcore:titleScreen/backgroundMode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Menu background",
+    "nameEs": "Fondo del menú"
+  },
+  "tflcore:dynamicFps/enabled": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "Dynamic FPS",
+    "nameEs": "FPS dinámicos"
+  },
+  "tflcore:dynamicFps/unfocused": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "FPS in the background",
+    "nameEs": "FPS en segundo plano"
+  },
+  "tflcore:dynamicFps/minimized": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "FPS when minimized",
+    "nameEs": "FPS al minimizar"
+  },
+  "tflcore:dynamicFps/afkLimit": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "FPS when AFK (0 = off)",
+    "nameEs": "FPS al estar inactivo (0 = desactivado)"
+  },
+  "tflcore:worldMap/cloudQuality": {
+    "category": 1,
+    "group": "environment",
+    "name": "Volumetric cloud quality",
+    "nameEs": "Calidad de nubes volumétricas"
+  },
+  "tflcore:worldMap/cloudMotion": {
+    "category": 1,
+    "group": "environment",
+    "name": "Subtle atmospheric motion",
+    "nameEs": "Movimiento atmosférico sutil"
+  },
+  "tflcore:miniPlayer/fpsLimit": {
+    "category": 1,
+    "group": "entities",
+    "name": "Widget FPS limit (0 = unlimited)",
+    "nameEs": "FPS del widget (0 = sin límite)"
+  },
+  "tflcore:fullbright/enabled": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Gamma",
+    "nameEs": "Gamma"
+  },
+  "tflcore:fullbright/level": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Extended gamma level",
+    "nameEs": "Nivel de gamma ampliada"
+  },
+  "minecraft:render_distance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Render Distance",
+    "nameEs": "Distancia de renderizado",
+    "descriptionEs": "Determina cuánto terreno se dibuja alrededor del jugador; distancias mayores aumentan la carga y la memoria necesarias."
+  },
+  "minecraft:brightness": {
+    "category": 0,
+    "group": "display",
+    "name": "Brightness",
+    "nameEs": "Brillo",
+    "descriptionEs": "Ajusta el brillo general mediante gamma, sin alterar la iluminación almacenada en el mundo."
+  },
+  "minecraft:gui_scale": {
+    "category": 0,
+    "group": "display",
+    "name": "GUI Scale",
+    "nameEs": "Escala de interfaz",
+    "descriptionEs": "Define el tamaño de los controles. La escala automática utiliza el mayor tamaño que permita la ventana."
+  },
+  "minecraft:max_frame_rate": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Max Framerate",
+    "nameEs": "Límite de FPS",
+    "descriptionEs": "Limita la velocidad de renderizado. Un límite reduce consumo y carga; VSync puede añadir latencia."
+  },
+  "minecraft:vsync": {
+    "category": 0,
+    "group": "display",
+    "name": "Use VSync",
+    "nameEs": "Sincronización vertical",
+    "descriptionEs": "Sincroniza los fotogramas con la pantalla para reducir el desgarro; puede aumentar la latencia de entrada."
+  },
+  "minecraft:view_bobbing": {
+    "category": 1,
+    "group": "camera",
+    "name": "View Bobbing",
+    "nameEs": "Balanceo de cámara",
+    "descriptionEs": "Activa el balanceo de la cámara al desplazarse. Desactívalo si produce mareo."
+  },
+  "minecraft:graphics_mode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Graphics",
+    "nameEs": "Gráficos",
+    "descriptionEs": "Selecciona el conjunto de efectos visuales del juego."
+  },
+  "minecraft:anaglyph": {
+    "category": 0,
+    "group": "display",
+    "name": "3D Anaglyph",
+    "nameEs": "Anaglifo 3D",
+    "descriptionEs": "Activa la representación estereoscópica con separación de colores rojo y cian."
+  },
+  "minecraft:alternate_blocks": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Alternate Blocks",
+    "nameEs": "Variaciones de bloques",
+    "descriptionEs": "Permite variaciones de modelos y orientación en bloques iguales."
+  },
+  "minecraft:clouds": {
+    "category": 1,
+    "group": "environment",
+    "name": "Clouds",
+    "nameEs": "Nubes",
+    "descriptionEs": "Configura la representación de las nubes del cielo."
+  },
+  "minecraft:smooth_lighting": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Smooth Lighting",
+    "nameEs": "Iluminación suave",
+    "descriptionEs": "Suaviza la iluminación de los bloques; su cálculo añade trabajo al construir la geometría del terreno."
+  },
+  "argentum:fog_shape": {
+    "category": 1,
+    "group": "environment",
+    "name": "Fog Shape",
+    "nameEs": "Forma de la niebla",
+    "descriptionEs": "Define la forma del límite de niebla del mundo."
+  },
+  "minecraft:biome_blend": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Biome Blend",
+    "nameEs": "Mezcla de biomas",
+    "descriptionEs": "Amplía el área utilizada al mezclar los colores de biomas. Los valores elevados encarecen la construcción de chunks."
+  },
+  "celeritas:chunk_fade_in_duration": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Chunk Fade-In Duration",
+    "nameEs": "Duración de aparición de chunks",
+    "descriptionEs": "Establece cuánto tarda en aparecer el terreno recién cargado."
+  },
+  "minecraft:entity_shadows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadows",
+    "nameEs": "Sombras de entidades",
+    "descriptionEs": "Dibuja sombras simples bajo las entidades."
+  },
+  "minecraft:mipmap_levels": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Mipmap Levels",
+    "nameEs": "Niveles de mipmap",
+    "descriptionEs": "Ajusta los niveles reducidos de las texturas usados a distancia; las animaciones pueden resultar más costosas."
+  },
+  "celeritas:chunk_update_threads": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Update Threads",
+    "nameEs": "Hilos de actualización de chunks",
+    "descriptionEs": "Asigna hilos a la construcción de chunks. Más paralelismo puede competir con el hilo del juego."
+  },
+  "celeritas:defer_chunk_updates": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Always Defer Chunk Updates",
+    "nameEs": "Aplazar actualizaciones de chunks",
+    "descriptionEs": "Evita esperar la construcción de terreno durante el fotograma; los cambios importantes pueden aparecer con retraso."
+  },
+  "celeritas:async_graph_search": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Async Occlusion Culling",
+    "nameEs": "Descarte por oclusión asíncrono",
+    "descriptionEs": "Realiza la búsqueda de oclusión fuera del hilo principal de renderizado."
+  },
+  "celeritas:block_face_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Block Face Culling",
+    "nameEs": "Descartar caras ocultas de bloques",
+    "descriptionEs": "Omite caras que no miran a la cámara. Comprueba los paquetes de recursos si aparecen huecos."
+  },
+  "celeritas:raster_occlusion_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Rasterized Occlusion Culling",
+    "nameEs": "Descarte por oclusión rasterizada",
+    "descriptionEs": "Descarta geometría que el sistema de oclusión considera tapada."
+  },
+  "celeritas:fog_occlusion": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Fog Occlusion",
+    "nameEs": "Descartar geometría tras la niebla",
+    "descriptionEs": "Evita dibujar terreno situado fuera del límite visible de niebla."
+  },
+  "celeritas:entity_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Use Entity Culling",
+    "nameEs": "Descartar entidades ocultas",
+    "descriptionEs": "Omite entidades que no contribuyen a la imagen visible."
+  },
+  "argentum:entity_occlusion_interval": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Entity Occlusion Interval",
+    "nameEs": "Intervalo de oclusión de entidades",
+    "descriptionEs": "Establece con qué frecuencia se comprueba la visibilidad de las entidades."
+  },
+  "argentum:particle_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Particle Culling",
+    "nameEs": "Descarte de partículas",
+    "descriptionEs": "Omite partículas que no se consideran visibles. Desactívalo ante desapariciones incorrectas con otros mods."
+  },
+  "argentum:entity_instancing": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Entity Instancing",
+    "nameEs": "Instancias de entidades",
+    "descriptionEs": "Agrupa modelos de entidades compatibles. Los renderizadores personalizados de otros mods pueden requerir desactivarlo."
+  },
+  "argentum:bake_block_entities": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Bake Block Entities",
+    "nameEs": "Precalcular entidades de bloque",
+    "descriptionEs": "Integra entidades de bloque compatibles en la geometría del terreno; puede ocultar cambios realizados por otros renderizadores."
+  },
+  "argentum:name_tag_batching": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Name Tag Batching",
+    "nameEs": "Agrupar etiquetas de nombres",
+    "descriptionEs": "Agrupa las etiquetas de nombres. Requiere la agrupación de texto y puede interferir con modificaciones de las etiquetas."
+  },
+  "celeritas:animate_only_visible_textures": {
+    "category": 2,
+    "group": "processing",
+    "name": "Animate Only Visible Textures",
+    "nameEs": "Animar solo texturas visibles",
+    "descriptionEs": "Actualiza solo las animaciones consideradas visibles. Desactívalo si alguna textura deja de animarse incorrectamente."
+  },
+  "argentum:font_batching": {
+    "category": 2,
+    "group": "processing",
+    "name": "Font Batching",
+    "nameEs": "Agrupar dibujo de texto",
+    "descriptionEs": "Agrupa operaciones de dibujo de texto para reducir su número."
+  },
+  "argentum:gui_item_atlas": {
+    "category": 2,
+    "group": "processing",
+    "name": "Cache Item Icons",
+    "nameEs": "Guardar iconos de objetos en caché",
+    "descriptionEs": "Reutiliza representaciones de iconos de objetos mediante un atlas."
+  },
+  "celeritas:translucent_face_sorting": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Translucent Face Sorting",
+    "nameEs": "Ordenación de caras translúcidas",
+    "descriptionEs": "Ordena caras transparentes para representar correctamente superficies como agua y cristal."
+  },
+  "celeritas:use_faster_clouds": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Faster Clouds",
+    "nameEs": "Optimizar dibujo de nubes",
+    "descriptionEs": "Utiliza el dibujo de nubes del optimizador; puede ocultar personalizaciones de otros mods."
+  },
+  "argentum:faster_end_portals": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Faster End Portals",
+    "nameEs": "Optimizar portales del End",
+    "descriptionEs": "Utiliza una representación más eficiente de portales del End; comprueba las personalizaciones de portales."
+  },
+  "argentum:faster_weather": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Faster Weather",
+    "nameEs": "Optimizar efectos del clima",
+    "descriptionEs": "Agrupa el dibujo de lluvia y nieve y reutiliza sus datos. Algunas modificaciones visuales pueden necesitar el sistema original."
+  },
+  "argentum:safe_chunk_edges": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Safe Chunk Edges",
+    "nameEs": "Bordes de chunks seguros",
+    "descriptionEs": "Espera a los vecinos antes de construir bordes. Evita errores temporales, pero pierde un chunk de distancia efectiva del servidor."
+  },
+  "celeritas:render_pass_optimization": {
+    "category": 2,
+    "group": "processing",
+    "name": "Use Render Pass Optimization",
+    "nameEs": "Optimizar pasadas de renderizado",
+    "descriptionEs": "Mueve las caras opacas a una pasada que evita pruebas de alfa. Revisa los paquetes de recursos si cambia el orden visual."
+  },
+  "celeritas:compact_vertex_format": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Use Compact Vertex Format",
+    "nameEs": "Formato compacto de vértices",
+    "descriptionEs": "Reduce memoria y ancho de banda a costa de precisión. Algunos paquetes pueden mostrar z-fighting o errores de coordenadas."
+  },
+  "argentum:greedy_render_thread": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Greedy Render Thread",
+    "nameEs": "Prioridad del hilo de renderizado",
+    "descriptionEs": "Reduce las cesiones del hilo de renderizado. Puede mejorar FPS o producir tirones según el equipo."
+  },
+  "celeritas:cpu_render_ahead_limit": {
+    "category": 2,
+    "group": "processing",
+    "name": "CPU Render-Ahead Limit",
+    "nameEs": "Límite de fotogramas preparados por CPU",
+    "descriptionEs": "Limita los fotogramas que prepara la CPU por adelantado respecto a la GPU; los extremos pueden perjudicar la regularidad."
+  },
+  "argentum:check_gl_errors": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "OpenGL Error Checks",
+    "nameEs": "Comprobación de errores OpenGL",
+    "descriptionEs": "Comprueba errores de OpenGL durante el juego; es útil para diagnóstico y añade coste."
+  },
+  "amplio:upscaler": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "Upscaler",
+    "nameEs": "Escalador"
+  },
+  "amplio:quality": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "Quality",
+    "nameEs": "Calidad"
+  },
+  "amplio:dlss_model": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "DLSS Model",
+    "nameEs": "Modelo DLSS"
+  },
+  "amplio:sharpness": {
+    "category": 3,
+    "group": "upscaling",
+    "name": "Sharpness",
+    "nameEs": "Nitidez"
+  },
+  "lucerna:shadow_distance": {
+    "category": 3,
+    "group": "shaders",
+    "name": "Max Shadow Distance",
+    "nameEs": "Distancia máxima de sombras"
+  },
+  "lucerna:render_quality": {
+    "category": 3,
+    "group": "shaders",
+    "name": "Render Quality",
+    "nameEs": "Calidad de renderizado"
+  },
+  "lucerna:shadow_quality": {
+    "category": 3,
+    "group": "shaders",
+    "name": "Shadow Quality",
+    "nameEs": "Calidad de sombras"
+  },
+  "argentum-extras:cloud_render_distance": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Render Distance",
+    "nameEs": "Distancia de nubes",
+    "descriptionEs": "Limita hasta dónde se dibujan las nubes."
+  },
+  "argentum-extras:cloud_height_offset": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Height",
+    "nameEs": "Altura de nubes",
+    "descriptionEs": "Desplaza la altura de la capa de nubes."
+  },
+  "argentum-extras:cloud_speed": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Speed",
+    "nameEs": "Velocidad de nubes",
+    "descriptionEs": "Ajusta el movimiento de las nubes."
+  },
+  "argentum-extras:cloud_fog": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Fog",
+    "nameEs": "Niebla en nubes",
+    "descriptionEs": "Controla la niebla asociada a las nubes."
+  },
+  "argentum-extras:terrain_fog_density": {
+    "category": 1,
+    "group": "environment",
+    "name": "Terrain Fog Density",
+    "nameEs": "Densidad de niebla del terreno",
+    "descriptionEs": "Ajusta la densidad de la niebla del terreno."
+  },
+  "argentum-extras:fluid_fog_density": {
+    "category": 1,
+    "group": "environment",
+    "name": "Fluid Fog Density",
+    "nameEs": "Densidad de niebla en líquidos",
+    "descriptionEs": "Ajusta la densidad de niebla al estar dentro de líquidos."
+  },
+  "argentum-extras:sky": {
+    "category": 1,
+    "group": "environment",
+    "name": "Sky",
+    "nameEs": "Cielo",
+    "descriptionEs": "Controla el dibujo del cielo."
+  },
+  "argentum-extras:lower_sky": {
+    "category": 1,
+    "group": "environment",
+    "name": "Lower Sky",
+    "nameEs": "Cielo inferior",
+    "descriptionEs": "Controla el dibujo de la parte inferior del cielo."
+  },
+  "argentum-extras:sun_and_moon": {
+    "category": 1,
+    "group": "environment",
+    "name": "Sun & Moon",
+    "nameEs": "Sol y luna",
+    "descriptionEs": "Controla la representación del sol y la luna."
+  },
+  "argentum-extras:stars": {
+    "category": 1,
+    "group": "environment",
+    "name": "Stars",
+    "nameEs": "Estrellas",
+    "descriptionEs": "Controla la representación de estrellas."
+  },
+  "argentum-extras:weather_render_distance": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Render Distance",
+    "nameEs": "Distancia del clima",
+    "descriptionEs": "Limita la distancia a la que se representan las precipitaciones."
+  },
+  "argentum-extras:weather_density": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Density",
+    "nameEs": "Densidad del clima",
+    "descriptionEs": "Ajusta la densidad visual de lluvia y nieve."
+  },
+  "argentum-extras:leaf_quality": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Leaf Quality",
+    "nameEs": "Calidad de hojas",
+    "descriptionEs": "Selecciona la representación de las hojas."
+  },
+  "argentum-extras:dynamic_fov_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Dynamic FOV Strength",
+    "nameEs": "Intensidad del FOV dinámico",
+    "descriptionEs": "Determina la intensidad de los cambios dinámicos del campo de visión."
+  },
+  "argentum-extras:portal_distortion_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Portal Distortion Strength",
+    "nameEs": "Intensidad de distorsión de portales",
+    "descriptionEs": "Determina la intensidad de la distorsión de cámara de los portales."
+  },
+  "argentum-extras:view_bobbing_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "View Bobbing Strength",
+    "nameEs": "Intensidad del balanceo",
+    "descriptionEs": "Determina la intensidad del balanceo al desplazarse."
+  },
+  "argentum-extras:hurt_camera_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Hurt Camera Strength",
+    "nameEs": "Intensidad del movimiento por daño",
+    "descriptionEs": "Determina la intensidad del movimiento de cámara al recibir daño."
+  },
+  "argentum-extras:vignette_strength": {
+    "category": 1,
+    "group": "camera",
+    "name": "Vignette Strength",
+    "nameEs": "Intensidad del viñeteado",
+    "descriptionEs": "Determina la intensidad del oscurecimiento en los bordes de la imagen."
+  },
+  "argentum-extras:explosion_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Explosion Particles",
+    "nameEs": "Partículas de explosiones",
+    "descriptionEs": "Controla las partículas visuales de las explosiones."
+  },
+  "argentum-extras:spell_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Spell Particles",
+    "nameEs": "Partículas de hechizos",
+    "descriptionEs": "Controla las partículas visuales de hechizos y efectos."
+  },
+  "argentum-extras:portal_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Portal Particles",
+    "nameEs": "Partículas de portales",
+    "descriptionEs": "Controla las partículas visuales de portales."
+  },
+  "argentum-extras:smoke_and_flame_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Smoke and Flame Particles",
+    "nameEs": "Partículas de humo y fuego",
+    "descriptionEs": "Controla las partículas de humo y llamas."
+  },
+  "argentum-extras:redstone_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Redstone Particles",
+    "nameEs": "Partículas de redstone",
+    "descriptionEs": "Controla las partículas visuales de redstone."
+  },
+  "argentum-extras:water_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Water Particles",
+    "nameEs": "Partículas de agua",
+    "descriptionEs": "Controla las partículas visuales del agua."
+  },
+  "argentum-extras:miscellaneous_particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Miscellaneous Particles",
+    "nameEs": "Otras partículas",
+    "descriptionEs": "Controla otras familias de partículas."
+  },
+  "argentum-extras:steady_debug_hud": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Steady Debug HUD",
+    "nameEs": "Estabilizar panel de depuración",
+    "descriptionEs": "Estabiliza la presentación del panel de depuración."
+  },
+  "argentum-extras:debug_hud_refresh_interval": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Debug HUD Refresh Interval",
+    "nameEs": "Intervalo del panel de depuración",
+    "descriptionEs": "Establece el intervalo de actualización del panel de depuración."
+  },
+  "argentum-extras:debug_hud_scale": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Debug HUD Scale",
+    "nameEs": "Escala del panel de depuración",
+    "descriptionEs": "Establece el tamaño del panel de depuración."
+  },
+  "argentum-extras:fps_hud": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "FPS HUD",
+    "nameEs": "Indicador de FPS",
+    "descriptionEs": "Controla el indicador de fotogramas por segundo."
+  },
+  "argentum-extras:entity_shadow_distance": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadow Distance",
+    "nameEs": "Distancia de sombras de entidades",
+    "descriptionEs": "Limita hasta dónde se dibujan las sombras de entidades."
+  },
+  "argentum-extras:armor": {
+    "category": 1,
+    "group": "entities",
+    "name": "Armor",
+    "nameEs": "Armadura",
+    "descriptionEs": "Controla la representación de armaduras equipadas."
+  },
+  "argentum-extras:armor_glint": {
+    "category": 1,
+    "group": "entities",
+    "name": "Armor Enchantment Glint",
+    "nameEs": "Brillo de encantamiento de armaduras",
+    "descriptionEs": "Controla el efecto brillante de armaduras encantadas."
+  },
+  "argentum-extras:held_items": {
+    "category": 1,
+    "group": "entities",
+    "name": "Held Items",
+    "nameEs": "Objetos en las manos",
+    "descriptionEs": "Controla la representación de objetos sostenidos."
+  },
+  "argentum-extras:worn_heads": {
+    "category": 1,
+    "group": "entities",
+    "name": "Worn Heads",
+    "nameEs": "Cabezas equipadas",
+    "descriptionEs": "Controla la representación de cabezas equipadas."
+  },
+  "argentum-extras:capes": {
+    "category": 1,
+    "group": "entities",
+    "name": "Capes",
+    "nameEs": "Capas",
+    "descriptionEs": "Controla la representación de capas de jugadores."
+  },
+  "argentum-extras:player_ears": {
+    "category": 1,
+    "group": "entities",
+    "name": "Special Player Ears",
+    "nameEs": "Orejas especiales de jugadores",
+    "descriptionEs": "Controla los elementos especiales de orejas de jugadores."
+  },
+  "argentum-extras:stuck_arrows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Stuck Arrows",
+    "nameEs": "Flechas clavadas",
+    "descriptionEs": "Controla la representación de flechas clavadas en entidades."
+  },
+  "argentum-extras:leashes": {
+    "category": 1,
+    "group": "entities",
+    "name": "Leashes",
+    "nameEs": "Correas",
+    "descriptionEs": "Controla la representación de correas."
+  },
+  "argentum-extras:name_tags": {
+    "category": 1,
+    "group": "entities",
+    "name": "Name Tags",
+    "nameEs": "Etiquetas de nombres",
+    "descriptionEs": "Controla la representación de nombres sobre las entidades."
+  },
+  "argentum-extras:second_name_tag_layer": {
+    "category": 1,
+    "group": "entities",
+    "name": "Second Name Tag Layer",
+    "nameEs": "Segunda capa de etiquetas",
+    "descriptionEs": "Controla la segunda pasada de las etiquetas de nombres."
+  },
+  "argentum-extras:fxaa": {
+    "category": 1,
+    "group": "geometry",
+    "name": "FXAA",
+    "nameEs": "Antialiasing FXAA",
+    "descriptionEs": "Suaviza la imagen mediante FXAA, con un coste de procesamiento adicional."
+  },
+  "argentum-extras:smooth_block_outlines": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Smooth Block Outlines",
+    "nameEs": "Contornos de bloques suavizados",
+    "descriptionEs": "Suaviza los bordes del contorno de selección de bloques."
+  },
+  "argentum-extras:scaled_block_outline": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Resolution Scaled Block Outline",
+    "nameEs": "Contorno ajustado a la resolución",
+    "descriptionEs": "Ajusta el contorno de selección a la resolución de representación."
+  },
+  "argentum-extras:block_outline_width": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Block Outline Width",
+    "nameEs": "Grosor del contorno de bloques",
+    "descriptionEs": "Establece el grosor del contorno de selección de bloques."
+  },
+  "argentum-extras:disable_text_shadows": {
+    "category": 1,
+    "group": "camera",
+    "name": "Disable Text Shadows",
+    "nameEs": "Desactivar sombras del texto",
+    "descriptionEs": "Elimina las sombras de los textos compatibles."
+  },
+  "argentum-extras:high_dpi_screen": {
+    "category": 0,
+    "group": "display",
+    "name": "High-DPI Screen",
+    "nameEs": "Pantalla de alta densidad",
+    "descriptionEs": "Adapta el tratamiento de la pantalla a su densidad de píxeles."
+  },
+  "cera:better_grass": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Better Grass",
+    "nameEs": "Césped mejorado",
+    "descriptionEs": "Permite que el césped se extienda a las caras laterales según el modo seleccionado."
+  },
+  "cera:connected_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Connected Textures",
+    "nameEs": "Texturas conectadas",
+    "descriptionEs": "Conecta texturas vecinas según las reglas del paquete de recursos."
+  },
+  "cera:dynamic_lights": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Dynamic Lights",
+    "nameEs": "Luces dinámicas",
+    "descriptionEs": "Permite iluminación dinámica de entidades y objetos que emiten luz."
+  },
+  "cera:natural_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Natural Textures",
+    "nameEs": "Texturas naturales",
+    "descriptionEs": "Varía orientación y reflejo de texturas para reducir patrones repetidos."
+  },
+  "cera:emissive_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Emissive Textures",
+    "nameEs": "Texturas emisivas",
+    "descriptionEs": "Permite capas luminosas definidas por paquetes de recursos."
+  },
+  "cera:custom_block_layers": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Block Layers",
+    "nameEs": "Capas de bloques personalizadas",
+    "descriptionEs": "Permite que los paquetes de recursos cambien la capa de dibujo de bloques."
+  },
+  "cera:animated_textures": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Animated Textures",
+    "nameEs": "Texturas animadas",
+    "descriptionEs": "Permite animaciones de texturas adicionales definidas por paquetes de recursos."
+  },
+  "cera:custom_colors": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Custom Colors",
+    "nameEs": "Colores personalizados",
+    "descriptionEs": "Permite colores definidos por los paquetes de recursos."
+  },
+  "cera:custom_lightmaps": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Custom Lightmaps",
+    "nameEs": "Mapas de iluminación personalizados",
+    "descriptionEs": "Permite mapas de iluminación definidos por paquetes de recursos."
+  },
+  "cera:custom_sky": {
+    "category": 1,
+    "group": "environment",
+    "name": "Custom Sky",
+    "nameEs": "Cielo personalizado",
+    "descriptionEs": "Permite capas de cielo definidas por paquetes de recursos."
+  },
+  "cera:random_entities": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Random Entities",
+    "nameEs": "Variantes de entidades",
+    "descriptionEs": "Permite variantes de texturas de entidades definidas por paquetes de recursos."
+  },
+  "cera:custom_items": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Item Textures",
+    "nameEs": "Texturas de objetos personalizadas",
+    "descriptionEs": "Permite texturas y modelos de objetos definidos por paquetes de recursos."
+  },
+  "cera:optifine_cosmetics": {
+    "category": 1,
+    "group": "geometry",
+    "name": "OptiFine Cosmetics",
+    "nameEs": "Cosméticos de OptiFine",
+    "descriptionEs": "Permite cosméticos de OptiFine. Esta función realiza conexiones con sus servidores; desactívala si no deseas usarlas."
+  },
+  "cera:custom_guis": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom GUIs",
+    "nameEs": "Interfaces de paquetes de recursos",
+    "descriptionEs": "Permite texturas de contenedores definidas por paquetes de recursos."
+  },
+  "cera:hd_fonts": {
+    "category": 1,
+    "group": "geometry",
+    "name": "HD Fonts",
+    "nameEs": "Fuentes de alta resolución",
+    "descriptionEs": "Permite fuentes de alta resolución y anchos de caracteres de los paquetes de recursos."
+  },
+  "cera:custom_panorama": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Panorama",
+    "nameEs": "Panorama personalizado",
+    "descriptionEs": "Permite panoramas del menú definidos por paquetes de recursos."
+  },
+  "cera:custom_loading_screens": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Custom Loading Screens",
+    "nameEs": "Pantallas de carga personalizadas",
+    "descriptionEs": "Permite fondos de carga por dimensión definidos por paquetes de recursos."
+  },
+  "tflcore:colors/enabled": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Colors",
+    "nameEs": "Colores"
+  },
+  "tflcore:colors/saturation": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Saturation",
+    "nameEs": "Color: saturación"
+  },
+  "tflcore:colors/contrast": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Contrast",
+    "nameEs": "Color: contraste"
+  },
+  "tflcore:colors/brightness": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Brightness",
+    "nameEs": "Color: brillo"
+  },
+  "tflcore:colors/vibrance": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Vibrance",
+    "nameEs": "Color: intensidad"
+  },
+  "tflcore:colors/temperature": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Color: Color temperature",
+    "nameEs": "Color: temperatura"
+  },
+  "tflcore:gpu_info": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "GPU",
+    "nameEs": "GPU"
+  },
+  "sodium:general.render_distance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Render Distance",
+    "nameEs": "Distancia de renderizado",
+    "descriptionEs": "Determina cuánto terreno se dibuja alrededor del jugador; distancias mayores aumentan la carga y la memoria necesarias."
+  },
+  "sodium:general.simulation_distance": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Simulation Distance",
+    "nameEs": "Distancia de simulación",
+    "descriptionEs": "Controla la distancia de simulación del mundo, independiente de la distancia visible."
+  },
+  "sodium:general.gamma": {
+    "category": 0,
+    "group": "display",
+    "name": "Brightness",
+    "nameEs": "Brillo",
+    "descriptionEs": "Ajusta el brillo general mediante gamma, sin alterar la iluminación almacenada en el mundo."
+  },
+  "sodium:general.gui_scale": {
+    "category": 0,
+    "group": "display",
+    "name": "GUI Scale",
+    "nameEs": "Escala de interfaz",
+    "descriptionEs": "Define el tamaño de los controles. La escala automática utiliza el mayor tamaño que permita la ventana."
+  },
+  "sodium:general.fullscreen_mode": {
+    "category": 0,
+    "group": "display",
+    "name": "Fullscreen Mode",
+    "nameEs": "Modo de pantalla completa",
+    "descriptionEs": "Selecciona el modo de pantalla completa. El exclusivo puede afectar a los métodos de entrada; el modo sin bordes puede limitar la sincronización adaptativa."
+  },
+  "sodium:general.fullscreen_resolution": {
+    "category": 0,
+    "group": "display",
+    "name": "Fullscreen Resolution",
+    "nameEs": "Resolución de pantalla completa",
+    "descriptionEs": "Selecciona resolución y frecuencia para la pantalla completa exclusiva."
+  },
+  "sodium:general.vsync": {
+    "category": 0,
+    "group": "display",
+    "name": "VSync",
+    "nameEs": "Sincronización vertical",
+    "descriptionEs": "Sincroniza los fotogramas con la pantalla para reducir el desgarro; puede aumentar la latencia de entrada."
+  },
+  "sodium:general.framerate_limit": {
+    "category": 0,
+    "group": "framerate",
+    "name": "Max Framerate",
+    "nameEs": "Límite de FPS",
+    "descriptionEs": "Limita la velocidad de renderizado. Un límite reduce consumo y carga; VSync puede añadir latencia."
+  },
+  "sodium:general.attack_indicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Attack Indicator",
+    "nameEs": "Indicador de ataque",
+    "descriptionEs": "Configura el indicador de recuperación del ataque."
+  },
+  "sodium:general.autosave_indicator": {
+    "category": 1,
+    "group": "camera",
+    "name": "Autosave Indicator",
+    "nameEs": "Indicador de guardado automático",
+    "descriptionEs": "Controla el aviso de guardado automático."
+  },
+  "sodium:general.graphics_api": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Graphics API",
+    "nameEs": "API gráfica",
+    "descriptionEs": "Selecciona el backend gráfico disponible; puede requerir reiniciar y depende del controlador."
+  },
+  "sodium:quality.graphics": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Improved Transparency",
+    "nameEs": "Transparencia mejorada",
+    "descriptionEs": "Configura el tratamiento de superficies transparentes."
+  },
+  "sodium:quality.clouds": {
+    "category": 1,
+    "group": "environment",
+    "name": "Clouds",
+    "nameEs": "Nubes",
+    "descriptionEs": "Configura la representación de las nubes del cielo."
+  },
+  "sodium:quality.render_cloud_distance": {
+    "category": 1,
+    "group": "environment",
+    "name": "Cloud Distance",
+    "nameEs": "Distancia de nubes",
+    "descriptionEs": "Establece la distancia visible de las nubes."
+  },
+  "sodium:quality.weather": {
+    "category": 1,
+    "group": "environment",
+    "name": "Weather Effect Radius",
+    "nameEs": "Radio de efectos del clima",
+    "descriptionEs": "Establece el radio de los efectos del clima."
+  },
+  "sodium:quality.leaves": {
+    "category": 1,
+    "group": "geometry",
+    "name": "See-Through Leaves",
+    "nameEs": "Transparencia de hojas",
+    "descriptionEs": "Controla la transparencia visual de las hojas."
+  },
+  "sodium:quality.particles": {
+    "category": 1,
+    "group": "particles",
+    "name": "Particles",
+    "nameEs": "Partículas",
+    "descriptionEs": "Controla la cantidad de partículas visibles."
+  },
+  "sodium:quality.ao": {
+    "category": 1,
+    "group": "lighting",
+    "name": "Smooth Lighting",
+    "nameEs": "Iluminación suave",
+    "descriptionEs": "Suaviza la iluminación de los bloques; su cálculo añade trabajo al construir la geometría del terreno."
+  },
+  "sodium:quality.biome_blend": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Biome Blend",
+    "nameEs": "Mezcla de biomas",
+    "descriptionEs": "Amplía el área utilizada al mezclar los colores de biomas. Los valores elevados encarecen la construcción de chunks."
+  },
+  "sodium:quality.entity_distance": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Distance",
+    "nameEs": "Distancia de entidades",
+    "descriptionEs": "Multiplica la distancia visible de entidades."
+  },
+  "sodium:quality.entity_shadows": {
+    "category": 1,
+    "group": "entities",
+    "name": "Entity Shadows",
+    "nameEs": "Sombras de entidades",
+    "descriptionEs": "Dibuja sombras simples bajo las entidades."
+  },
+  "sodium:quality.vignette": {
+    "category": 1,
+    "group": "camera",
+    "name": "Show Vignette",
+    "nameEs": "Mostrar viñeteado",
+    "descriptionEs": "Controla el oscurecimiento de los bordes de la imagen."
+  },
+  "sodium:quality.fade_time": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Chunk Fade Time",
+    "nameEs": "Tiempo de aparición de chunks",
+    "descriptionEs": "Establece la duración de aparición del terreno recién cargado."
+  },
+  "sodium:quality.mipmap_levels": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Mipmap Levels",
+    "nameEs": "Niveles de mipmap",
+    "descriptionEs": "Ajusta los niveles reducidos de las texturas usados a distancia; las animaciones pueden resultar más costosas."
+  },
+  "sodium:quality.filtering_mode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Texture Filtering",
+    "nameEs": "Filtrado de texturas",
+    "descriptionEs": "Selecciona cómo se filtran las texturas."
+  },
+  "sodium:quality.anisotropy_bit": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Anisotropic Filtering",
+    "nameEs": "Filtrado anisotrópico",
+    "descriptionEs": "Mejora el filtrado de texturas vistas en ángulos oblicuos; requiere soporte del backend."
+  },
+  "sodium:quality.pixel_filtering_mode": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Texel Interpolation",
+    "nameEs": "Interpolación de téxeles",
+    "descriptionEs": "Controla la interpolación entre téxeles de la textura."
+  },
+  "sodium:quality.hidden_fluid_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Fluid Culling",
+    "nameEs": "Descarte de líquidos ocultos",
+    "descriptionEs": "Omite superficies de líquidos ocultas."
+  },
+  "sodium:quality.improved_fluid_shaping": {
+    "category": 1,
+    "group": "geometry",
+    "name": "Fluid Shaping",
+    "nameEs": "Forma de los líquidos",
+    "descriptionEs": "Configura la geometría visual de líquidos."
+  },
+  "sodium:quality.closest_point_entity_sort": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Entity Sorting",
+    "nameEs": "Ordenación de entidades",
+    "descriptionEs": "Configura la ordenación de entidades en el renderizado."
+  },
+  "sodium:performance.chunk_update_threads": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Update Threads",
+    "nameEs": "Hilos de actualización de chunks",
+    "descriptionEs": "Asigna hilos a la construcción de chunks. Más paralelismo puede competir con el hilo del juego."
+  },
+  "sodium:performance.always_defer_chunk_updates": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Chunk Updates",
+    "nameEs": "Actualizaciones de chunks",
+    "descriptionEs": "Configura la prioridad o el aplazamiento de actualización de chunks."
+  },
+  "sodium:performance.use_block_face_culling": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Block Face Culling",
+    "nameEs": "Descartar caras ocultas de bloques",
+    "descriptionEs": "Omite caras que no miran a la cámara. Comprueba los paquetes de recursos si aparecen huecos."
+  },
+  "sodium:performance.use_fog_occlusion": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Use Fog Occlusion",
+    "nameEs": "Descartar geometría tras la niebla",
+    "descriptionEs": "Evita dibujar terreno situado fuera del límite visible de niebla."
+  },
+  "sodium:performance.use_entity_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Use Entity Culling",
+    "nameEs": "Descartar entidades ocultas",
+    "descriptionEs": "Omite entidades que no contribuyen a la imagen visible."
+  },
+  "sodium:performance.animate_only_visible_textures": {
+    "category": 2,
+    "group": "processing",
+    "name": "Animate Only Visible Textures",
+    "nameEs": "Animar solo texturas visibles",
+    "descriptionEs": "Actualiza solo las animaciones consideradas visibles. Desactívalo si alguna textura deja de animarse incorrectamente."
+  },
+  "sodium:performance.use_no_error_context": {
+    "category": 4,
+    "group": "diagnostics",
+    "name": "Use No Error Context",
+    "nameEs": "Contexto sin comprobación de errores",
+    "descriptionEs": "Solicita un contexto gráfico sin comprobaciones de errores. Depende del controlador y reduce la información de diagnóstico."
+  },
+  "sodium:performance.inactivity_fps_limit": {
+    "category": 2,
+    "group": "inactivity",
+    "name": "Reduce fps when",
+    "nameEs": "Reducir FPS al estar inactivo",
+    "descriptionEs": "Configura cuándo limitar los FPS por inactividad."
+  },
+  "sodium:performance.quad_splitting": {
+    "category": 2,
+    "group": "chunks",
+    "name": "Block Transparency Limits",
+    "nameEs": "Límites de transparencia de bloques",
+    "descriptionEs": "Configura los límites del tratamiento de caras transparentes."
+  },
+  "sodium:particle_culling": {
+    "category": 2,
+    "group": "entityOptimization",
+    "name": "Particle Culling",
+    "nameEs": "Descarte de partículas",
+    "descriptionEs": "Omite partículas que no se consideran visibles. Desactívalo ante desapariciones incorrectas con otros mods."
+  }
+}

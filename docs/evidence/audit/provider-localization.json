@@ -1,0 +1,17 @@
+{
+  "localizedProviderResources": [
+    {
+      "englishResource": "assets/amplio/lang/en_US.lang",
+      "englishSha256": "62b4125a54ce73236a687c0a9feb97b696d48f01aa3895549148c20fcc4b32c8",
+      "translatedKeys": 19,
+      "spanishResource": "assets/amplio/lang/es_ES.lang"
+    },
+    {
+      "englishResource": "assets/iris/lang/en_US.lang",
+      "englishSha256": "d1d3ce6bd6e6d1d54aac392186c75c57d8c6d5d1e5d9218f7c7cf2785052e975",
+      "translatedKeys": 48,
+      "spanishResource": "assets/iris/lang/es_ES.lang"
+    }
+  ],
+  "otherProviders": "TFL-authored Spanish labels and functional help in graphics-catalog.json; no restricted provider language files redistributed."
+}

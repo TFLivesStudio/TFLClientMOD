@@ -1,0 +1,931 @@
+{
+  "video": {
+    "decoderImplementation": "Minecraft native JPEG parallel",
+    "mode": "HIGH",
+    "decoderState": "running",
+    "fallbackReason": "",
+    "failure": "",
+    "sessions": 1,
+    "framesDecoded": 453,
+    "framesUploaded": 452,
+    "framesPresented": 452,
+    "loops": 0,
+    "decodedFingerprint": -5460055981159642843,
+    "uploadedFingerprint": 3484240480860655545,
+    "decodeNanos": 3478393191,
+    "uploadNanos": 573334376,
+    "decoderCpuNanos": 2954718889,
+    "uploadBytes": 3749068800,
+    "discardedFrames": 0,
+    "elapsedNanos": 15111083822,
+    "pixelBufferAllocations": 7,
+    "imageBufferAllocations": 0,
+    "pendingFrames": 1,
+    "ownedTextures": 1,
+    "decoderFps": 29.977995313644154,
+    "presentationFps": 29.910872572540562,
+    "drawCalls": 889
+  },
+  "measuredVideoFps": 29.97149315559845,
+  "graphicsInventory": [
+    {
+      "id": "sodium:general.render_distance",
+      "name": "Render Distance",
+      "localizedName": "Render Distance",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.simulation_distance",
+      "name": "Simulation Distance",
+      "localizedName": "Simulation Distance",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.gamma",
+      "name": "Brightness",
+      "localizedName": "Brightness",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.gui_scale",
+      "name": "GUI Scale",
+      "localizedName": "GUI Scale",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.fullscreen_mode",
+      "name": "Fullscreen Mode",
+      "localizedName": "Fullscreen Mode",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.fullscreen_resolution",
+      "name": "Fullscreen Resolution",
+      "localizedName": "Fullscreen Resolution",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.vsync",
+      "name": "VSync",
+      "localizedName": "VSync",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.framerate_limit",
+      "name": "Max Framerate",
+      "localizedName": "Max Framerate",
+      "group": "framerate",
+      "category": "Display",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.attack_indicator",
+      "name": "Attack Indicator",
+      "localizedName": "Attack Indicator",
+      "group": "camera",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.autosave_indicator",
+      "name": "Autosave Indicator",
+      "localizedName": "Autosave Indicator",
+      "group": "camera",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:general.graphics_api",
+      "name": "Graphics API",
+      "localizedName": "Graphics API",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.graphics",
+      "name": "Improved Transparency",
+      "localizedName": "Improved Transparency",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.clouds",
+      "name": "Clouds",
+      "localizedName": "Clouds",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.render_cloud_distance",
+      "name": "Cloud Distance",
+      "localizedName": "Cloud Distance",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.weather",
+      "name": "Weather Effect Radius",
+      "localizedName": "Weather Effect Radius",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.leaves",
+      "name": "See-Through Leaves",
+      "localizedName": "See-Through Leaves",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.particles",
+      "name": "Particles",
+      "localizedName": "Particles",
+      "group": "particles",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.ao",
+      "name": "Smooth Lighting",
+      "localizedName": "Smooth Lighting",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.biome_blend",
+      "name": "Biome Blend",
+      "localizedName": "Biome Blend",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.entity_distance",
+      "name": "Entity Distance",
+      "localizedName": "Entity Distance",
+      "group": "entities",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.entity_shadows",
+      "name": "Entity Shadows",
+      "localizedName": "Entity Shadows",
+      "group": "entities",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.vignette",
+      "name": "Show Vignette",
+      "localizedName": "Show Vignette",
+      "group": "camera",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.fade_time",
+      "name": "Chunk Fade Time",
+      "localizedName": "Chunk Fade Time",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.mipmap_levels",
+      "name": "Mipmap Levels",
+      "localizedName": "Mipmap Levels",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.filtering_mode",
+      "name": "Texture Filtering",
+      "localizedName": "Texture Filtering",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.anisotropy_bit",
+      "name": "Anisotropic Filtering",
+      "localizedName": "Anisotropic Filtering",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.pixel_filtering_mode",
+      "name": "Texel Interpolation",
+      "localizedName": "Texel Interpolation",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.hidden_fluid_culling",
+      "name": "Fluid Culling",
+      "localizedName": "Fluid Culling",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.improved_fluid_shaping",
+      "name": "Fluid Shaping",
+      "localizedName": "Fluid Shaping",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:quality.closest_point_entity_sort",
+      "name": "Entity Sorting",
+      "localizedName": "Entity Sorting",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.chunk_update_threads",
+      "name": "Chunk Update Threads",
+      "localizedName": "Chunk Update Threads",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.always_defer_chunk_updates",
+      "name": "Chunk Updates",
+      "localizedName": "Chunk Updates",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.use_block_face_culling",
+      "name": "Use Block Face Culling",
+      "localizedName": "Use Block Face Culling",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.use_fog_occlusion",
+      "name": "Use Fog Occlusion",
+      "localizedName": "Use Fog Occlusion",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.use_entity_culling",
+      "name": "Use Entity Culling",
+      "localizedName": "Use Entity Culling",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.animate_only_visible_textures",
+      "name": "Animate Only Visible Textures",
+      "localizedName": "Animate Only Visible Textures",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.use_no_error_context",
+      "name": "Use No Error Context",
+      "localizedName": "Use No Error Context",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.inactivity_fps_limit",
+      "name": "Reduce fps when",
+      "localizedName": "Reduce fps when",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "sodium:performance.quad_splitting",
+      "name": "Block Transparency Limits",
+      "localizedName": "Block Transparency Limits",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.theredstonee.trsclient.screen.SodiumGraphics$Bound"
+    },
+    {
+      "id": "tflcore:titleScreen/menuFpsLimit",
+      "name": "Menu animation FPS limit",
+      "localizedName": "Menu animation FPS limit",
+      "group": "framerate",
+      "category": "Display",
+      "backend": "TFL ConfigStore: titleScreen.menuFpsLimit"
+    },
+    {
+      "id": "tflcore:titleScreen/backgroundMode",
+      "name": "Menu background",
+      "localizedName": "Menu background",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: titleScreen.backgroundMode"
+    },
+    {
+      "id": "tflcore:dynamicFps/enabled",
+      "name": "Dynamic FPS",
+      "localizedName": "Dynamic FPS",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps"
+    },
+    {
+      "id": "tflcore:dynamicFps/unfocused",
+      "name": "FPS in the background",
+      "localizedName": "FPS in the background",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.unfocused"
+    },
+    {
+      "id": "tflcore:dynamicFps/minimized",
+      "name": "FPS when minimized",
+      "localizedName": "FPS when minimized",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.minimized"
+    },
+    {
+      "id": "tflcore:dynamicFps/afkLimit",
+      "name": "FPS when AFK (0 = off)",
+      "localizedName": "FPS when AFK (0 = off)",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.afkLimit"
+    },
+    {
+      "id": "tflcore:worldMap/cloudQuality",
+      "name": "Volumetric cloud quality",
+      "localizedName": "Volumetric cloud quality",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: worldMap.cloudQuality"
+    },
+    {
+      "id": "tflcore:worldMap/cloudMotion",
+      "name": "Subtle atmospheric motion",
+      "localizedName": "Subtle atmospheric motion",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: worldMap.cloudMotion"
+    },
+    {
+      "id": "tflcore:miniPlayer/fpsLimit",
+      "name": "Widget FPS limit (0 = unlimited)",
+      "localizedName": "Widget FPS limit (0 = unlimited)",
+      "group": "entities",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: miniPlayer.fpsLimit"
+    },
+    {
+      "id": "tflcore:fullbright/enabled",
+      "name": "Gamma",
+      "localizedName": "Gamma",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: fullbright"
+    },
+    {
+      "id": "tflcore:fullbright/level",
+      "name": "Extended gamma level",
+      "localizedName": "Extended gamma level",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: fullbright.level"
+    }
+  ],
+  "rightShiftProfile": {
+    "samples": 50,
+    "renderCallbackIntervalP95Ms": 193.2033,
+    "renderCallbackIntervalP99Ms": 197.064181,
+    "uiThreadCpuP95Ms": 1.520998,
+    "uiThreadCpuP99Ms": 2.047084,
+    "worldFrames": 49,
+    "worldCallbackP95Ms": 193.203981,
+    "worldCallbackP99Ms": 197.070791,
+    "startEpochMs": 1793320595382,
+    "endEpochMs": 1793320603532,
+    "allocationTimingSupported": true,
+    "renderThreadAllocatedBytes": 90171688,
+    "processGcCollections": 1,
+    "processGcMillis": 15,
+    "cpuTimingSupported": true,
+    "gpuTimingMeasured": false
+  },
+  "worldWithoutMenuProfile": {
+    "samples": 0,
+    "renderCallbackIntervalP95Ms": 0.0,
+    "renderCallbackIntervalP99Ms": 0.0,
+    "uiThreadCpuP95Ms": 0.0,
+    "uiThreadCpuP99Ms": 0.0,
+    "worldFrames": 123,
+    "worldCallbackP95Ms": 78.202634,
+    "worldCallbackP99Ms": 87.989288,
+    "startEpochMs": 1793320605428,
+    "endEpochMs": 1793320613454,
+    "allocationTimingSupported": true,
+    "renderThreadAllocatedBytes": 68193688,
+    "processGcCollections": 1,
+    "processGcMillis": 14,
+    "cpuTimingSupported": true,
+    "gpuTimingMeasured": false
+  },
+  "status": "passed",
+  "checks": [
+    {
+      "name": "real video advances",
+      "passed": true
+    },
+    {
+      "name": "source targets 30 fps",
+      "passed": true
+    },
+    {
+      "name": "Diorama session created",
+      "passed": true
+    },
+    {
+      "name": "Diorama owns full map",
+      "passed": true
+    },
+    {
+      "name": "shared pause rail",
+      "passed": true
+    },
+    {
+      "name": "SDL Ctrl Tab focuses menu",
+      "passed": true
+    },
+    {
+      "name": "SDL Tab returns to chat",
+      "passed": true
+    },
+    {
+      "name": "chat submission retains pause",
+      "passed": true
+    },
+    {
+      "name": "native chat history retained",
+      "passed": true
+    },
+    {
+      "name": "SDL left click reaches full-window X",
+      "passed": true
+    },
+    {
+      "name": "reload completed",
+      "passed": true
+    },
+    {
+      "name": "Diorama remains available after reload",
+      "passed": true
+    },
+    {
+      "name": "Unified graphics with native provider",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.render_distance",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.render_distance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.simulation_distance",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.simulation_distance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.gamma",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.gamma",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.gui_scale",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.gui_scale",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.fullscreen_mode",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.fullscreen_mode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.fullscreen_resolution",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.fullscreen_resolution",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.vsync",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.vsync",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.framerate_limit",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.framerate_limit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.attack_indicator",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.attack_indicator",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.autosave_indicator",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.autosave_indicator",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:general.graphics_api",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:general.graphics_api",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.graphics",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.graphics",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.clouds",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.clouds",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.render_cloud_distance",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.render_cloud_distance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.weather",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.weather",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.leaves",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.leaves",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.particles",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.particles",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.ao",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.ao",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.biome_blend",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.biome_blend",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.entity_distance",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.entity_distance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.entity_shadows",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.entity_shadows",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.vignette",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.vignette",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.fade_time",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.fade_time",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.mipmap_levels",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.mipmap_levels",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.filtering_mode",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.filtering_mode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.anisotropy_bit",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.anisotropy_bit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.pixel_filtering_mode",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.pixel_filtering_mode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.hidden_fluid_culling",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.hidden_fluid_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.improved_fluid_shaping",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.improved_fluid_shaping",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:quality.closest_point_entity_sort",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:quality.closest_point_entity_sort",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.chunk_update_threads",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.chunk_update_threads",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.always_defer_chunk_updates",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.always_defer_chunk_updates",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.use_block_face_culling",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.use_block_face_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.use_fog_occlusion",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.use_fog_occlusion",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.use_entity_culling",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.use_entity_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.animate_only_visible_textures",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.animate_only_visible_textures",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.use_no_error_context",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.use_no_error_context",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.inactivity_fps_limit",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.inactivity_fps_limit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option sodium:performance.quad_splitting",
+      "passed": true
+    },
+    {
+      "name": "graphics value sodium:performance.quad_splitting",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:titleScreen/menuFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:titleScreen/menuFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:titleScreen/backgroundMode",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:titleScreen/backgroundMode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/enabled",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/unfocused",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/unfocused",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/minimized",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/minimized",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/afkLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:dynamicFps/afkLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:worldMap/cloudQuality",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:worldMap/cloudQuality",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:worldMap/cloudMotion",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:worldMap/cloudMotion",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:miniPlayer/fpsLimit",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:miniPlayer/fpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:fullbright/enabled",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:fullbright/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:fullbright/level",
+      "passed": true
+    },
+    {
+      "name": "graphics value tflcore:fullbright/level",
+      "passed": true
+    },
+    {
+      "name": "local screenshot editor available",
+      "passed": true
+    },
+    {
+      "name": "world callback profiling records real frames",
+      "passed": true
+    }
+  ]
+}
