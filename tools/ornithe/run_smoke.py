@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Real Linux/X11 client smoke driver. Focuses the native window for Robot input and verifies report status."""
-import argparse,ctypes as C,ctypes.util,json,os,pathlib,re,subprocess,time
+import argparse,ctypes as C,ctypes.util,json,os,pathlib,re,shutil,subprocess,time
 p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');p.add_argument('--large',action='store_true');p.add_argument('--production',action='store_true');p.add_argument('--unified',action='store_true');p.add_argument('--graphics-mods-dir',type=pathlib.Path);p.add_argument('--profile',action='store_true');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];project=root/'vendor/trs-client/ornithe'
 report=project/'build/smoke'/('production' if a.production else a.stack)/('restart.json' if a.restart else 'report.json');report.unlink(missing_ok=True)
@@ -23,10 +23,25 @@ def handle_x_error(display,error):
  if error.contents.error_code not in (3,8):errors.append(error.contents.error_code)
  return 0
 x.XSetErrorHandler.argtypes=[C.c_void_p];x.XSetErrorHandler(C.cast(handle_x_error,C.c_void_p))
-proc=subprocess.Popen(cmd);deadline=time.monotonic()+480
+def timeout_diagnostics():
+ # Preserve native client stacks when the outer watchdog fires, rather than losing the cause.
+ tool=shutil.which('jcmd')
+ if not tool:return
+ try:
+  clients=subprocess.run([tool,'-l'],capture_output=True,text=True,timeout=10).stdout
+  report.parent.mkdir(parents=True,exist_ok=True)
+  for line in clients.splitlines():
+   if not any(name in line for name in ('KnotClient','Minecraft','devlaunchinjector')):continue
+   pid=line.split()[0]
+   stacks=subprocess.run([tool,pid,'Thread.print','-l'],capture_output=True,text=True,timeout=15)
+   (report.parent/f'timeout-threads-{pid}.txt').write_text(stacks.stdout+stacks.stderr)
+ except (OSError,subprocess.TimeoutExpired) as error:print('Could not collect timeout stacks:',error,flush=True)
+
+proc=subprocess.Popen(cmd);deadline=time.monotonic()+(900 if a.unified else 480)
 try:
  while proc.poll() is None:
-  if time.monotonic()>deadline:proc.terminate();raise SystemExit('Gradle/client smoke timeout')
+  if time.monotonic()>deadline:
+   timeout_diagnostics();proc.terminate();raise SystemExit('Gradle/client smoke timeout')
   tree=subprocess.run(['xwininfo','-root','-tree'],capture_output=True,text=True,timeout=5).stdout
   win=re.search(r'(0x[0-9a-f]+) "(?:(?:TFL Client · )?Minecraft|TFL Client 1\.8\.9)',tree)
   if win:x.XSetInputFocus(d,int(win.group(1),16),2,0);x.XFlush(d)

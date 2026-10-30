@@ -20,6 +20,7 @@ public final class UnifiedSmoke implements Runnable {
   private double originalContrast;
   private net.minecraft.client.gui.screen.Screen graphicsReturn;
   private int phase, wait, cameraStage;
+  private int loggedPhase = -1;
   private long at, sequence;
   private final long start = System.nanoTime();
 
@@ -52,7 +53,14 @@ public final class UnifiedSmoke implements Runnable {
   public void run() {
     if (phase == 99 || wait-- > 0) return;
     try {
-      if (System.nanoTime() - start > 240_000_000_000L)
+      if (loggedPhase != phase) {
+        System.out.println("[TFL unified probe] phase " + phase + " at "
+            + ((System.nanoTime() - start) / 1_000_000L) + " ms; checks=" + checks.size());
+        loggedPhase = phase;
+      }
+      // Software OpenGL on hosted runners can take several minutes without an optimizer.
+      // Keep every functional assertion; this budget does not certify physical GPU performance.
+      if (System.nanoTime() - start > 600_000_000_000L)
         throw new AssertionError("unified timeout phase " + phase);
       switch (phase) {
         case 0 -> {
