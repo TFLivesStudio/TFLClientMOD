@@ -13,5 +13,15 @@
     ]
   },
   "renderer": "Mesa llvmpipe / Lavapipe",
-  "physicalGpuCertified": false
+  "physicalGpuCertified": false,
+  "target263": {
+    "report": "native-263-sodium.json",
+    "passedChecks": 115,
+    "stack": [
+      "Fabric",
+      "Sodium"
+    ],
+    "worldAndMenuProfile": true
+  },
+  "note": "Local native evidence immediately before removal of redundant global font mixins; release workflow validates the final commit separately."
 }

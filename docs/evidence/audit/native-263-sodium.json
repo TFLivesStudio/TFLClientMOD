@@ -6,27 +6,27 @@
     "fallbackReason": "",
     "failure": "",
     "sessions": 1,
-    "framesDecoded": 452,
-    "framesUploaded": 450,
-    "framesPresented": 450,
+    "framesDecoded": 453,
+    "framesUploaded": 452,
+    "framesPresented": 452,
     "loops": 0,
-    "decodedFingerprint": 3484240480860655545,
-    "uploadedFingerprint": 8416514911054206507,
-    "decodeNanos": 3956799719,
-    "uploadNanos": 579794337,
-    "decoderCpuNanos": 3040529658,
-    "uploadBytes": 3732480000,
+    "decodedFingerprint": -5460055981159642843,
+    "uploadedFingerprint": 3484240480860655545,
+    "decodeNanos": 3478393191,
+    "uploadNanos": 573334376,
+    "decoderCpuNanos": 2954718889,
+    "uploadBytes": 3749068800,
     "discardedFrames": 0,
-    "elapsedNanos": 15094480940,
-    "pixelBufferAllocations": 8,
+    "elapsedNanos": 15111083822,
+    "pixelBufferAllocations": 7,
     "imageBufferAllocations": 0,
-    "pendingFrames": 2,
+    "pendingFrames": 1,
     "ownedTextures": 1,
-    "decoderFps": 29.944719649299845,
-    "presentationFps": 29.811800881482498,
-    "drawCalls": 827
+    "decoderFps": 29.977995313644154,
+    "presentationFps": 29.910872572540562,
+    "drawCalls": 889
   },
-  "measuredVideoFps": 29.83339691981171,
+  "measuredVideoFps": 29.97149315559845,
   "graphicsInventory": [
     {
       "id": "sodium:general.render_distance",
@@ -382,8 +382,8 @@
     },
     {
       "id": "tflcore:dynamicFps/afkLimit",
-      "name": "FPS when AFK (0 \u003d off)",
-      "localizedName": "FPS when AFK (0 \u003d off)",
+      "name": "FPS when AFK (0 = off)",
+      "localizedName": "FPS when AFK (0 = off)",
       "group": "inactivity",
       "category": "Performance",
       "backend": "TFL ConfigStore: dynamicFps.afkLimit"
@@ -406,8 +406,8 @@
     },
     {
       "id": "tflcore:miniPlayer/fpsLimit",
-      "name": "Widget FPS limit (0 \u003d unlimited)",
-      "localizedName": "Widget FPS limit (0 \u003d unlimited)",
+      "name": "Widget FPS limit (0 = unlimited)",
+      "localizedName": "Widget FPS limit (0 = unlimited)",
       "group": "entities",
       "category": "Quality",
       "backend": "TFL ConfigStore: miniPlayer.fpsLimit"
@@ -430,14 +430,20 @@
     }
   ],
   "rightShiftProfile": {
-    "samples": 33,
-    "renderCallbackIntervalP95Ms": 273.107349,
-    "renderCallbackIntervalP99Ms": 277.93239,
-    "uiThreadCpuP95Ms": 1.698415,
-    "uiThreadCpuP99Ms": 1.746034,
-    "worldFrames": 0,
-    "worldCallbackP95Ms": 0.0,
-    "worldCallbackP99Ms": 0.0,
+    "samples": 50,
+    "renderCallbackIntervalP95Ms": 193.2033,
+    "renderCallbackIntervalP99Ms": 197.064181,
+    "uiThreadCpuP95Ms": 1.520998,
+    "uiThreadCpuP99Ms": 2.047084,
+    "worldFrames": 49,
+    "worldCallbackP95Ms": 193.203981,
+    "worldCallbackP99Ms": 197.070791,
+    "startEpochMs": 1793320595382,
+    "endEpochMs": 1793320603532,
+    "allocationTimingSupported": true,
+    "renderThreadAllocatedBytes": 90171688,
+    "processGcCollections": 1,
+    "processGcMillis": 15,
     "cpuTimingSupported": true,
     "gpuTimingMeasured": false
   },
@@ -447,9 +453,15 @@
     "renderCallbackIntervalP99Ms": 0.0,
     "uiThreadCpuP95Ms": 0.0,
     "uiThreadCpuP99Ms": 0.0,
-    "worldFrames": 0,
-    "worldCallbackP95Ms": 0.0,
-    "worldCallbackP99Ms": 0.0,
+    "worldFrames": 123,
+    "worldCallbackP95Ms": 78.202634,
+    "worldCallbackP99Ms": 87.989288,
+    "startEpochMs": 1793320605428,
+    "endEpochMs": 1793320613454,
+    "allocationTimingSupported": true,
+    "renderThreadAllocatedBytes": 68193688,
+    "processGcCollections": 1,
+    "processGcMillis": 14,
     "cpuTimingSupported": true,
     "gpuTimingMeasured": false
   },
@@ -476,11 +488,23 @@
       "passed": true
     },
     {
+      "name": "SDL Ctrl Tab focuses menu",
+      "passed": true
+    },
+    {
+      "name": "SDL Tab returns to chat",
+      "passed": true
+    },
+    {
       "name": "chat submission retains pause",
       "passed": true
     },
     {
       "name": "native chat history retained",
+      "passed": true
+    },
+    {
+      "name": "SDL left click reaches full-window X",
       "passed": true
     },
     {
@@ -897,6 +921,10 @@
     },
     {
       "name": "local screenshot editor available",
+      "passed": true
+    },
+    {
+      "name": "world callback profiling records real frames",
       "passed": true
     }
   ]

@@ -12,7 +12,7 @@ La protección de renderizado consulta tanto la configuración solicitada como e
 
 ### Entrada y fuentes
 
-Nunito queda limitada al menú principal y a Right Shift. Se retiró también la interceptación global que permanecía en 26.3; chat, inventarios, gráficos y pantallas de servidores conservan su fuente nativa. El atlas de 1.8.9 comprueba cobertura real y usa fallback cuando falta un glifo. Las texturas se invalidan al recargar recursos.
+Nunito queda limitada al menú principal y a Right Shift. Se eliminaron los mixins globales de fuentes de ambas versiones: los Canvas de TFL seleccionan Nunito de forma explícita; chat, inventarios, gráficos y pantallas de servidores conservan su fuente nativa. El atlas de 1.8.9 comprueba cobertura real y usa fallback cuando falta un glifo. Las texturas se invalidan al recargar recursos.
 
 Los campos compartidos admiten selección, Ctrl+A, copiar/pegar, desplazamiento del cursor y borrado de selección. El adaptador moderno sincroniza explícitamente el foco con la entrada de texto nativa. Se conserva el manejo separado de caracteres y teclas en cada plataforma.
 

@@ -48,7 +48,6 @@
     "MiniPlayerLayersMixin",
     "MiniPlayerArmorLayerMixin",
     "ArgentumDrawMixin",
-    "MenuFontMixin",
     "DioramaChunkMixin"
   ],
   "injectors": {
