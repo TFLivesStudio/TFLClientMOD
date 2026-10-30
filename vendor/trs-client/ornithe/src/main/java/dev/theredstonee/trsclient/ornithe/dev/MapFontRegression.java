@@ -22,7 +22,13 @@ public final class MapFontRegression {
     var begin = type.getDeclaredMethod("begin");
     begin.setAccessible(true);
     begin.invoke(value);
-    return (AutoCloseable) value;
+    // The fixture also changes compatibility-profile state outside the map renderer.
+    // Restore that broad snapshot first, then synchronize Minecraft caches through the map scope.
+    GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+    return () -> {
+      GL11.glPopAttrib();
+      ((AutoCloseable) value).close();
+    };
   }
 
   private static byte[] raster(OrnitheClient c, Path out, String name) throws Exception {
