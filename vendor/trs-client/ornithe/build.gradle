@@ -143,3 +143,5 @@ if (project.hasProperty('tflAuditProfile')) {
         }
     }
 }
+
+tasks.named('processResources') { from('../../diorama/src/main/resources/assets/diorama/textures/waypoint_icons') { into 'assets/diorama/textures/waypoint_icons' } }

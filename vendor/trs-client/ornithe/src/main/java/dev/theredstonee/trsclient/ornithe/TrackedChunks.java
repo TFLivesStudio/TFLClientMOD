@@ -45,33 +45,42 @@ final class TrackedChunks implements ChunkSource {
   }
 
   Dependencies dependencies() {
-    Map<Long, java.lang.ref.WeakReference<ChunkSnapshot>> values = new HashMap<>();
-    for (var entry : read.entrySet())
-      values.put(
-          entry.getKey(),
-          entry.getValue() == null ? null : new java.lang.ref.WeakReference<>(entry.getValue()));
+    Map<Long, Long> values = new HashMap<>();
+    for (var e : read.entrySet())
+      values.put(e.getKey(), e.getValue() == null ? 0L : e.getValue().fingerprint());
     return new Dependencies(values);
   }
 
   static final class Dependencies {
-    private final Map<Long, java.lang.ref.WeakReference<ChunkSnapshot>> values;
+    private final Map<Long, Long> values;
 
-    Dependencies(Map<Long, java.lang.ref.WeakReference<ChunkSnapshot>> values) {
+    Dependencies(Map<Long, Long> values) {
       this.values = values;
     }
 
     boolean current(Map<Long, ChunkSnapshot> snapshots) {
-      for (var entry : values.entrySet()) {
-        var ref = entry.getValue();
-        ChunkSnapshot current = snapshots.get(entry.getKey());
-        if (ref == null) {
-          if (current != null) return false;
-        } else {
-          ChunkSnapshot previous = ref.get();
-          if (previous == null || previous != current) return false;
-        }
+      for (var e : values.entrySet()) {
+        ChunkSnapshot now = snapshots.get(e.getKey());
+        // Persisted known terrain stays visible until received data proves that it changed.
+        if (now != null && (e.getValue() == 0 || now.fingerprint() != e.getValue())) return false;
       }
       return true;
+    }
+
+    void write(java.io.DataOutput out) throws java.io.IOException {
+      out.writeInt(values.size());
+      for (var e : values.entrySet()) {
+        out.writeLong(e.getKey());
+        out.writeLong(e.getValue());
+      }
+    }
+
+    static Dependencies read(java.io.DataInput in) throws java.io.IOException {
+      int n = in.readInt();
+      if (n < 0 || n > 4096) throw new java.io.IOException("Invalid tile dependencies");
+      Map<Long, Long> values = new HashMap<>();
+      for (int i = 0; i < n; i++) values.put(in.readLong(), in.readLong());
+      return new Dependencies(values);
     }
   }
 }

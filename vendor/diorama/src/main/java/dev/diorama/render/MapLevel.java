@@ -77,6 +77,8 @@ public final class MapLevel implements ChunkSource {
 	private final SeenBlocks seen;
 	/** Where this dimension's map is saved, or null when there's no world to save it for. */
 	private final @Nullable Path folder;
+ private final int cameraTurns=Projection.turns();
+ public int rotation(){return cameraTurns;}
 	/** Saved tiles for the current camera angle, or null when nothing is saved. Render thread. */
 	private @Nullable TileStore store;
 	/** The folder {@link #store} saves into; see {@link #storeName()}. */
@@ -188,7 +190,7 @@ public final class MapLevel implements ChunkSource {
 
 	@Override
 	public boolean isSeen(int x, int y, int z) {
-		return this.seen.isSeen(x, y, z);
+		return this.seen.isSeen(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,cameraTurns),y,dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,cameraTurns));
 	}
 
 	public SeenBlocks seen() {
@@ -260,9 +262,9 @@ public final class MapLevel implements ChunkSource {
 	private String storeName() {
 		long pitch = Math.round(dev.diorama.MapStyle.get().pitchDegrees());
 		if (this.roofless()) {
-			return "under-roof-" + pitch + (this.fogOfWar ? "-fog" : "");
+			return "under-roof-"+pitch+(this.fogOfWar?"-fog":"")+"-r"+cameraTurns;
 		}
-		return pitch == 60 ? "surface" : "surface-" + pitch;
+		return (pitch==60?"surface":"surface-"+pitch)+(cameraTurns==0?"":"-r"+cameraTurns);
 	}
 
 	/** Moves to another folder if the kind of view changed, and queues everything loaded to be saved there. */
@@ -874,7 +876,7 @@ public final class MapLevel implements ChunkSource {
 		if (store == null || key.isCave()) {
 			return null;
 		}
-		Claims.Snapshot claims = Claims.get();
+		Claims.Snapshot claims = Claims.get().rotated(cameraTurns);
 		Claims.Snapshot painted = tile.claimsPainted;
 		boolean moved = tile.claimsRevision != tile.pixelsRevision;
 		if (painted == claims && !moved) {

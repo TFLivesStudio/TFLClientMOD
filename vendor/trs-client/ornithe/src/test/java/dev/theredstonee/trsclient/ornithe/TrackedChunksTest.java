@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class TrackedChunksTest {
   static ChunkSnapshot snapshot(int x) {
-    return new ChunkSnapshot(x, 0, new int[16][], new byte[16][], new byte[16][], 256, 0, null);
+    return new ChunkSnapshot(x, 0, new int[16][], new byte[16][], new byte[16][], 256, 0, new ChunkSnapshot.Tints(new int[256],new int[256],new int[256],new int[256]));
   }
 
   @Test
@@ -50,23 +50,17 @@ class TrackedChunksTest {
     map.remove(ChunkSnapshot.key(1, 0));
     assertTrue(dependencies.current(map));
     map.put(ChunkSnapshot.key(0, 0), snapshot(0));
+    assertTrue(dependencies.current(map),"Identical received terrain reuses the bake");
+    int[][] changedStates=new int[16][];changedStates[0]=new int[4096];changedStates[0][0]=1;
+    map.put(ChunkSnapshot.key(0,0),new ChunkSnapshot(0,0,changedStates,new byte[16][],new byte[16][],256,0,new ChunkSnapshot.Tints(new int[256],new int[256],new int[256],new int[256])));
     assertFalse(dependencies.current(map));
     assertSame(first, read.chunk(0, 0));
   }
 
   @Test
-  void aCollectedDependencyIsNeverMistakenForAnOriginallyMissingChunk() {
-    ChunkSnapshot snapshot = snapshot(2);
-    java.lang.ref.WeakReference<ChunkSnapshot> ref = new java.lang.ref.WeakReference<>(snapshot);
-    Map<Long, java.lang.ref.WeakReference<ChunkSnapshot>> refs = new HashMap<>();
-    refs.put(2L, ref);
-    var dependencies = new TrackedChunks.Dependencies(refs);
-    Map<Long, ChunkSnapshot> current = new HashMap<>();
-    current.put(2L, snapshot);
-    assertTrue(dependencies.current(current));
-    ref.clear();
-    assertFalse(dependencies.current(current));
-    current.clear();
-    assertFalse(dependencies.current(current));
+  void persistedHashesKeepUnloadedTerrainUntilNewReceivedDataInvalidatesIt() throws Exception {
+    ChunkSnapshot snapshot=snapshot(2);Map<Long,Long> hashes=new HashMap<>();hashes.put(2L,snapshot.fingerprint());hashes.put(3L,0L);
+    var dependencies=new TrackedChunks.Dependencies(hashes);var bytes=new java.io.ByteArrayOutputStream();dependencies.write(new java.io.DataOutputStream(bytes));var loaded=TrackedChunks.Dependencies.read(new java.io.DataInputStream(new java.io.ByteArrayInputStream(bytes.toByteArray())));
+    Map<Long,ChunkSnapshot> current=new HashMap<>();assertTrue(loaded.current(current));current.put(2L,snapshot(2));assertTrue(loaded.current(current));current.put(3L,snapshot(3));assertFalse(loaded.current(current));
   }
 }

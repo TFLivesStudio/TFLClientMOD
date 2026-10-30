@@ -23,7 +23,7 @@ reports=[p for p in source.rglob(reportname) if 'production' in str(p) or target
 assert reports,'No production native report'
 for report in reports:
  r=json.loads(report.read_text());assert r['status']=='passed',(report,r.get('error'));assert r['checks'] and all(c['passed'] for c in r['checks'])
-copy_files=['docs/MAP_PAUSE_FIX.md','docs/AUDIT_COMPLETION.md','docs/STABILIZATION.md','docs/VISUAL_IDENTITY.md','docs/evidence/visual-identity/optional-dependencies.json','tools/ornithe/dependencies.json' if target=='1.8.9' else 'docs/evidence/depth-polish/optimizer-dependencies-263.json']
+copy_files=['docs/SERVER_MAPS.md','docs/MAP_PAUSE_FIX.md','docs/AUDIT_COMPLETION.md','docs/STABILIZATION.md','docs/VISUAL_IDENTITY.md','docs/evidence/visual-identity/optional-dependencies.json','tools/ornithe/dependencies.json' if target=='1.8.9' else 'docs/evidence/depth-polish/optimizer-dependencies-263.json']
 for rel in copy_files:shutil.copy2(root/rel,out/pathlib.Path(rel).name)
 with zipfile.ZipFile(out/('native-evidence-'+target+'.zip'),'w',zipfile.ZIP_DEFLATED) as z:
  for p in source.rglob('*'):
@@ -39,7 +39,7 @@ Argentum/Legacy LWJGL3 y Sodium son dependencias opcionales separadas: enlaces y
 Paper Doll · Mini Player se configura en HUD y se mueve desde el HUD Editor. Diorama: M abre el mapa, arrastrar mueve la vista y la rueda hace zoom. En 1.8.9: C cambia la capa; clic derecho crea un waypoint; clic en un waypoint lo edita. En 26.3 están disponibles los controles nativos de Diorama.
 El fondo permite Calidad, Equilibrado, Rendimiento, Estático y Desactivado. El menú no muestra contadores ni botones de depuración; las métricas siguen disponibles para diagnóstico.
 
-Lee MAP_PAUSE_FIX.md para los cambios de esta revisión y sus pruebas. AUDIT_COMPLETION.md conserva el contexto anterior. Las ejecuciones en llvmpipe no certifican rendimiento de GPU física. Iris no pudo validarse en este backend.
+Lee SERVER_MAPS.md para los cambios de esta revisión y sus pruebas. MAP_PAUSE_FIX.md conserva la revisión de ESC. AUDIT_COMPLETION.md conserva el contexto anterior. Las ejecuciones en llvmpipe no certifican rendimiento de GPU física. Iris no pudo validarse en este backend.
 Para clips MP4, instala FFmpeg y ffprobe en PATH; no se descargan ni se activa un servicio externo. Las exportaciones son copias.
 La evidencia nativa se incluye por separado; complete-source.zip corresponde al commit de esta publicación.
 '''

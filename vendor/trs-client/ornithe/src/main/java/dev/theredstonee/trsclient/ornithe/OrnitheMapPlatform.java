@@ -23,6 +23,137 @@ public final class OrnitheMapPlatform implements MapPlatform, ChunkReader {
   private String worldKey = "", dimension = "";
   private Object identity;
   private boolean saveWaypoints;
+  private final java.util.Set<String> pendingWaypointWorlds = new java.util.LinkedHashSet<>();
+  private String importedWaypoints = "";
+
+  public java.nio.file.Path waypointFile(String key) {
+    return c.mc
+        .gameDir
+        .toPath()
+        .resolve("tfl-maps/waypoints")
+        .resolve(
+            java.util
+                .UUID
+                .nameUUIDFromBytes(key.getBytes(java.nio.charset.StandardCharsets.UTF_8))
+                .toString())
+        .resolve("waypoints.json");
+  }
+
+  public void waypointsChanged(String key) {
+    pendingWaypointWorlds.add(key);
+    saveWaypoints = true;
+  }
+
+  private dev.theredstonee.trsclient.core.map.session.WorldCatalog catalog;
+  private String providedWorldId;
+  private Object sessionWorld, sessionContext = new Object();
+
+  public dev.theredstonee.trsclient.core.map.session.WorldCatalog catalog() {
+    if (catalog == null)
+      try {
+        catalog =
+            new dev.theredstonee.trsclient.core.map.session.WorldCatalog(
+                c.mc.gameDir.toPath().resolve("tfl-maps/worlds.json"));
+      } catch (IOException e) {
+        throw new IllegalStateException("Cannot open map world catalog", e);
+      }
+    return catalog;
+  }
+
+  public void respawning() {
+    identity = null;
+    sessionWorld = c.mc.world;
+    sessionContext = new Object();
+    providedWorldId = null;
+    chunk = null;
+  }
+
+  public void worldId(int id) {
+    if (sessionWorld != c.mc.world) {
+      sessionWorld = c.mc.world;
+      sessionContext = new Object();
+    }
+    providedWorldId = Integer.toHexString(id);
+    identity = null;
+  }
+
+  public void selectedWorld() {
+    try {
+      worldKey = catalog().backendKey(catalog().namespace());
+    } catch (IOException e) {
+      OrnitheClient.LOG.error("Cannot select cached world", e);
+    }
+    chunk = null;
+  }
+
+  private static final class Folders {
+    java.util.List<String> custom = new java.util.ArrayList<>(),
+        hidden = new java.util.ArrayList<>();
+  }
+
+  private Folders folders = new Folders();
+  private String folderOwner = "";
+
+  private Folders readFolders(String owner) {
+    var file = waypointFile(owner).resolveSibling("folders.json");
+    if (java.nio.file.Files.isRegularFile(file))
+      try (var reader = java.nio.file.Files.newBufferedReader(file)) {
+        Folders read = new com.google.gson.Gson().fromJson(reader, Folders.class);
+        if (read != null && read.custom != null && read.hidden != null) return read;
+      } catch (Exception e) {
+        OrnitheClient.LOG.warn("Cannot read waypoint folders", e);
+      }
+    return new Folders();
+  }
+
+  private void writeFolders(String owner, Folders value) throws IOException {
+    var file = waypointFile(owner).resolveSibling("folders.json");
+    java.nio.file.Files.createDirectories(file.getParent());
+    var temp = file.resolveSibling("folders.json.tmp");
+    try (var out = java.nio.file.Files.newBufferedWriter(temp)) {
+      new com.google.gson.Gson().toJson(value, out);
+    }
+    java.nio.file.Files.move(temp, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+    if (owner.equals(folderOwner)) folders = value;
+  }
+
+  private void saveWaypointWorld(String owner) throws IOException {
+    c.waypoints.exportDiorama(waypointFile(owner), owner);
+    Folders value = readFolders(owner);
+    for (var point : c.waypoints.all(owner))
+      if (point.folder != null && !point.folder.isEmpty() && !value.custom.contains(point.folder))
+        value.custom.add(point.folder);
+    writeFolders(owner, value);
+  }
+
+  public boolean hiddenFolder(String name) {
+    return hiddenFolder(worldKey, name);
+  }
+
+  public boolean hiddenFolder(String owner, String name) {
+    if (!folderOwner.equals(owner)) {
+      folderOwner = owner;
+      folders = readFolders(owner);
+    }
+    return name != null && !name.isEmpty() && folders.hidden.contains("folder:" + name);
+  }
+
+  public void toggleFolder(String name) {
+    toggleFolder(worldKey, name);
+  }
+
+  public void toggleFolder(String owner, String name) {
+    Folders value = readFolders(owner);
+    String key = "folder:" + name;
+    if (!value.hidden.remove(key)) value.hidden.add(key);
+    if (!value.custom.contains(name)) value.custom.add(name);
+    try {
+      writeFolders(owner, value);
+    } catch (IOException e) {
+      OrnitheClient.LOG.error("Cannot save waypoint folders", e);
+    }
+  }
+
   private Object resourceGeneration = new Object();
 
   public OrnitheMapPlatform(OrnitheClient c) {
@@ -30,16 +161,79 @@ public final class OrnitheMapPlatform implements MapPlatform, ChunkReader {
   }
 
   public void updateIdentity() {
+    if (saveWaypoints) {
+      saveWaypoints = false;
+      for (String key : pendingWaypointWorlds)
+        try {
+          saveWaypointWorld(key);
+        } catch (IOException e) {
+          OrnitheClient.LOG.error("Cannot persist Diorama waypoints", e);
+        }
+      pendingWaypointWorlds.clear();
+      try {
+        c.waypoints.saveIfDirty();
+      } catch (IOException e) {
+        OrnitheClient.LOG.error("Cannot persist waypoint migration", e);
+      }
+    }
+    if (sessionWorld != c.mc.world) {
+      sessionWorld = c.mc.world;
+      sessionContext = new Object();
+      providedWorldId = null;
+    }
     if (identity != c.mc.world || (inWorld() && worldKey.isEmpty())) {
       identity = c.mc.world;
       chunk = null;
       dimension = inWorld() ? "dim" + c.mc.world.dimension.getId() : "";
-      if (!inWorld()) worldKey = "";
-      else if (c.mc.isSingleplayer() && c.mc.getServer() != null)
+      if (!inWorld()) {
+        worldKey = "";
+        providedWorldId = null;
+        try {
+          catalog().begin(null, "", null);
+        } catch (IOException ignored) {
+        }
+      } else if (c.mc.isSingleplayer() && c.mc.getServer() != null) {
         worldKey = WaypointStore.singleplayerKey(c.mc.getServer().getWorldSaveName());
-      else {
+        try {
+          catalog().begin(sessionContext, worldKey, "local");
+        } catch (IOException e) {
+          OrnitheClient.LOG.error("Map camera preferences", e);
+        }
+      } else {
         var s = c.mc.getCurrentServerEntry();
-        worldKey = s == null ? "" : WaypointStore.serverKey(s.ip);
+        String origin = s == null ? "server:unknown" : WaypointStore.serverKey(s.ip);
+        try {
+          worldKey = catalog().backendKey(catalog().begin(sessionContext, origin, providedWorldId));
+          String oldKey = origin + "/" + dimension;
+          var oldFolder =
+              c.mc
+                  .gameDir
+                  .toPath()
+                  .resolve("tfl-maps")
+                  .resolve(
+                      java.util
+                          .UUID
+                          .nameUUIDFromBytes(
+                              oldKey.getBytes(java.nio.charset.StandardCharsets.UTF_8))
+                          .toString());
+          if (java.nio.file.Files.isDirectory(oldFolder) || !c.waypoints.all(origin).isEmpty())
+            catalog()
+                .addExisting(
+                    "legacy-address",
+                    dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.previous"),
+                    origin);
+        } catch (IOException e) {
+          OrnitheClient.LOG.error("Cannot persist map world identity", e);
+          worldKey = origin + "/unsaved/" + java.util.UUID.randomUUID();
+        }
+      }
+    }
+    if (!worldKey.isEmpty() && !worldKey.equals(importedWaypoints)) {
+      try {
+        c.waypoints.importDiorama(waypointFile(worldKey), worldKey);
+        importedWaypoints = worldKey;
+      } catch (IOException e) {
+        OrnitheClient.LOG.error("Cannot import Diorama waypoints", e);
       }
     }
     if (saveWaypoints) {
@@ -125,7 +319,9 @@ public final class OrnitheMapPlatform implements MapPlatform, ChunkReader {
           entity.yaw);
       out.uuid = entity.getUuid();
       out.name = entity.getName();
-      out.kind=net.minecraft.entity.Entities.getKey(entity);
+      out.kind = net.minecraft.entity.Entities.getKey(entity);
+      if (entity instanceof net.minecraft.client.entity.living.player.ClientPlayerEntity player)
+        out.skin = c.canvas.game(player.getSkinTextureLocation().toString(), 64, 64);
     }
   }
 
@@ -150,7 +346,7 @@ public final class OrnitheMapPlatform implements MapPlatform, ChunkReader {
   }
 
   public void waypointsChanged() {
-    saveWaypoints = true;
+    waypointsChanged(worldKey);
   }
 
   public String serverMotd() {

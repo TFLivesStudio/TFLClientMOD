@@ -506,7 +506,7 @@ public final class TileBaker {
 		if (seed != null) {
 			int cx = this.hitX >> 4;
 			int cz = this.hitZ >> 4;
-			if (this.slimeChunks.computeIfAbsent(((long) cx << 32) | (cz & 0xFFFFFFFFL), k -> Overlays.slimeChunk(seed, cx, cz))) {
+			if (this.slimeChunks.computeIfAbsent(((long) cx << 32) | (cz & 0xFFFFFFFFL), k -> Overlays.slimeChunk(seed,cx,cz,this.source.rotation()))) {
 				bits |= Overlays.SLIME;
 			}
 		}

@@ -11,6 +11,8 @@ import org.jspecify.annotations.Nullable;
  * again and light changes refresh them.
  */
 public record Overlays(@Nullable Long slimeSeed, boolean spawnSpots) {
+ public static boolean slimeChunk(long seed,int x,int z,int turns){return slimeChunk(seed,dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,turns),dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,turns));}
+
 	/** A line on the west edge of a chunk. */
 	public static final int CHUNK_WEST = 1;
 	/** A line on the north edge of a chunk, on top faces. */

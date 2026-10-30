@@ -43,14 +43,16 @@ public final class MapSession {
 	private static final Map<String, Integer> CHANGE_TALLY = new java.util.TreeMap<>();
 	private static long lastTallyLog;
 
-	private final ClientLevel level;
+	private final int cameraTurns=Projection.turns();
+ private final ClientLevel level;
 	private final MapLevel map;
+ private final String worldKey;
 	private final Map<Long, Pending> pending = new LinkedHashMap<>();
 	private boolean underground;
 	private MapStyle style = MapStyle.get();
 
 	private MapSession(ClientLevel level, @Nullable String key) {
-		this.level = level;
+		this.level = level;this.worldKey=key;
 		// The Nether's roof: its sky view looks down from just under it.
 		int roof = level.dimensionType().hasCeiling() ? level.getMinY() + level.dimensionType().logicalHeight() : MapLevel.NO_ROOF;
 		this.map = new MapLevel(level.getMinY(), level.getMaxY() + 1, roof, mapFolder(level, key));
@@ -125,7 +127,7 @@ public final class MapSession {
 	 * server may still name the world: its chunks are mapped once the folder is known.
 	 */
 	private static @Nullable MapSession forLevel(@Nullable ClientLevel level) {
-		if (current != null && current.level != level) {
+		if (current != null && (current.level != level || current.cameraTurns!=Projection.turns() || !java.util.Objects.equals(current.worldKey,WorldKey.current(level)))) {
 			current.map.close();
 			current = null;
 		}
@@ -384,8 +386,8 @@ public final class MapSession {
 			// refuses an instanceof pattern that can't fail.
 			Object loaded = this.level.getChunkSource().getChunk(cx, cz, ChunkStatus.FULL, false);
 			if (loaded instanceof LevelChunk chunk) {
-				boolean known = this.map.chunk(cx, cz) != null;
-				this.map.put(ChunkSnapshot.take(chunk, this.level), known ? p.box : null, playerChunkX, playerChunkZ);
+				boolean known = this.map.chunk(dev.theredstonee.trsclient.core.map.QuarterTurn.blockU(cx,cz,cameraTurns),dev.theredstonee.trsclient.core.map.QuarterTurn.blockDepth(cx,cz,cameraTurns)) != null;
+				this.map.put(ChunkSnapshot.take(chunk, this.level).rotated(cameraTurns),known?Projection.box(p.box,cameraTurns):null,dev.theredstonee.trsclient.core.map.QuarterTurn.blockU(playerChunkX,playerChunkZ,cameraTurns),dev.theredstonee.trsclient.core.map.QuarterTurn.blockDepth(playerChunkX,playerChunkZ,cameraTurns));
 				budget--;
 			}
 		}
@@ -428,7 +430,7 @@ public final class MapSession {
 			Diorama.LOGGER.info("Sight from {}: visited {}, newly seen box {}", eye, this.sight.visited(), java.util.Arrays.toString(box));
 		}
 		if (box[0] != Integer.MAX_VALUE) {
-			this.map.revealed(box[0], box[1], box[2], box[3], box[4], box[5]);
+			int[] viewBox=Projection.box(box,cameraTurns);this.map.revealed(viewBox[0],viewBox[1],viewBox[2],viewBox[3],viewBox[4],viewBox[5]);
 		}
 	}
 

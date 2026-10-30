@@ -157,7 +157,7 @@ public final class MinimapHud implements HudElement {
 		int x = customSize>0?0:right ? graphics.guiWidth() - size - MARGIN : MARGIN;
 		int y = customSize>0?0:top ? MARGIN + effects : graphics.guiHeight() - size - MARGIN - infoHeight;
 		int wantedLayer = settings.autoCaves ? session.autoLayer(player) : TileKey.SURFACE;
-		int layer = this.layerToShow(session.map(), new MapViewport.View(x, y, size, size, pos.x, Projection.v(pos.y, pos.z), settings.zoom(), wantedLayer));
+		int layer = this.layerToShow(session.map(), new MapViewport.View(x, y, size, size, Projection.u(pos.x,pos.z), Projection.v(pos.x,pos.y,pos.z), settings.zoom(), wantedLayer));
 		boolean round = settings.minimapShape == Settings.Shape.ROUND;
 		float opacity = settings.opacity();
 		this.viewport.opacity(opacity);
@@ -169,7 +169,7 @@ public final class MinimapHud implements HudElement {
 		} else {
 			this.frame(graphics, settings.minimapFrame, x, y, size, borderOnly);
 		}
-		MapViewport.View view = new MapViewport.View(x, y, size, size, pos.x, Projection.v(pos.y, pos.z), settings.zoom(), layer, round);
+		MapViewport.View view = new MapViewport.View(x, y, size, size, Projection.u(pos.x,pos.z), Projection.v(pos.x,pos.y,pos.z), settings.zoom(), layer, round);
 		this.viewport.draw(graphics, session.map(), view, 0, Settings.get().claims == Settings.ClaimsShown.ALWAYS);
 		List<Radar.Blip> blips = ServerRules.radarAllowed() && settings.radarOnMinimap ? Radar.collect(view, partialTick, false) : List.of();
 		Radar.draw(graphics, view, blips, false, false);
@@ -178,7 +178,7 @@ public final class MinimapHud implements HudElement {
 			WaypointOverlay.draw(graphics, view, WaypointOverlay.layout(view, store.in(mc.level.dimension().identifier().toString()), false), false, null);
 		}
 		Radar.draw(graphics, view, blips, false, true);
-		Markers.player(graphics, x + size / 2.0F, y + size / 2.0F, player.getViewYRot(partialTick), 5);
+		Markers.player(graphics, x + size / 2.0F, y + size / 2.0F, player.getViewYRot(partialTick)+Projection.turns()*90, 5);
 		if (settings.compass) {
 			this.compass(graphics, font, x, y, size);
 		}
@@ -303,10 +303,11 @@ public final class MinimapHud implements HudElement {
 
 	/** Letters on the frame. The map always faces north, so they never move. */
 	private void compass(GuiGraphicsExtractor graphics, Font font, int x, int y, int size) {
-		this.letter(graphics, font, "N", x + size / 2, y + 1, 0xFFFF6B6B);
-		this.letter(graphics, font, "S", x + size / 2, y + size - 9, 0xFFFFFFFF);
-		this.letter(graphics, font, "W", x + 5, y + size / 2 - 4, 0xFFFFFFFF);
-		this.letter(graphics, font, "E", x + size - 5, y + size / 2 - 4, 0xFFFFFFFF);
+		String[] north={"N","W","S","E"},south={"S","E","N","W"},west={"W","S","E","N"},east={"E","N","W","S"};int q=Projection.turns();
+		this.letter(graphics, font, north[q], x + size / 2, y + 1, 0xFFFF6B6B);
+		this.letter(graphics, font, south[q], x + size / 2, y + size - 9, 0xFFFFFFFF);
+		this.letter(graphics, font, west[q], x + 5, y + size / 2 - 4, 0xFFFFFFFF);
+		this.letter(graphics, font, east[q], x + size - 5, y + size / 2 - 4, 0xFFFFFFFF);
 	}
 
 	private void letter(GuiGraphicsExtractor graphics, Font font, String letter, int cx, int y, int color) {

@@ -19,7 +19,7 @@ public final class UnifiedSmoke implements Runnable {
   private boolean shaderPickerSeen, originalColors;
   private double originalContrast;
   private net.minecraft.client.gui.screen.Screen graphicsReturn;
-  private int phase, wait;
+  private int phase, wait, cameraStage;
   private long at, sequence;
   private final long start = System.nanoTime();
 
@@ -102,6 +102,9 @@ public final class UnifiedSmoke implements Runnable {
         case 3 -> {
           if (c.mc.player == null || c.mc.world == null) return;
           c.mc.openScreen(null);
+          while(c.mapPlatform.catalog().turns()!=0)c.mapPlatform.catalog().rotate(1);
+          report.add("serverMaps",new Gson().toJsonTree(ServerMapRegression.run(c)));
+          check("nullable chunk data and remote world cache transitions",true);
           c.mc.player.sendChat(
               "/fill "
                   + ((int) c.mc.player.x + 8)
@@ -125,19 +128,29 @@ public final class UnifiedSmoke implements Runnable {
         }
         case 4 -> {
           if (System.nanoTime() - at < 2_000_000_000L) return;
-          if (c.diorama.bakedTiles < 2 || c.diorama.uploadCount < 2) {
+          if (c.diorama.bakedTiles+c.diorama.diskTileHits < 2 || c.diorama.uploadCount < 2) {
             wait = 5;
             return;
           }
-          check("original Diorama voxel tiles baked", c.diorama.bakedTiles >= 2);
+          check("original Diorama voxel tiles ready or restored", c.diorama.bakedTiles+c.diorama.diskTileHits >= 2);
           check("Diorama worker healthy", c.diorama.failure.isEmpty());
           check("native Diorama fog shader linked", c.diorama.fogHealthy());
           check(
               "native Diorama map owns screen",
               c.mc.screen instanceof CoreScreen screen && screen.ui instanceof OrnitheDioramaUi);
           report.addProperty("bakedTiles", c.diorama.bakedTiles);
-          report.addProperty("meanBakeMs", c.diorama.bakeNanos / 1e6 / c.diorama.bakedTiles);
-          shot("map");
+          report.addProperty("meanBakeMs", c.diorama.bakeNanos / 1e6 / Math.max(1,c.diorama.bakedTiles));
+          shot("map");cameraStage=0;phase=80;at=System.nanoTime();return;
+        }
+        case 80 -> {
+          if(System.nanoTime()-at<3_000_000_000L)return;
+          check("cardinal map camera "+cameraStage,c.diorama.rotation()==cameraStage);
+          shot("camera-"+(cameraStage*90));
+          var q=dev.theredstonee.trsclient.core.map.QuarterTurn.class;
+          int turns=c.diorama.rotation();double u=dev.theredstonee.trsclient.core.map.QuarterTurn.u(c.mapPlatform.x(),c.mapPlatform.z(),turns),depth=dev.theredstonee.trsclient.core.map.QuarterTurn.depth(c.mapPlatform.x(),c.mapPlatform.z(),turns);
+          var picked=c.diorama.pick(u,dev.diorama.Projection.v(c.mapPlatform.y(),depth),dev.diorama.bake.TileKey.SURFACE);
+          check("cardinal map pick converts to real world "+cameraStage,picked!=null&&Math.abs(picked.getX()-c.mapPlatform.x())<3&&Math.abs(picked.getZ()-c.mapPlatform.z())<3);
+          c.mapPlatform.catalog().rotate(1);cameraStage++;if(cameraStage<4){at=System.nanoTime();return;}
           var mapUi = ((CoreScreen) c.mc.screen).ui;
           mapUi.inputScroll(c.window().getWidth() / 2, c.window().getHeight() / 2, -8);
           mapUi.inputClick(c.window().getWidth() / 2, c.window().getHeight() / 2, 0);

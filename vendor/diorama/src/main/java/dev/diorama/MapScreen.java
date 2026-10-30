@@ -138,6 +138,8 @@ public final class MapScreen extends Screen {
 		this.pressButton = -1;
 		this.pressOnMenu = false;
 		this.pressOnControl = false;
+        this.addRenderableWidget(Button.builder(Component.literal(dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.rotate")),b->{WorldKey.rotateCamera();this.following=true;}).bounds(8,30,82,20).build());
+        if(this.minecraft.getSingleplayerServer()==null)this.addRenderableWidget(Button.builder(Component.literal(dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.worlds")),b->this.minecraft.gui.setScreen(new dev.theredstonee.trsclient.screen.TrsUiScreen("Server worlds",new dev.theredstonee.trsclient.core.map.session.WorldCatalogUi(WorldKey.catalog(),WorldKey::selectedWorld,()->this.minecraft.gui.setScreen(this),dev.theredstonee.trsclient.map.TflDiorama::importPrevious)))).bounds(94,30,64,20).build());
 		Settings settings = Settings.get();
 		// Either can be hidden; Waypoints takes the corner when Settings isn't there.
 		this.waypointsButton = this.addRenderableWidget(Button.builder(Component.translatable("diorama.map.waypoints"), b ->
@@ -205,8 +207,8 @@ public final class MapScreen extends Screen {
 			return;
 		}
 		Vec3 pos = player.getPosition(a);
-		double playerU = pos.x;
-		double playerV = Projection.v(pos.y, pos.z);
+		double playerU = Projection.u(pos.x,pos.z);
+		double playerV = Projection.v(pos.x,pos.y,pos.z);
 		if (this.following) {
 			this.centerU = playerU;
 			this.centerV = playerV;
@@ -229,7 +231,7 @@ public final class MapScreen extends Screen {
 		WaypointOverlay.Pin hoveredPin = WaypointOverlay.under(this.pins, mouseX, mouseY);
 		WaypointOverlay.draw(graphics, view, this.pins, true, hoveredPin);
 		Radar.draw(graphics, view, this.blips, true, true);
-		Markers.player(graphics, view.screenX(playerU), view.screenY(playerV), player.getViewYRot(a), 6);
+		Markers.player(graphics, view.screenX(playerU), view.screenY(playerV), player.getViewYRot(a)+Projection.turns()*90, 6);
 		this.lastView = view;
 		if (caves) {
 			this.gauge.layout(this.minecraft.level, player.blockPosition(), this.layer, this.width, this.height);
@@ -540,9 +542,9 @@ public final class MapScreen extends Screen {
 		TileKey tile = new TileKey(this.layer, (int) Math.floor(u / Projection.TILE_UNITS), (int) Math.floor(v / Projection.TILE_UNITS));
 		MapPick pick = new MapPick(session.map(), looks, tile, session.map().fogOfWar());
 		return switch (pick.pick(u, v)) {
-			case MapPick.FOUND -> CompletableFuture.completedFuture(new MapLevel.Spot(new BlockPos((int) Math.floor(u), pick.y, pick.z), false));
+			case MapPick.FOUND -> CompletableFuture.completedFuture(new MapLevel.Spot(Projection.worldPos(new BlockPos((int)Math.floor(u),pick.y,pick.z)), false));
 			case MapPick.NOTHING -> CompletableFuture.completedFuture(MapLevel.Spot.NOTHING);
-			default -> session.map().savedSpot(this.layer, u, v, looks, readWorld);
+			default -> session.map().savedSpot(this.layer,u,v,looks,readWorld).thenApply(found->new MapLevel.Spot(Projection.worldPos(found.pos()),found.unsaved()));
 		};
 	}
 

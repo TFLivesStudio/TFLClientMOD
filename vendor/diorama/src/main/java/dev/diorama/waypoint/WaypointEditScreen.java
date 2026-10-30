@@ -40,6 +40,7 @@ public final class WaypointEditScreen extends Screen {
 
 	private final @Nullable Screen parent;
 	private final Waypoint waypoint;
+ private final @Nullable WaypointStore ownerStore;
 	private final boolean isNew;
 	/** What the preview draws: the waypoint as the form shows it now. */
 	private final Waypoint preview = new Waypoint();
@@ -72,12 +73,12 @@ public final class WaypointEditScreen extends Screen {
 	public WaypointEditScreen(@Nullable Screen parent, Waypoint waypoint, boolean isNew) {
 		super(Component.translatable(isNew ? "diorama.waypoint.new" : "diorama.waypoint.edit"));
 		this.parent = parent;
-		this.waypoint = waypoint;
+		this.waypoint = waypoint;this.ownerStore=WaypointStore.get();
 		this.isNew = isNew;
 		this.color = waypoint.color;
 		this.visible = waypoint.visible;
 		this.icon = waypoint.icon == null ? "" : waypoint.icon;
-		WaypointStore store = WaypointStore.get();
+		WaypointStore store = this.ownerStore;
 		String known = store == null ? null : store.folderName(waypoint.folder);
 		this.folder = known == null ? "" : known;
 		this.matchBars();
@@ -202,7 +203,7 @@ public final class WaypointEditScreen extends Screen {
 	private List<String> folders() {
 		List<String> out = new ArrayList<>();
 		out.add("");
-		WaypointStore store = WaypointStore.get();
+		WaypointStore store = this.ownerStore;
 		if (store != null) {
 			out.addAll(store.customFolders());
 		}
@@ -562,7 +563,7 @@ public final class WaypointEditScreen extends Screen {
 		if (shown == null) {
 			return;
 		}
-		WaypointStore store = WaypointStore.get();
+		WaypointStore store = this.ownerStore;
 		if (store == null) {
 			this.onClose();
 			return;

@@ -242,6 +242,9 @@ public final class Claims {
 
 	/** The claims in one dimension at one moment. Never modified. */
 	public static final class Snapshot {
+ private final Snapshot[] cameraViews=new Snapshot[4];
+ public synchronized Snapshot rotated(int q){q&=3;if(q==0||regions.isEmpty())return this;if(cameraViews[q]!=null)return cameraViews[q];Map<Region,Claim[]> view=new HashMap<>();for(var entry:regions.entrySet())for(int i=0;i<REGION_CHUNKS;i++){Claim claim=entry.getValue()[i];if(claim==null)continue;int wx=(entry.getKey().x<<5)+(i&31),wz=(entry.getKey().z<<5)+(i>>5);int u=dev.theredstonee.trsclient.core.map.QuarterTurn.blockU(wx,wz,q),d=dev.theredstonee.trsclient.core.map.QuarterTurn.blockDepth(wx,wz,q);view.computeIfAbsent(new Region(u>>5,d>>5),r->new Claim[REGION_CHUNKS])[index(u,d)]=claim;}return cameraViews[q]=new Snapshot(dimension,Map.copyOf(view));}
+
 		private final @Nullable ResourceKey<Level> dimension;
 		/** By FTB Chunks' region, each region's chunks by {@link #index}; null for none. */
 		private final Map<Region, Claim[]> regions;

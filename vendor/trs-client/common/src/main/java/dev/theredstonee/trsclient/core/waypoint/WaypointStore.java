@@ -40,6 +40,23 @@ public final class WaypointStore {
 		this.file = file;
 	}
 
+    /** Diorama's per-world array format, with stable IDs, icons, kinds and folders. */
+    public void importDiorama(Path file,String worldKey) throws IOException {
+      if(!Files.isRegularFile(file))return;if(Files.size(file)>4*1024*1024)throw new IOException("Waypoint file too large");
+      List<Waypoint> imported;
+      try(Reader reader=Files.newBufferedReader(file,StandardCharsets.UTF_8)){imported=GSON.fromJson(reader,new TypeToken<List<Waypoint>>(){}.getType());}
+      catch(RuntimeException e){throw new IOException("Invalid Diorama waypoints; original preserved",e);}
+      if(imported==null)return;List<Waypoint> safe=new ArrayList<>();for(Waypoint point:imported)if(point!=null){point.normalized();if("minecraft:overworld".equals(point.dimension))point.dimension="dim0";else if("minecraft:the_nether".equals(point.dimension))point.dimension="dim-1";else if("minecraft:the_end".equals(point.dimension))point.dimension="dim1";point.death="DEATH".equals(point.kind);if(!"TEMPORARY".equals(point.kind))safe.add(point);}
+      worlds.put(worldKey,safe);dirty=true;
+    }
+    public void exportDiorama(Path file,String worldKey) throws IOException {
+      Files.createDirectories(file.toAbsolutePath().getParent());Path temporary=file.resolveSibling(file.getFileName()+".tmp");
+      com.google.gson.JsonArray list=new com.google.gson.JsonArray();
+      for(Waypoint point:all(worldKey))if(!point.temporary){com.google.gson.JsonObject json=GSON.toJsonTree(point).getAsJsonObject();String dimension=point.dimension;if("dim0".equals(dimension))dimension="minecraft:overworld";else if("dim-1".equals(dimension))dimension="minecraft:the_nether";else if("dim1".equals(dimension))dimension="minecraft:the_end";json.addProperty("dimension",dimension);json.addProperty("color",0xff000000|point.color);json.addProperty("kind",point.death?"DEATH":point.kind);list.add(json);}
+      try(Writer writer=Files.newBufferedWriter(temporary,StandardCharsets.UTF_8)){GSON.toJson(list,writer);}
+      try{Files.move(temporary,file,StandardCopyOption.REPLACE_EXISTING,StandardCopyOption.ATOMIC_MOVE);}catch(AtomicMoveNotSupportedException e){Files.move(temporary,file,StandardCopyOption.REPLACE_EXISTING);}
+    }
+
 	public Path file() {
 		return file;
 	}

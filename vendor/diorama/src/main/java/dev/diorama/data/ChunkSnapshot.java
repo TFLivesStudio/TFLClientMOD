@@ -66,6 +66,20 @@ public final class ChunkSnapshot {
 	public final int floorY;
 	/** Per section, the filled copycats in it; null when the chunk has none, as nearly every chunk. */
 	private final @Nullable SectionCopycats @Nullable [] copycats;
+ private @Nullable ChunkSnapshot rotationSource;
+ private int quarterTurns;
+ public ChunkSnapshot rotated(int q){return (q&3)==0?this:new ChunkSnapshot(this,q&3);}
+ @SuppressWarnings("unchecked")
+ private ChunkSnapshot(ChunkSnapshot original,int q){
+  rotationSource=original;quarterTurns=q;
+  chunkX=dev.theredstonee.trsclient.core.map.QuarterTurn.blockU(original.chunkX,original.chunkZ,q);chunkZ=dev.theredstonee.trsclient.core.map.QuarterTurn.blockDepth(original.chunkX,original.chunkZ,q);
+  minSectionY=original.minSectionY;maxY=original.maxY;floorY=original.floorY;hasSkyLight=original.hasSkyLight;
+  states=new PalettedContainer[original.states.length];uniform=new BlockState[original.uniform.length];
+  for(int i=0;i<uniform.length;i++)if(original.uniform[i]!=null)uniform[i]=rotateState(original.uniform[i],q);
+  blockLight=original.blockLight;skyLight=original.skyLight;biomes=original.biomes;biomeZoomSeed=original.biomeZoomSeed;blendRadius=original.blendRadius;fallbackBiome=original.fallbackBiome;copycats=null;
+ }
+ private static BlockState rotateState(BlockState state,int q){return state.rotate(switch(q&3){case 1->net.minecraft.world.level.block.Rotation.CLOCKWISE_90;case 2->net.minecraft.world.level.block.Rotation.CLOCKWISE_180;case 3->net.minecraft.world.level.block.Rotation.COUNTERCLOCKWISE_90;default->net.minecraft.world.level.block.Rotation.NONE;});}
+
 
 	@SuppressWarnings("unchecked")
 	private ChunkSnapshot(LevelChunk chunk, ClientLevel level) {
@@ -235,11 +249,13 @@ public final class ChunkSnapshot {
 
 	/** The filled copycats in a section, or null if it has none. */
 	public @Nullable SectionCopycats copycats(int index) {
+  if(rotationSource!=null){var original=rotationSource.copycats(index);if(original==null)return null;int[] at=original.at().clone();BlockState[] material=original.material().clone();for(int i=0;i<at.length;i++){int x=at[i]&15,z=at[i]>>4&15;at[i]=(at[i]&0xf00)|((dev.theredstonee.trsclient.core.map.QuarterTurn.blockDepth(x,z,quarterTurns)&15)<<4)|(dev.theredstonee.trsclient.core.map.QuarterTurn.blockU(x,z,quarterTurns)&15);material[i]=rotateState(material[i],quarterTurns);}return new SectionCopycats(at,material);}
 		return this.copycats == null ? null : this.copycats[index];
 	}
 
 	/** What the copycat at this position in the chunk was filled with, or null if there's none filled. */
 	public @Nullable BlockState copycatMaterial(int x, int y, int z) {
+  if(rotationSource!=null){var state=rotationSource.copycatMaterial(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,quarterTurns),y,dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,quarterTurns));return state==null?null:rotateState(state,quarterTurns);}
 		int section = (y >> 4) - this.minSectionY;
 		SectionCopycats in = this.copycats == null || section < 0 || section >= this.copycats.length ? null : this.copycats[section];
 		if (in != null) {
@@ -262,7 +278,10 @@ public final class ChunkSnapshot {
 	}
 
 	public @Nullable PalettedContainer<BlockState> section(int index) {
-		return this.states[index];
+		if(rotationSource==null)return this.states[index];
+  synchronized(this){if(states[index]!=null)return states[index];var original=rotationSource.section(index);if(original==null)return null;var copy=original.copy();
+   for(int y=0;y<16;y++)for(int z=0;z<16;z++)for(int x=0;x<16;x++){int ox=dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,quarterTurns)&15,oz=dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,quarterTurns)&15;copy.set(x,y,z,rotateState(original.get(ox,y,oz),quarterTurns));}states[index]=copy;return copy;}
+
 	}
 
 	public @Nullable BlockState uniformSection(int index) {
@@ -270,11 +289,13 @@ public final class ChunkSnapshot {
 	}
 
 	public int blockLight(int sectionIndex, int x, int y, int z) {
-		DataLayer layer = this.blockLight[sectionIndex];
+		if(rotationSource!=null)return rotationSource.blockLight(sectionIndex,dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,quarterTurns)&15,y,dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,quarterTurns)&15);
+  DataLayer layer = this.blockLight[sectionIndex];
 		return layer == null ? 0 : layer.get(x, y, z);
 	}
 
 	public int skyLight(int sectionIndex, int x, int y, int z) {
+  if(rotationSource!=null)return rotationSource.skyLight(sectionIndex,dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,quarterTurns)&15,y,dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,quarterTurns)&15);
 		if (!this.hasSkyLight) {
 			return 0;
 		}
@@ -317,10 +338,12 @@ public final class ChunkSnapshot {
 
 	/** The column's top block y, where its tints are sampled. */
 	public int surface(int x, int z) {
+  if(rotationSource!=null)return rotationSource.surface(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,quarterTurns)&15,dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,quarterTurns)&15);
 		return this.surface[((z & 15) << 4) | (x & 15)];
 	}
 
 	public @Nullable Tints tints() {
+  if(rotationSource!=null&&tints==null){var colors=dev.diorama.bake.BiomeTints.of(rotationSource);int[][] old={colors.grass(),colors.foliage(),colors.dryFoliage(),colors.water()},rotated=new int[4][256];for(int z=0;z<16;z++)for(int x=0;x<16;x++){int ox=dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(x,z,quarterTurns)&15,oz=dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(x,z,quarterTurns)&15;for(int i=0;i<4;i++)rotated[i][z*16+x]=old[i][oz*16+ox];}tints=new Tints(rotated[0],rotated[1],rotated[2],rotated[3]);}
 		return this.tints;
 	}
 

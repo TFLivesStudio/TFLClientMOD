@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import com.google.gson.*;
 import java.nio.file.*;
 public final class UnifiedSmoke {
- private int phase,wait;private long at,sequence;private final long started=System.nanoTime();
+ private int phase,wait,cameraStage;private long at,sequence;private final long started=System.nanoTime();
  private final JsonObject report=new JsonObject();private final JsonArray checks=new JsonArray();
  public static void install(){UnifiedSmoke test=new UnifiedSmoke();net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(test::tick);}
  private void check(String name,boolean pass){JsonObject item=new JsonObject();item.addProperty("name",name);item.addProperty("passed",pass);checks.add(item);if(!pass)throw new AssertionError(name);}
@@ -24,10 +24,19 @@ public final class UnifiedSmoke {
     if(System.nanoTime()-at<12_000_000_000L)return;
     var video=MenuBackground.shared().metrics();report.add("video",new Gson().toJsonTree(video));report.addProperty("measuredVideoFps",(video.framesPresented-sequence)*1e9/(System.nanoTime()-at));check("real video advances",video.framesPresented-sequence>80);check("source targets 30 fps",MenuBackground.Mode.HIGH.fps==30);AutoTest.shot(mc,"unified-video-b");modules.minimap.setEnabled(true);AutoTest.startWorld(mc);phase++;return;
    case 3:
-    if(mc.level==null||mc.player==null||Mc.overlay()!=null||Mc.screen()!=null)return;mc.options.guiScale().set(4);mc.resizeGui();check("Diorama session created",dev.diorama.MapSession.get()!=null);Mc.setScreen(new dev.diorama.MapScreen());phase++;at=System.nanoTime();wait=0;return;
+    if(mc.level==null||mc.player==null||Mc.overlay()!=null||Mc.screen()!=null)return;mc.options.guiScale().set(4);mc.resizeGui();check("Diorama session created",dev.diorama.MapSession.get()!=null);while(dev.diorama.Projection.turns()!=0)dev.diorama.WorldKey.rotateCamera();Mc.setScreen(new dev.diorama.MapScreen());phase++;at=System.nanoTime();wait=0;return;
    case 4:
     if(System.nanoTime()-at<15_000_000_000L)return;
-    check("Diorama owns full map",Mc.screen() instanceof dev.diorama.MapScreen);AutoTest.shot(mc,"unified-diorama-map");Mc.setScreen(new dev.diorama.SettingsScreen(new dev.diorama.MapScreen()));phase++;wait=15;return;
+    check("Diorama owns full map",Mc.screen() instanceof dev.diorama.MapScreen);AutoTest.shot(mc,"unified-diorama-map");cameraStage=0;phase=80;at=System.nanoTime();return;
+   case 80:
+    if(System.nanoTime()-at<6_000_000_000L||dev.diorama.MapSession.get()==null)return;
+    check("cardinal map camera "+cameraStage,dev.diorama.Projection.turns()==cameraStage&&dev.diorama.MapSession.get().map().rotation()==cameraStage);AutoTest.shot(mc,"unified-camera-"+(cameraStage*90));
+    double cu=dev.diorama.Projection.u(mc.player.getX(),mc.player.getZ()),cv=dev.diorama.Projection.v(mc.player.getX(),mc.player.getY(),mc.player.getZ());
+    var tile=new dev.diorama.bake.TileKey(dev.diorama.bake.TileKey.SURFACE,(int)Math.floor(cu/128),(int)Math.floor(cv/128));var pick=new dev.diorama.bake.MapPick(dev.diorama.MapSession.get().map(),dev.diorama.bake.BlockLooks.get(),tile,false);
+    int result=pick.pick(cu,cv);var point=result==dev.diorama.bake.MapPick.FOUND?dev.diorama.Projection.worldPos(new net.minecraft.core.BlockPos((int)Math.floor(cu),pick.y,pick.z)):null;
+    check("cardinal map pick converts to real world "+cameraStage,point!=null&&Math.abs(point.getX()-mc.player.getX())<3&&Math.abs(point.getZ()-mc.player.getZ())<3);
+    dev.diorama.WorldKey.rotateCamera();cameraStage++;if(cameraStage<4){Mc.setScreen(new dev.diorama.MapScreen());at=System.nanoTime();return;}
+    Mc.setScreen(new dev.diorama.SettingsScreen(new dev.diorama.MapScreen()));phase=5;wait=15;return;
    case 5:
     AutoTest.shot(mc,"unified-map-settings");modules.keystrokes.setEnabled(true);Mc.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));phase++;wait=15;return;
    case 6:

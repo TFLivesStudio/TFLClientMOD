@@ -48,7 +48,8 @@
     "MiniPlayerLayersMixin",
     "MiniPlayerArmorLayerMixin",
     "ArgentumDrawMixin",
-    "DioramaChunkMixin"
+    "DioramaChunkMixin",
+    "MapSessionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

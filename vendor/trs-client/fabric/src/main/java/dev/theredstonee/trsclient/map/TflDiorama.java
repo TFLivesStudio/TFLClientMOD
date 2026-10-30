@@ -3,7 +3,9 @@ package dev.theredstonee.trsclient.map;
 public final class TflDiorama {
  private TflDiorama(){}
  //? if >=26.3 {
- /*private static Object importedStore;private static dev.diorama.Settings.Quality appliedQuality;
+ /*private static boolean explicitImport;
+ public static void importPrevious(){importedStore=null;explicitImport=true;try{tick();}finally{explicitImport=false;}}
+ private static Object importedStore;private static dev.diorama.Settings.Quality appliedQuality;
  public static void saveFromNative(dev.diorama.Settings settings){
   var client=dev.theredstonee.trsclient.TrsClient.get();if(client==null)return;var m=client.modules();
   m.minimap.setEnabled(settings.minimap);m.minimapSize.set(settings.minimapSize);m.minimapOpacity.set(settings.minimapOpacity);m.minimapCoords.set(settings.coordinates);m.minimapBiome.set(settings.biome);m.minimapCompass.set(settings.compass);
@@ -27,6 +29,7 @@ public final class TflDiorama {
   if(appliedQuality!=quality){settings.quality=quality;settings.apply();appliedQuality=quality;}
   var store=dev.diorama.waypoint.WaypointStore.get();
   if(store==null){importedStore=null;return;}if(store==importedStore)return;
+  if(net.minecraft.client.Minecraft.getInstance().getSingleplayerServer()==null&&!explicitImport){importedStore=store;return;}
   var legacy=client.waypoints();if(legacy==null||legacy.worldKey().isEmpty())return;
   java.util.Set<java.util.UUID> present=new java.util.HashSet<>();for(var waypoint:store.all())present.add(waypoint.id);
   java.util.List<dev.diorama.waypoint.Waypoint> added=new java.util.ArrayList<>();
@@ -34,7 +37,7 @@ public final class TflDiorama {
    String identity="tfl:"+legacy.worldKey()+":"+old.dimension+":"+old.name+":"+old.x+":"+old.y+":"+old.z+":"+old.created;
    java.util.UUID id=java.util.UUID.nameUUIDFromBytes(identity.getBytes(java.nio.charset.StandardCharsets.UTF_8));if(present.contains(id))continue;
    String dim=switch(old.dimension){case "dim0"->"minecraft:overworld";case "dim-1"->"minecraft:the_nether";case "dim1"->"minecraft:the_end";case ""->dev.diorama.waypoint.Waypoints.dimension();default->old.dimension;};
-   var waypoint=new dev.diorama.waypoint.Waypoint(old.name,old.x,old.y,old.z,dim,0xff000000|old.color);waypoint.id=id;waypoint.created=old.created;waypoint.visible=old.visible;if(old.death)waypoint.kind=dev.diorama.waypoint.Waypoint.Kind.DEATH;added.add(waypoint);
+   var waypoint=new dev.diorama.waypoint.Waypoint(old.name,old.x,old.y,old.z,dim,0xff000000|old.color);waypoint.id=id;waypoint.icon=old.icon==null?"":old.icon;waypoint.initials=old.initials==null?"":old.initials;waypoint.folder=old.folder==null?"":old.folder;if(!waypoint.folder.isEmpty())store.addFolder(waypoint.folder);waypoint.created=old.created;waypoint.visible=old.visible;if(old.death)waypoint.kind=dev.diorama.waypoint.Waypoint.Kind.DEATH;added.add(waypoint);
   }
   store.addAll(added);importedStore=store;
  }

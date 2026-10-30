@@ -2,6 +2,9 @@ package dev.theredstonee.trsclient.core.waypoint;
 
 /** Ein gespeicherter Wegpunkt (Gson-DTO – alle Felder öffentlich und einfach). */
 public final class Waypoint {
+    public java.util.UUID id=java.util.UUID.randomUUID();
+    public String initials="",icon="",folder="";
+    public String kind="MANUAL";
 	public String name = defaultName();
 	public int x;
 	public int y;
@@ -54,6 +57,7 @@ public final class Waypoint {
 
 	/** Fehlende/kaputte Werte einer geladenen Datei geradeziehen. */
 	public Waypoint normalized() {
+        if(id==null)id=java.util.UUID.randomUUID();if(initials==null)initials="";if(icon==null)icon="";if(folder==null)folder="";if(death)kind="DEATH";
 		if (name == null || name.trim().isEmpty()) name = defaultName();
 		if (name.length() > 32) name = name.substring(0, 32);
 		if (dimension == null) dimension = "";

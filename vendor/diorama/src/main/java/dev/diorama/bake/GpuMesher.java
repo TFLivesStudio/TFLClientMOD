@@ -147,6 +147,7 @@ public final class GpuMesher {
 		public boolean lifted;
 		/** The roof's y, where the fog under it is measured from; see {@link ChunkSource#roof}. */
 		public int roof;
+ public int cameraTurns;
 		public final boolean cave;
 		/** Rays start below the view's limit, so the tracer bakes nothing: every pixel unknown. */
 		public final boolean empty;
@@ -242,7 +243,7 @@ public final class GpuMesher {
 		mesh.overlays = overlays;
 		boolean lifted = helper.lifted;
 		mesh.lifted = lifted;
-		mesh.roof = source.roof();
+		mesh.roof = source.roof();mesh.cameraTurns=source.rotation();
 		// Under a lifted lid nothing above the cut is left to block light.
 		mesh.rayTop = lifted ? Math.min(helper.rayTop, startY) : helper.rayTop;
 
@@ -768,7 +769,7 @@ public final class GpuMesher {
 		if (seed != null) {
 			int cx = x >> 4;
 			int cz = z >> 4;
-			if (mesh.slimeChunks.computeIfAbsent(((long) cx << 32) | (cz & 0xFFFFFFFFL), k -> Overlays.slimeChunk(seed, cx, cz))) {
+			if (mesh.slimeChunks.computeIfAbsent(((long) cx << 32) | (cz & 0xFFFFFFFFL), k -> Overlays.slimeChunk(seed,cx,cz,mesh.cameraTurns))) {
 				flags |= SLIME;
 			}
 		}

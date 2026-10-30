@@ -401,8 +401,8 @@ public final class OrnitheClient implements ModInitializer {
             if(diorama!=null&&mapPlatform.inWorld()&&map.fairPlay().minimapAllowed()){
               int size=modules.minimapSize.getInt();
               minimapTarget.draw(OrnitheClient.this,c,size,modules.minimapShape.get()==TrsModules.MapShape.ROUND,modules.minimapOpacity.getInt(),()->diorama.draw(c,0,0,size,size,mapPlatform.x(),mapPlatform.y(),mapPlatform.z(),modules.minimapZoom.get().pixelsPerBlock(),diorama.autoLayer()));
-              dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,size/2-2,size/2-2,5,5,2,Theme.get().accent);
-              if(modules.minimapCompass.get()){for(int i=0;i<4;i++){int[] cx={size/2,size-7,size/2,3},cy={3,size/2,size-10,size/2};c.text(new String[]{"N","E","S","W"}[i],cx[i],cy[i],0xfff4f7fc,true);}}
+
+              if(modules.minimapCompass.get()){for(int i=0;i<4;i++){int[] cx={size/2,size-7,size/2,3},cy={3,size/2,size-10,size/2};c.text(new String[]{"N","E","S","W"}[(i+4-diorama.rotation())&3],cx[i],cy[i],0xfff4f7fc,true);}}
               int textY=size+4;if(modules.minimapCoords.get()){c.text((int)mapPlatform.x()+", "+(int)mapPlatform.y()+", "+(int)mapPlatform.z(),3,textY,modules.minimap.textColor.argb(),true);textY+=12;}if(modules.minimapBiome.get())c.text(c.clip(mapPlatform.biome(),size-6),3,textY,modules.minimap.textColor.argb(),true);
             }
           }

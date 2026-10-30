@@ -89,7 +89,13 @@ public final class WorldKey {
 	private static final java.util.Set<ServerData> REALM_ENTRIES = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 	*///?}
 
-	private WorldKey() {
+	private static dev.theredstonee.trsclient.core.map.session.WorldCatalog catalog;
+ public static dev.theredstonee.trsclient.core.map.session.WorldCatalog catalog(){if(catalog==null)try{catalog=new dev.theredstonee.trsclient.core.map.session.WorldCatalog(Minecraft.getInstance().gameDirectory.toPath().resolve("diorama/tfl-worlds.json"));}catch(IOException e){throw new IllegalStateException("Cannot load subworld catalog",e);}return catalog;}
+ private static String catalogKey(Object context,String origin,String provided,String base){try{var c=catalog();c.begin(context,origin,provided);Projection.turns(c.turns());if(provided==null&&Files.isDirectory(folder(base)))c.addExisting("legacy-"+base,dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.previous"),base);String selected=c.backendKey(provided==null?key("tfl-world",c.namespace()):base);return selected;}catch(IOException e){Diorama.LOGGER.error("Cannot save map world identity",e);return base+"-unsaved-"+System.identityHashCode(context);}}
+ public static void newLevelBoundary(){var level=Minecraft.getInstance().level;if(level!=null)LEVELS.remove(level);last=null;lastId=null;}
+ public static void rotateCamera(){try{catalog().rotate(1);Projection.turns(catalog().turns());MapSession.close();}catch(IOException e){Diorama.LOGGER.error("Cannot save map camera",e);}}
+ public static void selectedWorld(){Projection.turns(catalog().turns());MapSession.close();}
+ private WorldKey() {
 	}
 
 	/** The world the client is in, or null outside one. */
@@ -105,11 +111,11 @@ public final class WorldKey {
 			// An integrated server runs one save for its whole life.
 			Last seen = last;
 			if (seen != null && seen.matches(server, null, null, false, null)) {
-				return seen.key;
+				return catalogKey(server,seen.key,"local",seen.key);
 			}
 			String key = singleplayerKey(server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize());
 			last = new Last(new WeakReference<>(server), null, null, false, null, key);
-			return key;
+			return catalogKey(server,key,"local",key);
 		}
 		ServerData data = mc.getCurrentServer();
 		if (data == null || level == null) {
@@ -129,7 +135,7 @@ public final class WorldKey {
 		boolean realm = isRealm(data);
 		Last seen = last;
 		if (seen != null && seen.matches(data, level, data.ip, realm, id)) {
-			return seen.key;
+			return catalogKey(naming,address(data),id==null?null:Integer.toHexString(id),seen.key);
 		}
 		String address = address(data);
 		String key = id != null ? idKey(address, id) : seedKey(address, level);
@@ -142,8 +148,8 @@ public final class WorldKey {
 				key = oldKey;
 			}
 		}
-		last = new Last(new WeakReference<>(data), new WeakReference<>(level), data.ip, realm, id, key);
-		return key;
+		last = new Last(new WeakReference<>(data),new WeakReference<>(level),data.ip,realm,id,key);
+		return catalogKey(naming,address,id==null?null:Integer.toHexString(id),key);
 	}
 
 	/**

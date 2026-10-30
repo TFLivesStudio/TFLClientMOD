@@ -34,6 +34,7 @@ public final class WorldSavePick {
 	private final ResourceKey<Level> dimension;
 	private final ClientLevel level;
 
+
 	private WorldSavePick(IntegratedServer server, ClientLevel level) {
 		this.server = server;
 		this.dimension = level.dimension();
@@ -80,10 +81,11 @@ public final class WorldSavePick {
 		private final ChunkSource map;
 		private final ServerLevel serverLevel;
 		private final ClientLevel level;
+ private final int cameraTurns;
 		private final Map<Long, ChunkSnapshot> read = new HashMap<>();
 
 		Source(ChunkSource map, ServerLevel serverLevel, ClientLevel level) {
-			this.map = map;
+			this.map = map;this.cameraTurns=map.rotation();
 			this.serverLevel = serverLevel;
 			this.level = level;
 		}
@@ -97,8 +99,8 @@ public final class WorldSavePick {
 			return this.read.computeIfAbsent(ChunkSnapshot.key(chunkX, chunkZ), k -> {
 				// The first step of generation, which a chunk in the save is already past: this loads
 				// it if it's there and makes nothing new if it isn't.
-				ChunkAccess chunk = this.serverLevel.getChunkSource().getChunk(chunkX, chunkZ, ChunkStatus.EMPTY, true);
-				return chunk == null ? null : ChunkSnapshot.fromServer(chunk, this.level);
+				ChunkAccess chunk = this.serverLevel.getChunkSource().getChunk(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(chunkX,chunkZ,cameraTurns),dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(chunkX,chunkZ,cameraTurns),ChunkStatus.EMPTY,true);
+				return chunk == null ? null : ChunkSnapshot.fromServer(chunk, this.level).rotated(cameraTurns);
 			});
 		}
 

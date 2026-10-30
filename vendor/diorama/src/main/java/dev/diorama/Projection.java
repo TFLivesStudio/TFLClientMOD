@@ -11,6 +11,16 @@ package dev.diorama;
  * </ul>
  */
 public final class Projection {
+ private static volatile int turns;
+ public static int turns(){return turns;}
+ public static void turns(int value){turns=value&3;}
+ public static double u(double x,double z){return dev.theredstonee.trsclient.core.map.QuarterTurn.u(x,z,turns);}
+ public static double depth(double x,double z){return dev.theredstonee.trsclient.core.map.QuarterTurn.depth(x,z,turns);}
+ public static double v(double x,double y,double z){return v(y,depth(x,z));}
+ public static net.minecraft.core.BlockPos worldPos(net.minecraft.core.BlockPos p){return p==null?null:new net.minecraft.core.BlockPos(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(p.getX(),p.getZ(),turns),p.getY(),dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(p.getX(),p.getZ(),turns));}
+ public static int[] box(int[] b,int q){return dev.theredstonee.trsclient.core.map.QuarterTurn.box(b,q);}
+
+
 	// The default style's angle until a style is applied.
 	private static volatile double sin = Math.sin(Math.toRadians(MapStyle.DEFAULT.pitchDegrees()));
 	private static volatile double cos = Math.cos(Math.toRadians(MapStyle.DEFAULT.pitchDegrees()));

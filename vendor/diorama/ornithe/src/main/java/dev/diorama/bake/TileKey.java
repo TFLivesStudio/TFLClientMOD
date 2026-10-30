@@ -7,7 +7,8 @@ import dev.diorama.Projection;
  * cave slice. {@code lod} 0 is a baked tile; each level above covers twice the distance in the
  * same pixels, made by shrinking its four children, for zooming far out.
  */
-public record TileKey(int layer, int tileU, int tileV, int lod) {
+public record TileKey(int layer, int tileU, int tileV, int lod,int turns) {
+	public TileKey(int layer,int tileU,int tileV,int lod){this(layer,tileU,tileV,lod,0);}
 	public static final int SURFACE = Integer.MIN_VALUE;
 	/** Coarsest overview level: one tile covers 4096 blocks across. */
 	public static final int MAX_LOD = 5;
@@ -35,6 +36,6 @@ public record TileKey(int layer, int tileU, int tileV, int lod) {
 
 	/** The overview tile one level up that contains this one. */
 	public TileKey parent() {
-		return new TileKey(this.layer, Math.floorDiv(this.tileU, 2), Math.floorDiv(this.tileV, 2), this.lod + 1);
+		return new TileKey(this.layer, Math.floorDiv(this.tileU, 2), Math.floorDiv(this.tileV, 2), this.lod + 1,this.turns);
 	}
 }

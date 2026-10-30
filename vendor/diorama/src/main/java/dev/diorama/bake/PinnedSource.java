@@ -12,6 +12,7 @@ import org.jspecify.annotations.Nullable;
  * pinned: fog-of-war bakes mustn't go through it.
  */
 public final class PinnedSource implements ChunkSource {
+ public int rotation(){return live.rotation();}
 	private final ChunkSource live;
 	private final Map<Long, @Nullable ChunkSnapshot> chunks = new HashMap<>();
 	private final int topY;

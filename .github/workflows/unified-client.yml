@@ -76,6 +76,7 @@ jobs:
         if: always()
         with:
           name: unified-native-${{ matrix.target }}-${{ matrix.stack }}
+          overwrite: true
           path: |
             vendor/trs-client/ornithe/build/libs/*.jar
             vendor/trs-client/ornithe/build/smoke/
@@ -92,10 +93,11 @@ jobs:
     permissions:
       contents: write
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - {target: '1.8.9', stack: argentum, tag: v0.4.0-audit.3-ornithe189, title: 'TFL Client 1.8.9 — Map rendering and pause layout fix'}
-          - {target: '26.3', stack: sodium, tag: v0.4.0-audit.3-fabric263, title: 'TFL Client 26.3 — Map rendering and pause layout fix'}
+          - {target: '1.8.9', stack: argentum, tag: v0.4.0-audit.4-ornithe189, title: 'TFL Client 1.8.9 — Server worlds, cardinal camera and Diorama markers'}
+          - {target: '26.3', stack: sodium, tag: v0.4.0-audit.4-fabric263, title: 'TFL Client 26.3 — Server worlds, cardinal camera and Diorama markers'}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -107,4 +109,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ matrix.tag }}
           RELEASE_TITLE: ${{ matrix.title }}
-        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/MAP_PAUSE_FIX.md
+        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/SERVER_MAPS.md
