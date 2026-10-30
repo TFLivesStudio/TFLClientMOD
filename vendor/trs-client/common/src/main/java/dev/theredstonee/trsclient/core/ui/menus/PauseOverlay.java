@@ -1,3 +1,3 @@
 package dev.theredstonee.trsclient.core.ui.menus;
-/** Marker for the native chat and pause composition; never a saved HUD preference. */
-public interface PauseOverlay {}
+/** Temporary native chat layout; never a saved HUD preference. */
+public interface PauseOverlay { default boolean pauseChatLayout() { return true; } }

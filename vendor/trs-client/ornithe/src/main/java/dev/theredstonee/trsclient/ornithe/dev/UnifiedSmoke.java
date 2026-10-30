@@ -113,6 +113,10 @@ public final class UnifiedSmoke implements Runnable {
                   + ((int) c.mc.player.z + 8)
                   + " minecraft:stone");
           check("received chunks captured", c.diorama != null && c.diorama.snapshotCount() > 0);
+          report.add(
+              "mapFontRegression",
+              new Gson().toJsonTree(MapFontRegression.run(c, out.resolve("screenshots"))));
+          check("native font survives minimap toggles and world map", true);
           shot("hud");
           c.openWorldMap(null);
           phase++;
@@ -132,8 +136,24 @@ public final class UnifiedSmoke implements Runnable {
           report.addProperty("bakedTiles", c.diorama.bakedTiles);
           report.addProperty("meanBakeMs", c.diorama.bakeNanos / 1e6 / c.diorama.bakedTiles);
           shot("map");
+          var mapUi = ((CoreScreen) c.mc.screen).ui;
+          mapUi.inputScroll(c.window().getWidth() / 2, c.window().getHeight() / 2, -8);
+          mapUi.inputClick(c.window().getWidth() / 2, c.window().getHeight() / 2, 0);
+          mapUi.inputDrag(c.window().getWidth() / 2 - 100, c.window().getHeight() / 2, 0);
+          phase = 47;
+          wait = 40;
+        }
+        case 47 -> {
+          shot("cloud-frontier");
           c.mc.openScreen(c.navigation.pause());
-          phase++;
+          var line =
+              new net.minecraft.text.LiteralText("Click to suggest /help — Minecraft ñá 123");
+          line.getStyle()
+              .setClickEvent(
+                  new net.minecraft.text.ClickEvent(
+                      net.minecraft.text.ClickEvent.Action.SUGGEST_COMMAND, "/help"));
+          c.mc.gui.getChat().addMessage(line);
+          phase = 5;
           wait = 10;
         }
         case 5 -> {
@@ -147,6 +167,27 @@ public final class UnifiedSmoke implements Runnable {
                   .orElseThrow();
           inputField.setAccessible(true);
           var input = (net.minecraft.client.gui.widget.TextFieldWidget) inputField.get(c.mc.screen);
+          check(
+              "pause input is in lower right",
+              input.x >= c.window().getWidth() / 2 && input.y >= c.window().getHeight() - 16);
+          boolean clickable = false;
+          for (int x =
+                  dev.theredstonee.trsclient.core.ui.menus.PauseLayout.chatLeft(
+                          c.window().getWidth())
+                      + 2;
+              x < c.window().getWidth() - 12;
+              x += 2) {
+            var component =
+                c.mc
+                    .gui
+                    .getChat()
+                    .getMessageAt(x * c.window().getScale(), 31 * c.window().getScale());
+            if (component != null && component.getStyle().getClickEvent() != null) {
+              clickable = true;
+              break;
+            }
+          }
+          check("native clickable chat follows lower-right layout", clickable);
           input.setText("/help");
           var enter =
               java.util.Arrays.stream(PauseChatScreen.class.getDeclaredMethods())
@@ -162,10 +203,20 @@ public final class UnifiedSmoke implements Runnable {
           check(
               "native chat history retained",
               c.mc.gui.getChat().getRecentMessages().contains("/help"));
+          phase = 48;
+          wait = 10;
+        }
+        case 48 -> {
+          var targetPixels = MapFontRegression.target(c, out.resolve("screenshots"));
+          report.add("pauseMinimapTarget", new Gson().toJsonTree(targetPixels));
+          check(
+              "minimap target retains opaque map pixels after full-map transition",
+              ((Number) targetPixels.get("opaquePixels")).intValue()
+                  >= ((Number) targetPixels.get("totalPixels")).intValue() * .9);
           shot("pause");
           c.mc.openScreen(null);
           c.navigation.captures(null);
-          phase++;
+          phase = 6;
           wait = 10;
         }
         case 6 -> {

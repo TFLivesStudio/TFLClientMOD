@@ -32,13 +32,21 @@ public final class UnifiedSmoke {
    case 6:
     check("shared pause rail",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);
     var nativeChat=(dev.theredstonee.trsclient.screen.PauseChatScreen)Mc.screen();
-    var field=net.minecraft.client.gui.screens.ChatScreen.class.getDeclaredField("input");field.setAccessible(true);((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).setValue("/help");
+    var field=net.minecraft.client.gui.screens.ChatScreen.class.getDeclaredField("input");field.setAccessible(true);check("pause input is in lower right",((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).getX()>=nativeChat.width/2);((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).setValue("/help");
     nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_TAB,com.mojang.blaze3d.platform.InputConstants.KEYCODE_TAB,com.mojang.blaze3d.platform.InputConstants.MOD_CONTROL));
     check("SDL Ctrl Tab focuses menu",!((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).isFocused());
     nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_TAB,com.mojang.blaze3d.platform.InputConstants.KEYCODE_TAB,0));
     check("SDL Tab returns to chat",((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).isFocused());
     nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_RETURN,com.mojang.blaze3d.platform.InputConstants.KEYCODE_RETURN,0));
-    check("chat submission retains pause",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);check("native chat history retained",mc.gui.hud.getChat().getRecentChat().contains("/help"));AutoTest.shot(mc,"unified-pause");check("SDL left click reaches full-window X",nativeChat.mouseClicked(new net.minecraft.client.input.MouseButtonEvent(nativeChat.width-18,16,new net.minecraft.client.input.MouseButtonInfo(dev.theredstonee.trsclient.compat.Keys.MOUSE_LEFT,0)),false));Mc.setScreen(null);mc.reloadResourcePacks();phase++;wait=40;return;
+    check("chat submission retains pause",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);check("native chat history retained",mc.gui.hud.getChat().getRecentChat().contains("/help"));
+    phase=46;wait=10;return;
+   case 46:
+    mc.gui.hud.getChat().addClientSystemMessage(net.minecraft.network.chat.Component.literal("Click to suggest /help — Minecraft ñá 123").withStyle(style->style.withClickEvent(new net.minecraft.network.chat.ClickEvent.SuggestCommand("/help"))));phase=47;wait=5;return;
+   case 47:
+    var pause=(dev.theredstonee.trsclient.screen.PauseChatScreen)Mc.screen();boolean clickable=false;
+    AutoTest.shot(mc,"unified-pause");
+    outer:for(int y=(int)(pause.height*.65);y<pause.height-18;y+=2)for(int x=dev.theredstonee.trsclient.core.ui.menus.PauseLayout.chatLeft(pause.width);x<pause.width-10;x+=2){var finder=new net.minecraft.client.gui.ActiveTextCollector.ClickableStyleFinder(mc.font,x,y);mc.gui.hud.getChat().captureClickableText(finder,pause.height,mc.gui.hud.getGuiTicks(),net.minecraft.client.gui.components.ChatComponent.DisplayMode.FOREGROUND);if(finder.result()!=null&&finder.result().getClickEvent()!=null){clickable=true;report.addProperty("chatHitX",x);report.addProperty("chatHitY",y);break outer;}}
+    check("native clickable chat follows lower-right layout",clickable);AutoTest.shot(mc,"unified-pause");check("SDL left click reaches full-window X",pause.mouseClicked(new net.minecraft.client.input.MouseButtonEvent(pause.width-18,16,new net.minecraft.client.input.MouseButtonInfo(dev.theredstonee.trsclient.compat.Keys.MOUSE_LEFT,0)),false));Mc.setScreen(null);mc.reloadResourcePacks();phase=7;wait=40;return;
    case 7:
     if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=80;return;
    case 8:

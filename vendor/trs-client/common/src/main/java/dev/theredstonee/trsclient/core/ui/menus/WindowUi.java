@@ -28,6 +28,7 @@ public abstract class WindowUi extends UiScreen {
 	protected boolean screenScrim() {return true;}
 	protected boolean bareRail() {return false;}
 	protected boolean topRail() {return false;}
+	protected boolean screenClose() {return topRail();}
 	protected int railHeight(int height) {return Math.min(height-24,330);}
 	private int fullWidth;
 
@@ -82,8 +83,8 @@ public abstract class WindowUi extends UiScreen {
         c.strongText("TFL Client",lx,py+(HEADER_H-c.lineHeight())/2,t.text);
         int titleX=lx+c.textWidth("TFL Client")+12;
 		int closeSize = 16;
-		int closeX = topRail() ? fullWidth - PAD - closeSize : px + pw - PAD - closeSize;
-		int closeY = topRail() ? 8 : py + (HEADER_H - closeSize) / 2;
+		int closeX = screenClose() ? fullWidth - PAD - closeSize : px + pw - PAD - closeSize;
+		int closeY = screenClose() ? 8 : py + (HEADER_H - closeSize) / 2;
 		int right = headerExtras(c, closeX - 4, closeY, mx, my);
 		if (!bareRail()) Paint.textClipped(c, title(), titleX, py + (HEADER_H - 8) / 2, right - titleX - 6, t.text, false);
 		Paint.iconButton(c, closeX, closeY, closeSize, "close", inside(mx, my, closeX, closeY, closeSize, closeSize), false);

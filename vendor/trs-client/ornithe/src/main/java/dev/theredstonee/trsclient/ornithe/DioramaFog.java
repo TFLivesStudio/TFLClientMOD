@@ -15,7 +15,7 @@ final class DioramaFog implements AutoCloseable {
   }catch(Exception|LinkageError e){error=e.toString();OrnitheClient.LOG.warn("Diorama fog shader unavailable: {}",error);if(program!=0)GL20.glDeleteProgram(program);program=0;return false;}
   finally{if(vertex!=0)GL20.glDeleteShader(vertex);if(fragment!=0)GL20.glDeleteShader(fragment);}
  }
- boolean draw(int x,int y,int w,int h,int[] coverage,double u0,double v0,double du,double dv,int scaleCode,double maskU,double maskV,boolean cave){
+ boolean draw(int x,int y,int w,int h,int[] coverage,double u0,double v0,double du,double dv,int scaleCode,int steps,int fraction,double snap,double maskU,double maskV,boolean cave){
   if(!prepare())return false;
   if(coverage!=null)mask=client.canvas.upload("diorama/fog-mask",256,256,coverage);if(mask==null)return false;
   int oldProgram=GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM),active=GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
@@ -26,8 +26,8 @@ final class DioramaFog implements AutoCloseable {
    GL20.glUseProgram(program);GL20.glUniform1i(GL20.glGetUniformLocation(program,"Sampler0"),0);GL20.glUniform1i(GL20.glGetUniformLocation(program,"Sampler1"),1);
    GL20.glUniform1f(GL20.glGetUniformLocation(program,"GameTime"),client.modules.worldMapCloudMotion.get()?(System.nanoTime()%1_200_000_000_000L)/1_200_000_000_000f:0);
    GL20.glUniform4f(GL20.glGetUniformLocation(program,"ColorModulator"),1,1,1,1);
-   int nu=Math.floorMod((int)Math.floor(maskU/128),8),nv=Math.floorMod((int)Math.floor(maskV/128),8);
-   GL20.glUniform4f(GL20.glGetUniformLocation(program,"params"),nu*32/255f,nv*32/255f,cave?128/255f:0,(scaleCode*16+(client.modules.worldMapCloudQuality.get()==dev.theredstonee.trsclient.core.map.volume.CloudQuality.LOW?4:0))/255f);
+   int nu=Math.floorMod((int)Math.floor(maskU/snap),8),nv=Math.floorMod((int)Math.floor(maskV/snap),8);
+   GL20.glUniform4f(GL20.glGetUniformLocation(program,"params"),nu*32/255f,nv*32/255f,((cave?128:0)|(steps<<4)|fraction)/255f,(scaleCode*16+(client.modules.worldMapCloudQuality.get()==dev.theredstonee.trsclient.core.map.volume.CloudQuality.LOW?4:0))/255f);
    GL11.glBegin(GL11.GL_QUADS);GL11.glTexCoord2d(u0,v0);GL11.glVertex2i(x,y);GL11.glTexCoord2d(u0+du,v0);GL11.glVertex2i(x+w,y);GL11.glTexCoord2d(u0+du,v0+dv);GL11.glVertex2i(x+w,y+h);GL11.glTexCoord2d(u0,v0+dv);GL11.glVertex2i(x,y+h);GL11.glEnd();return true;
   }finally{GL20.glUseProgram(oldProgram);net.minecraft.client.render.platform.GlStateManager.activeTexture(GL13.GL_TEXTURE1);net.minecraft.client.render.platform.GlStateManager.bindTexture(texture1);net.minecraft.client.render.platform.GlStateManager.activeTexture(GL13.GL_TEXTURE0);net.minecraft.client.render.platform.GlStateManager.bindTexture(texture0);net.minecraft.client.render.platform.GlStateManager.activeTexture(active);}
  }

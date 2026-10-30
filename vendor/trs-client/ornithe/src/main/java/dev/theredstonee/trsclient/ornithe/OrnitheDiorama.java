@@ -16,6 +16,7 @@ import java.io.*;
 /** Diorama's original voxel ray tracer over immutable received 1.8.9 chunk sections. */
 public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
  private final OrnitheClient client;
+ private final MapGlState drawState=new MapGlState();
  private final dev.theredstonee.trsclient.core.map.MobHeads mobHeads=new dev.theredstonee.trsclient.core.map.MobHeads();
  private final ConcurrentHashMap<Long,ChunkSnapshot> chunks=new ConcurrentHashMap<>();
  private final LinkedHashMap<TileKey,Tile> tiles=new LinkedHashMap<>(32,.75f,true);
@@ -32,7 +33,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
  private final int[] knownPrefix=new int[257*257],unknownPrefix=new int[257*257];
  private final int[] coverageBuffer=new int[256*256];
  private DioramaFog fog;private long maskAt;private double oldMaskU,oldMaskV,oldExtent;private long maskRevision,maskContentRevision;private int oldMaskLayer=Integer.MIN_VALUE,oldMaskLod=-1;
- private volatile long revision,epoch;private long lastCapture;private boolean closed;private TextureRef clouds;
+ private volatile long revision,epoch;private long lastCapture;private boolean closed;
  public volatile long bakedTiles,bakeNanos; public long captureNanos,captureCount,maskNanos,maskBuilds,uploadNanos,uploadCount,drawNanos,drawCount;public volatile String failure="";
  private record Result(TileKey key,int[] pixels,TrackedChunks.Dependencies dependencies,long epoch){}
  private static final class Tile {TextureRef texture;long checkedRevision=-1,lastRequest;boolean dirty;TrackedChunks.Dependencies dependencies;byte[] alpha;}
@@ -119,13 +120,10 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
  public void reload(){epoch++;reading.clear();restored.clear();if(world!=null)looks=buildLooks();for(Tile tile:tiles.values())if(tile.texture!=null)client.canvas.release(tile.texture);tiles.clear();completed.clear();if(fog!=null)fog.close();fog=null;maskAt=0;}
  public boolean fogHealthy(){return fog!=null&&fog.healthy();}
  public void draw(Canvas c,int x,int y,int width,int height,double centerX,double centerY,double centerZ,double pixelsPerBlock,int layer){long drawStart=System.nanoTime();
-  upload();ensureClouds();
+  try(var ignored=drawState.begin()){
+  upload();
   c.scissor(x,y,x+width,y+height);
-  c.fill(x,y,x+width,y+height,0xFF718498);
-  if(clouds!=null&&quality!=dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF){float time=client.modules.worldMapCloudMotion.get()?(System.nanoTime()%300_000_000_000L)/1e9f:0;for(int band=0;band<3;band++){
-   int size=320+band*100,offset=(int)(time*(2+band))%size;
-   for(int cy=y-size;cy<y+height;cy+=size)for(int cx=x-size;cx<x+width+size;cx+=size)Affine.image(c,clouds,cx-offset,cy+(band==1?offset:0),size,size,0,0,256,256,band==0?0xFFC8DAEB:0x75ECF4FC);
-  }}
+  c.fill(x,y,x+width,y+height,0xFF8796A8);
   if(looks!=null){double v=Projection.v(centerY,centerZ);int lod=Math.max(0,Math.min(TileKey.MAX_LOD,(int)Math.floor(Math.log(.5/pixelsPerBlock)/Math.log(2))));double units=Projection.TILE_UNITS*(1<<lod);
    double left=centerX-width/(2*pixelsPerBlock),top=v-height/(2*pixelsPerBlock);
    int minU=(int)Math.floor(left/units),maxU=(int)Math.floor((left+width/pixelsPerBlock)/units);
@@ -140,10 +138,13 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
   // The same eight-layer height-field shader as modern Diorama, at the UI frame rate.
   if(fog==null)fog=new DioramaFog(client);
   int maskLod=Math.max(0,Math.min(TileKey.MAX_LOD,(int)Math.floor(Math.log(.5/pixelsPerBlock)/Math.log(2))));double tileUnits=128*(1<<maskLod);
+  double scaleLog=Math.min(7.99,Math.log(Math.max(1,.5/pixelsPerBlock))/Math.log(2));
+  int steps=(int)Math.floor(scaleLog),fraction=(int)Math.floor((scaleLog-steps)*16);
+  double snap=64.0*(1<<(steps+1));
   double visible=Math.max(width,height)/pixelsPerBlock;
-  int code=Math.max(0,Math.min(8,(int)Math.ceil(Math.log(visible*1.3/512)/Math.log(2))));
+  int code=0;while(512*(1<<code)<visible+48+snap&&code<12)code++;
   double extent=512*(1<<code),texel=extent/256;
-  double maskU=Math.floor((centerX-extent/2)/texel)*texel,maskV=Math.floor((Projection.v(centerY,centerZ)-extent/2)/texel)*texel;
+  double maskU=Math.floor((centerX-width/(2*pixelsPerBlock)-24)/snap)*snap,maskV=Math.floor((Projection.v(centerY,centerZ)-height/(2*pixelsPerBlock)-24)/snap)*snap;
   int[] mask=null;long now=System.nanoTime();
   if(maskAt==0||maskU!=oldMaskU||maskV!=oldMaskV||extent!=oldExtent||maskRevision!=maskContentRevision||layer!=oldMaskLayer||maskLod!=oldMaskLod){
    mask=coverageBuffer;
@@ -152,11 +153,11 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
     int known=0;if(tile!=null&&tile.alpha!=null){int tx=Math.floorMod((int)Math.floor(u*4/(1<<maskLod)),512),ty=Math.floorMod((int)Math.floor(v*4/(1<<maskLod)),512);known=tile.alpha[ty*512+tx]&255;}
     mask[my*256+mx]=0xff000000|known<<16;
    }
-   flagMask(mask,texel);
+   flagMask(mask,texel,steps);
    maskAt=now;oldMaskU=maskU;oldMaskV=maskV;oldExtent=extent;maskRevision=maskContentRevision;oldMaskLayer=layer;oldMaskLod=maskLod;maskNanos+=System.nanoTime()-now;maskBuilds++;
   }
   double left=centerX-width/(2*pixelsPerBlock),top=Projection.v(centerY,centerZ)-height/(2*pixelsPerBlock);
-  if(quality!=dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF)fog.draw(x,y,width,height,mask,(left-maskU)/extent,(top-maskV)/extent,width/pixelsPerBlock/extent,height/pixelsPerBlock/extent,code,maskU,maskV,layer!=TileKey.SURFACE);
+  if(quality!=dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF)fog.draw(x,y,width,height,mask,(left-maskU)/extent,(top-maskV)/extent,width/pixelsPerBlock/extent,height/pixelsPerBlock/extent,code,steps,fraction,snap,maskU,maskV,layer!=TileKey.SURFACE);
   boolean full=width>client.modules.minimapSize.getInt()+16;
   if(!full&&client.modules.minimapWaypoints.get())for(var point:client.waypoints.visible(client.mapPlatform.worldKey(),client.mapPlatform.dimension())){int px=(int)Math.round(x+width/2+(point.x-centerX)*pixelsPerBlock),py=(int)Math.round(y+height/2+(Projection.v(point.y,point.z)-Projection.v(centerY,centerZ))*pixelsPerBlock);if(px>=x&&py>=y&&px<x+width&&py<y+height)SelectionStyle.rounded(c,px-3,py-3,7,7,3,point.color|0xff000000);}
   var modules=client.modules;
@@ -172,19 +173,15 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
    if(!player&&modules.minimapMobIcons.get()==dev.theredstonee.trsclient.core.module.TrsModules.MobIcons.HEADS){var head=mobHeads.head(entity.kind,client.map.palette(),client.canvas.resourceGeneration());if(head!=null)Affine.image(c,head.texture,px-3,py-3,7,7,head.u,head.v,head.w,head.h,0xffffffff);}
    if(player&&client.mc.getNetworkHandler()!=null){var info=client.mc.getNetworkHandler().getOnlinePlayer(entity.uuid);if(info!=null){TextureRef skin=client.canvas.game(info.getSkinTexture().toString(),64,64);Affine.image(c,skin,px-3,py-3,7,7,8,8,8,8,0xffffffff);}}
   }
-  c.noScissor();drawNanos+=System.nanoTime()-drawStart;drawCount++;
+  c.noScissor();}drawNanos+=System.nanoTime()-drawStart;drawCount++;
  }
 
  public Map<String,Object> metrics(){Map<String,Object> m=new LinkedHashMap<>();m.put("captureCount",captureCount);m.put("captureMeanMs",captureNanos/1e6/Math.max(1,captureCount));m.put("bakedTiles",bakedTiles);m.put("bakeMeanMs",bakeNanos/1e6/Math.max(1,bakedTiles));m.put("maskBuilds",maskBuilds);m.put("maskMeanMs",maskNanos/1e6/Math.max(1,maskBuilds));m.put("uploadCount",uploadCount);m.put("uploadMeanMs",uploadNanos/1e6/Math.max(1,uploadCount));m.put("drawCount",drawCount);m.put("drawMeanMs",drawNanos/1e6/Math.max(1,drawCount));m.put("queuedBakes",worker.getQueue().size());m.put("queuedUploads",completed.size());m.put("gpuTimingMeasured",false);return m;}
- private void flagMask(int[] mask,double texel){
+ private void flagMask(int[] mask,double texel,int scaleSteps){
   java.util.Arrays.fill(knownPrefix,0);java.util.Arrays.fill(unknownPrefix,0);
   for(int y=0;y<256;y++){int known=0,unknown=0;for(int x=0;x<256;x++){int red=mask[y*256+x]>>>16&255;known+=red==255?1:0;unknown+=red==0?1:0;knownPrefix[(y+1)*257+x+1]=knownPrefix[y*257+x+1]+known;unknownPrefix[(y+1)*257+x+1]=unknownPrefix[y*257+x+1]+unknown;}}
-  int reach=Math.min(256,Math.max(2,(int)Math.ceil(64/texel)));
+  int reach=Math.min(256,Math.max(2,(int)Math.ceil(Math.max(34,9.0*(1<<(scaleSteps+1)))/texel+8)));
   for(int y=0;y<256;y++)for(int x=0;x<256;x++){int x0=Math.max(0,x-reach),y0=Math.max(0,y-reach),x1=Math.min(256,x+reach+1),y1=Math.min(256,y+reach+1),count=(x1-x0)*(y1-y0);int a=y1*257+x1,b=y0*257+x1,c=y1*257+x0,d=y0*257+x0;int known=knownPrefix[a]-knownPrefix[b]-knownPrefix[c]+knownPrefix[d],unknown=unknownPrefix[a]-unknownPrefix[b]-unknownPrefix[c]+unknownPrefix[d];if(known==count)mask[y*256+x]|=0x0000ff00;else if(unknown==count)mask[y*256+x]|=0x000000ff;}
- }
- private void ensureClouds(){if(clouds!=null)return;int[] p=new int[256*256];java.util.Random random=new java.util.Random(1);float[] noise=new float[16*16];for(int i=0;i<noise.length;i++)noise[i]=random.nextFloat();
-  for(int y=0;y<256;y++)for(int x=0;x<256;x++){double fx=x/16.0,fy=y/16.0;int ix=(int)fx,iy=(int)fy;double tx=fx-ix,ty=fy-iy;tx=tx*tx*(3-2*tx);ty=ty*ty*(3-2*ty);double a=noise[(iy&15)*16+(ix&15)]*(1-tx)+noise[(iy&15)*16+((ix+1)&15)]*tx,b=noise[((iy+1)&15)*16+(ix&15)]*(1-tx)+noise[((iy+1)&15)*16+((ix+1)&15)]*tx;int n=(int)(145+100*(a*(1-ty)+b*ty));p[y*256+x]=0xff000000|n<<16|Math.min(255,n+8)<<8|Math.min(255,n+16);}
-  clouds=client.canvas.upload("diorama/clouds",256,256,p);
  }
  private void request(TileKey key){if(!baking.add(key))return;long session=epoch;BlockLooks colors=looks;TrackedChunks source=new TrackedChunks(this);
   try{worker.execute(()->{try{long start=System.nanoTime();TileImage image=TileBaker.bake(key,source,colors,null,false);int[] p=image.mips()[0];for(int i=0;i<p.length;i++){int v=p[i];p[i]=v&0xFF00FF00|(v&255)<<16|(v>>>16&255);}if(session==epoch){completed.offer(new Result(key,p,source.dependencies(),session));synchronized(OrnitheDiorama.this){bakeNanos+=System.nanoTime()-start;bakedTiles++;}}}catch(Throwable e){failure=e.toString();}finally{baking.remove(key);}});}catch(RejectedExecutionException e){baking.remove(key);}
@@ -203,6 +200,6 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
    return new ChunkSnapshot(x,z,states,block,sky,top,floor,new ChunkSnapshot.Tints(grass,grass,grass,water));
   }
  }catch(IOException e){return null;}}
- private void clear(){if(fog!=null)fog.close();fog=null;maskAt=0;epoch++;revision=0;chunks.clear();captured.clear();reading.clear();stored.clear();restored.clear();completed.clear();for(Tile tile:tiles.values())if(tile.texture!=null)client.canvas.release(tile.texture);tiles.clear();if(clouds!=null)client.canvas.release(clouds);clouds=null;looks=null;}
+ private void clear(){if(fog!=null)fog.close();fog=null;maskAt=0;epoch++;revision=0;chunks.clear();captured.clear();reading.clear();stored.clear();restored.clear();completed.clear();for(Tile tile:tiles.values())if(tile.texture!=null)client.canvas.release(tile.texture);tiles.clear();looks=null;}
  public void close(){closed=true;clear();worker.shutdownNow();disk.shutdown();try{if(!disk.awaitTermination(2,TimeUnit.SECONDS))OrnitheClient.LOG.warn("Map save queue is still draining at shutdown");}catch(InterruptedException interrupted){Thread.currentThread().interrupt();}}
 }

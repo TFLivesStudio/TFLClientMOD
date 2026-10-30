@@ -8,9 +8,13 @@ import net.minecraft.client.input.*;
 // Native chat keeps signing, commands, history, completion and clickable components.
 public final class PauseChatScreen extends net.minecraft.client.gui.screens.ChatScreen implements PauseOverlay {
   public final PauseActionsUi actions;
+  private boolean chatLayout;
+  @Override public boolean pauseChatLayout(){return chatLayout;}
   public PauseChatScreen(PauseActionsUi actions){super("",false,false);this.actions=actions;}
-  @Override protected void init(){super.init();input.setCanLoseFocus(true);}
+  @Override protected void init(){chatLayout=true;super.init();input.setCanLoseFocus(true);input.setX(PauseLayout.chatLeft(width)+2);input.setWidth(PauseLayout.chatWidth(width)-4);minecraft.gui.hud.getChat().rescaleChat();}
+  @Override public void removed(){chatLayout=false;minecraft.gui.hud.getChat().rescaleChat();super.removed();}
   @Override public void extractRenderState(GuiGraphicsExtractor g,int x,int y,float delta){
+    g.fill(0,0,width,height,PauseLayout.SCRIM);
     super.extractRenderState(g,x,y,delta);
     Gfx gfx=Gfx.of(g);gfx.managed(()->actions.render(GfxCanvas.of(gfx,font),width,height,x,y));
   }
@@ -19,7 +23,7 @@ public final class PauseChatScreen extends net.minecraft.client.gui.screens.Chat
     return actions.inputClick(event.x(),event.y(),Keys.uiButton(event.button()))||super.mouseClicked(event,twice);
   }
   @Override public boolean mouseScrolled(double x,double y,double horizontal,double vertical){
-    if(x<width/2&&y<height/2)return actions.inputScroll(x,y,vertical);
+    if(x<width/2)return actions.inputScroll(x,y,vertical);
     return super.mouseScrolled(x,y,horizontal,vertical);
   }
   @Override public boolean keyPressed(KeyEvent event){
