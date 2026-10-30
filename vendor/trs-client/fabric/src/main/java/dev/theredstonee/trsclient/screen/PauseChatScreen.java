@@ -9,6 +9,7 @@ import net.minecraft.client.input.*;
 public final class PauseChatScreen extends net.minecraft.client.gui.screens.ChatScreen implements PauseOverlay {
   public final PauseActionsUi actions;
   public PauseChatScreen(PauseActionsUi actions){super("",false,false);this.actions=actions;}
+  @Override protected void init(){super.init();input.setCanLoseFocus(true);}
   @Override public void extractRenderState(GuiGraphicsExtractor g,int x,int y,float delta){
     super.extractRenderState(g,x,y,delta);
     Gfx gfx=Gfx.of(g);gfx.managed(()->actions.render(GfxCanvas.of(gfx,font),width,height,x,y));
