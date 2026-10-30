@@ -32,17 +32,19 @@ jobs:
           name: unified-common-tests
           path: vendor/trs-client/common/build/test-results/
   native:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {target: '1.8.9', stack: baseline}
-          - {target: '1.8.9', stack: lwjgl3}
-          - {target: '1.8.9', stack: argentum}
-          - {target: '26.3', stack: baseline}
-          - {target: '26.3', stack: sodium}
+          # Mesa 25.2.8 on Ubuntu 24 hangs in vanilla RenderTarget.draw (captured native stacks).
+          # Keep the complete scenario on a stable compatibility-profile software driver.
+          - {target: '1.8.9', stack: baseline, os: ubuntu-22.04}
+          - {target: '1.8.9', stack: lwjgl3, os: ubuntu-22.04}
+          - {target: '1.8.9', stack: argentum, os: ubuntu-latest}
+          - {target: '26.3', stack: baseline, os: ubuntu-latest}
+          - {target: '26.3', stack: sodium, os: ubuntu-latest}
     env:
       LIBGL_ALWAYS_SOFTWARE: '1'
       LP_NUM_THREADS: '2'

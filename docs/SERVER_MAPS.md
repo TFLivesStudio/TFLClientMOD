@@ -32,3 +32,5 @@ Las pruebas incluyen buffers nulos, diez identificadores de mundo en un mismo se
 Java 25. 1.8.9: Ornithe Gen2 y OSL 0.22.2. 26.3: Fabric y Fabric API 0.161.0+26.3. Sustituye el JAR anterior sin borrar configuración, mapas ni waypoints. Los optimizadores se instalan por separado.
 
 La validación nativa se realiza en Linux con renderizado por software. No se ha realizado una sesión AFK autenticada en Hypixel ni se certifica el controlador de Windows. Las evidencias y hashes publicados corresponden al commit indicado en `build.json`.
+
+En los ejecutores Ubuntu 24 con Mesa 25.2.8 se observó un bloqueo dentro de `glDrawArrays` al presentar el framebuffer vanilla de 1.8.9 sin Argentum. Se conservaron los stacks nativos. Las pruebas completas de baseline/LWJGL3 usan Ubuntu 22.04; no se omiten comprobaciones ni se reduce la calidad del cliente. Las demás combinaciones usan el ejecutor actual. No se declara validado aquel backend Mesa 25.2.8 sin Argentum. Los informes incluyen el renderer y la versión de OpenGL utilizados.

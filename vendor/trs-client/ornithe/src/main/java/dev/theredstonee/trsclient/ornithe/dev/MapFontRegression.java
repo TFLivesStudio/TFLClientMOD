@@ -150,6 +150,16 @@ public final class MapFontRegression {
     }
   }
 
+  private static java.util.List<Integer> defaultVertexState() throws Exception {
+    int previous = GL11.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
+    try {
+      GL30.glBindVertexArray(0);
+      return java.util.List.of(attribute(GL15.GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING),
+          attribute(GL20.GL_VERTEX_ATTRIB_ARRAY_SIZE), attribute(GL20.GL_VERTEX_ATTRIB_ARRAY_STRIDE),
+          attribute(GL20.GL_VERTEX_ATTRIB_ARRAY_TYPE), attribute(GL20.GL_VERTEX_ATTRIB_ARRAY_ENABLED));
+    } finally { GL30.glBindVertexArray(previous); }
+  }
+
   public static Map<String, Object> run(OrnitheClient c, Path out) throws Exception {
     if (!GLContext.getCapabilities().OpenGL30)
       throw new AssertionError("Native map font fixture requires framebuffer support");
@@ -225,6 +235,7 @@ public final class MapFontRegression {
         if (!Arrays.equals(before, after))
           throw new AssertionError("Native glyph pixels changed after minimap toggle " + i);
       }
+      var defaultBefore = defaultVertexState();
       c.canvas.begin(c.window().getWidth(), c.window().getHeight(), c.window().getScale());
       try {
         c.diorama.draw(
@@ -232,6 +243,10 @@ public final class MapFontRegression {
       } finally {
         c.canvas.end();
       }
+      var defaultAfter = defaultVertexState();
+      System.out.println("[TFL native vertex state] " + defaultBefore + " -> " + defaultAfter);
+      if (!defaultBefore.equals(defaultAfter))
+        throw new AssertionError("Map changed the default framebuffer vertex-array state");
       if (!Arrays.equals(before, raster(c, out, "font-after-world-map")))
         throw new AssertionError("Native glyph pixels changed after full-map fog");
       return Map.of(

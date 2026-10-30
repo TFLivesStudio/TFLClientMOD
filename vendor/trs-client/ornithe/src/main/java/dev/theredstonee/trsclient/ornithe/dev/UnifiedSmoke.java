@@ -64,6 +64,8 @@ public final class UnifiedSmoke implements Runnable {
         throw new AssertionError("unified timeout phase " + phase);
       switch (phase) {
         case 0 -> {
+          report.addProperty("nativeRenderer", org.lwjgl.opengl.GL11.glGetString(org.lwjgl.opengl.GL11.GL_RENDERER));
+          report.addProperty("nativeOpenGl", org.lwjgl.opengl.GL11.glGetString(org.lwjgl.opengl.GL11.GL_VERSION));
           c.mc.options.pauseOnUnfocus = false;
           c.mc.options.fpsLimit = 120;
           c.mc.options.vsync = false;
