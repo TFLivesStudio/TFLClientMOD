@@ -17,7 +17,8 @@ public final class Projection {
  public static double u(double x,double z){return dev.theredstonee.trsclient.core.map.QuarterTurn.u(x,z,turns);}
  public static double depth(double x,double z){return dev.theredstonee.trsclient.core.map.QuarterTurn.depth(x,z,turns);}
  public static double v(double x,double y,double z){return v(y,depth(x,z));}
- public static net.minecraft.core.BlockPos worldPos(net.minecraft.core.BlockPos p){return p==null?null:new net.minecraft.core.BlockPos(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(p.getX(),p.getZ(),turns),p.getY(),dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(p.getX(),p.getZ(),turns));}
+ public static net.minecraft.core.BlockPos worldPos(net.minecraft.core.BlockPos p){return worldPos(p,turns);}
+ public static net.minecraft.core.BlockPos worldPos(net.minecraft.core.BlockPos p,int cameraTurns){return p==null?null:new net.minecraft.core.BlockPos(dev.theredstonee.trsclient.core.map.QuarterTurn.blockX(p.getX(),p.getZ(),cameraTurns),p.getY(),dev.theredstonee.trsclient.core.map.QuarterTurn.blockZ(p.getX(),p.getZ(),cameraTurns));}
  public static int[] box(int[] b,int q){return dev.theredstonee.trsclient.core.map.QuarterTurn.box(b,q);}
 
 

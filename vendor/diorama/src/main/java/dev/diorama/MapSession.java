@@ -37,7 +37,7 @@ public final class MapSession {
 	private static final long CHANGE_DELAY_MS = 250;
 	private static final int SNAPSHOTS_PER_TICK = 24;
 
-	private static @Nullable MapSession current;
+	private static volatile @Nullable MapSession current;
 	private static int started;
 	private static final boolean DEBUG_CHANGES = Diorama.DEBUG;
 	private static final Map<String, Integer> CHANGE_TALLY = new java.util.TreeMap<>();

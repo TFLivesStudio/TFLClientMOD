@@ -541,11 +541,15 @@ public final class MapScreen extends Screen {
 		double v = TileSpots.rowMiddle(view.centerV() + (screenY - view.y() - view.height() / 2.0) / view.zoom());
 		TileKey tile = new TileKey(this.layer, (int) Math.floor(u / Projection.TILE_UNITS), (int) Math.floor(v / Projection.TILE_UNITS));
 		MapPick pick = new MapPick(session.map(), looks, tile, session.map().fogOfWar());
-		return switch (pick.pick(u, v)) {
-			case MapPick.FOUND -> CompletableFuture.completedFuture(new MapLevel.Spot(Projection.worldPos(new BlockPos((int)Math.floor(u),pick.y,pick.z)), false));
+		int requestedTurns = session.map().rotation();
+		CompletableFuture<MapLevel.Spot> request = switch (pick.pick(u, v)) {
+			case MapPick.FOUND -> CompletableFuture.completedFuture(new MapLevel.Spot(new BlockPos((int)Math.floor(u),pick.y,pick.z), false));
 			case MapPick.NOTHING -> CompletableFuture.completedFuture(MapLevel.Spot.NOTHING);
-			default -> session.map().savedSpot(this.layer,u,v,looks,readWorld).thenApply(found->new MapLevel.Spot(Projection.worldPos(found.pos()),found.unsaved()));
+			default -> session.map().savedSpot(this.layer,u,v,looks,readWorld);
 		};
+		return request.thenApply(found -> MapSession.get() != session
+			? MapLevel.Spot.NOTHING
+			: new MapLevel.Spot(Projection.worldPos(found.pos(), requestedTurns), found.unsaved()));
 	}
 
 	private List<MapMenu.Item> spotItems(MapLevel.Spot found) {
