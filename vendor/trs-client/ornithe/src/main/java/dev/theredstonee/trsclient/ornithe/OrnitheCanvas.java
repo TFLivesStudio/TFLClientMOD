@@ -224,6 +224,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
   private static final String PUNCTUATION="…—–’“”←→↑↓✓";
   private static String glyph(int ch){return ch>=127&&ch<127+PUNCTUATION.length()?String.valueOf(PUNCTUATION.charAt(ch-127)):String.valueOf((char)ch);}
   private static String normalizePunctuation(String text){StringBuilder out=null;for(int i=0;i<text.length();i++){int index=PUNCTUATION.indexOf(text.charAt(i));if(index>=0){if(out==null)out=new StringBuilder(text);out.setCharAt(i,(char)(127+index));}}return out==null?text:out.toString();}
+  private static String nativePunctuation(String text){StringBuilder out=null;for(int i=0;i<text.length();i++){int index=text.charAt(i)-127;if(index>=0&&index<PUNCTUATION.length()){if(out==null)out=new StringBuilder(text);out.setCharAt(i,PUNCTUATION.charAt(index));}}return out==null?text:out.toString();}
   private String privateText(String text) {
     var c = OrnitheClient.get();
     return normalizePunctuation(c != null && c.ready ? c.privacy.text(text) : text);
@@ -259,7 +260,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     }
     if (nativeFont(text)) {
       boolean alpha=GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
-      try{mc.textRenderer.draw(text, x, y, color, shadow);}finally{if(!alpha)GlStateManager.disableAlphaTest();}
+      try{mc.textRenderer.draw(nativePunctuation(text), x, y, color, shadow);}finally{if(!alpha)GlStateManager.disableAlphaTest();}
       return;
     }
     if (shadow) text(text, x + 1, y + 1, (color & 0xFF000000) | ((color & 0xFCFCFC) >> 2), false);
@@ -305,7 +306,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     }
     text = privateText(text);
     if(text.indexOf('\u00a7')>=0)text=text.replaceAll("\u00a7.","");
-    if (nativeFont(text)) return mc.textRenderer.getWidth(text);
+    if (nativeFont(text)) return mc.textRenderer.getWidth(nativePunctuation(text));
     double width = 0;
     for (int i = 0; i < text.length(); i++) width += advances[text.charAt(i)] / 8.0;
     return (int) Math.ceil(width);
@@ -324,7 +325,7 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     text = privateText(text);
     if(text.indexOf('\u00a7')>=0)text=text.replaceAll("\u00a7.","");
     if (max <= 0) return "";
-    if (nativeFont(text)) return mc.textRenderer.trim(text, max);
+    if (nativeFont(text)) return mc.textRenderer.trim(nativePunctuation(text), max);
     double width = 0;
     int end = 0;
     while (end < text.length()) {

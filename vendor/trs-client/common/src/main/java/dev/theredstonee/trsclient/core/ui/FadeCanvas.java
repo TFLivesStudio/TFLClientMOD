@@ -67,7 +67,8 @@ public final class FadeCanvas implements Canvas {
 		return delegate.clip(text, maxWidth);
 	}
 
-	@Override
+	@Override public void overlayLayer(){delegate.overlayLayer();}
+
 	public void flush() {
 		delegate.flush();
 	}

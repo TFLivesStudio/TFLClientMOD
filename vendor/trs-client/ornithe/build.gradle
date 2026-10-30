@@ -134,5 +134,12 @@ if (project.hasProperty('tflAuditProfile')) {
         def recording=layout.buildDirectory.file('profiles/right-shift.jfr').get().asFile
         doFirst { recording.parentFile.mkdirs() }
         jvmArgs.add("-XX:StartFlightRecording=filename=${recording.absolutePath},settings=profile,dumponexit=true,maxsize=64m")
+        doLast {
+            def cleaned=new File(recording.parentFile, 'right-shift-public.jfr')
+            cleaned.delete()
+            providers.exec {
+                commandLine new File(System.getProperty('java.home'),'bin/jfr').absolutePath, 'scrub', '--include-events', 'jdk.ExecutionSample,jdk.NativeMethodSample,jdk.ObjectAllocationSample,jdk.GarbageCollection,jdk.GCPhasePause,jdk.ThreadCPULoad,jdk.CPULoad', recording.absolutePath, cleaned.absolutePath
+            }.result.get().assertNormalExitValue()
+        }
     }
 }

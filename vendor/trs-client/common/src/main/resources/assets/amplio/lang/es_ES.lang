@@ -1,0 +1,20 @@
+# TFL Spanish localization. Original providers remain separate dependencies.
+amplio.options.page=Ampliación
+amplio.options.upscaler=Escalador
+amplio.options.upscaler.tooltip=Renderiza el mundo a menor resolución y lo escala al tamaño de la ventana. DLSS requiere una GPU RTX compatible; si no está disponible, se utiliza FSR1.
+amplio.options.quality=Calidad
+amplio.options.quality.tooltip=Cuánto más bajo se vuelve el mundo. La calidad más baja se ejecuta más rápido.
+amplio.options.dlssModel=Modelo DLSS
+amplio.options.dlssModel.tooltip=CNN es el modelo más rápido. Transformer ofrece mayor nitidez, pero puede costar aproximadamente el triple.
+amplio.options.sharpness=Nitidez
+amplio.options.sharpness.tooltip=Cuánto FSR 1 agudiza la imagen mejorada.
+amplio.upscaler.off=Desactivado
+amplio.upscaler.fsr1=FSR 1
+amplio.upscaler.dlss=DLSS
+amplio.quality.native=Nativa
+amplio.quality.quality=Calidad
+amplio.quality.balanced=Equilibrado
+amplio.quality.performance=Rendimiento
+amplio.quality.ultra_performance=Rendimiento máximo
+amplio.dlssModel.cnn=cnn
+amplio.dlssModel.transformer=Transformador

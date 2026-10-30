@@ -151,7 +151,8 @@ public final class GfxCanvas implements Canvas {
         return text.substring(0,low);
 	}
 
-	@Override
+	@Override public void overlayLayer(){g.overlayLayer();}
+
 	public void flush() {
 		g.flush();
 	}

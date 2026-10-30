@@ -2648,5 +2648,10 @@
   "graphics.confirm": "Confirm",
   "graphics.cancel": "Cancel",
   "graphics.conflict.disableColors": "Upscaling and color grading cannot run together. Disable Colors and apply upscaling?",
-  "graphics.conflict.disableScaler": "Disable the upscaler before enabling Colors? Pending graphics changes must be applied or undone first."
+  "graphics.conflict.disableScaler": "Disable the upscaler before enabling Colors? Pending graphics changes must be applied or undone first.",
+  "graphics.colorsPaused": "Colors paused",
+  "graphics.scalerRequested": "Requested upscaler",
+  "graphics.scalerActive": "Active",
+  "graphics.scalerUnavailable": "Cannot inspect the active upscaler",
+  "graphics.dlssRequirements": "DLSS requires compatible NVIDIA hardware and OpenGL/Vulkan memory sharing. FSR1 is used if the backend rejects it."
 }

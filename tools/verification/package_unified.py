@@ -12,6 +12,7 @@ with zipfile.ZipFile(jar) as z:
  assert meta['depends']['minecraft']==target
  assert 'META-INF/licenses/diorama-MIT.txt' in names
  assert 'dev/diorama/bake/TileBaker.class' in names
+ assert all(n in names for n in ['assets/trsclient/graphics-catalog.json','assets/trsclient/provider-es.json','META-INF/licenses/TFL-localization-NOTICE.txt'])
  assert not any('/ornithe/dev/' in n or '/trsclient/dev/' in n for n in names)
  assert all('assets/trsclient/video/'+name in names for name in ['menu.mjpeg','menu-balanced.mjpeg','menu-performance.mjpeg'])
 shutil.copy2(jar,out/jar.name)
@@ -21,11 +22,11 @@ reports=[p for p in source.rglob(reportname) if 'production' in str(p) or target
 assert reports,'No production native report'
 for report in reports:
  r=json.loads(report.read_text());assert r['status']=='passed',(report,r.get('error'));assert r['checks'] and all(c['passed'] for c in r['checks'])
-copy_files=['docs/STABILIZATION.md','docs/VISUAL_IDENTITY.md','docs/evidence/visual-identity/optional-dependencies.json','tools/ornithe/dependencies.json' if target=='1.8.9' else 'docs/evidence/depth-polish/optimizer-dependencies-263.json']
+copy_files=['docs/AUDIT_COMPLETION.md','docs/STABILIZATION.md','docs/VISUAL_IDENTITY.md','docs/evidence/visual-identity/optional-dependencies.json','tools/ornithe/dependencies.json' if target=='1.8.9' else 'docs/evidence/depth-polish/optimizer-dependencies-263.json']
 for rel in copy_files:shutil.copy2(root/rel,out/pathlib.Path(rel).name)
 with zipfile.ZipFile(out/('native-evidence-'+target+'.zip'),'w',zipfile.ZIP_DEFLATED) as z:
  for p in source.rglob('*'):
-  if p.is_file() and p.suffix in ['.json','.png','.xml'] and 'build/libs' not in p.as_posix():z.write(p,p.relative_to(source))
+  if p.is_file() and p.suffix in ['.json','.png','.xml','.jfr'] and 'build/libs' not in p.as_posix():z.write(p,p.relative_to(source))
 subprocess.run(['git','archive','--format=zip','--output='+str((out/'complete-source.zip').resolve()),'HEAD'],cwd=root,check=True)
 loader='Ornithe Gen2 1.8.9 + OSL 0.22.2 (Fabric Loader 0.19.5)' if target=='1.8.9' else 'Fabric Loader 0.19.5 + Fabric API 0.161.0+26.3'
 readme=f'''TFL Client {meta['version']} — candidata de pruebas para Minecraft {target}
@@ -37,7 +38,7 @@ Argentum/Legacy LWJGL3 y Sodium son dependencias opcionales separadas: enlaces y
 Paper Doll · Mini Player se configura en HUD y se mueve desde el HUD Editor. Diorama: M abre el mapa, arrastrar mueve la vista y la rueda hace zoom. En 1.8.9: C cambia la capa; clic derecho crea un waypoint; clic en un waypoint lo edita. En 26.3 están disponibles los controles nativos de Diorama.
 El fondo permite Calidad, Equilibrado, Rendimiento, Estático y Desactivado. El menú no muestra contadores ni botones de depuración; las métricas siguen disponibles para diagnóstico.
 
-Lee STABILIZATION.md para las pruebas, métricas y limitaciones. Las ejecuciones en llvmpipe no certifican rendimiento de GPU física. Iris no pudo validarse en este backend.
+Lee AUDIT_COMPLETION.md para las pruebas, métricas y limitaciones. Las ejecuciones en llvmpipe no certifican rendimiento de GPU física. Iris no pudo validarse en este backend.
 Para clips MP4, instala FFmpeg y ffprobe en PATH; no se descargan ni se activa un servicio externo. Las exportaciones son copias.
 La evidencia nativa se incluye por separado; complete-source.zip corresponde al commit de esta publicación.
 '''

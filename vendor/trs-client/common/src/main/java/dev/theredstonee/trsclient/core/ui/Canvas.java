@@ -32,6 +32,7 @@ public interface Canvas {
 	 * erst am Ende – ohne diesen Aufruf läge er über später gezeichneten Flächen.
 	 */
 	void flush();
+	default void overlayLayer(){flush();}
 
 	/** Zeichnen auf ein Rechteck begrenzen; mit {@link #noScissor()} beenden. */
 	void scissor(int x1, int y1, int x2, int y2);

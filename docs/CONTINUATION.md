@@ -1,3 +1,5 @@
+Estado de esta actualización: [0.4.0-audit.1 — correcciones y evidencia](AUDIT_COMPLETION.md). Los bloques siguientes son históricos y pueden mencionar adaptadores retirados.
+
 Estado actual: [Native Rework 0.4.0-dev.3](FINAL_REWORK.md). La evidencia siguiente conserva el historial de las candidatas previas.
 
 # Continuación concreta

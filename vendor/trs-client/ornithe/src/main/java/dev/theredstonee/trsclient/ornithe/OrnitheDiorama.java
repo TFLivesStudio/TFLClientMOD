@@ -33,9 +33,9 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
  private final int[] coverageBuffer=new int[256*256];
  private DioramaFog fog;private long maskAt;private double oldMaskU,oldMaskV,oldExtent;private long maskRevision,maskContentRevision;private int oldMaskLayer=Integer.MIN_VALUE,oldMaskLod=-1;
  private volatile long revision,epoch;private long lastCapture;private boolean closed;private TextureRef clouds;
- public long bakedTiles,bakeNanos,captureNanos,captureCount,maskNanos,maskBuilds,uploadNanos,uploadCount,drawNanos,drawCount;public volatile String failure="";
- private record Result(TileKey key,int[] pixels,TrackedChunks dependencies,long epoch){}
- private static final class Tile {TextureRef texture;long checkedRevision=-1,lastRequest;boolean dirty;TrackedChunks dependencies;byte[] alpha;}
+ public volatile long bakedTiles,bakeNanos; public long captureNanos,captureCount,maskNanos,maskBuilds,uploadNanos,uploadCount,drawNanos,drawCount;public volatile String failure="";
+ private record Result(TileKey key,int[] pixels,TrackedChunks.Dependencies dependencies,long epoch){}
+ private static final class Tile {TextureRef texture;long checkedRevision=-1,lastRequest;boolean dirty;TrackedChunks.Dependencies dependencies;byte[] alpha;}
  private boolean stale(Tile tile){
   if(tile.checkedRevision!=revision){tile.checkedRevision=revision;tile.dirty=tile.dependencies==null||!tile.dependencies.current(chunks);}
   return tile.dirty;
@@ -187,7 +187,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
   clouds=client.canvas.upload("diorama/clouds",256,256,p);
  }
  private void request(TileKey key){if(!baking.add(key))return;long session=epoch;BlockLooks colors=looks;TrackedChunks source=new TrackedChunks(this);
-  try{worker.execute(()->{try{long start=System.nanoTime();TileImage image=TileBaker.bake(key,source,colors,null,false);int[] p=image.mips()[0];for(int i=0;i<p.length;i++){int v=p[i];p[i]=v&0xFF00FF00|(v&255)<<16|(v>>>16&255);}if(session==epoch){completed.offer(new Result(key,p,source,session));bakeNanos+=System.nanoTime()-start;bakedTiles++;}}catch(Throwable e){failure=e.toString();}finally{baking.remove(key);}});}catch(RejectedExecutionException e){baking.remove(key);}
+  try{worker.execute(()->{try{long start=System.nanoTime();TileImage image=TileBaker.bake(key,source,colors,null,false);int[] p=image.mips()[0];for(int i=0;i<p.length;i++){int v=p[i];p[i]=v&0xFF00FF00|(v&255)<<16|(v>>>16&255);}if(session==epoch){completed.offer(new Result(key,p,source.dependencies(),session));synchronized(OrnitheDiorama.this){bakeNanos+=System.nanoTime()-start;bakedTiles++;}}}catch(Throwable e){failure=e.toString();}finally{baking.remove(key);}});}catch(RejectedExecutionException e){baking.remove(key);}
  }
  private void upload(){Result r;int uploaded=0;while(uploaded++<1&&(r=completed.poll())!=null){if(r.epoch!=epoch)continue;long uploadStart=System.nanoTime();maskContentRevision++;Tile tile=tiles.computeIfAbsent(r.key,k->new Tile());tile.texture=client.canvas.upload("diorama/tile-"+r.key.layer()+"-"+r.key.lod()+"-"+r.key.tileU()+"-"+r.key.tileV(),Projection.TILE_PIXELS,Projection.TILE_PIXELS,r.pixels);tile.dependencies=r.dependencies;tile.checkedRevision=-1;tile.alpha=new byte[r.pixels.length];for(int i=0;i<r.pixels.length;i++)tile.alpha[i]=(byte)(r.pixels[i]>>>24);
   uploadNanos+=System.nanoTime()-uploadStart;uploadCount++;

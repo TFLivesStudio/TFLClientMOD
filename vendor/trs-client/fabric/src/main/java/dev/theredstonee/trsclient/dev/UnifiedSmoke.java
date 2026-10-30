@@ -33,8 +33,12 @@ public final class UnifiedSmoke {
     check("shared pause rail",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);
     var nativeChat=(dev.theredstonee.trsclient.screen.PauseChatScreen)Mc.screen();
     var field=net.minecraft.client.gui.screens.ChatScreen.class.getDeclaredField("input");field.setAccessible(true);((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).setValue("/help");
-    nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(257,0,0));
-    check("chat submission retains pause",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);check("native chat history retained",mc.gui.hud.getChat().getRecentChat().contains("/help"));AutoTest.shot(mc,"unified-pause");Mc.setScreen(null);mc.reloadResourcePacks();phase++;wait=40;return;
+    nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_TAB,com.mojang.blaze3d.platform.InputConstants.KEYCODE_TAB,com.mojang.blaze3d.platform.InputConstants.MOD_CONTROL));
+    check("SDL Ctrl Tab focuses menu",!((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).isFocused());
+    nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_TAB,com.mojang.blaze3d.platform.InputConstants.KEYCODE_TAB,0));
+    check("SDL Tab returns to chat",((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).isFocused());
+    nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_RETURN,com.mojang.blaze3d.platform.InputConstants.KEYCODE_RETURN,0));
+    check("chat submission retains pause",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);check("native chat history retained",mc.gui.hud.getChat().getRecentChat().contains("/help"));AutoTest.shot(mc,"unified-pause");check("SDL left click reaches full-window X",nativeChat.mouseClicked(new net.minecraft.client.input.MouseButtonEvent(nativeChat.width-18,16,new net.minecraft.client.input.MouseButtonInfo(dev.theredstonee.trsclient.compat.Keys.MOUSE_LEFT,0)),false));Mc.setScreen(null);mc.reloadResourcePacks();phase++;wait=40;return;
    case 7:
     if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=80;return;
    case 8:
@@ -58,7 +62,7 @@ public final class UnifiedSmoke {
    case 42:
     dev.theredstonee.trsclient.core.performance.UiProfiler.start();at=System.nanoTime();phase=43;return;
    case 43:
-    if(System.nanoTime()-at<8_000_000_000L)return;report.add("worldWithoutMenuProfile",new Gson().toJsonTree(dev.theredstonee.trsclient.core.performance.UiProfiler.stop()));finish(mc,null);phase=99;return;
+    if(System.nanoTime()-at<8_000_000_000L)return;var worldProfile=dev.theredstonee.trsclient.core.performance.UiProfiler.stop();check("world callback profiling records real frames",((Number)worldProfile.get("worldFrames")).intValue()>0);report.add("worldWithoutMenuProfile",new Gson().toJsonTree(worldProfile));finish(mc,null);phase=99;return;
   }
  }catch(Throwable error){finish(mc,error);phase=99;}}
  private void finish(Minecraft mc,Throwable error){report.addProperty("status",error==null?"passed":"failed");report.add("checks",checks);if(error!=null){report.addProperty("error",error.toString());error.printStackTrace();}try{Files.write(mc.gameDirectory.toPath().resolve("unified-smoke.json"),new GsonBuilder().setPrettyPrinting().create().toJson(report).getBytes(java.nio.charset.StandardCharsets.UTF_8));}catch(Exception e){throw new RuntimeException(e);}mc.stop();}
