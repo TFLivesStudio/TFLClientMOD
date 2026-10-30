@@ -11,6 +11,7 @@ with zipfile.ZipFile(jar) as z:
  meta=json.loads(z.read('fabric.mod.json'));names=z.namelist()
  assert meta['depends']['minecraft']==target
  assert 'META-INF/licenses/diorama-MIT.txt' in names
+ assert not any(n.endswith('/MenuFontMixin.class') or n.endswith('/ClientMenuFontMixin.class') for n in names)
  assert 'dev/diorama/bake/TileBaker.class' in names
  assert all(n in names for n in ['assets/trsclient/graphics-catalog.json','assets/trsclient/provider-es.json','META-INF/licenses/TFL-localization-NOTICE.txt'])
  assert not any('/ornithe/dev/' in n or '/trsclient/dev/' in n for n in names)
