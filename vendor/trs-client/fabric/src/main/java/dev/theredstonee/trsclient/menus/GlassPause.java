@@ -14,12 +14,13 @@ public final class GlassPause {
         if(options==null||exit==null)return;
         final net.minecraft.client.gui.components.Button disconnect=exit;
         final java.util.List<dev.theredstonee.trsclient.core.ui.menu.MenuAction> rows=new java.util.ArrayList<>();
+        final java.util.List<dev.theredstonee.trsclient.core.ui.menu.MenuAction> shortcuts=new java.util.ArrayList<>();
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.resume"),"play",()->Mc.setScreen(null)));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction("TFL Client","settings",()->VanillaMenus.openFromPause(Mc.screen(),"core")));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.options"),"settings",()->options.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.captures"),"image",()->VanillaMenus.openFromPause(Mc.screen(),"clips")));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr(Mc.mc().hasSingleplayerServer()?"pause.singleplayerWorldInformation":"pause.serverInformation"),"info",()->VanillaMenus.openFromPause(Mc.screen(),"serverInfo")));
-        rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"),"activity",()->Mc.setScreen(new dev.theredstonee.trsclient.screen.TrsUiScreen("Diagnostics",new dev.theredstonee.trsclient.core.ui.menus.ActionListUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"),"Minecraft 26.3 · TFL Client · "+dev.theredstonee.trsclient.TrsClient.get().modules().registry.all().size()+" shared modules. Open Client settings to configure each module.",()->Mc.setScreen(parent),()->{})))));
+        shortcuts.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"),"activity",()->Mc.setScreen(new dev.theredstonee.trsclient.screen.TrsUiScreen("Diagnostics",new dev.theredstonee.trsclient.core.ui.menus.ActionListUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"),"Minecraft 26.3 · TFL Client · "+dev.theredstonee.trsclient.TrsClient.get().modules().registry.all().size()+" shared modules. Open Client settings to configure each module.",()->Mc.setScreen(parent),()->{})))));
         rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(Mc.mc().hasSingleplayerServer()?dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.saveQuit"):dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.disconnect"),"back",()->disconnect.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
         // Preserve version-specific native actions (statistics, advancements, LAN, etc.).
         final java.util.List<net.minecraft.client.gui.components.Button> extras=new java.util.ArrayList<>();
@@ -27,14 +28,20 @@ public final class GlassPause {
         final String resume=net.minecraft.network.chat.Component.translatable("menu.returnToGame").getString();
         for(final net.minecraft.client.gui.components.Button button:extras) {
             if(button==options||button==disconnect||button.getMessage().getString().equals(resume))continue;
-            rows.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(button.getMessage().getString(),"settings",()->button.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
+            shortcuts.add(new dev.theredstonee.trsclient.core.ui.menu.MenuAction(button.getMessage().getString(),nativeIcon(button.getMessage().getString()),()->button.onPress(new net.minecraft.client.input.KeyEvent(257,0,0))));
         }
-        final Screen next=new dev.theredstonee.trsclient.screen.PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"),rows,()->Mc.setScreen(null),()->{}));
+        final Screen next=new dev.theredstonee.trsclient.screen.PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"),rows,shortcuts,()->Mc.setScreen(null),()->{}));
         Mc.mc().execute(()->{if(Mc.screen()==parent)Mc.setScreen(next);});
         *///?}
     }
     //? if >=26.3 {
-    /*private static void collect(net.minecraft.client.gui.components.events.ContainerEventHandler root,java.util.List<net.minecraft.client.gui.components.Button> out,int depth){
+    /*private static String nativeIcon(String label){
+        if(label.equals(net.minecraft.network.chat.Component.translatable("gui.stats").getString()))return "gauge";
+        if(label.equals(net.minecraft.network.chat.Component.translatable("gui.advancements").getString()))return "flag";
+        if(label.equals(net.minecraft.network.chat.Component.translatable("menu.shareToLan").getString()))return "globe";
+        return "info";
+    }
+    private static void collect(net.minecraft.client.gui.components.events.ContainerEventHandler root,java.util.List<net.minecraft.client.gui.components.Button> out,int depth){
         if(depth>8)return;
         for(Object child:root.children()){
             if(child instanceof net.minecraft.client.gui.components.Button && ((net.minecraft.client.gui.components.Button)child).active)out.add((net.minecraft.client.gui.components.Button)child);

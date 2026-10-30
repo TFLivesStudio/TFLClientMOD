@@ -734,6 +734,7 @@ public final class OrnitheClient implements ModInitializer {
   public void drawHud() { drawHud(1); }
   public void drawHud(float partial) {
     hudPartialTick=partial;
+    if(mc.screen instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay)return;
     if (!ready || mc.world == null || mc.player == null){if(miniPlayer!=null)miniPlayer.close();return;}
     if(mc.options.hideGui||mc.screen instanceof CoreScreen cs&&!cs.ui.overlay()){
         if(miniPlayer!=null&&modules.miniPlayer.shouldDraw(false,true,true,mc.options.hideGui,mc.screen!=null,true))drawMiniOnly();return;

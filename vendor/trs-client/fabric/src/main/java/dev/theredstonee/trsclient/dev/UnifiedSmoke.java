@@ -29,10 +29,12 @@ public final class UnifiedSmoke {
     if(System.nanoTime()-at<15_000_000_000L)return;
     check("Diorama owns full map",Mc.screen() instanceof dev.diorama.MapScreen);AutoTest.shot(mc,"unified-diorama-map");Mc.setScreen(new dev.diorama.SettingsScreen(new dev.diorama.MapScreen()));phase++;wait=15;return;
    case 5:
-    AutoTest.shot(mc,"unified-map-settings");Mc.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));phase++;wait=15;return;
+    AutoTest.shot(mc,"unified-map-settings");modules.keystrokes.setEnabled(true);Mc.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));phase++;wait=15;return;
    case 6:
     check("shared pause rail",Mc.screen() instanceof dev.theredstonee.trsclient.screen.PauseChatScreen);
     var nativeChat=(dev.theredstonee.trsclient.screen.PauseChatScreen)Mc.screen();
+    check("pause has exactly six primary buttons",nativeChat.actions.primaryCount()==6);check("pause retains native secondary actions",nativeChat.actions.secondaryCount()>1);
+    dev.theredstonee.trsclient.TrsClient.get().hud().render(null);dev.theredstonee.trsclient.TrsClient.get().hud().renderHiddenMini(null);check("pause suppresses enabled custom HUD including F1 Mini Player",modules.keystrokes.isEnabled()&&modules.minimap.isEnabled());
     var field=net.minecraft.client.gui.screens.ChatScreen.class.getDeclaredField("input");field.setAccessible(true);check("pause input is in lower right",((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).getX()>=nativeChat.width/2);((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).setValue("/help");
     nativeChat.keyPressed(new net.minecraft.client.input.KeyEvent(com.mojang.blaze3d.platform.InputConstants.KEY_TAB,com.mojang.blaze3d.platform.InputConstants.KEYCODE_TAB,com.mojang.blaze3d.platform.InputConstants.MOD_CONTROL));
     check("SDL Ctrl Tab focuses menu",!((net.minecraft.client.gui.components.EditBox)field.get(nativeChat)).isFocused());

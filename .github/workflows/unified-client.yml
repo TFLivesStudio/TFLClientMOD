@@ -94,8 +94,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - {target: '1.8.9', stack: argentum, tag: v0.4.0-audit.2-ornithe189, title: 'TFL Client 1.8.9 — Map rendering and pause layout fix'}
-          - {target: '26.3', stack: sodium, tag: v0.4.0-audit.2-fabric263, title: 'TFL Client 26.3 — Map rendering and pause layout fix'}
+          - {target: '1.8.9', stack: argentum, tag: v0.4.0-audit.3-ornithe189, title: 'TFL Client 1.8.9 — Map rendering and pause layout fix'}
+          - {target: '26.3', stack: sodium, tag: v0.4.0-audit.3-fabric263, title: 'TFL Client 26.3 — Map rendering and pause layout fix'}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4

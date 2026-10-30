@@ -149,6 +149,7 @@ public final class UnifiedSmoke implements Runnable {
         case 47 -> {
           if (System.nanoTime() - at < 2_000_000_000L) return;
           shot("cloud-frontier");
+          c.modules.keystrokes.setEnabled(true);
           c.mc.openScreen(c.navigation.pause());
           var line =
               new net.minecraft.text.LiteralText("Click to suggest /help — Minecraft ñá 123");
@@ -163,6 +164,43 @@ public final class UnifiedSmoke implements Runnable {
         case 5 -> {
           check("shared pause rail", c.mc.screen instanceof PauseChatScreen);
           check("native chat focused", c.mc.gui.getChat().isChatFocused());
+          var projection = org.lwjgl.BufferUtils.createFloatBuffer(16);
+          org.lwjgl.opengl.GL11.glGetFloat(org.lwjgl.opengl.GL11.GL_PROJECTION_MATRIX, projection);
+          check(
+              "pause retains the orthographic GUI projection",
+              Math.abs(projection.get(0) - 2f / c.window().getWidth()) < .00001f
+                  && Math.abs(projection.get(5) + 2f / c.window().getHeight()) < .00001f);
+          var pauseActions = ((PauseChatScreen) c.mc.screen).actions;
+          check("pause has exactly six primary buttons", pauseActions.primaryCount() == 6);
+          check("pause retains native secondary actions", pauseActions.secondaryCount() >= 3);
+          boolean[] hudDrawn = {false};
+          var hudProbe =
+              new dev.theredstonee.trsclient.core.ui.menu.HudItem() {
+                public dev.theredstonee.trsclient.core.module.HudModule module() {
+                  return c.modules.keystrokes;
+                }
+
+                public int width() {
+                  return 1;
+                }
+
+                public int height() {
+                  return 1;
+                }
+
+                public void draw(Canvas canvas) {
+                  hudDrawn[0] = true;
+                }
+              };
+          c.hudItems.add(hudProbe);
+          try {
+            c.drawHud();
+          } finally {
+            c.hudItems.remove(hudProbe);
+          }
+          check(
+              "pause suppresses enabled custom HUD without changing settings",
+              !hudDrawn[0] && c.modules.keystrokes.isEnabled() && c.modules.minimap.isEnabled());
           var inputField =
               java.util.Arrays.stream(
                       net.minecraft.client.gui.screen.game.ChatScreen.class.getDeclaredFields())

@@ -41,6 +41,18 @@
       "passed": true
     },
     {
+      "name": "pause has exactly six primary buttons",
+      "passed": true
+    },
+    {
+      "name": "pause retains native secondary actions",
+      "passed": true
+    },
+    {
+      "name": "pause suppresses enabled custom HUD without changing settings",
+      "passed": true
+    },
+    {
       "name": "pause input is in lower right",
       "passed": true
     },
@@ -681,7 +693,7 @@
       "passed": true
     }
   ],
-  "measuredVideoFps": 29.734421046551606,
+  "measuredVideoFps": 29.843656858526256,
   "video": {
     "decoderImplementation": "ImageIO parallel",
     "mode": "HIGH",
@@ -689,40 +701,41 @@
     "fallbackReason": "",
     "failure": "",
     "sessions": 2,
-    "framesDecoded": 425,
-    "framesUploaded": 421,
-    "framesPresented": 421,
+    "framesDecoded": 427,
+    "framesUploaded": 424,
+    "framesPresented": 424,
     "loops": 0,
-    "decodedFingerprint": 8729683831866190819,
-    "uploadedFingerprint": -8989348147706613107,
-    "decodeNanos": 6845600831,
-    "uploadNanos": 765212597,
-    "decoderCpuNanos": 4993715731,
-    "uploadBytes": 3491942400,
-    "discardedFrames": 3,
-    "elapsedNanos": 14171775244,
+    "decodedFingerprint": 297527914709788360,
+    "uploadedFingerprint": 7799558654813277743,
+    "decodeNanos": 4942765787,
+    "uploadNanos": 741373850,
+    "decoderCpuNanos": 4562668813,
+    "uploadBytes": 3516825600,
+    "discardedFrames": 2,
+    "elapsedNanos": 14239465498,
     "pixelBufferAllocations": 8,
     "imageBufferAllocations": 3,
     "pendingFrames": 1,
     "ownedTextures": 1,
-    "decoderFps": 29.989185735917957,
-    "presentationFps": 29.706695434617355,
-    "drawCalls": 835
+    "decoderFps": 29.98708062883218,
+    "presentationFps": 29.776213141088814,
+    "drawCalls": 611
   },
   "mapFontRegression": {
-    "worldMapDraws": 1,
+    "externalVaoPreserved": true,
     "minimapToggleDraws": 3,
+    "worldMapDraws": 1,
     "nativeGlyphPixelsIdentical": true
   },
-  "bakedTiles": 106,
-  "meanBakeMs": 119.33234764150943,
+  "bakedTiles": 30,
+  "meanBakeMs": 89.54678606666667,
   "pauseMinimapTarget": {
-    "internalFormat": 32849,
-    "targetTexture": 31,
-    "totalPixels": 50176,
     "actualTexture": 31,
     "opaquePixels": 50176,
-    "edge": 224
+    "edge": 224,
+    "internalFormat": 32849,
+    "targetTexture": 31,
+    "totalPixels": 50176
   },
   "graphicsInventory": [
     {
@@ -1776,34 +1789,34 @@
   ],
   "upscalerFallback": "Requested upscaler: DLSS · Active: FSR1 (fallback)",
   "rightShiftProfile": {
-    "samples": 130,
-    "renderCallbackIntervalP95Ms": 70.759314,
-    "renderCallbackIntervalP99Ms": 74.850569,
-    "uiThreadCpuP95Ms": 26.618333,
-    "uiThreadCpuP99Ms": 27.593316,
-    "worldFrames": 129,
-    "worldCallbackP95Ms": 70.775668,
-    "worldCallbackP99Ms": 74.836869,
-    "startEpochMs": 1793324771983,
-    "endEpochMs": 1793324780006,
+    "samples": 88,
+    "renderCallbackIntervalP95Ms": 96.94157,
+    "renderCallbackIntervalP99Ms": 110.737016,
+    "uiThreadCpuP95Ms": 25.200328,
+    "uiThreadCpuP99Ms": 25.989605,
+    "worldFrames": 87,
+    "worldCallbackP95Ms": 96.939177,
+    "worldCallbackP99Ms": 110.726851,
+    "startEpochMs": 1793339000387,
+    "endEpochMs": 1793339008475,
     "allocationTimingSupported": true,
-    "renderThreadAllocatedBytes": 46798152,
-    "processGcCollections": 0,
-    "processGcMillis": 0,
+    "renderThreadAllocatedBytes": 48911448,
+    "processGcCollections": 1,
+    "processGcMillis": 2,
     "cpuTimingSupported": true,
     "gpuTimingMeasured": false
   },
   "mapMetrics": {
-    "captureCount": 603,
-    "captureMeanMs": 0.06614480597014925,
-    "bakedTiles": 168,
-    "bakeMeanMs": 90.6899863452381,
-    "maskBuilds": 57,
-    "maskMeanMs": 2.786042947368421,
-    "uploadCount": 55,
-    "uploadMeanMs": 0.8582773272727272,
-    "drawCount": 93,
-    "drawMeanMs": 13.803595741935485,
+    "captureCount": 424,
+    "captureMeanMs": 0.029424811320754717,
+    "bakedTiles": 74,
+    "bakeMeanMs": 54.64659909459459,
+    "maskBuilds": 30,
+    "maskMeanMs": 3.4918919666666666,
+    "uploadCount": 28,
+    "uploadMeanMs": 0.6409014285714285,
+    "drawCount": 38,
+    "drawMeanMs": 4.670858868421052,
     "queuedBakes": 0,
     "queuedUploads": 0,
     "gpuTimingMeasured": false

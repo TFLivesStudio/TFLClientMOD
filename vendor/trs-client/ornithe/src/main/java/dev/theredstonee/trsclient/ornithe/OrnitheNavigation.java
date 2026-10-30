@@ -106,6 +106,7 @@ public final class OrnitheNavigation {
 
   public Screen pause() {
     var actions = new ArrayList<MenuAction>();
+    var extras = new ArrayList<MenuAction>();
     actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.resume"), "play", () -> c.mc.openScreen(null)));
     actions.add(new MenuAction("TFL Client", "settings", () -> c.openMenu(c.mc.screen)));
     actions.add(
@@ -115,7 +116,7 @@ public final class OrnitheNavigation {
             () -> c.mc.openScreen(new OptionsScreen(c.mc.screen, c.mc.options))));
     actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.captures"), "image", () -> captures(c.mc.screen)));
     actions.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr(c.mc.isSingleplayer()?"pause.singleplayerWorldInformation":"pause.serverInformation"), "info", () -> serverInfo(c.mc.screen)));
-    actions.add(
+    extras.add(
         new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.diagnostics"), "activity", () -> diagnostics(c.mc.screen)));
     actions.add(
         new MenuAction(
@@ -126,8 +127,12 @@ public final class OrnitheNavigation {
               c.mc.setWorld(null);
               c.mc.openScreen(c.title());
             }));
+    extras.add(new MenuAction(net.minecraft.client.resource.language.I18n.translate("gui.achievements"), "flag", () -> c.mc.openScreen(new net.minecraft.client.gui.screen.menu.AchievementsScreen(c.mc.screen,c.mc.player.getStats()))));
+    extras.add(new MenuAction(net.minecraft.client.resource.language.I18n.translate("gui.stats"), "gauge", () -> c.mc.openScreen(new net.minecraft.client.gui.screen.menu.StatsScreen(c.mc.screen,c.mc.player.getStats()))));
+    if(c.mc.isSingleplayer() && c.mc.getServer()!=null && !c.mc.getServer().isPublished())
+      extras.add(new MenuAction(net.minecraft.client.resource.language.I18n.translate("menu.shareToLan"), "globe", () -> c.mc.openScreen(new net.minecraft.client.gui.screen.menu.world.OpenToLanScreen(c.mc.screen))));
     return new PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(
-            dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"), actions, () -> c.mc.openScreen(null), c::clickSound));
+            dev.theredstonee.trsclient.core.i18n.I18n.tr("pause.title"), actions, extras, () -> c.mc.openScreen(null), c::clickSound));
   }
 
   public void captures(Screen parent) {

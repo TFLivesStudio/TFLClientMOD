@@ -135,6 +135,7 @@ public final class HudManager {
 
 	/** HUD-Callback (jeden Frame). */
 	public void render(Gfx g) {
+        if(Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay)return;
 		try {
 			renderElements(g);
 		} finally {
@@ -154,7 +155,7 @@ public final class HudManager {
 	}
 
     //? if >=26.3 {
-    /*public void renderHiddenMini(Gfx g){if(miniPlayer!=null&&!miniPlayer.module().isEnabled())return;draw(g,mc.font,miniPlayer,g.width(),g.height(),false);}
+    /*public void renderHiddenMini(Gfx g){if(Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay)return;if(miniPlayer!=null&&!miniPlayer.module().isEnabled())return;draw(g,mc.font,miniPlayer,g.width(),g.height(),false);}
     *///?}
 
 	private void renderElements(Gfx g) {

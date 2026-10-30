@@ -8,10 +8,20 @@ import org.spongepowered.asm.mixin.injection.callback.*;
 
 @Mixin(GameGui.class)
 public abstract class GameGuiMixin {
-  @Inject(method = "render", at = @At("HEAD"))
+  @Inject(method = "render", at = @At("HEAD"), cancellable = true)
   private void tfl$start(float delta, CallbackInfo ci) {
     OrnitheClient c = OrnitheClient.get();
-    if (c != null) c.crosshairVisible = false;
+    if (c != null) {
+      c.crosshairVisible = false;
+      if (c.mc.screen instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay) {
+        // GameGui normally establishes the orthographic projection used by Screen.render.
+        // Keep that setup while omitting every HUD element, including custom callbacks.
+        c.mc.gameRenderer.setupGuiState();
+        net.minecraft.client.render.platform.GlStateManager.enableBlend();
+        net.minecraft.client.render.platform.GlStateManager.blendFuncSeparate(770, 771, 1, 0);
+        ci.cancel();
+      }
+    }
   }
 
   @Inject(method = "hasCrosshair", at = @At("RETURN"), cancellable = true)
