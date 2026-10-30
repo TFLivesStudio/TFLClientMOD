@@ -11,7 +11,7 @@ final class MapGlState implements AutoCloseable {
       scissor = BufferUtils.createIntBuffer(16);
   private final FloatBuffer color = BufferUtils.createFloatBuffer(16),
       clear = BufferUtils.createFloatBuffer(16);
-  private final ByteBuffer colorMask = BufferUtils.createByteBuffer(16);
+  private final IntBuffer colorMask = BufferUtils.createIntBuffer(16);
   private final int[] textures = new int[2], samplers = new int[2];
   private final boolean[] texturing = new boolean[2];
   private int active, program, matrixMode, drawFbo, readFbo, vao, arrayBuffer, elementBuffer;
@@ -38,7 +38,7 @@ final class MapGlState implements AutoCloseable {
     scissor.clear();
     GL11.glGetInteger(GL11.GL_SCISSOR_BOX, scissor);
     colorMask.clear();
-    GL11.glGetBoolean(GL11.GL_COLOR_WRITEMASK, colorMask);
+    GL11.glGetInteger(GL11.GL_COLOR_WRITEMASK, colorMask);
     color.clear();
     GL11.glGetFloat(GL11.GL_CURRENT_COLOR, color);
     clear.clear();
