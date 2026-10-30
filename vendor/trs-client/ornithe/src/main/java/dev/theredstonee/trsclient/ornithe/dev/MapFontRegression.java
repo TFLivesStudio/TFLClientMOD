@@ -134,10 +134,26 @@ public final class MapFontRegression {
         render);
   }
 
+  private static int attribute(int name) throws Exception {
+    try {
+      return ((Number)
+              GL20.class
+                  .getMethod("glGetVertexAttribi", int.class, int.class)
+                  .invoke(null, 0, name))
+          .intValue();
+    } catch (NoSuchMethodException oldApi) {
+      java.nio.IntBuffer data = BufferUtils.createIntBuffer(16);
+      GL20.class
+          .getMethod("glGetVertexAttrib", int.class, int.class, java.nio.IntBuffer.class)
+          .invoke(null, 0, name, data);
+      return data.get(0);
+    }
+  }
+
   public static Map<String, Object> run(OrnitheClient c, Path out) throws Exception {
     if (!GLContext.getCapabilities().OpenGL30)
       throw new AssertionError("Native map font fixture requires framebuffer support");
-    int fbo = 0, texture = 0;
+    int fbo = 0, texture = 0, probeVao = 0, probeVbo = 0;
     boolean enabled = c.modules.minimap.isEnabled();
     try (AutoCloseable ignored = scope()) {
       fbo = GL30.glGenFramebuffers();
@@ -165,12 +181,27 @@ public final class MapFontRegression {
       GL11.glMatrixMode(GL11.GL_MODELVIEW);
       GL11.glLoadIdentity();
       byte[] before = raster(c, out, "font-before-map");
+      int previousVao = GL11.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING),
+          previousArray = GL11.glGetInteger(GL15.GL_ARRAY_BUFFER_BINDING);
+      probeVao = GL30.glGenVertexArrays();
+      probeVbo = GL15.glGenBuffers();
+      GL30.glBindVertexArray(probeVao);
+      GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, probeVbo);
+      java.nio.FloatBuffer vertices = BufferUtils.createFloatBuffer(8);
+      vertices.put(new float[] {0, 0, 1, 0, 1, 1, 0, 1}).flip();
+      GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
+      GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 8, 0L);
+      GL20.glEnableVertexAttribArray(0);
+      GL30.glBindVertexArray(previousVao);
+      GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, previousArray);
       for (int i = 0; i < 3; i++) {
         c.modules.minimap.setEnabled(i != 0);
         GlStateManager.activeTexture(GL13.GL_TEXTURE1);
         GlStateManager.enableTexture();
         int binding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         boolean texturing = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
+        GL30.glBindVertexArray(probeVao);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, probeVbo);
         c.canvas.begin(c.window().getWidth(), c.window().getHeight(), c.window().getScale());
         try {
           if (c.modules.minimap.isEnabled()) drawMinimap(c);
@@ -181,6 +212,13 @@ public final class MapFontRegression {
             || GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != binding
             || GL11.glIsEnabled(GL11.GL_TEXTURE_2D) != texturing)
           throw new AssertionError("Minimap leaked active texture/lightmap state");
+        if (GL11.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING) != probeVao
+            || attribute(GL15.GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING) != probeVbo
+            || attribute(GL20.GL_VERTEX_ATTRIB_ARRAY_SIZE) != 2
+            || attribute(GL20.GL_VERTEX_ATTRIB_ARRAY_STRIDE) != 8)
+          throw new AssertionError("Map changed an external font/world VAO");
+        GL30.glBindVertexArray(previousVao);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, previousArray);
         GlStateManager.disableTexture();
         GlStateManager.activeTexture(GL13.GL_TEXTURE0);
         byte[] after = raster(c, out, "font-after-minimap-" + i);
@@ -197,9 +235,18 @@ public final class MapFontRegression {
       if (!Arrays.equals(before, raster(c, out, "font-after-world-map")))
         throw new AssertionError("Native glyph pixels changed after full-map fog");
       return Map.of(
-          "nativeGlyphPixelsIdentical", true, "minimapToggleDraws", 3, "worldMapDraws", 1);
+          "nativeGlyphPixelsIdentical",
+          true,
+          "externalVaoPreserved",
+          true,
+          "minimapToggleDraws",
+          3,
+          "worldMapDraws",
+          1);
     } finally {
       c.modules.minimap.setEnabled(enabled);
+      if (probeVao != 0) GL30.glDeleteVertexArrays(probeVao);
+      if (probeVbo != 0) GL15.glDeleteBuffers(probeVbo);
       if (fbo != 0) GL30.glDeleteFramebuffers(fbo);
       if (texture != 0) GL11.glDeleteTextures(texture);
     }

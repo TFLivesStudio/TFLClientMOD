@@ -8,7 +8,7 @@ Esta revisión se limita a los problemas reportados después de audit.1. No camb
 
 ## Comprobaciones
 
-La sonda de 1.8.9 compara los píxeles de texto dibujado por el renderer nativo antes y después de alternar el minimapa y de dibujar el mapa con niebla. Incluye una unidad de textura activa distinta de cero y comprueba su restauración. Las imágenes del texto se incluyen en la evidencia. El texto incluye números y caracteres españoles; una imagen vacía no cuenta como aprobada.
+La sonda de 1.8.9 compara los píxeles de texto dibujado por el renderer nativo antes y después de alternar el minimapa y de dibujar el mapa con niebla. Incluye una unidad de textura activa distinta de cero y un VAO externo con un formato de vértices distintivo; comprueba que ambos se restauren sin modificar los atributos del VAO ajeno. La restauración de arrays legacy se realiza únicamente sobre VAO 0. Las imágenes del texto se incluyen en la evidencia. El texto incluye números y caracteres españoles; una imagen vacía no cuenta como aprobada.
 
 Ambas sondas comprueban el campo de texto en el lado derecho, el envío e historial nativos y la detección de componentes clicables en la región inferior derecha. Las capturas muestran el menú, su velo y el chat con mensajes; 1.8.9 incluye además una vista de nubes en la frontera explorada. Las pruebas comunes cubren los límites del panel en distintos tamaños GUI y el valor de opacidad.
 

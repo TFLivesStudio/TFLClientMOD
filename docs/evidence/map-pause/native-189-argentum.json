@@ -1,0 +1,916 @@
+{
+  "checks": [
+    {
+      "name": "real video frames advance",
+      "passed": true
+    },
+    {
+      "name": "source targets 30 fps",
+      "passed": true
+    },
+    {
+      "name": "received chunks captured",
+      "passed": true
+    },
+    {
+      "name": "native font survives minimap toggles and world map",
+      "passed": true
+    },
+    {
+      "name": "original Diorama voxel tiles baked",
+      "passed": true
+    },
+    {
+      "name": "Diorama worker healthy",
+      "passed": true
+    },
+    {
+      "name": "native Diorama fog shader linked",
+      "passed": true
+    },
+    {
+      "name": "native Diorama map owns screen",
+      "passed": true
+    },
+    {
+      "name": "shared pause rail",
+      "passed": true
+    },
+    {
+      "name": "native chat focused",
+      "passed": true
+    },
+    {
+      "name": "pause input is in lower right",
+      "passed": true
+    },
+    {
+      "name": "native clickable chat follows lower-right layout",
+      "passed": true
+    },
+    {
+      "name": "chat submission retains pause",
+      "passed": true
+    },
+    {
+      "name": "native chat history retained",
+      "passed": true
+    },
+    {
+      "name": "minimap target retains opaque map pixels after full-map transition",
+      "passed": true
+    },
+    {
+      "name": "local screenshot editor available",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:render_distance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:brightness",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:gui_scale",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:fullscreen",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:max_frame_rate",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:vsync",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:view_bobbing",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:graphics_mode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:anaglyph",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:alternate_blocks",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:clouds",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:smooth_lighting",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:fog_shape",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:biome_blend",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:chunk_fade_in_duration",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:entity_shadows",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option minecraft:mipmap_levels",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:chunk_update_threads",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:defer_chunk_updates",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:async_graph_search",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:block_face_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:raster_occlusion_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:fog_occlusion",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:entity_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:entity_occlusion_interval",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:particle_culling",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:entity_instancing",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:bake_block_entities",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:name_tag_batching",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:animate_only_visible_textures",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:font_batching",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:gui_item_atlas",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:translucent_face_sorting",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:use_faster_clouds",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:faster_end_portals",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:faster_weather",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:safe_chunk_edges",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:render_pass_optimization",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:compact_vertex_format",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:greedy_render_thread",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option celeritas:cpu_render_ahead_limit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option argentum:check_gl_errors",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:titleScreen/menuFpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:titleScreen/backgroundMode",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/unfocused",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/minimized",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:dynamicFps/afkLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:worldMap/cloudQuality",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:worldMap/cloudMotion",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:miniPlayer/fpsLimit",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:fullbright/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:fullbright/level",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:colors/enabled",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:colors/saturation",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:colors/contrast",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:colors/brightness",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:colors/vibrance",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:colors/temperature",
+      "passed": true
+    },
+    {
+      "name": "unique graphics option tflcore:gpu_info",
+      "passed": true
+    },
+    {
+      "name": "graphics pending state",
+      "passed": true
+    },
+    {
+      "name": "graphics native apply",
+      "passed": true
+    },
+    {
+      "name": "graphics value restored",
+      "passed": true
+    },
+    {
+      "name": "Unified graphics owns native options",
+      "passed": true
+    },
+    {
+      "name": "public window title",
+      "passed": true
+    },
+    {
+      "name": "1280x720 framebuffer",
+      "passed": true
+    },
+    {
+      "name": "854x480 framebuffer",
+      "passed": true
+    },
+    {
+      "name": "title in fullscreen",
+      "passed": true
+    },
+    {
+      "name": "title after fullscreen",
+      "passed": true
+    }
+  ],
+  "measuredVideoFps": 29.837395998256174,
+  "video": {
+    "decoderImplementation": "ImageIO parallel",
+    "mode": "HIGH",
+    "decoderState": "running",
+    "fallbackReason": "",
+    "failure": "",
+    "sessions": 2,
+    "framesDecoded": 426,
+    "framesUploaded": 423,
+    "framesPresented": 423,
+    "loops": 0,
+    "decodedFingerprint": 7799558654813277743,
+    "uploadedFingerprint": 8729683831866190819,
+    "decodeNanos": 4999813260,
+    "uploadNanos": 719007302,
+    "decoderCpuNanos": 4781983054,
+    "uploadBytes": 3508531200,
+    "discardedFrames": 2,
+    "elapsedNanos": 14198632789,
+    "pixelBufferAllocations": 8,
+    "imageBufferAllocations": 3,
+    "pendingFrames": 1,
+    "ownedTextures": 1,
+    "decoderFps": 30.002888752079834,
+    "presentationFps": 29.791328469472493,
+    "drawCalls": 628
+  },
+  "mapFontRegression": {
+    "externalVaoPreserved": true,
+    "minimapToggleDraws": 3,
+    "worldMapDraws": 1,
+    "nativeGlyphPixelsIdentical": true
+  },
+  "bakedTiles": 27,
+  "meanBakeMs": 84.20805455555555,
+  "pauseMinimapTarget": {
+    "actualTexture": 28,
+    "opaquePixels": 50176,
+    "edge": 224,
+    "internalFormat": 32849,
+    "targetTexture": 28,
+    "totalPixels": 50176
+  },
+  "graphicsInventory": [
+    {
+      "id": "minecraft:render_distance",
+      "name": "Render Distance",
+      "localizedName": "Render Distance",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:brightness",
+      "name": "Brightness",
+      "localizedName": "Brightness",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:gui_scale",
+      "name": "GUI Scale",
+      "localizedName": "GUI Scale",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:fullscreen",
+      "name": "Fullscreen",
+      "localizedName": "Fullscreen",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:max_frame_rate",
+      "name": "Max Framerate",
+      "localizedName": "Max Framerate",
+      "group": "framerate",
+      "category": "Display",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:vsync",
+      "name": "Use VSync",
+      "localizedName": "Use VSync",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:view_bobbing",
+      "name": "View Bobbing",
+      "localizedName": "View Bobbing",
+      "group": "camera",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:graphics_mode",
+      "name": "Graphics",
+      "localizedName": "Graphics",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:anaglyph",
+      "name": "3D Anaglyph",
+      "localizedName": "3D Anaglyph",
+      "group": "display",
+      "category": "Display",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:alternate_blocks",
+      "name": "Alternate Blocks",
+      "localizedName": "Alternate Blocks",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:clouds",
+      "name": "Clouds",
+      "localizedName": "Clouds",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:particles",
+      "name": "Particles",
+      "localizedName": "Particles",
+      "group": "particles",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:smooth_lighting",
+      "name": "Smooth Lighting",
+      "localizedName": "Smooth Lighting",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "argentum:fog_shape",
+      "name": "Fog Shape",
+      "localizedName": "Fog Shape",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "minecraft:biome_blend",
+      "name": "Biome Blend",
+      "localizedName": "Biome Blend",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:chunk_fade_in_duration",
+      "name": "Chunk Fade-In Duration",
+      "localizedName": "Chunk Fade-In Duration",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "minecraft:entity_shadows",
+      "name": "Entity Shadows",
+      "localizedName": "Entity Shadows",
+      "group": "entities",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "minecraft:mipmap_levels",
+      "name": "Mipmap Levels",
+      "localizedName": "Mipmap Levels",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "dev.rdh.argentum.impl.gui.GameOptionsStorage"
+    },
+    {
+      "id": "celeritas:chunk_update_threads",
+      "name": "Chunk Update Threads",
+      "localizedName": "Chunk Update Threads",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:defer_chunk_updates",
+      "name": "Always Defer Chunk Updates",
+      "localizedName": "Always Defer Chunk Updates",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:async_graph_search",
+      "name": "Async Occlusion Culling",
+      "localizedName": "Async Occlusion Culling",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:block_face_culling",
+      "name": "Use Block Face Culling",
+      "localizedName": "Use Block Face Culling",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:raster_occlusion_culling",
+      "name": "Rasterized Occlusion Culling",
+      "localizedName": "Rasterized Occlusion Culling",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:fog_occlusion",
+      "name": "Use Fog Occlusion",
+      "localizedName": "Use Fog Occlusion",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:entity_culling",
+      "name": "Use Entity Culling",
+      "localizedName": "Use Entity Culling",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:entity_occlusion_interval",
+      "name": "Entity Occlusion Interval",
+      "localizedName": "Entity Occlusion Interval",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:particle_culling",
+      "name": "Particle Culling",
+      "localizedName": "Particle Culling",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:entity_instancing",
+      "name": "Entity Instancing",
+      "localizedName": "Entity Instancing",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:bake_block_entities",
+      "name": "Bake Block Entities",
+      "localizedName": "Bake Block Entities",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:name_tag_batching",
+      "name": "Name Tag Batching",
+      "localizedName": "Name Tag Batching",
+      "group": "entityOptimization",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:animate_only_visible_textures",
+      "name": "Animate Only Visible Textures",
+      "localizedName": "Animate Only Visible Textures",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:font_batching",
+      "name": "Font Batching",
+      "localizedName": "Font Batching",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:gui_item_atlas",
+      "name": "Cache Item Icons",
+      "localizedName": "Cache Item Icons",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:translucent_face_sorting",
+      "name": "Translucent Face Sorting",
+      "localizedName": "Translucent Face Sorting",
+      "group": "chunks",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:use_faster_clouds",
+      "name": "Use Faster Clouds",
+      "localizedName": "Use Faster Clouds",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:faster_end_portals",
+      "name": "Use Faster End Portals",
+      "localizedName": "Use Faster End Portals",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:faster_weather",
+      "name": "Use Faster Weather",
+      "localizedName": "Use Faster Weather",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:safe_chunk_edges",
+      "name": "Safe Chunk Edges",
+      "localizedName": "Safe Chunk Edges",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:render_pass_optimization",
+      "name": "Use Render Pass Optimization",
+      "localizedName": "Use Render Pass Optimization",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:compact_vertex_format",
+      "name": "Use Compact Vertex Format",
+      "localizedName": "Use Compact Vertex Format",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:greedy_render_thread",
+      "name": "Greedy Render Thread",
+      "localizedName": "Greedy Render Thread",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "celeritas:cpu_render_ahead_limit",
+      "name": "CPU Render-Ahead Limit",
+      "localizedName": "CPU Render-Ahead Limit",
+      "group": "processing",
+      "category": "Performance",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "argentum:check_gl_errors",
+      "name": "OpenGL Error Checks",
+      "localizedName": "OpenGL Error Checks",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.rdh.argentum.api.config.JsonOptionStorage"
+    },
+    {
+      "id": "tflcore:titleScreen/menuFpsLimit",
+      "name": "Menu animation FPS limit",
+      "localizedName": "Menu animation FPS limit",
+      "group": "framerate",
+      "category": "Display",
+      "backend": "TFL ConfigStore: titleScreen.menuFpsLimit"
+    },
+    {
+      "id": "tflcore:titleScreen/backgroundMode",
+      "name": "Menu background",
+      "localizedName": "Menu background",
+      "group": "geometry",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: titleScreen.backgroundMode"
+    },
+    {
+      "id": "tflcore:dynamicFps/enabled",
+      "name": "Dynamic FPS",
+      "localizedName": "Dynamic FPS",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps"
+    },
+    {
+      "id": "tflcore:dynamicFps/unfocused",
+      "name": "FPS in the background",
+      "localizedName": "FPS in the background",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.unfocused"
+    },
+    {
+      "id": "tflcore:dynamicFps/minimized",
+      "name": "FPS when minimized",
+      "localizedName": "FPS when minimized",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.minimized"
+    },
+    {
+      "id": "tflcore:dynamicFps/afkLimit",
+      "name": "FPS when AFK (0 \u003d off)",
+      "localizedName": "FPS when AFK (0 \u003d off)",
+      "group": "inactivity",
+      "category": "Performance",
+      "backend": "TFL ConfigStore: dynamicFps.afkLimit"
+    },
+    {
+      "id": "tflcore:worldMap/cloudQuality",
+      "name": "Volumetric cloud quality",
+      "localizedName": "Volumetric cloud quality",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: worldMap.cloudQuality"
+    },
+    {
+      "id": "tflcore:worldMap/cloudMotion",
+      "name": "Subtle atmospheric motion",
+      "localizedName": "Subtle atmospheric motion",
+      "group": "environment",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: worldMap.cloudMotion"
+    },
+    {
+      "id": "tflcore:miniPlayer/fpsLimit",
+      "name": "Widget FPS limit (0 \u003d unlimited)",
+      "localizedName": "Widget FPS limit (0 \u003d unlimited)",
+      "group": "entities",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: miniPlayer.fpsLimit"
+    },
+    {
+      "id": "tflcore:fullbright/enabled",
+      "name": "Gamma",
+      "localizedName": "Gamma",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: fullbright"
+    },
+    {
+      "id": "tflcore:fullbright/level",
+      "name": "Extended gamma level",
+      "localizedName": "Extended gamma level",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: fullbright.level"
+    },
+    {
+      "id": "tflcore:colors/enabled",
+      "name": "Colors",
+      "localizedName": "Colors",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: colors"
+    },
+    {
+      "id": "tflcore:colors/saturation",
+      "name": "Color: Saturation",
+      "localizedName": "Color: Saturation",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: colors.saturation"
+    },
+    {
+      "id": "tflcore:colors/contrast",
+      "name": "Color: Contrast",
+      "localizedName": "Color: Contrast",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: colors.contrast"
+    },
+    {
+      "id": "tflcore:colors/brightness",
+      "name": "Color: Brightness",
+      "localizedName": "Color: Brightness",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: colors.brightness"
+    },
+    {
+      "id": "tflcore:colors/vibrance",
+      "name": "Color: Vibrance",
+      "localizedName": "Color: Vibrance",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: colors.vibrance"
+    },
+    {
+      "id": "tflcore:colors/temperature",
+      "name": "Color: Color temperature",
+      "localizedName": "Color: Color temperature",
+      "group": "lighting",
+      "category": "Quality",
+      "backend": "TFL ConfigStore: colors.temperature"
+    },
+    {
+      "id": "tflcore:gpu_info",
+      "name": "GPU",
+      "localizedName": "GPU",
+      "group": "diagnostics",
+      "category": "Advanced",
+      "backend": "dev.theredstonee.trsclient.ornithe.OrnitheGraphics$1"
+    }
+  ],
+  "rightShiftProfile": {
+    "samples": 112,
+    "renderCallbackIntervalP95Ms": 76.707165,
+    "renderCallbackIntervalP99Ms": 80.626613,
+    "uiThreadCpuP95Ms": 22.956131,
+    "uiThreadCpuP99Ms": 28.643832,
+    "worldFrames": 111,
+    "worldCallbackP95Ms": 76.706925,
+    "worldCallbackP99Ms": 80.654454,
+    "startEpochMs": 1793327520853,
+    "endEpochMs": 1793327528890,
+    "allocationTimingSupported": true,
+    "renderThreadAllocatedBytes": 55514304,
+    "processGcCollections": 1,
+    "processGcMillis": 4,
+    "cpuTimingSupported": true,
+    "gpuTimingMeasured": false
+  },
+  "mapMetrics": {
+    "captureCount": 448,
+    "captureMeanMs": 0.02834714732142857,
+    "bakedTiles": 81,
+    "bakeMeanMs": 50.86072455555556,
+    "maskBuilds": 32,
+    "maskMeanMs": 2.6443588125,
+    "uploadCount": 29,
+    "uploadMeanMs": 3.481135551724138,
+    "drawCount": 68,
+    "drawMeanMs": 6.478509058823529,
+    "queuedBakes": 0,
+    "queuedUploads": 0,
+    "gpuTimingMeasured": false
+  },
+  "status": "passed"
+}

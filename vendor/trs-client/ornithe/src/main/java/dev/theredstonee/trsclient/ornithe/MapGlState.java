@@ -24,7 +24,6 @@ final class MapGlState implements AutoCloseable {
     active = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
     program = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
     matrixMode = GL11.glGetInteger(GL11.GL_MATRIX_MODE);
-    GL11.glPushClientAttrib(GL11.GL_CLIENT_VERTEX_ARRAY_BIT);
     gl30 = GLContext.getCapabilities().OpenGL30;
     gl33 = GLContext.getCapabilities().OpenGL33;
     if (gl30) {
@@ -34,6 +33,9 @@ final class MapGlState implements AutoCloseable {
     }
     arrayBuffer = GL11.glGetInteger(GL15.GL_ARRAY_BUFFER_BINDING);
     elementBuffer = GL11.glGetInteger(GL15.GL_ELEMENT_ARRAY_BUFFER_BINDING);
+    // Legacy client-array restoration must only touch VAO 0, never a font/world renderer's VAO.
+    if (gl30) GL30.glBindVertexArray(0);
+    GL11.glPushClientAttrib(GL11.GL_CLIENT_VERTEX_ARRAY_BIT);
     viewport.clear();
     GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
     scissor.clear();
@@ -130,9 +132,10 @@ final class MapGlState implements AutoCloseable {
     if (gl30) {
       GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, drawFbo);
       GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, readFbo);
-      GL30.glBindVertexArray(vao);
+      GL30.glBindVertexArray(0);
     }
     GL11.glPopClientAttrib();
+    if (gl30) GL30.glBindVertexArray(vao);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, arrayBuffer);
     GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
     GL11.glMatrixMode(GL11.GL_MODELVIEW);
