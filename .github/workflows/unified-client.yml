@@ -27,11 +27,13 @@ jobs:
       - run: python3 -m unittest discover -s tools -p 'test_*.py'
       - run: python3 tools/scan_secrets.py
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.publish)
         with:
           name: unified-common-tests
           path: vendor/trs-client/common/build/test-results/
   native:
+    permissions:
+      contents: write
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
@@ -74,8 +76,31 @@ jobs:
           if [ '${{ matrix.stack }}' = sodium ]; then extra+=("-PdepthRuntimeModsDir=$RUNNER_TEMP/sodium-mods" "-PtflAuditProfile"); fi
           xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runProdClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=unified -PdepthNativeProbe "${extra[@]}" --no-daemon --max-workers=2
           python3 tools/verification/check_unified.py vendor/trs-client/run/prod-26.3/unified-smoke.json
+      - name: Stage verified release without Actions artifact storage
+        if: github.event_name == 'workflow_dispatch' && inputs.publish && (matrix.stack == 'argentum' || matrix.stack == 'sodium')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          mkdir -p verified
+          if [ "$TARGET" = '1.8.9' ]; then
+            cp -r vendor/trs-client/ornithe/build/smoke/production verified/
+            cp vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties).jar verified/
+            tag=v0.4.0-audit.4-ornithe189
+          else
+            cp -r vendor/trs-client/run/prod-26.3 verified/
+            cp vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.4.0-audit.4.jar verified/
+            tag=v0.4.0-audit.4-fabric263
+          fi
+          python3 tools/verification/package_unified.py verified release-unified "$TARGET"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
+            gh release upload "$tag" release-unified/* --clobber
+          else
+            gh release create "$tag" release-unified/* --draft --prerelease --latest=false --target "$GITHUB_SHA" --title "TFL Client $TARGET — Server maps and Diorama camera" --notes-file docs/SERVER_MAPS.md
+          fi
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.publish)
         with:
           name: unified-native-${{ matrix.target }}-${{ matrix.stack }}
           overwrite: true
@@ -102,13 +127,7 @@ jobs:
           - {target: '26.3', stack: sodium, tag: v0.4.0-audit.4-fabric263, title: 'TFL Client 26.3 — Server worlds, cardinal camera and Diorama markers'}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: unified-native-${{ matrix.target }}-${{ matrix.stack }}
-          path: verified
-      - run: python3 tools/verification/package_unified.py verified release-unified '${{ matrix.target }}'
       - env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ matrix.tag }}
-          RELEASE_TITLE: ${{ matrix.title }}
-        run: gh release create "$RELEASE_TAG" release-unified/* --prerelease --latest=false --target "$GITHUB_SHA" --title "$RELEASE_TITLE" --notes-file docs/SERVER_MAPS.md
+        run: gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
