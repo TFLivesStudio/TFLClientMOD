@@ -15,7 +15,7 @@ final class MapGlState implements AutoCloseable {
   private final int[] textures = new int[2], samplers = new int[2];
   private final boolean[] texturing = new boolean[2];
   private int active, program, matrixMode, drawFbo, readFbo, vao, arrayBuffer, elementBuffer;
-  private int srcRgb, dstRgb, srcAlpha, dstAlpha;
+  private int srcRgb, dstRgb, srcAlpha, dstAlpha, equationRgb, equationAlpha;
   private boolean depth, cull, alpha, blend, lighting, scissored, depthMask, gl30, gl33, open;
 
   MapGlState begin() {
@@ -24,6 +24,7 @@ final class MapGlState implements AutoCloseable {
     active = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
     program = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
     matrixMode = GL11.glGetInteger(GL11.GL_MATRIX_MODE);
+    GL11.glPushClientAttrib(GL11.GL_CLIENT_VERTEX_ARRAY_BIT);
     gl30 = GLContext.getCapabilities().OpenGL30;
     gl33 = GLContext.getCapabilities().OpenGL33;
     if (gl30) {
@@ -50,6 +51,8 @@ final class MapGlState implements AutoCloseable {
     lighting = GL11.glIsEnabled(GL11.GL_LIGHTING);
     scissored = GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
     depthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
+    equationRgb = GL11.glGetInteger(GL20.GL_BLEND_EQUATION_RGB);
+    equationAlpha = GL11.glGetInteger(GL20.GL_BLEND_EQUATION_ALPHA);
     srcRgb = GL11.glGetInteger(GL14.GL_BLEND_SRC_RGB);
     dstRgb = GL11.glGetInteger(GL14.GL_BLEND_DST_RGB);
     srcAlpha = GL11.glGetInteger(GL14.GL_BLEND_SRC_ALPHA);
@@ -70,6 +73,7 @@ final class MapGlState implements AutoCloseable {
     GL11.glDisable(GL11.GL_TEXTURE_2D);
     GlStateManager.disableTexture();
     active(GL13.GL_TEXTURE0);
+    GL20.glBlendEquationSeparate(GL14.GL_FUNC_ADD, GL14.GL_FUNC_ADD);
     GL11.glColorMask(true, true, true, true);
     GlStateManager.colorMask(true, true, true, true);
     GL14.glBlendFuncSeparate(
@@ -86,6 +90,12 @@ final class MapGlState implements AutoCloseable {
     if (gl30) GL30.glBindVertexArray(0);
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+    GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+    GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+    GL13.glClientActiveTexture(GL13.GL_TEXTURE1);
+    GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+    GL13.glClientActiveTexture(GL13.GL_TEXTURE0);
+    GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
     GL11.glDisable(GL11.GL_DEPTH_TEST);
     GL11.glDisable(GL11.GL_CULL_FACE);
     GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -122,6 +132,7 @@ final class MapGlState implements AutoCloseable {
       GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, readFbo);
       GL30.glBindVertexArray(vao);
     }
+    GL11.glPopClientAttrib();
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, arrayBuffer);
     GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
     GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -161,6 +172,7 @@ final class MapGlState implements AutoCloseable {
         colorMask.get(0) != 0, colorMask.get(1) != 0, colorMask.get(2) != 0, colorMask.get(3) != 0);
     GL11.glDepthMask(depthMask);
     GlStateManager.depthMask(depthMask);
+    GL20.glBlendEquationSeparate(equationRgb, equationAlpha);
     GL14.glBlendFuncSeparate(srcRgb, dstRgb, srcAlpha, dstAlpha);
     GlStateManager.blendFuncSeparate(srcRgb, dstRgb, srcAlpha, dstAlpha);
     GL11.glColor4f(color.get(0), color.get(1), color.get(2), color.get(3));

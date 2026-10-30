@@ -16,8 +16,7 @@ final class DioramaMinimapTarget implements AutoCloseable {
       render.run();
       return;
     }
-    int pixels = Math.min(512, size * 2),
-        oldFramebuffer = GL11.glGetInteger(GL30.GL_FRAMEBUFFER_BINDING);
+    int pixels = Math.min(512, size * 2);
     int oldProgram = GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM);
     try (var ignored = state.begin()) {
       if (edge != pixels) {
@@ -27,14 +26,16 @@ final class DioramaMinimapTarget implements AutoCloseable {
         texture = GL11.glGenTextures();
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo);
         net.minecraft.client.render.platform.GlStateManager.bindTexture(texture);
+        // Terrain + fog are composited over an opaque map. Keep alpha out of this target:
+        // the final shader owns widget opacity and the antialiased circular edge.
         GL11.glTexImage2D(
             GL11.GL_TEXTURE_2D,
             0,
-            GL11.GL_RGBA8,
+            GL11.GL_RGB8,
             edge,
             edge,
             0,
-            GL11.GL_RGBA,
+            GL11.GL_RGB,
             GL11.GL_UNSIGNED_BYTE,
             (java.nio.ByteBuffer) null);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);

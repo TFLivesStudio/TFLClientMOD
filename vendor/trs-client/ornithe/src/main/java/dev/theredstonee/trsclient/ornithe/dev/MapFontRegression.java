@@ -77,7 +77,19 @@ public final class MapFontRegression {
           image.setRGB(x, edge - y - 1, a << 24 | r << 16 | g << 8 | b);
         }
       ImageIO.write(image, "png", out.resolve("minimap-target-pause.png").toFile());
-      return Map.of("edge", edge, "opaquePixels", opaque, "totalPixels", edge * edge);
+      return Map.of(
+          "edge",
+          edge,
+          "opaquePixels",
+          opaque,
+          "totalPixels",
+          edge * edge,
+          "actualTexture",
+          GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D),
+          "targetTexture",
+          tex.getInt(target),
+          "internalFormat",
+          GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_INTERNAL_FORMAT));
     }
   }
 
