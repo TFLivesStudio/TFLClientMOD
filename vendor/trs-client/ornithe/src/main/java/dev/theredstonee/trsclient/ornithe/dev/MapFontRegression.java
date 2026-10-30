@@ -93,6 +93,47 @@ public final class MapFontRegression {
     }
   }
 
+  private static void drawMinimap(OrnitheClient c) throws Exception {
+    var field = OrnitheClient.class.getDeclaredField("minimapTarget");
+    field.setAccessible(true);
+    Object target = field.get(c);
+    var draw =
+        target
+            .getClass()
+            .getDeclaredMethod(
+                "draw",
+                OrnitheClient.class,
+                dev.theredstonee.trsclient.core.ui.Canvas.class,
+                int.class,
+                boolean.class,
+                int.class,
+                Runnable.class);
+    draw.setAccessible(true);
+    int size = c.modules.minimapSize.getInt();
+    Runnable render =
+        () ->
+            c.diorama.draw(
+                c.canvas,
+                0,
+                0,
+                size,
+                size,
+                c.mapPlatform.x(),
+                c.mapPlatform.y(),
+                c.mapPlatform.z(),
+                c.modules.minimapZoom.get().pixelsPerBlock(),
+                c.diorama.autoLayer());
+    draw.invoke(
+        target,
+        c,
+        c.canvas,
+        size,
+        c.modules.minimapShape.get()
+            == dev.theredstonee.trsclient.core.module.TrsModules.MapShape.ROUND,
+        c.modules.minimapOpacity.getInt(),
+        render);
+  }
+
   public static Map<String, Object> run(OrnitheClient c, Path out) throws Exception {
     if (!GLContext.getCapabilities().OpenGL30)
       throw new AssertionError("Native map font fixture requires framebuffer support");
@@ -130,7 +171,12 @@ public final class MapFontRegression {
         GlStateManager.enableTexture();
         int binding = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
         boolean texturing = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-        c.drawHud();
+        c.canvas.begin(c.window().getWidth(), c.window().getHeight(), c.window().getScale());
+        try {
+          if (c.modules.minimap.isEnabled()) drawMinimap(c);
+        } finally {
+          c.canvas.end();
+        }
         if (GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE) != GL13.GL_TEXTURE1
             || GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) != binding
             || GL11.glIsEnabled(GL11.GL_TEXTURE_2D) != texturing)
@@ -144,15 +190,7 @@ public final class MapFontRegression {
       c.canvas.begin(c.window().getWidth(), c.window().getHeight(), c.window().getScale());
       try {
         c.diorama.draw(
-            c.canvas,
-            0,
-            0,
-            WIDTH,
-            HEIGHT,
-            c.mc.player.x + 512,
-            c.mc.player.y,
-            c.mc.player.z + 512,
-            .5);
+            c.canvas, 0, 0, WIDTH, HEIGHT, c.mc.player.x, c.mc.player.y, c.mc.player.z, .5);
       } finally {
         c.canvas.end();
       }

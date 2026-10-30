@@ -50,7 +50,7 @@ public final class UnifiedSmoke implements Runnable {
   }
 
   public void run() {
-    if (wait-- > 0) return;
+    if (phase == 99 || wait-- > 0) return;
     try {
       if (System.nanoTime() - start > 240_000_000_000L)
         throw new AssertionError("unified timeout phase " + phase);
@@ -120,11 +120,13 @@ public final class UnifiedSmoke implements Runnable {
           shot("hud");
           c.openWorldMap(null);
           phase++;
-          wait = 160;
+          at = System.nanoTime();
+          wait = 0;
         }
         case 4 -> {
-          if (c.diorama.bakedTiles < 2) {
-            wait = 30;
+          if (System.nanoTime() - at < 2_000_000_000L) return;
+          if (c.diorama.bakedTiles < 2 || c.diorama.uploadCount < 2) {
+            wait = 5;
             return;
           }
           check("original Diorama voxel tiles baked", c.diorama.bakedTiles >= 2);
@@ -141,9 +143,11 @@ public final class UnifiedSmoke implements Runnable {
           mapUi.inputClick(c.window().getWidth() / 2, c.window().getHeight() / 2, 0);
           mapUi.inputDrag(c.window().getWidth() / 2 - 100, c.window().getHeight() / 2, 0);
           phase = 47;
-          wait = 40;
+          at = System.nanoTime();
+          wait = 0;
         }
         case 47 -> {
+          if (System.nanoTime() - at < 2_000_000_000L) return;
           shot("cloud-frontier");
           c.mc.openScreen(c.navigation.pause());
           var line =

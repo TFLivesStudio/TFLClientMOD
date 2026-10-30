@@ -11,7 +11,7 @@ public final class UnifiedSmoke {
  private final JsonObject report=new JsonObject();private final JsonArray checks=new JsonArray();
  public static void install(){UnifiedSmoke test=new UnifiedSmoke();net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(test::tick);}
  private void check(String name,boolean pass){JsonObject item=new JsonObject();item.addProperty("name",name);item.addProperty("passed",pass);checks.add(item);if(!pass)throw new AssertionError(name);}
- private void tick(Minecraft mc){if(wait-->0)return;try{
+ private void tick(Minecraft mc){if(phase==99||wait-->0)return;try{
   if(System.nanoTime()-started>240_000_000_000L)throw new AssertionError("unified timeout phase "+phase);
   var client=TrsClient.get();var modules=client.modules();
   switch(phase){
@@ -24,8 +24,9 @@ public final class UnifiedSmoke {
     if(System.nanoTime()-at<12_000_000_000L)return;
     var video=MenuBackground.shared().metrics();report.add("video",new Gson().toJsonTree(video));report.addProperty("measuredVideoFps",(video.framesPresented-sequence)*1e9/(System.nanoTime()-at));check("real video advances",video.framesPresented-sequence>80);check("source targets 30 fps",MenuBackground.Mode.HIGH.fps==30);AutoTest.shot(mc,"unified-video-b");modules.minimap.setEnabled(true);AutoTest.startWorld(mc);phase++;return;
    case 3:
-    if(mc.level==null||mc.player==null||Mc.overlay()!=null||Mc.screen()!=null)return;mc.options.guiScale().set(4);mc.resizeGui();check("Diorama session created",dev.diorama.MapSession.get()!=null);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=300;return;
+    if(mc.level==null||mc.player==null||Mc.overlay()!=null||Mc.screen()!=null)return;mc.options.guiScale().set(4);mc.resizeGui();check("Diorama session created",dev.diorama.MapSession.get()!=null);Mc.setScreen(new dev.diorama.MapScreen());phase++;at=System.nanoTime();wait=0;return;
    case 4:
+    if(System.nanoTime()-at<15_000_000_000L)return;
     check("Diorama owns full map",Mc.screen() instanceof dev.diorama.MapScreen);AutoTest.shot(mc,"unified-diorama-map");Mc.setScreen(new dev.diorama.SettingsScreen(new dev.diorama.MapScreen()));phase++;wait=15;return;
    case 5:
     AutoTest.shot(mc,"unified-map-settings");Mc.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));phase++;wait=15;return;
@@ -48,8 +49,9 @@ public final class UnifiedSmoke {
     outer:for(int y=(int)(pause.height*.65);y<pause.height-18;y+=2)for(int x=dev.theredstonee.trsclient.core.ui.menus.PauseLayout.chatLeft(pause.width);x<pause.width-10;x+=2){var finder=new net.minecraft.client.gui.ActiveTextCollector.ClickableStyleFinder(mc.font,x,y);mc.gui.hud.getChat().captureClickableText(finder,pause.height,mc.gui.hud.getGuiTicks(),net.minecraft.client.gui.components.ChatComponent.DisplayMode.FOREGROUND);if(finder.result()!=null&&finder.result().getClickEvent()!=null){clickable=true;report.addProperty("chatHitX",x);report.addProperty("chatHitY",y);break outer;}}
     check("native clickable chat follows lower-right layout",clickable);AutoTest.shot(mc,"unified-pause");check("SDL left click reaches full-window X",pause.mouseClicked(new net.minecraft.client.input.MouseButtonEvent(pause.width-18,16,new net.minecraft.client.input.MouseButtonInfo(dev.theredstonee.trsclient.compat.Keys.MOUSE_LEFT,0)),false));Mc.setScreen(null);mc.reloadResourcePacks();phase=7;wait=40;return;
    case 7:
-    if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;wait=80;return;
+    if(Mc.overlay()!=null)return;check("reload completed",true);Mc.setScreen(new dev.diorama.MapScreen());phase++;at=System.nanoTime();wait=0;return;
    case 8:
+    if(System.nanoTime()-at<4_000_000_000L)return;
     AutoTest.shot(mc,"unified-diorama-reload");check("Diorama remains available after reload",dev.diorama.MapSession.get()!=null);
     try{var type=Class.forName("net.caffeinemc.mods.sodium.client.gui.VideoSettingsScreen");var method=type.getMethod("createScreen",net.minecraft.client.gui.screens.Screen.class);Mc.setScreen((net.minecraft.client.gui.screens.Screen)method.invoke(null,Mc.screen()));phase++;wait=20;return;}catch(ClassNotFoundException absent){Mc.setScreen(new net.minecraft.client.gui.screens.options.VideoSettingsScreen(Mc.screen(),mc,mc.options));phase=9;wait=20;return;}
    case 9:
