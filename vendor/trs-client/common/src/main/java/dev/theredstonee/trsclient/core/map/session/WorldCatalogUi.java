@@ -39,14 +39,14 @@ public final class WorldCatalogUi extends WindowUi {
         y,
         Theme.get().textDim,
         false);
-    MenuSkin.textField(c, x, y + 18, w - 120, 22, name.focused(), false, true);
-    c.text(c.clip(name.text(), w - 130), x + 5, y + 25, Theme.get().text, false);
-    hits.add(x, y + 18, w - 120, 22, () -> name.setFocused(true));
+    MenuSkin.textField(c, x, y + 18, w - 142, 22, name.focused(), false, true);
+    c.text(c.clip(name.text(), w - 150), x + 5, y + 25, Theme.get().text, false);
+    hits.add(x, y + 18, w - 142, 22, () -> name.setFocused(true));
     button(
         c,
-        x + w - 114,
+        x + w - 136,
         y + 18,
-        54,
+        76,
         22,
         dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.rename"),
         false,

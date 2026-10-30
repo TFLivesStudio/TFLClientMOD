@@ -2655,7 +2655,7 @@
   "graphics.scalerUnavailable": "Cannot inspect the active upscaler",
   "graphics.dlssRequirements": "DLSS requires compatible NVIDIA hardware and OpenGL/Vulkan memory sharing. FSR1 is used if the backend rejects it.",
   "serverMaps.worlds": "Worlds",
-  "serverMaps.hint": "No server world ID: select your saved world.",
+  "serverMaps.hint": "Choose the saved world this map belongs to.",
   "serverMaps.rename": "Rename",
   "serverMaps.new": "New",
   "serverMaps.world": "World {0} (no ID)",

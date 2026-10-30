@@ -2655,7 +2655,7 @@
   "graphics.scalerUnavailable": "No se pudo consultar el escalador activo",
   "graphics.dlssRequirements": "DLSS requiere hardware NVIDIA compatible y memoria compartida entre OpenGL y Vulkan. Si el backend lo rechaza se utiliza FSR1.",
   "serverMaps.worlds": "Mundos",
-  "serverMaps.hint": "Sin ID del servidor: elige tu mundo guardado.",
+  "serverMaps.hint": "Elige el mundo guardado al que pertenece este mapa.",
   "serverMaps.rename": "Renombrar",
   "serverMaps.new": "Nuevo",
   "serverMaps.world": "Mundo {0} (sin ID)",

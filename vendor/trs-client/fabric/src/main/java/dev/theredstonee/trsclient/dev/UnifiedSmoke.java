@@ -34,7 +34,8 @@ public final class UnifiedSmoke {
     double cu=dev.diorama.Projection.u(mc.player.getX(),mc.player.getZ()),cv=dev.diorama.Projection.v(mc.player.getX(),mc.player.getY(),mc.player.getZ());
     var tile=new dev.diorama.bake.TileKey(dev.diorama.bake.TileKey.SURFACE,(int)Math.floor(cu/128),(int)Math.floor(cv/128));var pick=new dev.diorama.bake.MapPick(dev.diorama.MapSession.get().map(),dev.diorama.bake.BlockLooks.get(),tile,false);
     int result=pick.pick(cu,cv);var point=result==dev.diorama.bake.MapPick.FOUND?dev.diorama.Projection.worldPos(new net.minecraft.core.BlockPos((int)Math.floor(cu),pick.y,pick.z)):null;
-    check("cardinal map pick converts to real world "+cameraStage,point!=null&&Math.abs(point.getX()-mc.player.getX())<3&&Math.abs(point.getZ()-mc.player.getZ())<3);
+    JsonObject picked=new JsonObject();picked.addProperty("result",result);if(point!=null){picked.addProperty("x",point.getX());picked.addProperty("y",point.getY());picked.addProperty("z",point.getZ());picked.addProperty("rayErrorU",Math.abs(dev.diorama.Projection.u(point.getX()+.5,point.getZ()+.5)-cu));picked.addProperty("rayErrorV",Math.abs(dev.diorama.Projection.v(point.getX()+.5,point.getY(),point.getZ()+.5)-cv));}report.add("cameraPick"+cameraStage,picked);
+    check("cardinal map pick converts to real world "+cameraStage,point!=null&&Math.abs(dev.diorama.Projection.u(point.getX()+.5,point.getZ()+.5)-cu)<=1&&Math.abs(dev.diorama.Projection.v(point.getX()+.5,point.getY(),point.getZ()+.5)-cv)<=1.5);
     dev.diorama.WorldKey.rotateCamera();cameraStage++;if(cameraStage<4){Mc.setScreen(new dev.diorama.MapScreen());at=System.nanoTime();return;}
     Mc.setScreen(new dev.diorama.SettingsScreen(new dev.diorama.MapScreen()));phase=5;wait=15;return;
    case 5:
