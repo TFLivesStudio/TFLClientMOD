@@ -16,7 +16,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: unified-${{ github.head_ref || github.ref_name }}
+  group: unified-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.preview_189 && 'preview' || 'native' }}
   cancel-in-progress: true
 jobs:
   common:
