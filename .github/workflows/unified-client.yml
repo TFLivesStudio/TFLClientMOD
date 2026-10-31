@@ -141,7 +141,7 @@ jobs:
   # Manual preview path, independent of OpenGL/Mesa native smoke timeouts.
   # It does not replace the full certification matrix and NEVER publishes publicly.
   preview_189:
-    if: \${{ github.event_name == 'workflow_dispatch' && inputs.preview_189 }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.preview_189 }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     permissions:
@@ -174,11 +174,11 @@ jobs:
           EOF
       - name: Stage preview JAR in draft release (never publish)
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          short_sha="\${GITHUB_SHA:0:8}"
-          tag="v0.4.0-audit.4-preview-\${short_sha}-ornithe189"
+          short_sha="${GITHUB_SHA:0:8}"
+          tag="v0.4.0-audit.4-preview-${short_sha}-ornithe189"
           if gh release view "$tag" >/dev/null 2>&1; then
             test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
             gh release upload "$tag" preview-189/* --clobber
