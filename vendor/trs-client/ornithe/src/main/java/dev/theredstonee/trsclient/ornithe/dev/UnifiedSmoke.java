@@ -28,6 +28,9 @@ public final class UnifiedSmoke implements Runnable {
   private volatile int phase;
   private volatile long lastProgress = System.nanoTime();
   private volatile String lastOp = "probe-created";
+  // Tick liveness plus tile counters, snapshotted on the client thread into volatiles so the
+  // heartbeat can report tick death separately from a phase 4 that is lawfully baking tiles.
+  private volatile long seenTicks, tilesBaked, tilesDiskHits, tilesUploaded;
 
   void mark(String operation) {
     lastOp = operation;
@@ -55,6 +58,22 @@ public final class UnifiedSmoke implements Runnable {
 
   long checkCount() {
     return checks.size();
+  }
+
+  long seenTicks() {
+    return seenTicks;
+  }
+
+  long tilesBaked() {
+    return tilesBaked;
+  }
+
+  long tilesDiskHits() {
+    return tilesDiskHits;
+  }
+
+  long tilesUploaded() {
+    return tilesUploaded;
   }
 
   public UnifiedSmoke(OrnitheClient c, Path out) {
@@ -88,6 +107,14 @@ public final class UnifiedSmoke implements Runnable {
   }
 
   public void run() {
+    seenTicks++;
+    if (c.diorama != null) {
+      // Plain counters read on the client thread and copied into volatiles, so the heartbeat
+      // never tears client state and ticking-without-tiles becomes observable.
+      tilesBaked = c.diorama.bakedTiles;
+      tilesDiskHits = c.diorama.diskTileHits;
+      tilesUploaded = c.diorama.uploadCount;
+    }
     if (phase == 99 || wait-- > 0) return;
     try {
       if (loggedPhase != phase) {

@@ -23,18 +23,32 @@ def handle_x_error(display,error):
  if error.contents.error_code not in (3,8):errors.append(error.contents.error_code)
  return 0
 x.XSetErrorHandler.argtypes=[C.c_void_p];x.XSetErrorHandler(C.cast(handle_x_error,C.c_void_p))
-def timeout_diagnostics():
+def timeout_diagnostics(sequence=0):
  # Preserve native client stacks when the outer watchdog fires, rather than losing the cause.
  tool=shutil.which('jcmd')
- if not tool:return
+ if not tool:return print('Timeout stacks: jcmd unavailable; no thread dumps collected',flush=True)
  try:
-  clients=subprocess.run([tool,'-l'],capture_output=True,text=True,timeout=10).stdout
+  clients=subprocess.run([tool,'-l'],capture_output=True,text=True,timeout=10)
   report.parent.mkdir(parents=True,exist_ok=True)
-  for line in clients.splitlines():
+  found=0
+  for line in clients.stdout.splitlines():
    if not any(name in line for name in ('KnotClient','Minecraft','devlaunchinjector')):continue
+   found+=1
+   print(f'Timeout stacks: capturing {line.strip()}',flush=True)
    pid=line.split()[0]
-   stacks=subprocess.run([tool,pid,'Thread.print','-l'],capture_output=True,text=True,timeout=15)
-   (report.parent/f'timeout-threads-{pid}.txt').write_text(stacks.stdout+stacks.stderr)
+   try:
+    stacks=subprocess.run([tool,pid,'Thread.print','-l'],capture_output=True,text=True,timeout=15)
+    output=(stacks.stdout or '')+(stacks.stderr or '')
+   except subprocess.TimeoutExpired as expired:
+    print(f'Timeout stacks: jcmd {pid} Thread.print timed out; keeping the partial output',flush=True)
+    output=f'jcmd {pid} Thread.print abandoned after 15s (process kept for the outer watchdog)\n'
+    for field in ('stdout','stderr'):
+     chunk=getattr(expired,field,None)
+     if isinstance(chunk,bytes):chunk=chunk.decode('utf-8','replace')
+     if chunk:output+=chunk
+   name=f'timeout-threads-{pid}.txt' if not sequence else f'timeout-threads-{sequence}-{pid}.txt'
+   (report.parent/name).write_text(output)
+  if not found:print('Timeout stacks: no client process matched; jcmd -l printed:\n'+clients.stdout+clients.stderr,flush=True)
  except (OSError,subprocess.TimeoutExpired) as error:print('Could not collect timeout stacks:',error,flush=True)
 
 proc=subprocess.Popen(cmd);deadline=time.monotonic()+(900 if a.unified else 480)
@@ -45,10 +59,21 @@ pulse_started=None
 last_pulse=0.0
 last_op=None
 last_op_at=0.0
+last_ticks=None
+last_ticks_at=0.0
+last_tiles=None
+last_tiles_at=0.0
+tick_stall_reported=False
+tile_stall_reported=False
 # Phase 4 legally waits minutes for Diorama tiles on software GL; every other phase must
 # name a different operation within a sustained window (well under the 600 s probe budget).
 SLOW_BAKE_PHASE=4
 OP_STALE_SEC=420
+# A dead client loop is diagnosable long before the global deadline: the run that stalled in
+# run 44 never ticked again after opening the world map, and dumps at ~120 s prove the cause.
+TICK_STALL_SEC=120
+# Ticking but counters frozen is a different failure; capture evidence without aborting bake.
+TILE_STALL_SEC=240
 def echo_diagnostics(reason):
  # Keep the evidence even when the step fails: thread dumps and reports are echoed to the job
  # log, because the artifact upload step can itself be skipped after unrelated failures.
@@ -74,6 +99,17 @@ try:
     try:current=json.loads(text)
     except ValueError:current={}
     if current.get('lastOp')!=last_op:last_op=current.get('lastOp');last_op_at=now
+    ticks=current.get('ticks')
+    if ticks is not None and ticks!=last_ticks:last_ticks=ticks;last_ticks_at=now
+    if current.get('baked') is not None:
+     tiles=current['baked']+current.get('disk',0)+current.get('uploads',0)
+     if tiles!=last_tiles:last_tiles=tiles;last_tiles_at=now
+  if pulse_started is not None and last_ticks is not None and now-last_ticks_at>TICK_STALL_SEC and not tick_stall_reported:
+   tick_stall_reported=True
+   timeout_diagnostics(1);echo_diagnostics(f'tick stall: client has not ticked for {int(now-last_ticks_at)}s during phase {current_phase()}: {last_op}; dumps captured immediately, still waiting on the global deadline')
+  if pulse_started is not None and last_ticks is not None and now-last_ticks_at<=TICK_STALL_SEC and current_phase()==SLOW_BAKE_PHASE and last_tiles is not None and now-last_tiles_at>TILE_STALL_SEC and not tile_stall_reported:
+   tile_stall_reported=True
+   timeout_diagnostics(2);echo_diagnostics(f'tile stall: client ticking but Diorama counters unchanged for {int(now-last_tiles_at)}s: ticks={last_ticks} tiles={last_tiles}; dumps captured, still waiting on the global deadline')
   if pulse_started is not None and now-last_pulse>180:
    timeout_diagnostics();echo_diagnostics(f'inactivity: no probe pulse for {int(now-last_pulse)}s');proc.terminate();raise SystemExit(f'Smoke inactivity timeout: no probe pulse for {int(now-last_pulse)}s; the printed pulse names the blocked probe phase and last operation')
   if pulse_started is not None and current_phase()!=SLOW_BAKE_PHASE and now-last_op_at>OP_STALE_SEC:

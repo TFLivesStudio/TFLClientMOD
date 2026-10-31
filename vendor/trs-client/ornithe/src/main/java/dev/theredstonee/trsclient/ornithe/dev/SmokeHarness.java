@@ -118,6 +118,14 @@ public final class SmokeHarness implements Runnable {
                             + unified.checkCount()
                             + " last="
                             + unified.lastOperation()
+                            + " ticks="
+                            + unified.seenTicks()
+                            + " baked="
+                            + unified.tilesBaked()
+                            + " disk="
+                            + unified.tilesDiskHits()
+                            + " uploads="
+                            + unified.tilesUploaded()
                             + " at "
                             + elapsed
                             + " ms");
@@ -126,6 +134,10 @@ public final class SmokeHarness implements Runnable {
                     item.addProperty("phase", unified.phaseNumber());
                     item.addProperty("checks", unified.checkCount());
                     item.addProperty("lastOp", unified.lastOperation());
+                    item.addProperty("ticks", unified.seenTicks());
+                    item.addProperty("baked", unified.tilesBaked());
+                    item.addProperty("disk", unified.tilesDiskHits());
+                    item.addProperty("uploads", unified.tilesUploaded());
                     item.addProperty("elapsedMs", elapsed);
                     item.addProperty("stampIso", stamp);
                     java.nio.file.Path tmp =
