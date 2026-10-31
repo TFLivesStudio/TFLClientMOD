@@ -9,6 +9,10 @@ on:
       publish:
         type: boolean
         default: false
+      preview_189:
+        description: 'Build experimental 1.8.9 JAR only without GPU smoke certification'
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -16,6 +20,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   common:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.preview_189) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +37,7 @@ jobs:
           name: unified-common-tests
           path: vendor/trs-client/common/build/test-results/
   native:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.preview_189) }}
     permissions:
       contents: write
     runs-on: ${{ matrix.os }}
@@ -114,7 +120,7 @@ jobs:
             vendor/trs-client/run/prod-26.3/unified-smoke.json
             vendor/trs-client/run/prod-26.3/screenshots/
   publish:
-    if: (github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[unified-release]'))
+    if: ${{ !inputs.preview_189 && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[unified-release]'))) }}
     needs: [common, native]
     runs-on: ubuntu-latest
     permissions:
@@ -131,3 +137,54 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ matrix.tag }}
         run: gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
+
+  # Manual preview path, independent of OpenGL/Mesa native smoke timeouts.
+  # It does not replace the full certification matrix and NEVER publishes publicly.
+  preview_189:
+    if: \${{ github.event_name == 'workflow_dispatch' && inputs.preview_189 }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '25'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Compile and test Ornithe 1.8.9 without native graphics
+        run: |
+          vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test :remapJar --no-daemon --max-workers=2
+      - name: Verify the installable JAR and stage hashes
+        run: |
+          set -euo pipefail
+          jar="vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties).jar"
+          test -s "$jar"
+          python3 tools/ornithe/verify_jar.py "$jar"
+          mkdir -p preview-189
+          cp "$jar" preview-189/
+          cd preview-189
+          sha256sum *.jar > SHA256SUMS.txt
+          cat > PREVIEW-NOTICE.txt <<'EOF'
+          TFL Client 1.8.9 Ornithe Gen2 experimental test JAR.
+          Built from the exact branch commit of this draft release.
+          JVM unit tests and JAR contract checks passed.
+          Native OpenGL/Mesa smoke tests were NOT run by this job.
+          This is not a GPU-certified or stable release.
+          Use Java 25, OSL 0.22.2 and a backed-up test instance.
+          EOF
+      - name: Stage preview JAR in draft release (never publish)
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          short_sha="\${GITHUB_SHA:0:8}"
+          tag="v0.4.0-audit.4-preview-\${short_sha}-ornithe189"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
+            gh release upload "$tag" preview-189/* --clobber
+          else
+            gh release create "$tag" preview-189/* --draft --prerelease --latest=false --target "$GITHUB_SHA" \
+              --title "TFL Client 1.8.9 — Experimental JAR (native checks pending)" \
+              --notes "Build-only test candidate for this exact commit. JVM tests and JAR structural checks passed; native GPU smoke tests pending. Not for stable release."
+          fi
+          echo "Preview draft release: $tag" >> "$GITHUB_STEP_SUMMARY"
