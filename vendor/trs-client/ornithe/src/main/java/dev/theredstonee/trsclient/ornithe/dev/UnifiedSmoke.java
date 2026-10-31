@@ -126,10 +126,6 @@ public final class UnifiedSmoke implements Runnable {
                   + ((int) c.mc.player.z + 8)
                   + " minecraft:stone");
           check("received chunks captured", c.diorama != null && c.diorama.snapshotCount() > 0);
-          report.add(
-              "mapFontRegression",
-              new Gson().toJsonTree(MapFontRegression.run(c, out.resolve("screenshots"))));
-          check("native font survives minimap toggles and world map", true);
           shot("hud");
           c.openWorldMap(null);
           phase++;
@@ -618,6 +614,10 @@ public final class UnifiedSmoke implements Runnable {
               "rightShiftProfile",
               new Gson().toJsonTree(dev.theredstonee.trsclient.core.performance.UiProfiler.stop()));
           shot("right-shift-profile");
+          report.add(
+              "mapFontRegression",
+              new Gson().toJsonTree(MapFontRegression.run(c, out.resolve("screenshots"))));
+          check("native font survives minimap toggles and world map", true);
           finish(null);
           phase = 99;
         }
