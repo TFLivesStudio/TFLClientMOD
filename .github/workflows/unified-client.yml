@@ -13,6 +13,16 @@ on:
         description: 'Build experimental 1.8.9 JAR only without GPU smoke certification'
         type: boolean
         default: false
+      native_target:
+        description: 'Limit the native matrix to one target workflow (dispatch only)'
+        type: choice
+        default: all
+        options: [all, 1.8.9, 26.3]
+      native_stack:
+        description: 'Limit the native matrix to one optimizer stack workflow (dispatch only)'
+        type: choice
+        default: all
+        options: [all, baseline, lwjgl3, argentum, sodium]
 permissions:
   contents: read
 concurrency:
@@ -32,11 +42,13 @@ jobs:
       - run: python3 -m unittest discover -s tools -p 'test_*.py'
       - run: python3 tools/scan_secrets.py
       - uses: actions/upload-artifact@v4
-        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.publish)
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.publish) }}
         with:
           name: unified-common-tests
           path: vendor/trs-client/common/build/test-results/
   native:
+    # Matrix context is not readable from a job-level if (it is evaluated before strategy),
+    # so per-combo dispatch filtering lives in the selector step below.
     if: ${{ !((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) }}
     permissions:
       contents: write
@@ -58,17 +70,29 @@ jobs:
       LP_NUM_THREADS: '2'
       ALSOFT_DRIVERS: 'null'
     steps:
+      # Dispatch-only scenario selector. Matrix context is not readable from job-level if,
+      # so a first step decides whether this combo participates. Other events always run.
+      - id: selector
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          target_match() { test "${{ inputs.native_target }}" = all || test "${{ inputs.native_target }}" = '${{ matrix.target }}'; }
+          stack_match() { test "${{ inputs.native_stack }}" = all || test "${{ inputs.native_stack }}" = '${{ matrix.stack }}'; }
+          if target_match && stack_match; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
       - uses: actions/checkout@v4
+        if: ${{ steps.selector.outputs.run != 'false' }}
       - uses: actions/setup-java@v4
+        if: ${{ steps.selector.outputs.run != 'false' }}
         with: {distribution: temurin, java-version: '25'}
       - uses: gradle/actions/setup-gradle@v4
+        if: ${{ steps.selector.outputs.run != 'false' }}
       - run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils x11-xserver-utils libxrandr2 libxcursor1 libxi6 libxinerama1 libgl1-mesa-dri libvulkan1 mesa-vulkan-drivers libopenal1 ffmpeg
-      - if: matrix.target == '1.8.9'
+        if: ${{ steps.selector.outputs.run != 'false' }}
+      - if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: python3 tools/ornithe/fetch_dependencies.py "$RUNNER_TEMP/ornithe-mods"
-      - if: matrix.stack == 'sodium'
+      - if: matrix.stack == 'sodium' && steps.selector.outputs.run != 'false'
         run: python3 tools/verification/fetch_optimizers.py "$RUNNER_TEMP/sodium-mods"
       - name: Installed 1.8.9 client and separate probe
-        if: matrix.target == '1.8.9'
+        if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: |
           profile=()
           if [ '${{ matrix.stack }}' = argentum ]; then profile+=(--profile); fi
@@ -76,14 +100,14 @@ jobs:
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test --no-daemon --max-workers=2
           python3 tools/ornithe/verify_jar.py "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties).jar"
       - name: Installed 26.3 client, Diorama, loading and native graphics settings
-        if: matrix.target == '26.3'
+        if: matrix.target == '26.3' && steps.selector.outputs.run != 'false'
         run: |
           extra=()
           if [ '${{ matrix.stack }}' = sodium ]; then extra+=("-PdepthRuntimeModsDir=$RUNNER_TEMP/sodium-mods" "-PtflAuditProfile"); fi
           xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runProdClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=unified -PdepthNativeProbe "${extra[@]}" --no-daemon --max-workers=2
           python3 tools/verification/check_unified.py vendor/trs-client/run/prod-26.3/unified-smoke.json
       - name: Stage verified release without Actions artifact storage
-        if: github.event_name == 'workflow_dispatch' && inputs.publish && (matrix.stack == 'argentum' || matrix.stack == 'sodium')
+        if: github.event_name == 'workflow_dispatch' && inputs.publish && (matrix.stack == 'argentum' || matrix.stack == 'sodium') && steps.selector.outputs.run != 'false'
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET: ${{ matrix.target }}
@@ -105,12 +129,18 @@ jobs:
           else
             gh release create "$tag" release-unified/* --draft --prerelease --latest=false --target "$GITHUB_SHA" --title "TFL Client $TARGET — Server maps and Diorama camera" --notes-file docs/SERVER_MAPS.md
           fi
+      # !cancelled() instead of always(): run 41148081840 skipped the evidence upload on
+      # failure while always() was combined with other conditions, destroying the pulse
+      # and thread dumps. !cancelled() keeps the failure Influence-free and uploads them.
       - uses: actions/upload-artifact@v4
-        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.publish)
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.publish) && steps.selector.outputs.run != 'false' }}
         with:
           name: unified-native-${{ matrix.target }}-${{ matrix.stack }}
           overwrite: true
           path: |
+            vendor/trs-client/ornithe/build/smoke/production/probe-pulse.json
+            vendor/trs-client/ornithe/build/smoke/production/timeout-threads-*.txt
+            vendor/trs-client/ornithe/build/smoke/production/report.json
             vendor/trs-client/ornithe/build/libs/*.jar
             vendor/trs-client/ornithe/build/smoke/
             vendor/trs-client/ornithe/build/test-results/
@@ -120,7 +150,7 @@ jobs:
             vendor/trs-client/run/prod-26.3/unified-smoke.json
             vendor/trs-client/run/prod-26.3/screenshots/
   publish:
-    if: ${{ !inputs.preview_189 && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[unified-release]'))) }}
+    if: ${{ !inputs.preview_189 && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[unified-release]'))) && (github.event_name != 'workflow_dispatch' || (inputs.native_target == 'all' && inputs.native_stack == 'all')) }}
     needs: [common, native]
     runs-on: ubuntu-latest
     permissions:

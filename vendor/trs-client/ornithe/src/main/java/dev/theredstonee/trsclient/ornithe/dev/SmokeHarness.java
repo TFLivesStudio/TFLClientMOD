@@ -94,9 +94,68 @@ public final class SmokeHarness implements Runnable {
   }
 
   private UnifiedSmoke unified;
+  // Diagnostics heartbeat: prints probe state with timestamps and persists a small JSON pulse so
+  // the smoke driver can enforce an inactivity deadline separately from the total runtime budget.
+  // Daemon-only and read-only with respect to the client; it never touches game state.
+  private Thread pulse;
+  private static final java.time.format.DateTimeFormatter PULSE_STAMP =
+      java.time.format.DateTimeFormatter.ISO_INSTANT;
+
+  private void startPulse() {
+    if (pulse != null) return;
+    pulse =
+        new Thread(
+            () -> {
+              while (true) {
+                try {
+                  if (unified != null) {
+                    long elapsed = (System.nanoTime() - unified.startNanos()) / 1_000_000L;
+                    String stamp = PULSE_STAMP.format(java.time.Instant.now());
+                    System.out.println(
+                        "[TFL unified pulse] phase="
+                            + unified.phaseNumber()
+                            + " checks="
+                            + unified.checkCount()
+                            + " last="
+                            + unified.lastOperation()
+                            + " at "
+                            + elapsed
+                            + " ms");
+                    JsonObject item = new JsonObject();
+                    item.addProperty("type", "probe-pulse");
+                    item.addProperty("phase", unified.phaseNumber());
+                    item.addProperty("checks", unified.checkCount());
+                    item.addProperty("lastOp", unified.lastOperation());
+                    item.addProperty("elapsedMs", elapsed);
+                    item.addProperty("stampIso", stamp);
+                    java.nio.file.Path tmp =
+                        out.resolve("probe-pulse.json.tmp" + Long.toHexString(System.nanoTime()));
+                    Files.write(
+                        tmp,
+                        new GsonBuilder().create().toJson(item).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    Files.move(
+                        tmp,
+                        out.resolve("probe-pulse.json"),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                  }
+                } catch (Throwable diagnosticOnlyIfAvailable) {
+                  // A pulse failure must never influence the probe outcome.
+                }
+                try {
+                  Thread.sleep(30_000L);
+                } catch (InterruptedException interrupted) {
+                  return;
+                }
+              }
+            },
+            "tfl-smoke-pulse");
+    pulse.setDaemon(true);
+    pulse.start();
+  }
+
   @Override
   public void run() {
-    if(Boolean.getBoolean("tflcore.unified.smoke")){if(unified==null)unified=new UnifiedSmoke(c,out);unified.run();return;}
+    if(Boolean.getBoolean("tflcore.unified.smoke")){if(unified==null)unified=new UnifiedSmoke(c,out);startPulse();unified.run();return;}
     try {
       tick++;
       if (System.nanoTime() - started > 300_000_000_000L)

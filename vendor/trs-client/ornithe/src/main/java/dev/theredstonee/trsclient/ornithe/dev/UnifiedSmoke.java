@@ -19,10 +19,43 @@ public final class UnifiedSmoke implements Runnable {
   private boolean shaderPickerSeen, originalColors;
   private double originalContrast;
   private net.minecraft.client.gui.screen.Screen graphicsReturn;
-  private int phase, wait, cameraStage;
+  private int wait, cameraStage;
   private int loggedPhase = -1;
   private long at, sequence;
   private final long start = System.nanoTime();
+  // Diagnostics only: the smoke harness heartbeat reads these from another thread.
+  // Naming marks the last completed probe operation so a stalled run names its pending step.
+  private volatile int phase;
+  private volatile long lastProgress = System.nanoTime();
+  private volatile String lastOp = "probe-created";
+
+  void mark(String operation) {
+    lastOp = operation;
+    lastProgress = System.nanoTime();
+    System.out.println(
+        "[TFL unified probe] "
+            + operation
+            + " at "
+            + ((System.nanoTime() - start) / 1_000_000L)
+            + " ms; checks="
+            + checks.size());
+  }
+
+  int phaseNumber() {
+    return phase;
+  }
+
+  long startNanos() {
+    return start;
+  }
+
+  String lastOperation() {
+    return lastOp;
+  }
+
+  long checkCount() {
+    return checks.size();
+  }
 
   public UnifiedSmoke(OrnitheClient c, Path out) {
     this.c = c;
@@ -35,6 +68,10 @@ public final class UnifiedSmoke implements Runnable {
     item.addProperty("name", name);
     item.addProperty("passed", pass);
     checks.add(item);
+    // Every assertion is progress even when it is not a phase transition; the pulse
+    // uses this so an inactive run can still name the last evaluated check.
+    lastOp = "check:" + name + (pass ? "" : " (FAILED)");
+    lastProgress = System.nanoTime();
     if (!pass) throw new AssertionError(name);
   }
 
@@ -61,7 +98,10 @@ public final class UnifiedSmoke implements Runnable {
       // Software OpenGL on hosted runners can take several minutes without an optimizer.
       // Keep every functional assertion; this budget does not certify physical GPU performance.
       if (System.nanoTime() - start > 600_000_000_000L)
-        throw new AssertionError("unified timeout phase " + phase);
+        throw new AssertionError(
+            "unified timeout phase " + phase + " after "
+                + ((System.nanoTime() - start) / 1_000_000_000L)
+                + "s; pending: " + lastOp);
       switch (phase) {
         case 0 -> {
           report.addProperty("nativeRenderer", org.lwjgl.opengl.GL11.glGetString(org.lwjgl.opengl.GL11.GL_RENDERER));
@@ -112,8 +152,11 @@ public final class UnifiedSmoke implements Runnable {
         case 3 -> {
           if (c.mc.player == null || c.mc.world == null) return;
           c.mc.openScreen(null);
+          mark("phase3:world-screen-closed");
           while (c.mapPlatform.catalog().turns() != 0) c.mapPlatform.catalog().rotate(1);
+          mark("phase3:catalog-rotated");
           report.add("serverMaps", new Gson().toJsonTree(ServerMapRegression.run(c)));
+          mark("phase3:server-map-regression-done");
           check("nullable chunk data and remote world cache transitions", true);
           c.mc.player.sendChat(
               "/fill "
@@ -125,9 +168,13 @@ public final class UnifiedSmoke implements Runnable {
                   + " 20 "
                   + ((int) c.mc.player.z + 8)
                   + " minecraft:stone");
+          mark("phase3:fill-sent");
           check("received chunks captured", c.diorama != null && c.diorama.snapshotCount() > 0);
+          mark("phase3:chunks-shown");
           shot("hud");
+          mark("phase3:hud-screenshot-done");
           c.openWorldMap(null);
+          mark("phase3:world-map-opened");
           phase++;
           at = System.nanoTime();
           wait = 0;
@@ -650,6 +697,7 @@ public final class UnifiedSmoke implements Runnable {
     if (c.diorama != null) report.add("mapMetrics", new Gson().toJsonTree(c.diorama.metrics()));
     report.addProperty("status", error == null ? "passed" : "failed");
     if (error != null) {
+      report.addProperty("pendingOperation", lastOp);
       report.addProperty("error", error.toString());
       error.printStackTrace();
     }
