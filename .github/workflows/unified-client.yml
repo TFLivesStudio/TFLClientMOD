@@ -1,7 +1,7 @@
 name: Unified TFL Client
 on:
   push:
-    branches: [feat/unified-client-diorama, feat/unified-visual-identity, feat/stabilize-identity, feat/audit-completion]
+    branches: [feat/unified-client-diorama, feat/unified-visual-identity, feat/stabilize-identity, feat/audit-completion, fix/server-map-sessions]
   pull_request:
     paths: ['vendor/**', 'tools/**', '.github/workflows/unified-client.yml']
   workflow_dispatch:
@@ -16,11 +16,11 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: unified-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.preview_189 && 'preview' || 'native' }}
+  group: unified-${{ github.head_ref || github.ref_name }}-${{ ((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) && 'preview' || 'native' }}
   cancel-in-progress: true
 jobs:
   common:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.preview_189) }}
+    if: ${{ !((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
           name: unified-common-tests
           path: vendor/trs-client/common/build/test-results/
   native:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.preview_189) }}
+    if: ${{ !((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) }}
     permissions:
       contents: write
     runs-on: ${{ matrix.os }}
@@ -141,7 +141,7 @@ jobs:
   # Manual preview path, independent of OpenGL/Mesa native smoke timeouts.
   # It does not replace the full certification matrix and NEVER publishes publicly.
   preview_189:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.preview_189 }}
+    if: ${{ ((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     permissions:
