@@ -75,14 +75,11 @@ try:
     except ValueError:current={}
     if current.get('lastOp')!=last_op:last_op=current.get('lastOp');last_op_at=now
   if pulse_started is not None and now-last_pulse>180:
-   echo_diagnostics(f'inactivity: no probe pulse for {int(now-last_pulse)}s')
-   timeout_diagnostics();proc.terminate();raise SystemExit(f'Smoke inactivity timeout: no probe pulse for {int(now-last_pulse)}s; the printed pulse names the blocked probe phase and last operation')
+   timeout_diagnostics();echo_diagnostics(f'inactivity: no probe pulse for {int(now-last_pulse)}s');proc.terminate();raise SystemExit(f'Smoke inactivity timeout: no probe pulse for {int(now-last_pulse)}s; the printed pulse names the blocked probe phase and last operation')
   if pulse_started is not None and current_phase()!=SLOW_BAKE_PHASE and now-last_op_at>OP_STALE_SEC:
-   echo_diagnostics(f'no probe progress: lastOp unchanged for {int(now-last_op_at)}s')
-   timeout_diagnostics();proc.terminate();raise SystemExit(f'Smoke probe progress timeout: lastOp unchanged for {int(now-last_op_at)}s during phase {current_phase()}: {last_op}')
+   timeout_diagnostics();echo_diagnostics(f'no probe progress: lastOp unchanged for {int(now-last_op_at)}s');proc.terminate();raise SystemExit(f'Smoke probe progress timeout: lastOp unchanged for {int(now-last_op_at)}s during phase {current_phase()}: {last_op}')
   if now>deadline:
-   echo_diagnostics('total deadline reached')
-   timeout_diagnostics();proc.terminate();raise SystemExit('Gradle/client smoke timeout')
+   timeout_diagnostics();echo_diagnostics('total deadline reached');proc.terminate();raise SystemExit('Gradle/client smoke timeout')
   tree=subprocess.run(['xwininfo','-root','-tree'],capture_output=True,text=True,timeout=5).stdout
   win=re.search(r'(0x[0-9a-f]+) "(?:(?:TFL Client · )?Minecraft|TFL Client 1\.8\.9)',tree)
   if win:x.XSetInputFocus(d,int(win.group(1),16),2,0);x.XFlush(d)
