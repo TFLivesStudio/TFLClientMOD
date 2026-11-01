@@ -38,5 +38,28 @@ public abstract class GameGuiMixin {
     dev.theredstonee.trsclient.core.performance.UiProfiler.worldFrame();
     OrnitheClient c = OrnitheClient.get();
     if (c != null) c.drawHud(delta);
+    // Last TFL hook before the vanilla framebuffer blit inside this same frame. When the
+    // development-only probe is armed it snapshots the fixed-pipeline state here; reflection
+    // keeps this production hook inert whenever the dev probe class is absent.
+    if (!probeLookupDone) {
+      probeLookupDone = true;
+      try {
+        captureMethod =
+            Class.forName("dev.theredstonee.trsclient.ornithe.dev.GlSnapshot")
+                .getMethod("capture", String.class);
+      } catch (ClassNotFoundException | NoSuchMethodException absent) {
+        captureMethod = null; // Production jars: probe class not shipped, nothing to do.
+      }
+    }
+    if (captureMethod != null) {
+      try {
+        captureMethod.invoke(null, "hud-tail");
+      } catch (Throwable diagnosticOnly) {
+        // A snapshot failure must never reach the frame.
+      }
+    }
   }
+
+  private static java.lang.reflect.Method captureMethod;
+  private static boolean probeLookupDone;
 }
