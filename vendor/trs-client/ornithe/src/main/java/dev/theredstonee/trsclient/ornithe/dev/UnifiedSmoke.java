@@ -11,6 +11,9 @@ import net.minecraft.world.gen.WorldGeneratorType;
 
 /** Updated native scenario for the unified client and the actual Diorama port. */
 public final class UnifiedSmoke implements Runnable {
+  // Diagnostic bisect: -Dtflcore.smoke.noFog (Gradle -PsmokeMapNoFog) renders the map without
+  // the fog layer, which is the only GL path unique to the screen that precedes the stalled blit.
+  private static final boolean MAP_NO_FOG = Boolean.getBoolean("tflcore.smoke.noFog");
   private final OrnitheClient c;
   private final Path out;
   private final JsonObject report = new JsonObject();
@@ -79,6 +82,8 @@ public final class UnifiedSmoke implements Runnable {
   public UnifiedSmoke(OrnitheClient c, Path out) {
     this.c = c;
     this.out = out;
+    // Snapshot the fixed-pipeline state before the vanilla blit each frame while this probe runs.
+    GlSnapshot.enable(out, this::phaseNumber);
     report.add("checks", checks);
   }
 
@@ -182,6 +187,11 @@ public final class UnifiedSmoke implements Runnable {
           mark("phase3:world-screen-closed");
           while (c.mapPlatform.catalog().turns() != 0) c.mapPlatform.catalog().rotate(1);
           mark("phase3:catalog-rotated");
+          if (MAP_NO_FOG) {
+            c.modules.worldMapCloudQuality.set(
+                dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF);
+            mark("phase3:map-fog-disabled");
+          }
           report.add("serverMaps", new Gson().toJsonTree(ServerMapRegression.run(c)));
           mark("phase3:server-map-regression-done");
           check("nullable chunk data and remote world cache transitions", true);
@@ -216,7 +226,10 @@ public final class UnifiedSmoke implements Runnable {
               "original Diorama voxel tiles ready or restored",
               c.diorama.bakedTiles + c.diorama.diskTileHits >= 2);
           check("Diorama worker healthy", c.diorama.failure.isEmpty());
-          check("native Diorama fog shader linked", c.diorama.fogHealthy());
+          // In the no-fog bisect variant the shader is deliberately never created; the fog
+          // assertion applies to the standard path only, where it must stay strict.
+          if (!MAP_NO_FOG) check("native Diorama fog shader linked", c.diorama.fogHealthy());
+          else report.addProperty("mapFogDisabled", true);
           check(
               "native Diorama map owns screen",
               c.mc.screen instanceof CoreScreen screen && screen.ui instanceof OrnitheDioramaUi);

@@ -32,6 +32,8 @@ if (project.hasProperty('depthNativeProbe')) {
             programArgs.addAll('--width','1920','--height','1080')
             if(project.hasProperty('restart'))jvmArgs.add('-Dtflcore.ornithe.restart=true')
             if(project.hasProperty('unifiedSmoke'))jvmArgs.add('-Dtflcore.unified.smoke=true')
+            // Diagnostic bisect (development probe only): render the map without the fog layer.
+            if(project.hasProperty('smokeMapNoFog'))jvmArgs.add('-Dtflcore.smoke.noFog=true')
         }
     }
 }

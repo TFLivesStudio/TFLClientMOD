@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Real Linux/X11 client smoke driver. Focuses the native window for Robot input and verifies report status."""
 import argparse,ctypes as C,ctypes.util,json,os,pathlib,re,shutil,subprocess,time
-p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');p.add_argument('--large',action='store_true');p.add_argument('--production',action='store_true');p.add_argument('--unified',action='store_true');p.add_argument('--graphics-mods-dir',type=pathlib.Path);p.add_argument('--profile',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--stack',choices=['baseline','lwjgl3','argentum'],default='baseline');p.add_argument('--mods-dir',type=pathlib.Path);p.add_argument('--restart',action='store_true');p.add_argument('--large',action='store_true');p.add_argument('--production',action='store_true');p.add_argument('--unified',action='store_true');p.add_argument('--graphics-mods-dir',type=pathlib.Path);p.add_argument('--profile',action='store_true');p.add_argument('--no-fog',action='store_true');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];project=root/'vendor/trs-client/ornithe'
 report=project/'build/smoke'/('production' if a.production else a.stack)/('restart.json' if a.restart else 'report.json');report.unlink(missing_ok=True)
 cmd=[str(project/'gradlew'),'-p',str(project),'--no-daemon','--max-workers=2',('runProdClient' if a.production else 'runClient'),'-Psmoke',f'-PtestStack={a.stack}']
 if a.production:cmd.append('-PdepthNativeProbe')
 if a.unified:cmd.append('-PunifiedSmoke')
+if getattr(a,'no_fog',False):cmd.append('-PsmokeMapNoFog')
 if a.mods_dir:cmd.append(f'-PruntimeModsDir={a.mods_dir.resolve()}')
 if a.graphics_mods_dir:cmd.append(f'-PruntimeGraphicsModsDir={a.graphics_mods_dir.resolve()}')
 if a.profile:cmd.append('-PtflAuditProfile')
