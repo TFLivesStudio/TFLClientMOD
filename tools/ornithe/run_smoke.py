@@ -122,6 +122,10 @@ try:
   if win:x.XSetInputFocus(d,int(win.group(1),16),2,0);x.XFlush(d)
   time.sleep(.5)
 finally:x.XCloseDisplay(d)
+# Snapshots land in the smoke directory; echo them even on success so the fixed-pipeline
+# state is readable from the job log regardless of artifact storage quota.
+for snap in sorted(report.parent.glob('gl-snapshot-*.json')):
+ print(f'--- {snap}',flush=True);print(snap.read_text(errors='replace')[:120_000],flush=True)
 assert not errors,f'Unexpected X11 errors: {errors}'
 assert proc.returncode==0,f'Gradle exit {proc.returncode}'
 r=json.loads(report.read_text());assert r['status']=='passed',{'error':r.get('error'),'failed':[c['name'] for c in r['checks'] if not c['passed']]}

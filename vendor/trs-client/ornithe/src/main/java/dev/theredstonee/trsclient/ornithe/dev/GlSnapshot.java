@@ -46,12 +46,26 @@ public final class GlSnapshot {
     JsonObject state = new JsonObject();
     state.addProperty("tag", tag);
     state.addProperty("phase", phase());
-    state.addProperty("program", GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
-    if (GLContext.getCapabilities().OpenGL30) {
-      state.addProperty("vao", GL11.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING));
+    // The per-unit reads below switch GL_ACTIVE_TEXTURE, so the inherited value must survive
+    // any read failure: capture it first and restore it unconditionally before leaving.
+    int originalActiveTexture = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
+    state.addProperty("activeTexture", originalActiveTexture);
+    try {
+      readTextureUnits(state);
+    } finally {
+      GL13.glActiveTexture(originalActiveTexture);
     }
-    state.addProperty("arrayBuffer", GL11.glGetInteger(GL15.GL_ARRAY_BUFFER_BINDING));
-    state.addProperty("elementBuffer", GL11.glGetInteger(GL15.GL_ELEMENT_ARRAY_BUFFER_BINDING));
+    readPipelineState(state);
+    int index = SEQUENCE.incrementAndGet();
+    write(state, index);
+    long now = System.nanoTime();
+    if (now - lastLogNanos > 500_000_000L || index < 4) {
+      lastLogNanos = now;
+      System.out.println("[TFL gl-snapshot] #" + index);
+    }
+  }
+
+  private static void readTextureUnits(JsonObject state) {
     for (int unit = 0; unit < 2; unit++) {
       GL13.glActiveTexture(GL13.GL_TEXTURE0 + unit);
       state.addProperty("unit" + unit + ".binding", GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D));
@@ -61,7 +75,15 @@ public final class GlSnapshot {
           "unit" + unit + ".texEnv",
           GL11.glGetTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE));
     }
-    GL13.glActiveTexture(GL13.GL_TEXTURE0);
+  }
+
+  private static void readPipelineState(JsonObject state) {
+    state.addProperty("program", GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM));
+    if (GLContext.getCapabilities().OpenGL30) {
+      state.addProperty("vao", GL11.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING));
+    }
+    state.addProperty("arrayBuffer", GL11.glGetInteger(GL15.GL_ARRAY_BUFFER_BINDING));
+    state.addProperty("elementBuffer", GL11.glGetInteger(GL15.GL_ELEMENT_ARRAY_BUFFER_BINDING));
     boolean fog = GL11.glGetBoolean(GL11.GL_FOG);
     state.addProperty("fog", fog ? 1 : 0);
     if (fog) {
@@ -106,13 +128,6 @@ public final class GlSnapshot {
             + GL11.glGetInteger(GL11.GL_PROJECTION_STACK_DEPTH)
             + "/"
             + GL11.glGetInteger(GL11.GL_TEXTURE_STACK_DEPTH));
-    int index = SEQUENCE.incrementAndGet();
-    write(state, index);
-    long now = System.nanoTime();
-    if (now - lastLogNanos > 500_000_000L || index < 4) {
-      lastLogNanos = now;
-      System.out.println("[TFL gl-snapshot] #" + index);
-    }
   }
 
   private static void write(JsonObject state, int index) {
