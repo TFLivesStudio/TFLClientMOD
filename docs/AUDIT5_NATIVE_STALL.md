@@ -63,3 +63,44 @@ Estado al cierre de la Misión 04. Resumen breve; no sustituye los logs.
 3. Regla decidida: no corregir código productivo hasta que el dump de estado
    nombre el elemento concreto; mientras tanto, las ofertas de seguimiento de
    1.8.9 deben declarar "experimental" como ya está documentado.
+
+## Run 41390130672 (Misión 06): variante `nofog` — avanza
+
+- Commit `b3a5e4d`, dispatch único `native_target=1.8.9 native_stack=baseline
+  native_variant=nofog publish=false preview_189=false`. Job
+  `native (1.8.9, baseline, ubuntu-22.04)` → **success** (04:45:19–04:49:28Z);
+  `publish` y `preview_189` correctamente omitidos; artefacto de 87 MB subido
+  (la cuota se recuperó).
+- Cadena de la variante verificada de punta a punta en el log:
+  `phase3:map-fog-disabled` → `phase3:world-map-opened` (26695 ms) →
+  **`phase 4` (26704 ms) atravesado** — el punto exacto donde los runs #44/#45
+  se congelaban — → `phase 80` con `native Diorama map owns screen` y
+  `Verified baseline smoke: 34 checks`.
+- Precisión del experimento: `CloudQuality.OFF` **salta `fog.draw(...)`**
+  (`OrnitheDiorama.java:612`) y, por el cambio de calidad, cierra y destruye el
+  shader (`:245-250`). Es decir: desactiva el **pase de dibujo** de niebla, con
+  la consecuencia de que `DioramaFog` no se reconstruye en esa ejecución.
+- Snapshots `hud-tail` (eco incondicional al log, fases 41 y 99, idénticos):
+  `activeTexture=33984` (GL_TEXTURE0, restaurado vía `try/finally`),
+  `program=0`, `vao=0`, buffers 0, `unit0.binding=32` habilitado,
+  `unit1.binding=9` deshabilitado, `fog=0`, `blend=770,771,1,0`,
+  `depth=1/515/1`, `alphaTest=1`, `scissor=0`, arrays cliente 0,
+  `stacks=2/1/1`. Este es el **baseline sano** de una trama posterior al mapa.
+- Conclusión: **el pase de niebla es necesario para reproducir el bloqueo**
+  (caso B). Sigue sin demostrarse **qué campo concreto** deja corrupto
+  `DioramaFog.draw` respecto de ese baseline: ningún run estándar con
+  snapshots ha capturado la trama congelada (los runs #44/#45 fueron
+  anteriores a `GlSnapshot`), ni existe muestreo dentro de `fog.draw`.
+  Además, un snapshot en `GameGuiMixin` TAIL no es garantía del estado exacto
+  previo a `glDrawArrays`: entre ambos pueden ejecutarse operaciones vanilla.
+
+## Siguiente corrección productiva recomendada (requiere nueva autorización)
+
+1. Ejecutar la variante `standard` con la instrumentación ya incorporada (snapshots
+   `hud-tail` activos) para capturar la trama congelada y **diferenciarla** del
+   baseline sano anterior; o bien añadir captura dev-gated a la salida de
+   `DioramaFog.draw` y diff fog-on vs fog-off en la misma corrida.
+2. Solo con el campo nombrado, aplicar la restauración mínima en el pase de
+   niebla (p. ej. reafirmar las precondiciones del blit: programa 0, unidad
+   activa GL_TEXTURE0, VAO/buffers 0, arrays cliente) con tests y sin tocar la
+   calidad visual por defecto.
