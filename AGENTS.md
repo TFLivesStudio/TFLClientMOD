@@ -209,3 +209,10 @@ una release estable antes de superar sus verificaciones.
 **Prioridad:** funcionalidad correcta y datos seguros → calidad visual y UX →
 estabilidad → rendimiento medido → compatibilidad adicional, sin ignorar
 regresiones críticas ni degradar la experiencia por defecto.
+
+
+## 10. Próxima etapa tras Audit 5: Visual Overhaul (documentada, no implementada)
+
+**Decisión aprobada:** después de cerrar Audit 5, renovar integralmente las GUIs de TFL Core. **Preservar el main menu** en su composición principal (revisar botones), **pulir ESC** sin perder navegación/chat y **rediseñar el resto** de pantallas que el Core crea o modifica. Mantener lógica, datos, backend de gráficos y soporte Ornithe/Fabric. Dirección: calidad premium propia inspirada en claridad de Lunar y organización de Laby, no copia literal.
+
+**Documentos obligatorios cuando se autorice esa nueva etapa:** `docs/visual-overhaul/README.md`, `VISUAL_DIRECTION.md`, `DESIGN_SYSTEM.md`, `IMPLEMENTATION_AND_ACCEPTANCE.md`. Es una especificación futura: **no iniciar el rediseño mientras Audit 5 siga abierto, ni declarar tareas como implementadas** por existir documentos. Crear rama de implementación desde el HEAD definitivo de Audit 5 y checkpoints recuperables.
