@@ -88,3 +88,18 @@
 - Base estable y documentada para 26.3.
 - Port validado a 1.8.9.
 - Integración con TFL Client (instalación/actualización) sin comprometer la privacidad.
+
+
+## Próxima gran actualización después de Audit 5 — Visual Overhaul (APROBADO, NO INICIADO)
+
+**Decisión de producto (2026-11-04):** una vez concluido Audit 5, la siguiente actualización mayor será la renovación visual integral de todas las GUIs propias o intervenidas por TFL Core. El menú principal se **preserva en su composición general** (botones sujetos a revisión), ESC recibe **pulido conservador** y el resto de pantallas TFL se **rediseña integralmente** sin perder su lógica.
+
+- [ ] Finalizar o congelar formalmente Audit 5 y fijar un checkpoint de código.
+- [ ] Validar referencias visuales reales y escoger prototipos de Settings, Mod Menu y HUD Editor.
+- [ ] Implementar design system compartido + adaptadores Ornithe/Fabric.
+- [ ] Rediseñar Settings/Graphics, Right Shift/Mod Menu/HUD, mapas y pantallas secundarias; pulir Main Menu y ESC.
+- [ ] Pasar matriz funcional, visual y de rendimiento en ambos targets y validación manual de producto.
+
+**Especificación central:** [Visual Overhaul — índice](visual-overhaul/README.md), [dirección visual](visual-overhaul/VISUAL_DIRECTION.md), [sistema de diseño](visual-overhaul/DESIGN_SYSTEM.md), [plan y aceptación](visual-overhaul/IMPLEMENTATION_AND_ACCEPTANCE.md).
+
+Este hito **no forma parte de Audit 4 ni de Audit 5**. No considerarlo implementado por aparecer aquí; tampoco cambiar el catálogo de TFL Selection ni el launcher desde esta tarea. Audit 5 y su rama activa continúan sin modificaciones por este registro.
