@@ -1,0 +1,70 @@
+name: Audit 5 experimental test JARs
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-test-jars:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '25'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build both targets and verify the legacy unit and archive contracts
+        run: |
+          vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test :remapJar --no-daemon --max-workers=2
+          vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:build -PtrsVersions=26.3 --no-daemon --max-workers=2
+          version=$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties)
+          python3 tools/ornithe/verify_jar.py "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$version.jar"
+          mkdir test-candidate
+          cp "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$version.jar" test-candidate/
+          cp "vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-$version.jar" test-candidate/
+      - name: Include complete corresponding Core and DH sources and test-only provenance
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess,urllib.request,zipfile
+          root=pathlib.Path('test-candidate')
+          lock=json.loads(pathlib.Path('tools/integrations/distant-horizons.lock.json').read_text())
+          with zipfile.ZipFile(root/'tflcore-corresponding-source.zip','w',zipfile.ZIP_DEFLATED) as z:
+              z.writestr('tflcore-source.tar',subprocess.check_output(['git','archive','--format=tar','HEAD']))
+              for source in lock['correspondingSources']:
+                  with urllib.request.urlopen(source['url'],timeout=90) as response:data=response.read()
+                  assert hashlib.sha256(data).hexdigest()==source['sha256'],source['filename']
+                  z.writestr('distant-horizons/'+source['filename'],data)
+              z.writestr('PROVENANCE.json',json.dumps({'coreCommit':os.environ['GITHUB_SHA'],'distantHorizons':lock},indent=2))
+              z.writestr('BUILD.txt','Extract tflcore-source.tar and use Java 25 plus the committed Gradle wrappers; see README.md. DH is the original unmodified nested artifact. Extract its main source archive, then its pinned core archive into coreSubProjects, stripping each archive root. All source revisions, hashes and licenses are retained in PROVENANCE.json and the source archives.\n')
+          notice='''CANDIDATA EXPERIMENTAL PARA PRUEBAS — Audit 5 RC1
+
+          Contiene el arreglo de cierre del video al pasar del menu al mundo.
+          Compilacion de ambos targets, tests unitarios de 1.8.9 y contrato del JAR verificados en este workflow.
+          Pruebas locales del codigo de produccion 9038e61: 1206 tests comunes (2 skips), 184 checks con Argentum/optimizadores y 150 con Iris activo.
+          La matriz completa de CI es independiente: https://github.com/TFLivesStudio/TFLClientMOD/actions/runs/42112169842
+          Esta entrega NO afirma que esa matriz haya aprobado ni que exista certificacion de GPU fisica. No es una release estable ni una promocion de Selection.
+
+          Instala Java 25. 1.8.9: Ornithe Gen2, Loader 0.19.5 y OSL 0.22.2.
+          26.3: Fabric Loader 0.19.5 y Fabric API 0.161.0+26.3; DH 3.3.4 ya esta incluido.
+          Instala solo el JAR de tu target y retira solo el JAR TFL anterior. Prueba en una copia de la instancia.
+          Para rollback, cierra el juego y restaura sus JAR/configuracion; conserva saves, mapas, waypoints y capturas.
+          Los optimizadores y shaderpacks externos no se incluyen. El relay publico TFL necesita despliegue autorizado.
+          '''
+          (root/'LEEME.txt').write_text(notice)
+          (root/'BUILD-PROVENANCE.json').write_text(json.dumps({'sourceCommit':os.environ['GITHUB_SHA'],'workflowRun':os.environ['GITHUB_RUN_ID'],'nativeMatrixCertified':False,'experimentalTestBuild':True,'publicRelease':False},indent=2))
+          (root/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n' for p in sorted(root.iterdir()) if p.is_file()))
+          PY
+      - name: Stage experimental downloads in a draft only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties)
+          tag="v$version-test-${GITHUB_SHA:0:8}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
+            gh release upload "$tag" test-candidate/* --clobber
+          else
+            gh release create "$tag" test-candidate/* --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'Audit 5 RC1 — experimental test JARs' --notes-file test-candidate/LEEME.txt
+          fi
+          gh release view "$tag" --json url,isDraft,assets >> "$GITHUB_STEP_SUMMARY"
