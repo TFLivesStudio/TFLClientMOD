@@ -87,6 +87,18 @@ class WorldShareServiceTest {
             lan.setSoTimeout(100); assertThrows(SocketTimeoutException.class,lan::accept);
         } finally { s.stop(); }
     }
+    @Test void modernHandshakeBeginningWithLegacyPingByteCannotBypassHostGuard() throws Exception {
+        // A 254-byte modern handshake starts FE 01, just like a legacy ping prefix.
+        // Relays can route a legitimate name followed by NUL padding (Forge-style host data).
+        ByteArrayOutputStream hello=new ByteArrayOutputStream();hello.write(0xfe);hello.write(1);
+        hello.write(0);hello.write(47);hello.write(0xf7);hello.write(1);
+        byte[] address=new byte[247];java.util.Arrays.fill(address,(byte)'x');address[20]=0;hello.write(address);
+        hello.write(0);hello.write(1);hello.write(2);
+        byte[] packet=login("hOsT");hello.write(packet,8,packet.length-8);
+        dev.theredstonee.trsclient.core.hosting.LoginSniffer sniffer=new dev.theredstonee.trsclient.core.hosting.LoginSniffer(name->!name.equalsIgnoreCase("Host"));
+        byte[] wire=hello.toByteArray();
+        assertEquals(dev.theredstonee.trsclient.core.hosting.LoginSniffer.Verdict.REJECT,sniffer.feed(wire,0,wire.length));
+    }
     @Test void relayFailureAndInboundFloodRevokeConnectionsWithoutClosingLan() throws Exception {
         Tunnel tunnel=new Tunnel(); WorldShareService s=new WorldShareService(Paths.get("unused"),(p,progress)->tunnel);
         try(ServerSocket lan=new ServerSocket(0,4,InetAddress.getByName("127.0.0.1"))) {

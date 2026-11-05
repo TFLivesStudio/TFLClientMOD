@@ -11,7 +11,7 @@ public final class OrnitheWorldSharing {
     private static final WorldShareService SERVICE=new WorldShareService(FabricLoader.getInstance().getConfigDir().resolve("tflcore/sharing/runtime"));
     private OrnitheWorldSharing() { }
     public static WorldShareService service() { return SERVICE; }
-    public static void tick(OrnitheClient c) { SERVICE.tick(c.mc.world==null ? null : c.mc.getServer()); }
+    public static void tick(OrnitheClient c) { var server=c.mc.getServer(); SERVICE.tick(server!=null&&server.isRunning()?server:null); }
     public static int port(OrnitheClient c) {
         var s=c.mc.getServer(); if(s==null || !s.isPublished())return 0;
         var channels=((LanListenerAccess)s.getConnection()).tfl$lanChannels();

@@ -223,7 +223,7 @@ class HostingLogicTest {
 		assertEquals(LoginSniffer.Verdict.PASS, s.feed(all, all.length - 1, 1));
 		byte[] status = frame(varInt(0), varInt(47), str("x"), new byte[2], varInt(1));
 		assertEquals(LoginSniffer.Verdict.PASS, new LoginSniffer(guestPolicy()).feed(status, 0, status.length));
-		assertEquals(LoginSniffer.Verdict.PASS, new LoginSniffer(guestPolicy()).feed(new byte[] { (byte) 0xFE, 1 }, 0, 2));
+		assertEquals(LoginSniffer.Verdict.MORE, new LoginSniffer(guestPolicy()).feed(new byte[] { (byte) 0xFE, 1 }, 0, 2), "A legacy-looking prefix may be a modern 254-byte handshake");
 		byte[] junk = { 5, 9, 9, 9, 9, 9 };
 		assertEquals(LoginSniffer.Verdict.REJECT, new LoginSniffer(guestPolicy()).feed(junk, 0, junk.length));
 		byte[] badName = login(2, "Bob Space");

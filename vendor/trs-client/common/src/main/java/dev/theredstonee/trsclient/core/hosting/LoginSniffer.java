@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
  * Mojang-Prüfung als Host ein. Über das Welt-Hosting darf das nie gehen. Zusätzlich: Gäste über Relay/Direkt müssen
  * sich mit ihrem eigenen (von der TRS API bestätigten) Namen melden.
  *
- * <p>Status-Abfragen (Serverliste) und das uralte 0xFE-Ping laufen durch. Nicht threadsicher (ein Strom).
+ * <p>Status-Abfragen aktueller Clients laufen durch. Nicht threadsicher (ein Strom).
  */
 public final class LoginSniffer {
 	/** Entscheidung über den Namen. */
@@ -62,7 +62,8 @@ public final class LoginSniffer {
 
 	private Verdict decide() {
 		if (len == 0) return Verdict.MORE;
-		if ((buf[0] & 0xFF) == 0xFE) return Verdict.PASS; // Legacy-Ping (≤1.6-Format)
+		// FE is also the first byte of a valid modern VarInt length (254, 382, ...).
+		// Never treat that prefix as permission to bypass the login-name policy.
 		int[] pos = { 0 };
 		// Paket 1: Handshake
 		int frame = varInt(pos);
