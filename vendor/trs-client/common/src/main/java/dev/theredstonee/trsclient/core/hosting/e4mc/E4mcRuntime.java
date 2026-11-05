@@ -80,6 +80,11 @@ public final class E4mcRuntime {
 	/** Neue Tunnel-Instanz (lädt beim ersten Mal herunter). */
 	public static PublicTunnel newTunnel(Path dir, Progress progress) throws Exception {
         dev.theredstonee.trsclient.core.product.Product.requireOnlineServices();
+		return approvedShareTunnel(dir, progress);
+	}
+
+	/** Only WorldShareService calls this, after consuming explicit, single-session consent. */
+	static PublicTunnel approvedShareTunnel(Path dir, Progress progress) throws Exception {
 		ClassLoader cl = loader;
 		if (cl == null) {
 			synchronized (E4mcRuntime.class) {
@@ -124,7 +129,7 @@ public final class E4mcRuntime {
 
 	/** Jar aus dem Cache oder von Maven Central; SHA-256 muss stimmen. */
 	static Path fetch(Path dir, String artifact, String classifier, String sha256) throws IOException {
-			dev.theredstonee.trsclient.core.product.Product.requireOnlineServices();
+		if (Thread.currentThread().isInterrupted()) throw new java.io.InterruptedIOException("sharing cancelled");
 		String file = artifact + "-" + NETTY + (classifier == null ? "" : "-" + classifier) + ".jar";
 		Path target = dir.resolve(file);
 		if (Files.isRegularFile(target) && sha256.equals(sha256(Files.readAllBytes(target)))) return target;
@@ -141,6 +146,7 @@ public final class E4mcRuntime {
 				byte[] buf = new byte[16384];
 				int n;
 				while ((n = in.read(buf)) > 0) {
+					if (Thread.currentThread().isInterrupted()) throw new java.io.InterruptedIOException("sharing cancelled");
 					out.write(buf, 0, n);
 					if (out.size() > MAX_JAR) throw new IOException("too large: " + file);
 				}

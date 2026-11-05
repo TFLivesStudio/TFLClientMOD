@@ -490,6 +490,7 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   private void tick() {
+    OrnitheWorldSharing.tick(this);
     if(mc.screen==null)dev.theredstonee.trsclient.core.ui.background.MenuBackground.shared().close();
     synchronizeKeys();
     mapPlatform.updateIdentity();

@@ -260,6 +260,9 @@ public final class TrsClient implements ClientModInitializer {
 
 	private void onTick(Minecraft mc) {
         //? if >=26.3 {
+        /*dev.theredstonee.trsclient.hosting.WorldSharingHooks.tick();
+        *///?}
+        //? if >=26.3 {
         /*dev.theredstonee.trsclient.branding.WindowIdentity.refresh();
         *///?}
 

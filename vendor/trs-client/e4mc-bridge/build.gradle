@@ -33,6 +33,7 @@ tasks.named('compileJava') {
 jar {
 	archiveFileName = 'e4mc-bridge.jar'
 	exclude 'dev/theredstonee/trsclient/core/**'
+	exclude 'dev/theredstonee/trsclient/e4mcbridge/relay/**'
 	from('LICENSE-e4mc') { into 'META-INF' }
 	// Reproduzierbar (gleicher Inhalt → gleiche Bytes).
 	preserveFileTimestamps = false
@@ -58,3 +59,25 @@ dependencies {
     testRuntimeOnly "io.netty:netty-codec-native-quic:${netty}:${nativeOs}-${nativeArch}"
 }
 tasks.named('test') { useJUnitPlatform() }
+
+// Standalone infrastructure, never included in the client's isolated bridge JAR.
+configurations { relayRuntime }
+dependencies {
+    relayRuntime "io.netty:netty-codec-classes-quic:${netty}"
+    relayRuntime "io.netty:netty-handler:${netty}"
+    relayRuntime "io.netty:netty-codec-base:${netty}"
+    relayRuntime "io.netty:netty-codec-native-quic:${netty}:linux-x86_64"
+}
+tasks.register('relayJar', Jar) {
+    archiveFileName='tfl-sharing-relay.jar'
+    from sourceSets.main.output
+    include 'dev/theredstonee/trsclient/e4mcbridge/relay/**'
+    manifest { attributes 'Main-Class':'dev.theredstonee.trsclient.e4mcbridge.relay.TflRelay' }
+    preserveFileTimestamps=false
+    reproducibleFileOrder=true
+}
+tasks.register('relayDist', Sync) {
+    into layout.buildDirectory.dir('relay')
+    from(tasks.named('relayJar')) { into 'lib' }
+    from(configurations.relayRuntime) { into 'lib' }
+}

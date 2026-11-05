@@ -58,9 +58,13 @@ public final class QuiclimeTunnel implements PublicTunnel {
 	private volatile QuicChannel quic;
 	private volatile boolean stopped;
     private boolean started;
+	private final javax.net.ssl.TrustManagerFactory trustedRoots;
 
 	public QuiclimeTunnel() {
+		this(null);
 	}
+	// Local acceptance tests supply their private test CA; production always uses system trust.
+	QuiclimeTunnel(javax.net.ssl.TrustManagerFactory trustedRoots) { this.trustedRoots=trustedRoots; }
 
 	/** Relay vom Broker: {"id":"de","host":"de.e4mc.link","port":25575}. */
 	static String[] relay(String brokerUrl) throws Exception {
@@ -107,7 +111,7 @@ public final class QuiclimeTunnel implements PublicTunnel {
         if (stopped) return;
 		final String host = r[0];
 		final int port = Integer.parseInt(r[1]);
-		final QuicSslContext context = tlsContext(null);
+		final QuicSslContext context = tlsContext(trustedRoots);
 		io.netty.channel.ChannelHandler codec = new QuicClientCodecBuilder()
 				.sslContext(context)
 				.sslEngineProvider(ch -> context.newEngine(ch.alloc(), host, port))
@@ -199,6 +203,12 @@ public final class QuiclimeTunnel implements PublicTunnel {
 			QuicStreamChannel control = f.getNow();
 			control.writeAndFlush(controlMessage("{\"kind\":\"probe_capabilities\"}"));
 			control.writeAndFlush(controlMessage("{\"kind\":\"request_domain_assignment\"}"));
+            // Keep the authenticated QUIC connection alive even when no guest is playing.
+            // Capability probes are part of QUIClime in both Retro and modern e4mc.
+            final java.util.concurrent.ScheduledFuture<?> heartbeat = control.eventLoop().scheduleAtFixedRate(() -> {
+                if (!stopped && control.isActive()) control.writeAndFlush(controlMessage("{\"kind\":\"probe_capabilities\"}"));
+            }, 4, 4, TimeUnit.SECONDS);
+            control.closeFuture().addListener(done -> heartbeat.cancel(false));
 		});
 	}
 

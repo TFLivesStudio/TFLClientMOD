@@ -129,6 +129,8 @@ public final class OrnitheNavigation {
             }));
     extras.add(new MenuAction(net.minecraft.client.resource.language.I18n.translate("gui.achievements"), "flag", () -> c.mc.openScreen(new net.minecraft.client.gui.screen.menu.AchievementsScreen(c.mc.screen,c.mc.player.getStats()))));
     extras.add(new MenuAction(net.minecraft.client.resource.language.I18n.translate("gui.stats"), "gauge", () -> c.mc.openScreen(new net.minecraft.client.gui.screen.menu.StatsScreen(c.mc.screen,c.mc.player.getStats()))));
+    if(c.mc.isSingleplayer() && c.mc.getServer()!=null)
+      extras.add(new MenuAction(dev.theredstonee.trsclient.core.i18n.I18n.tr("share.title"), "globe", () -> OrnitheWorldSharing.open(c,c.mc.screen)));
     if(c.mc.isSingleplayer() && c.mc.getServer()!=null && !c.mc.getServer().isPublished())
       extras.add(new MenuAction(net.minecraft.client.resource.language.I18n.translate("menu.shareToLan"), "globe", () -> c.mc.openScreen(new net.minecraft.client.gui.screen.menu.world.OpenToLanScreen(c.mc.screen))));
     return new PauseChatScreen(new dev.theredstonee.trsclient.core.ui.menus.PauseActionsUi(
