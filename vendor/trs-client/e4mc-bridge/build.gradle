@@ -43,3 +43,18 @@ tasks.register('publishBridge', Copy) {
 	from jar
 	into '../common/src/main/resources/assets/trsclient/e4mc'
 }
+
+// Test native QUIC identity checks against a local certificate, never an insecure trust manager.
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "io.netty:netty-codec-classes-quic:${netty}"
+    testImplementation "io.netty:netty-handler:${netty}"
+    def osName = System.getProperty('os.name').toLowerCase(java.util.Locale.ROOT)
+    def nativeOs = osName.contains('win') ? 'windows' : osName.contains('mac') ? 'osx' : 'linux'
+    def arch = System.getProperty('os.arch').toLowerCase(java.util.Locale.ROOT)
+    def nativeArch = arch in ['aarch64','arm64'] ? 'aarch_64' : 'x86_64'
+    testRuntimeOnly "io.netty:netty-codec-native-quic:${netty}:${nativeOs}-${nativeArch}"
+}
+tasks.named('test') { useJUnitPlatform() }

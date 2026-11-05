@@ -57,13 +57,17 @@ public final class QuiclimeTunnel implements PublicTunnel {
 	private volatile Channel datagram;
 	private volatile QuicChannel quic;
 	private volatile boolean stopped;
+    private boolean started;
 
 	public QuiclimeTunnel() {
 	}
 
 	/** Relay vom Broker: {"id":"de","host":"de.e4mc.link","port":25575}. */
 	static String[] relay(String brokerUrl) throws Exception {
-		HttpURLConnection c = (HttpURLConnection) new URL(brokerUrl).openConnection();
+        URL endpoint = new URL(brokerUrl);
+        if (!"https".equalsIgnoreCase(endpoint.getProtocol()) || endpoint.getUserInfo() != null)
+            throw new IllegalArgumentException("Sharing broker requires HTTPS without embedded credentials");
+		HttpURLConnection c = (HttpURLConnection) endpoint.openConnection();
 		c.setConnectTimeout(10_000);
 		c.setReadTimeout(10_000);
 		c.setInstanceFollowRedirects(false);
@@ -87,12 +91,23 @@ public final class QuiclimeTunnel implements PublicTunnel {
 		}
 	}
 
+    // Explicit identity verification, independent of Netty's configurable default.
+    static QuicSslContext tlsContext(javax.net.ssl.TrustManagerFactory trust) {
+        return QuicSslContextBuilder.forClient().trustManager(trust)
+            .endpointIdentificationAlgorithm("HTTPS").applicationProtocols("quiclime").build();
+    }
+
 	@Override
 	public void start(String brokerUrl, final Events events) throws Exception {
+        synchronized (this) {
+            if (stopped || started) throw new IllegalStateException("Tunnel instances are single-session");
+            started = true;
+        }
 		String[] r = relay(brokerUrl);
+        if (stopped) return;
 		final String host = r[0];
 		final int port = Integer.parseInt(r[1]);
-		final QuicSslContext context = QuicSslContextBuilder.forClient().applicationProtocols("quiclime").build();
+		final QuicSslContext context = tlsContext(null);
 		io.netty.channel.ChannelHandler codec = new QuicClientCodecBuilder()
 				.sslContext(context)
 				.sslEngineProvider(ch -> context.newEngine(ch.alloc(), host, port))
@@ -103,20 +118,25 @@ public final class QuiclimeTunnel implements PublicTunnel {
 				.initialMaxStreamDataBidirectionalLocal(1250000)
 				.initialMaxStreamDataUnidirectional(1250000)
 				.build();
-		group = new MultiThreadIoEventLoopGroup(1, new DefaultThreadFactory("TRS-e4mc", true), NioIoHandler.newFactory());
+        synchronized (this) {
+            if (stopped) return;
+            group = new MultiThreadIoEventLoopGroup(1, new DefaultThreadFactory("TFL-WorldShare-QUIC", true), NioIoHandler.newFactory());
+        }
 		final InetSocketAddress remote = new InetSocketAddress(InetAddress.getByName(host), port);
 		new Bootstrap().group(group).channel(NioDatagramChannel.class).handler(codec).bind(0)
 				.addListener((ChannelFutureListener) bound -> {
 					if (!bound.isSuccess()) {
-						events.failed("bind: " + bound.cause());
+						if (!stopped) events.failed("bind: " + bound.cause());
 						return;
 					}
+                    if (stopped) { bound.channel().close(); return; }
 					datagram = bound.channel();
 					QuicChannel.newBootstrap(datagram)
 							.streamHandler(new ChannelInitializer<QuicStreamChannel>() {
 								@Override
 								protected void initChannel(QuicStreamChannel ch) {
 									// Jeder vom Relay geöffnete Stream = ein Spieler (voller Minecraft-Bytestrom).
+                                    if (stopped) { ch.close(); return; }
 									QuicPeerStream s = new QuicPeerStream(ch);
 									ch.pipeline().addLast(s.handler());
 									events.stream(s);
@@ -138,9 +158,10 @@ public final class QuiclimeTunnel implements PublicTunnel {
 							.connect()
 							.addListener((GenericFutureListener<Future<QuicChannel>>) connected -> {
 								if (!connected.isSuccess()) {
-									events.failed("connect: " + connected.cause());
+									if (!stopped) events.failed("connect: " + connected.cause());
 									return;
 								}
+                                if (stopped) { connected.getNow().close(); return; }
 								quic = connected.getNow();
 								openControl(quic, events);
 							});
@@ -154,6 +175,7 @@ public final class QuiclimeTunnel implements PublicTunnel {
 				ch.pipeline().addLast(new ControlDecoder(), new ChannelInboundHandlerAdapter() {
 					@Override
 					public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                        if (stopped) return;
 						String json = (String) msg;
 						Matcher k = KIND.matcher(json);
 						if (!k.find()) return;
@@ -170,9 +192,10 @@ public final class QuiclimeTunnel implements PublicTunnel {
 			}
 		}).addListener((GenericFutureListener<Future<QuicStreamChannel>>) f -> {
 			if (!f.isSuccess()) {
-				events.failed("control: " + f.cause());
+				if (!stopped) events.failed("control: " + f.cause());
 				return;
 			}
+            if (stopped) { f.getNow().close(); return; }
 			QuicStreamChannel control = f.getNow();
 			control.writeAndFlush(controlMessage("{\"kind\":\"probe_capabilities\"}"));
 			control.writeAndFlush(controlMessage("{\"kind\":\"request_domain_assignment\"}"));
@@ -210,10 +233,11 @@ public final class QuiclimeTunnel implements PublicTunnel {
 
 	@Override
 	public void stop() {
-		stopped = true;
-		QuicChannel q = quic;
-		Channel d = datagram;
-		EventLoopGroup g = group;
+        QuicChannel q; Channel d; EventLoopGroup g;
+        synchronized (this) {
+            if (stopped) return;
+            stopped = true; q = quic; d = datagram; g = group;
+        }
 		try {
 			if (q != null) q.close().awaitUninterruptibly(2000);
 			if (d != null) d.close().awaitUninterruptibly(2000);
@@ -226,7 +250,11 @@ public final class QuiclimeTunnel implements PublicTunnel {
 	static final class QuicPeerStream implements PeerStream {
 		private static final InetSocketAddress PLACEHOLDER = placeholder();
 		private final QuicStreamChannel ch;
+        static final int MAX_PENDING_BYTES = 1024 * 1024;
 		private final List<byte[]> early = new ArrayList<byte[]>();
+        private int earlyBytes;
+        private final java.util.concurrent.atomic.AtomicInteger pending = new java.util.concurrent.atomic.AtomicInteger();
+        private volatile boolean closing;
 		private volatile Sink sink;
 		private volatile boolean closedSeen;
 		private String closedReason;
@@ -270,23 +298,27 @@ public final class QuiclimeTunnel implements PublicTunnel {
 		}
 
 		private void deliver(byte[] data) {
-			Sink s;
-			synchronized (early) {
-				s = sink;
-				if (s == null) {
-					early.add(data);
-					return;
-				}
-			}
-			s.data(data, 0, data.length);
-		}
+            Sink target;
+            synchronized (early) {
+                if (closing || closedSeen) return;
+                target = sink;
+                if (target == null) {
+                    if (data.length <= MAX_PENDING_BYTES - earlyBytes) {
+                        early.add(data); earlyBytes += data.length; return;
+                    }
+                    early.clear(); earlyBytes = 0;
+                }
+            }
+            if (target == null) { close("receive buffer limit"); return; }
+            target.data(data, 0, data.length);
+        }
 
 		private void ended(String reason) {
 			Sink s;
 			synchronized (early) {
 				if (closedSeen) return;
 				closedSeen = true;
-				closedReason = reason;
+				if (closedReason == null) closedReason = reason;
 				s = sink;
 			}
 			if (s != null) s.closed(reason);
@@ -296,8 +328,9 @@ public final class QuiclimeTunnel implements PublicTunnel {
 		public void start(Sink s) {
 			boolean closed;
 			synchronized (early) {
+                if (sink != null) throw new IllegalStateException("Peer stream already started");
 				for (byte[] b : early) s.data(b, 0, b.length);
-				early.clear();
+				early.clear(); earlyBytes = 0;
 				sink = s;
 				closed = closedSeen;
 			}
@@ -305,21 +338,39 @@ public final class QuiclimeTunnel implements PublicTunnel {
 		}
 
 		@Override
-		public boolean write(byte[] b, int off, int len) {
-			if (!ch.isActive()) return false;
-			ch.writeAndFlush(Unpooled.copiedBuffer(b, off, len));
-			return true;
-		}
+		public boolean write(byte[] b, int off, final int len) {
+            if (b == null) throw new NullPointerException("bytes");
+            if (off < 0 || len < 0 || off > b.length - len) throw new IndexOutOfBoundsException();
+            if (!isOpen()) return false;
+            int current;
+            do {
+                current = pending.get();
+                if (len > MAX_PENDING_BYTES - current) { close("send buffer limit"); return false; }
+            } while (!pending.compareAndSet(current, current + len));
+            ByteBuf copy = Unpooled.copiedBuffer(b, off, len);
+            try {
+                ch.writeAndFlush(copy).addListener((ChannelFutureListener) result -> {
+                    pending.addAndGet(-len);
+                    if (!result.isSuccess()) close("send failed");
+                });
+                return true;
+            } catch (RuntimeException failure) {
+                copy.release(); pending.addAndGet(-len); close("send failed"); return false;
+            }
+        }
 
-		@Override
-		public void close(String reason) {
-			ch.close();
-		}
+        @Override public long pendingBytes() { return pending.get(); }
 
-		@Override
-		public boolean isOpen() {
-			return ch.isActive();
-		}
+        @Override public void close(String reason) {
+            synchronized (early) {
+                if (closing) return;
+                closing = true; closedReason = reason;
+            }
+            // Netty delivers channelInactive on the event loop, preserving callback ordering.
+            ch.close();
+        }
+
+        @Override public boolean isOpen() { return !closing && !closedSeen && ch.isActive(); }
 
 		@Override
 		public Path path() {
