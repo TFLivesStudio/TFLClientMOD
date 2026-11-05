@@ -24,6 +24,7 @@ public final class DhRuntimePolicy {
     private static int distance=-1;
     public static void tick(net.minecraft.client.Minecraft mc){
         if(com.seibel.distanthorizons.api.DhApi.Delayed.configs==null || dev.theredstonee.trsclient.TrsClient.get()==null)return;
+        DhShaderOrdering.tick(mc);
         DhWorldSessions.tick(mc);
         var module=dev.theredstonee.trsclient.TrsClient.get().modules().farTerrain;
         var graphics=com.seibel.distanthorizons.api.DhApi.Delayed.configs.graphics();

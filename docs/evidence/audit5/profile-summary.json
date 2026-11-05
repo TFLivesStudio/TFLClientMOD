@@ -1,0 +1,70 @@
+{
+  "quiet-baseline": {
+    "samples": 1054,
+    "topFrames": {
+      "sun/nio/ch/EPoll.wait": 530,
+      "org/lwjgl/opengl/LinuxContextImplementation.nSwapBuffers": 220,
+      "sun/awt/X11/XToolkit.waitForEvents": 193,
+      "org/lwjgl/opengl/GL11.nglTexSubImage2D": 17,
+      "net/minecraft/unmapped/C_68899226.m_92517267": 16,
+      "org/lwjgl/opengl/LinuxEvent.getPending": 11,
+      "org/lwjgl/opengl/GL11.nglGetIntegerv": 4,
+      "net/minecraft/unmapped/C_25501528.m_95125644": 4,
+      "java/util/HashMap.putVal": 2,
+      "java/lang/StringBuilder.toString": 2,
+      "net/minecraft/unmapped/C_64041439.m_15038091": 2,
+      "net/minecraft/unmapped/C_03140863.m_09175101": 2
+    }
+  },
+  "quiet-starlight": {
+    "samples": 1051,
+    "topFrames": {
+      "sun/nio/ch/EPoll.wait": 533,
+      "org/lwjgl/opengl/LinuxContextImplementation.nSwapBuffers": 217,
+      "sun/awt/X11/XToolkit.waitForEvents": 189,
+      "org/lwjgl/opengl/GL11.nglTexSubImage2D": 25,
+      "net/minecraft/unmapped/C_68899226.m_92517267": 16,
+      "org/lwjgl/opengl/LinuxEvent.getPending": 8,
+      "net/minecraft/unmapped/C_70668269.m_20870270": 5,
+      "net/minecraft/unmapped/C_25501528.m_95125644": 4,
+      "java/util/HashMap.put": 3,
+      "java/util/HashMap.putVal": 3,
+      "java/lang/ThreadLocal.get": 2,
+      "net/minecraft/unmapped/C_97866173.m_94668477": 2
+    }
+  },
+  "quiet-argentum-baseline": {
+    "samples": 1039,
+    "topFrames": {
+      "sun/nio/ch/EPoll.wait": 663,
+      "java.lang.invoke.LambdaForm$MH/0x0000000094893800.invoke": 322,
+      "net/minecraft/unmapped/C_68899226.m_92517267": 9,
+      "net/minecraft/unmapped/C_25501528.m_95125644": 6,
+      "java/lang/StringLatin1.toLowerCase": 3,
+      "net/minecraft/unmapped/C_70668269.m_20870270": 2,
+      "net/minecraft/unmapped/C_81592558.m_64404227": 2,
+      "net/minecraft/unmapped/C_68899226.m_64858233": 2,
+      "net/minecraft/unmapped/C_57145437.m_07648116": 2,
+      "net/minecraft/unmapped/C_03140863.args$zfe000$argentum-extras$argentumExtras$scaleViewBobbingTranslation": 1,
+      "org/lwjgl/opengl/GL11C.nglTexSubImage2D": 1,
+      "java.lang.invoke.LambdaForm$DMH/0x00000000942c7800.newInvokeSpecial": 1
+    }
+  },
+  "quiet-argentum-both": {
+    "samples": 1049,
+    "topFrames": {
+      "sun/nio/ch/EPoll.wait": 664,
+      "java.lang.invoke.LambdaForm$MH/0x000000007c89b000.invoke": 174,
+      "org/lwjgl/opengl/GL15C.nglGetQueryObjectiv": 136,
+      "net/minecraft/unmapped/C_68899226.m_92517267": 14,
+      "org/lwjgl/opengl/GL11C.nglGetIntegerv": 4,
+      "net/minecraft/unmapped/C_57145437.m_07648116": 3,
+      "java/util/HashMap.putVal": 3,
+      "net/minecraft/unmapped/C_25501528.m_95125644": 2,
+      "org/lwjgl/opengl/GL11C.nglTexSubImage2D": 2,
+      "java/util/ArrayList.indexOfRange": 2,
+      "com/jcraft/jorbis/CodeBook.decode": 2,
+      "java/util/LinkedHashMap$LinkedValueIterator.<init>": 1
+    }
+  }
+}

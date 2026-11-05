@@ -16,7 +16,12 @@ final class WorldInsightProbe {
         var field = type.getDeclaredField("info"); field.setAccessible(true);
         var original = c.mc.crosshairTarget;
         try {
-            var pos = new BlockPos(c.mc.player.x, c.mc.player.y - 1, c.mc.player.z);
+            // The fixture may reopen a save with its creative player still flying. Select a
+            // solid block from the actual received column rather than assuming a floor at y-1.
+            int x=(int)Math.floor(c.mc.player.x),z=(int)Math.floor(c.mc.player.z);
+            var chunk=c.mc.world.getChunkSource().getChunk(x>>4,z>>4);
+            if(chunk==null||chunk instanceof net.minecraft.world.chunk.EmptyChunk)throw new AssertionError("Insight fixture requires a received chunk");
+            var pos = new BlockPos(x, chunk.getHeight(x&15,z&15)-1, z);
             c.mc.crosshairTarget = new HitResult(new Vec3d(pos.getX() + .5, pos.getY() + 1, pos.getZ() + .5), Direction.UP, pos);
             refresh.invoke(hud);
             TargetInfo block = (TargetInfo)field.get(hud);

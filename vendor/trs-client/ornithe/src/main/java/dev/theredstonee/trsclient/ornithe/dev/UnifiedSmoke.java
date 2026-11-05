@@ -193,6 +193,11 @@ public final class UnifiedSmoke implements Runnable {
             c.modules.worldMapCloudQuality.set(
                 dev.theredstonee.trsclient.core.map.volume.CloudQuality.OFF);
             mark("phase3:map-fog-disabled");
+          } else {
+            // A previous diagnostic run may have persisted OFF in this isolated fixture.
+            // The standard scenario must exercise the actual default high-quality fog.
+            c.modules.worldMapCloudQuality.set(dev.theredstonee.trsclient.core.map.volume.CloudQuality.HIGH);
+            mark("phase3:map-fog-high");
           }
           report.add("serverMaps", new Gson().toJsonTree(ServerMapRegression.run(c)));
           mark("phase3:server-map-regression-done");

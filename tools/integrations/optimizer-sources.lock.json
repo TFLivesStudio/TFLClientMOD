@@ -4,11 +4,12 @@
     "revision": "d687019623a153e03a9210e05b3eea0d33059cf7",
     "license": "LGPL-3.0-only",
     "jar": "Zirconium-0.2.0+mc1.8.9.tfl.1.jar",
-    "builtSha256": "7c3de2d1db7925a8dbc22b4ec5b5b60270385d4a358054d6f6049018e9f13b28",
-    "compatibility": "ARGB/raster tests pass; native target/optimizer acceptance pending; not in Selection",
+    "builtSha256": "0d68e0a99a14b72d586e106e7b2835c2f8a20cfc78782db9b2aceb91dc13ae1f",
+    "compatibility": "Native LWJGL2/LWJGL3 and full Argentum/Extras/Lucerna stack accepted; RGBA/adaptive decoder tests and reproducible build passed; no generic FPS gain claimed",
     "patches": [
       "patches/zirconium-java25.patch",
-      "patches/zirconium-texture-compat.patch"
+      "patches/zirconium-texture-compat.patch",
+      "patches/zirconium-adaptive-decoder.patch"
     ],
     "buildToolchain": "Java25; Gradle9.7.1; Loom1.18.4; Ploceus1.18.3"
   },
@@ -18,7 +19,10 @@
     "license": "GPL-3.0-only",
     "jar": "starlight-1.0.0+1.8.9.jar",
     "builtSha256": "4d572d90d1bdd27c747b0fd03295ae47c232e3500dbea3a93bde35903b4500c8",
-    "patch": null,
-    "compatibility": "not yet certified; do not add to Selection catalog"
+    "compatibility": "Native baseline/LWJGL3/Argentum/Extras, map/fog, dimensions and lighting passed; controlled 4096-block update benchmark recorded; physical GPU acceptance pending",
+    "patches": [
+      "patches/starlight-build.patch"
+    ],
+    "buildToolchain": "Java25; Gradle9.6.1; Loom1.17.21; Ploceus1.17.4; identical artifact after snapshot pin"
   }
 ]

@@ -194,7 +194,9 @@ public final class TflRelay implements AutoCloseable {
         public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause){ctx.close();other.close();}
     }
     private static SSLContext httpsContext(Path key,Path certificate) throws Exception {
-        String pem=new String(Files.readAllBytes(key),StandardCharsets.US_ASCII).replace("-----BEGIN PRIVATE KEY-----","").replace("-----END PRIVATE KEY-----","").replaceAll("\\s","");
+        String pem=Files.readAllLines(key,StandardCharsets.US_ASCII).stream()
+            .filter(line->!line.startsWith("-----")).map(String::trim)
+            .collect(java.util.stream.Collectors.joining());
         PrivateKey privateKey=KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(pem)));
         java.security.cert.Certificate[] chain;
         try(InputStream in=Files.newInputStream(certificate)){Collection<? extends java.security.cert.Certificate> certs=CertificateFactory.getInstance("X.509").generateCertificates(in);chain=certs.toArray(new java.security.cert.Certificate[0]);}

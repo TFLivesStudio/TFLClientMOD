@@ -1,0 +1,1 @@
+{"kind":"CPU-only procedural 1024x1024 RGBA PNG decode","iterations":32,"identicalRgb":true,"imageIoMedianMs":16.119693,"spngMedianMs":19.660205,"imageIoP95Ms":20.327591,"spngP95Ms":22.543300,"physicalGpu":false}

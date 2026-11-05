@@ -1,0 +1,84 @@
+name: Audit 5 internal candidate
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      acceptance_run:
+        type: string
+        required: false
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: audit5-candidate-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: write
+    env:
+      NATIVE_ACCEPTANCE_RUN: ${{ inputs.acceptance_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '25'}
+      - uses: gradle/actions/setup-gradle@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg openssl patch
+      - name: Common regressions, relay TLS and source policy
+        run: |
+          vendor/trs-client/gradlew -p vendor/trs-client :common:test -PtrsVersions=26.3 --no-daemon --max-workers=2
+          vendor/trs-client/gradlew -p vendor/trs-client/e4mc-bridge test relayDist --no-daemon --max-workers=2
+          python3 -m unittest discover -s tools -p 'test_*.py'
+          python3 tools/scan_secrets.py
+      - name: Build and verify installable clients
+        run: |
+          vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test :remapJar --no-daemon --max-workers=2
+          vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:build -PtrsVersions=26.3 --no-daemon --max-workers=2
+          version=$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties)
+          test "$version" = "$(sed -n 's/^mod_version=//p' vendor/trs-client/gradle.properties)"
+          python3 tools/ornithe/verify_jar.py "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$version.jar"
+          mkdir -p candidate
+          cp "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$version.jar" candidate/
+          cp "vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-$version.jar" candidate/
+      - name: Reproduce independent optimizers and complete corresponding sources
+        run: |
+          python3 tools/integrations/build_optimizers.py --workspace "$RUNNER_TEMP/audit5-upstream"
+          python3 tools/integrations/package_sources.py --upstream "$RUNNER_TEMP/audit5-upstream" --output candidate
+          python3 - <<'PY'
+          import json, pathlib, shutil
+          root=pathlib.Path('candidate')
+          for name,lock in zip(('zirconium','starlight'),json.loads(pathlib.Path('tools/integrations/optimizer-sources.lock.json').read_text())):
+              shutil.copy2(pathlib.Path(__import__('os').environ['RUNNER_TEMP'])/'audit5-upstream'/name/'build/libs'/lock['jar'],root/lock['jar'])
+          import os
+          (root/'BUILD-PROVENANCE.json').write_text(json.dumps({'sourceCommit':os.environ['GITHUB_SHA'],'workflowRun':os.environ['GITHUB_RUN_ID'],'nativeAcceptanceRun':os.environ.get('NATIVE_ACCEPTANCE_RUN',''),'publicRelease':False},indent=2)+'\n')
+          shutil.copytree('vendor/trs-client/e4mc-bridge/build/relay',root/'relay')
+          shutil.copy2('vendor/trs-client/e4mc-bridge/RELAY.md',root/'relay/RELAY.md')
+          shutil.copy2('vendor/trs-client/e4mc-bridge/LICENSE-e4mc',root/'relay/LICENSE-e4mc')
+          shutil.copy2('vendor/trs-client/LICENSE',root/'relay/COPYING-GPL-3.0.txt')
+          shutil.make_archive(str(root/'tfl-sharing-relay'),'zip',root/'relay')
+          shutil.rmtree(root/'relay')
+          shutil.copytree('docs/evidence/audit5',root/'native-evidence')
+          shutil.make_archive(str(root/'native-evidence'),'zip',root/'native-evidence')
+          shutil.rmtree(root/'native-evidence')
+          shutil.copy2('docs/AUDIT5_STATUS.md',root/'VALIDATION.md')
+          import hashlib
+          (root/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n' for p in sorted(root.iterdir()) if p.is_file()))
+          PY
+      - name: Stage draft assets only (never publish or promote Selection)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties)
+          tag="v$version"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
+            gh release upload "$tag" candidate/* --clobber
+          else
+            gh release create "$tag" candidate/* --draft --prerelease --latest=false --target "$GITHUB_SHA" --title "Audit 5 $version — internal review" --notes-file docs/AUDIT5_STATUS.md
+          fi
+          gh release view "$tag" --json url,isDraft,assets > candidate-release.json
+          cat candidate-release.json >> "$GITHUB_STEP_SUMMARY"

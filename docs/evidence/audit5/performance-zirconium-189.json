@@ -1,0 +1,148 @@
+{
+  "checks": [
+    {
+      "name": "World Insight native received targets and privacy",
+      "passed": true
+    },
+    {
+      "name": "No internet sharing without explicit session consent",
+      "passed": true
+    },
+    {
+      "name": "Immutable received terrain columns available",
+      "passed": true
+    },
+    {
+      "name": "3D LOD geometry drawn beyond vanilla two-chunk range",
+      "passed": true
+    },
+    {
+      "name": "GPU geometry budget respected",
+      "passed": true
+    },
+    {
+      "name": "LOD is submitted once before vanilla geometry per non-stereo frame",
+      "passed": true
+    },
+    {
+      "name": "LOD camera axes and screen projection match native terrain",
+      "passed": true
+    },
+    {
+      "name": "LOD pass preserves valid OpenGL state",
+      "passed": true
+    },
+    {
+      "name": "3D LOD geometry drawn beyond vanilla two-chunk range",
+      "passed": true
+    },
+    {
+      "name": "GPU geometry budget respected",
+      "passed": true
+    },
+    {
+      "name": "LOD is submitted once before vanilla geometry per non-stereo frame",
+      "passed": true
+    },
+    {
+      "name": "LOD camera axes and screen projection match native terrain",
+      "passed": true
+    },
+    {
+      "name": "LOD pass preserves valid OpenGL state",
+      "passed": true
+    },
+    {
+      "name": "Known 3D terrain remains visible after moving away",
+      "passed": true
+    },
+    {
+      "name": "Disabling LOD terminates workers and releases all GPU geometry",
+      "passed": true
+    },
+    {
+      "name": "Re-enabling LOD restores derived cache without resending terrain",
+      "passed": true
+    },
+    {
+      "name": "Received emissive block updates LOD height and block light",
+      "passed": true
+    },
+    {
+      "name": "Diorama observes the same legitimate light update",
+      "passed": true
+    },
+    {
+      "name": "Removing emissive terrain invalidates cached height and lighting",
+      "passed": true
+    },
+    {
+      "name": "Night-time LOD keeps valid render state",
+      "passed": true
+    },
+    {
+      "name": "Nether receives a distinct LOD engine and cache",
+      "passed": true
+    },
+    {
+      "name": "Changing dimension terminates previous terrain workers",
+      "passed": true
+    },
+    {
+      "name": "Return from Nether restores the isolated Overworld cache",
+      "passed": true
+    },
+    {
+      "name": "No LOD renderer failure after dimension round trip",
+      "passed": true
+    },
+    {
+      "name": "Re-enabling LOD restores derived cache without resending terrain",
+      "passed": true
+    },
+    {
+      "name": "Native LAN publish succeeds",
+      "passed": true
+    },
+    {
+      "name": "Native LAN port is actual bound TCP listener",
+      "passed": true
+    },
+    {
+      "name": "Publishing preserves world game mode",
+      "passed": true
+    },
+    {
+      "name": "Shared World Sharing screen is reachable from native adapter",
+      "passed": true
+    },
+    {
+      "name": "Opening sharing screen never initiates tunnel",
+      "passed": true
+    },
+    {
+      "name": "LAN remains open after stopping internet sharing",
+      "passed": true
+    }
+  ],
+  "scenario": "audit5-lod-lan",
+  "mapFogExercised": false,
+  "worldReadyMs": 2073.237179,
+  "receivedColumns": 100,
+  "diskRestores": 0,
+  "lodVertices": 31486332,
+  "gpuBytes": 3367424,
+  "meshBuildNanos": 47613021,
+  "nativeRenderer": "zink Vulkan 1.4(llvmpipe (LLVM 19.1.7, 256 bits) (MESA_LLVMPIPE))",
+  "performance": {
+    "frames": 297,
+    "seconds": 10.029268369,
+    "frameMsP50": 33.322264,
+    "frameMsP95": 43.852328,
+    "frameMsP99": 55.487106,
+    "processCpuSeconds": 20.63,
+    "heapMiB": 578.1275863647461,
+    "physicalGpu": false
+  },
+  "status": "passed"
+}

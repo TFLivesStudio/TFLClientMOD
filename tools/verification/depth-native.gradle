@@ -2,11 +2,19 @@ if (project.name != "26.3" && !project.plugins.hasPlugin("ploceus")) return
 // The fixture is an explicitly enabled, separate local mod; production JARs remain byte-identical.
 if (project.hasProperty('depthNativeProbe')) {
     def probeMetadata=layout.buildDirectory.file('native-probe-resources/fabric.mod.json')
+    def frameMixin=layout.buildDirectory.file('native-probe-resources/audit5-probe.mixins.json')
+    def legacyMetrics=project.plugins.hasPlugin('ploceus') && project.hasProperty('audit5Measure')
     def writeProbeMetadata=tasks.register('writeNativeProbeMetadata') {
         outputs.file(probeMetadata)
+        inputs.property('frameMetrics',legacyMetrics)
+        if(legacyMetrics)outputs.file(frameMixin)
         doLast {
             def target=probeMetadata.get().asFile;target.parentFile.mkdirs()
             target.text='{"schemaVersion":1,"id":"tfl_depth_probe","version":"1.0.0","environment":"client","depends":{"tflcore":"*"}}'
+            if(legacyMetrics){
+                def metadata=new groovy.json.JsonSlurper().parseText(target.text);metadata.mixins=['audit5-probe.mixins.json'];target.text=groovy.json.JsonOutput.toJson(metadata)
+                frameMixin.get().asFile.text='{"required":true,"minVersion":"0.8","package":"dev.theredstonee.trsclient.ornithe.dev.mixin","compatibilityLevel":"JAVA_25","client":["FrameMetricsMixin"],"injectors":{"defaultRequire":1}}'
+            }
         }
     }
     def probeJar=tasks.register('nativeProbeJar',Jar) {
@@ -15,6 +23,7 @@ if (project.hasProperty('depthNativeProbe')) {
         archiveClassifier='native-probe-dev'
         from(sourceSets.main.output.classesDirs) { include 'dev/theredstonee/trsclient/ornithe/dev/**';include 'dev/theredstonee/trsclient/dev/**' }
         from(probeMetadata) { into '' }
+        if(legacyMetrics)from(frameMixin)
     }
     def probeArtifact=probeJar
     if (project.name != '26.3') {
@@ -27,6 +36,11 @@ if (project.hasProperty('depthNativeProbe')) {
     }
     tasks.named('runProdClient') {
         mods.from(probeArtifact)
+        if(legacyMetrics)jvmArgs.add('-Dtflcore.audit5.measure=true')
+        if(project.hasProperty('audit5LightBench'))jvmArgs.add('-Dtflcore.audit5.lightBench=true')
+        if(project.hasProperty('audit5Jfr'))jvmArgs.add('-Dtflcore.audit5.jfr=true')
+        if(project.name=='26.3' && project.hasProperty('audit5ShaderPack')) programArgs.addAll('--graphicsBackend','opengl')
+        if(project.hasProperty('audit5ShaderPack')) jvmArgs.add("-Dtflcore.audit5.shaderPack=${project.property('audit5ShaderPack')}")
         if(project.hasProperty('audit5RemoteGuest')) jvmArgs.add('-Dtflcore.audit5.remoteGuest=true')
             if(project.hasProperty('audit5ShareBroker')) {
                 jvmArgs.addAll("-Dtflcore.audit5.shareBroker=${project.property('audit5ShareBroker')}","-Dtflcore.audit5.shareFixture=${project.property('audit5ShareFixture')}","-Djavax.net.ssl.trustStore=${project.property('audit5ShareTrustStore')}")

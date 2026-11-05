@@ -1,0 +1,9 @@
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -1,5 +1,5 @@
+ plugins {
+-    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
++    id("net.fabricmc.fabric-loom-remap") version "1.17.21"
+     id("ploceus") version "1.17.4"
+ }
+ 

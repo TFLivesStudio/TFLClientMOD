@@ -1,0 +1,238 @@
+{
+  "checks": [
+    {
+      "name": "real video frames advance",
+      "passed": true
+    },
+    {
+      "name": "source targets 30 fps",
+      "passed": true
+    },
+    {
+      "name": "World Insight received block, player privacy and target miss",
+      "passed": true
+    },
+    {
+      "name": "nullable chunk data and remote world cache transitions",
+      "passed": true
+    },
+    {
+      "name": "received chunks captured",
+      "passed": true
+    },
+    {
+      "name": "original Diorama voxel tiles ready or restored",
+      "passed": true
+    },
+    {
+      "name": "Diorama worker healthy",
+      "passed": true
+    },
+    {
+      "name": "native Diorama fog shader linked",
+      "passed": true
+    },
+    {
+      "name": "native Diorama map owns screen",
+      "passed": true
+    },
+    {
+      "name": "cardinal map camera 0",
+      "passed": true
+    },
+    {
+      "name": "cardinal map pick converts to real world 0",
+      "passed": true
+    },
+    {
+      "name": "cardinal map camera 1",
+      "passed": true
+    },
+    {
+      "name": "cardinal map pick converts to real world 1",
+      "passed": true
+    },
+    {
+      "name": "cardinal map camera 2",
+      "passed": true
+    },
+    {
+      "name": "cardinal map pick converts to real world 2",
+      "passed": true
+    },
+    {
+      "name": "cardinal map camera 3",
+      "passed": true
+    },
+    {
+      "name": "cardinal map pick converts to real world 3",
+      "passed": true
+    },
+    {
+      "name": "shared pause rail",
+      "passed": true
+    },
+    {
+      "name": "native chat focused",
+      "passed": true
+    },
+    {
+      "name": "pause retains the orthographic GUI projection",
+      "passed": true
+    },
+    {
+      "name": "pause has exactly six primary buttons",
+      "passed": true
+    },
+    {
+      "name": "pause retains native secondary actions",
+      "passed": true
+    },
+    {
+      "name": "pause suppresses enabled custom HUD without changing settings",
+      "passed": true
+    },
+    {
+      "name": "pause input is in lower right",
+      "passed": true
+    },
+    {
+      "name": "native clickable chat follows lower-right layout",
+      "passed": true
+    },
+    {
+      "name": "chat submission retains pause",
+      "passed": true
+    },
+    {
+      "name": "native chat history retained",
+      "passed": true
+    },
+    {
+      "name": "minimap target retains opaque map pixels after full-map transition",
+      "passed": true
+    },
+    {
+      "name": "local screenshot editor available",
+      "passed": true
+    },
+    {
+      "name": "Unified vanilla graphics",
+      "passed": true
+    },
+    {
+      "name": "public window title",
+      "passed": true
+    },
+    {
+      "name": "1280x720 framebuffer",
+      "passed": true
+    },
+    {
+      "name": "854x480 framebuffer",
+      "passed": true
+    },
+    {
+      "name": "title in fullscreen",
+      "passed": true
+    },
+    {
+      "name": "title after fullscreen",
+      "passed": true
+    },
+    {
+      "name": "native font survives minimap toggles and world map",
+      "passed": true
+    }
+  ],
+  "nativeRenderer": "zink Vulkan 1.4(llvmpipe (LLVM 19.1.7, 256 bits) (MESA_LLVMPIPE))",
+  "nativeOpenGl": "4.6 (Compatibility Profile) Mesa 25.0.7-2+deb13u1",
+  "measuredVideoFps": 29.726467527514146,
+  "video": {
+    "decoderImplementation": "ImageIO parallel",
+    "mode": "HIGH",
+    "decoderState": "running",
+    "fallbackReason": "",
+    "failure": "",
+    "sessions": 1,
+    "framesDecoded": 421,
+    "framesUploaded": 417,
+    "framesPresented": 417,
+    "loops": 0,
+    "decodedFingerprint": 228919391949864636,
+    "uploadedFingerprint": -4770414679067728836,
+    "decodeNanos": 5574869871,
+    "uploadNanos": 9982463040,
+    "decoderCpuNanos": 5084592976,
+    "uploadBytes": 3458764800,
+    "discardedFrames": 3,
+    "elapsedNanos": 14089642306,
+    "pixelBufferAllocations": 8,
+    "imageBufferAllocations": 3,
+    "pendingFrames": 1,
+    "ownedTextures": 1,
+    "decoderFps": 29.88010560216418,
+    "presentationFps": 29.59595769319538,
+    "drawCalls": 529
+  },
+  "serverMaps": {
+    "sameDimensionCachesIsolated": true,
+    "nullLightBuffersSafe": true,
+    "returningWorldRestoresMemoryCache": true,
+    "npcWithoutTabEntryHasFace": true,
+    "incompleteSectionDeferred": true,
+    "staleDiskLoadRejected": true
+  },
+  "bakedTiles": 0,
+  "meanBakeMs": 0.0,
+  "pauseMinimapTarget": {
+    "totalPixels": 50176,
+    "actualTexture": 25,
+    "opaquePixels": 50176,
+    "edge": 224,
+    "internalFormat": 32849,
+    "targetTexture": 25
+  },
+  "rightShiftProfile": {
+    "samples": 40,
+    "renderCallbackIntervalP95Ms": 341.357105,
+    "renderCallbackIntervalP99Ms": 403.106974,
+    "uiThreadCpuP95Ms": 5.137585,
+    "uiThreadCpuP99Ms": 5.486357,
+    "worldFrames": 39,
+    "worldCallbackP95Ms": 374.274157,
+    "worldCallbackP99Ms": 403.079382,
+    "startEpochMs": 1793891512336,
+    "endEpochMs": 1793891520387,
+    "allocationTimingSupported": true,
+    "renderThreadAllocatedBytes": 39103792,
+    "processGcCollections": 1,
+    "processGcMillis": 36,
+    "cpuTimingSupported": true,
+    "gpuTimingMeasured": false
+  },
+  "mapFontRegression": {
+    "nativeGlyphPixelsIdentical": true,
+    "externalVaoPreserved": true,
+    "minimapToggleDraws": 3,
+    "worldMapDraws": 1
+  },
+  "mapMetrics": {
+    "worldCacheHits": 1,
+    "diskTileHits": 170,
+    "captureCount": 299,
+    "captureMeanMs": 0.04479033110367893,
+    "bakedTiles": 4,
+    "bakeMeanMs": 430.5669085,
+    "maskBuilds": 62,
+    "maskMeanMs": 2.5381610483870967,
+    "uploadCount": 58,
+    "uploadMeanMs": 4.346533741379311,
+    "drawCount": 78,
+    "drawMeanMs": 84.9302985,
+    "queuedBakes": 5,
+    "queuedUploads": 0,
+    "gpuTimingMeasured": false
+  },
+  "status": "passed"
+}

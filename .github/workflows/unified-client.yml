@@ -22,7 +22,20 @@ on:
         description: 'Limit the native matrix to one optimizer stack workflow (dispatch only)'
         type: choice
         default: all
-        options: [all, baseline, lwjgl3, argentum, sodium]
+        options: [all, baseline, lwjgl3, argentum, sodium, iris]
+      legacy_gl_driver:
+        description: 'Actual software OpenGL driver for 1.8.9; changes no test assertions or fog quality'
+        type: choice
+        default: llvmpipe
+        options: [llvmpipe, zink]
+      stage_audit5_draft:
+        description: 'After the complete native matrix passes, stage Audit 5 binaries and corresponding sources as a draft only'
+        type: boolean
+        default: false
+      retain_artifacts:
+        description: 'Retain Actions artifacts (disable when storage quota is exhausted; checks remain in logs)'
+        type: boolean
+        default: true
       native_variant:
         description: 'Experimental 1.8.9 map-render variant (dispatch only; never published)'
         type: choice
@@ -47,7 +60,7 @@ jobs:
       - run: python3 -m unittest discover -s tools -p 'test_*.py'
       - run: python3 tools/scan_secrets.py
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.publish) }}
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.retain_artifacts == false) && !(github.event_name == 'workflow_dispatch' && inputs.publish) }}
         with:
           name: unified-common-tests
           path: vendor/trs-client/common/build/test-results/
@@ -70,6 +83,7 @@ jobs:
           - {target: '1.8.9', stack: argentum, os: ubuntu-latest}
           - {target: '26.3', stack: baseline, os: ubuntu-latest}
           - {target: '26.3', stack: sodium, os: ubuntu-latest}
+          - {target: '26.3', stack: iris, os: ubuntu-latest}
     env:
       LIBGL_ALWAYS_SOFTWARE: '1'
       LP_NUM_THREADS: '2'
@@ -94,10 +108,18 @@ jobs:
         if: ${{ steps.selector.outputs.run != 'false' }}
       - run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils x11-xserver-utils libxrandr2 libxcursor1 libxi6 libxinerama1 libgl1-mesa-dri libvulkan1 mesa-vulkan-drivers libopenal1 ffmpeg
         if: ${{ steps.selector.outputs.run != 'false' }}
+      - name: Configure real Zink software context for the selected diagnostic
+        if: github.event_name == 'workflow_dispatch' && inputs.legacy_gl_driver == 'zink' && matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
+        run: |
+          icd=$(find /usr/share/vulkan/icd.d -maxdepth 1 -name '*lvp*.json' -print -quit)
+          test -n "$icd"
+          echo "VK_ICD_FILENAMES=$icd" >> "$GITHUB_ENV"
+          echo 'MESA_LOADER_DRIVER_OVERRIDE=zink' >> "$GITHUB_ENV"
+          echo 'GALLIUM_DRIVER=zink' >> "$GITHUB_ENV"
       - if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: python3 tools/ornithe/fetch_dependencies.py "$RUNNER_TEMP/ornithe-mods"
-      - if: matrix.stack == 'sodium' && steps.selector.outputs.run != 'false'
-        run: python3 tools/verification/fetch_optimizers.py "$RUNNER_TEMP/sodium-mods"
+      - if: (matrix.stack == 'sodium' || matrix.stack == 'iris') && steps.selector.outputs.run != 'false'
+        run: python3 tools/verification/fetch_optimizers.py "$RUNNER_TEMP/sodium-mods" ${{ matrix.stack == 'iris' && '--iris' || '' }}
       - name: Installed 1.8.9 client and separate probe
         if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: |
@@ -108,13 +130,22 @@ jobs:
           variant=()
           if [ '${{ steps.selector.outputs.variant || 'standard' }}' = nofog ]; then variant+=(--no-fog); fi
           xvfb-run -a -s '-screen 0 1920x1080x24' python3 tools/ornithe/run_smoke.py "${profile[@]}" "${variant[@]}" --production --large --unified --stack '${{ matrix.stack }}' --mods-dir "$RUNNER_TEMP/ornithe-mods"
+          xvfb-run -a -s '-screen 0 1920x1080x24' python3 tools/ornithe/run_smoke.py --production --audit5 --stack '${{ matrix.stack }}' --mods-dir "$RUNNER_TEMP/ornithe-mods"
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test --no-daemon --max-workers=2
           python3 tools/ornithe/verify_jar.py "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$(sed -n 's/^mod_version=//p' vendor/trs-client/ornithe/gradle.properties).jar"
       - name: Installed 26.3 client, Diorama, loading and native graphics settings
         if: matrix.target == '26.3' && steps.selector.outputs.run != 'false'
+        env:
+          SDL_VIDEO_FORCE_EGL: '1'
         run: |
           extra=()
-          if [ '${{ matrix.stack }}' = sodium ]; then extra+=("-PdepthRuntimeModsDir=$RUNNER_TEMP/sodium-mods" "-PtflAuditProfile"); fi
+          if [ '${{ matrix.stack }}' != baseline ]; then extra+=("-PdepthRuntimeModsDir=$RUNNER_TEMP/sodium-mods"); fi
+          if [ '${{ matrix.stack }}' = iris ]; then
+            python3 tools/verification/fetch_shader_pack.py vendor/trs-client/run/prod-26.3/shaderpacks
+            extra+=("-Paudit5ShaderPack=ComplementaryReimagined_r5.9.3.zip")
+          fi
+          xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runProdClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=audit5 -PdepthNativeProbe "${extra[@]}" --no-daemon --max-workers=2
+          python3 -c 'import json; r=json.load(open("vendor/trs-client/run/prod-26.3/audit5-smoke.json")); assert r["status"]=="passed" and all(c["passed"] for c in r["checks"]); print("Audit5 native checks",len(r["checks"]))'
           xvfb-run -a -s '-screen 0 1920x1080x24' vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:runProdClient -PtrsVersions=26.3 -PtrsAutotest -PtrsAutotestOnly=unified -PdepthNativeProbe "${extra[@]}" --no-daemon --max-workers=2
           python3 tools/verification/check_unified.py vendor/trs-client/run/prod-26.3/unified-smoke.json
       - name: Stage verified release without Actions artifact storage
@@ -145,7 +176,7 @@ jobs:
       # failure while always() was combined with other conditions, destroying the pulse
       # and thread dumps. !cancelled() keeps the failure Influence-free and uploads them.
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.publish) && steps.selector.outputs.run != 'false' }}
+        if: ${{ !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.retain_artifacts == false) && !(github.event_name == 'workflow_dispatch' && inputs.publish) && steps.selector.outputs.run != 'false' }}
         with:
           name: unified-native-${{ matrix.target }}-${{ matrix.stack }}
           overwrite: true
@@ -161,6 +192,15 @@ jobs:
             vendor/trs-client/fabric/versions/26.3/build/libs/*.jar
             vendor/trs-client/run/prod-26.3/unified-smoke.json
             vendor/trs-client/run/prod-26.3/screenshots/
+  audit5_draft:
+    if: github.event_name == 'workflow_dispatch' && inputs.stage_audit5_draft && inputs.native_target == 'all' && inputs.native_stack == 'all' && inputs.native_variant == 'standard' && !inputs.preview_189
+    needs: [common, native]
+    permissions:
+      contents: write
+    uses: ./.github/workflows/audit5-candidate.yml
+    with:
+      acceptance_run: ${{ github.run_id }}
+
   publish:
     if: ${{ !inputs.preview_189 && inputs.native_variant != 'nofog' && ((github.event_name == 'workflow_dispatch' && inputs.publish) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[unified-release]'))) && (github.event_name != 'workflow_dispatch' || (inputs.native_target == 'all' && inputs.native_stack == 'all')) }}
     needs: [common, native]

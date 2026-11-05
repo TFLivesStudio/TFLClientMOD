@@ -1,0 +1,9 @@
+{
+  "pack": "ComplementaryReimagined_r5.9.3.zip",
+  "version": "r5.9.3",
+  "url": "https://cdn.modrinth.com/data/HVnmMxH1/versions/Bqen1mJX/ComplementaryReimagined_r5.9.3.zip",
+  "sha512": "45304b1d7862afdb2177b7e6226fc9c6737911d17a4ad46cc9c519ca4deb935f05072cd337cd8b19a15bb8062b57b54eceec7bdee4cd572d94858e2946d37d85",
+  "distribution": "test-only download; shader pack is not mirrored or included in Core or Selection",
+  "native189": "Lucerna0.1.1 + Argentum1.0.2",
+  "native263": "Iris1.11.7 + Sodium0.9.2"
+}

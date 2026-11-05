@@ -1,0 +1,83 @@
+--- a/src/main/java/net/eliotex/zirconium/mixin/stbitextureloading/TextureAtlasMixin.java
++++ b/src/main/java/net/eliotex/zirconium/mixin/stbitextureloading/TextureAtlasMixin.java
+@@ -22,16 +22,9 @@
+             target = "Lnet/minecraft/client/render/texture/TextureUtil;readImage(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;",
+             remap = false))
+     private BufferedImage redirectImageRead(InputStream stream) {
+-        // TFL: LWJGL2 has no MemoryUtil/SPNG; keep the vanilla decoder on that platform.
+         try {
+-            if (!net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("legacy-lwjgl3")) {
+-                try (InputStream input = stream) {
+-                    BufferedImage image = javax.imageio.ImageIO.read(input);
+-                    if (image == null) throw new IOException("Unsupported texture image");
+-                    return image;
+-                }
+-            }
+-            return NativeBackedImage.make(stream);
++            return net.eliotex.zirconium.utils.misc.TextureImageDecoder.read(stream,
++                net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("legacy-lwjgl3"));
+         } catch (IOException ex) {
+             throw new RuntimeException(ex);
+         }
+--- /dev/null
++++ b/src/main/java/net/eliotex/zirconium/utils/misc/TextureImageDecoder.java
+@@ -0,0 +1,29 @@
++package net.eliotex.zirconium.utils.misc;
++
++import java.awt.image.BufferedImage;
++import java.io.*;
++import java.nio.ByteBuffer;
++import javax.imageio.ImageIO;
++
++// TFL adaptation, LGPL-3.0-only. Keep SPNG for small PNGs where it saves decoding
++// work; Java 25 ImageIO is faster for large textures. Pixels are never rescaled.
++public final class TextureImageDecoder {
++    private TextureImageDecoder() {}
++    public static BufferedImage read(InputStream stream,boolean spngAvailable)throws IOException {
++        try(BufferedInputStream input=new BufferedInputStream(stream)) {
++            input.mark(24);byte[] header=input.readNBytes(24);input.reset();
++            boolean smallPng=false;
++            if(header.length==24) {
++                ByteBuffer bytes=ByteBuffer.wrap(header);
++                if(bytes.getLong(0)==0x89504e470d0a1a0aL && bytes.getInt(12)==0x49484452) {
++                    int width=bytes.getInt(16),height=bytes.getInt(20);
++                    smallPng=width>0&&height>0&&(long)width*height<=256*256;
++                }
++            }
++            if(spngAvailable&&smallPng)return NativeBackedImage.make(input);
++            BufferedImage image=ImageIO.read(input);
++            if(image==null)throw new IOException("Unsupported texture image");
++            return image;
++        }
++    }
++}
+--- /dev/null
++++ b/src/test/java/net/eliotex/zirconium/utils/misc/TextureImageDecoderTest.java
+@@ -0,0 +1,27 @@
++package net.eliotex.zirconium.utils.misc;
++import org.junit.jupiter.api.Test;
++import static org.junit.jupiter.api.Assertions.*;
++import java.awt.image.BufferedImage;
++import java.io.*;
++import javax.imageio.ImageIO;
++
++class TextureImageDecoderTest {
++    private byte[] png(int size)throws Exception {
++        BufferedImage image=new BufferedImage(size,size,BufferedImage.TYPE_INT_ARGB);
++        for(int y=0;y<size;y++)for(int x=0;x<size;x++)image.setRGB(x,y,((x&1)==0?0x80000000:0xff000000)|((x*71)^(y*117))&0xffffff);
++        ByteArrayOutputStream out=new ByteArrayOutputStream();ImageIO.write(image,"png",out);return out.toByteArray();
++    }
++    @Test void nativeSmallPngAndManagedHighResolutionHaveIdenticalFullRgbaPixels()throws Exception {
++        for(int size:new int[]{16,256,512}) {
++            byte[] png=png(size);BufferedImage expected=ImageIO.read(new ByteArrayInputStream(png));
++            BufferedImage actual=TextureImageDecoder.read(new ByteArrayInputStream(png),true);
++            assertEquals(size<=256,actual instanceof NativeBackedImage);
++            assertArrayEquals(expected.getRGB(0,0,size,size,null,0,size),actual.getRGB(0,0,size,size,null,0,size));
++        }
++    }
++    @Test void lwjgl2NeverRequiresNativeDecoderAndStreamsCloseOnFailure()throws Exception {
++        assertFalse(TextureImageDecoder.read(new ByteArrayInputStream(png(16)),false) instanceof NativeBackedImage);
++        boolean[] closed={false};InputStream bad=new ByteArrayInputStream(new byte[]{1,2,3}){public void close(){closed[0]=true;}};
++        assertThrows(IOException.class,()->TextureImageDecoder.read(bad,true));assertTrue(closed[0]);
++    }
++}

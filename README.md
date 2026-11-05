@@ -9,7 +9,7 @@ Cliente de Minecraft en desarrollo, con una interfaz nativa compartida, HUD conf
 
 Argentum 1.0.2 + Legacy LWJGL3 1.4.10 en 1.8.9 y Sodium 0.9.2 en 26.3 son opciones separadas. Sus binarios no se incluyen. Forge y NeoForge se han retirado; el historial de Git conserva las versiones anteriores.
 
-La candidata actual es **0.4.0-audit.4**. Consulta [mundos de servidor, cámara y marcadores](docs/SERVER_MAPS.md). Una compilación o una prueba de menú no certifica todos los módulos ni garantiza una tasa de FPS en cualquier equipo.
+La candidata de revisión es **0.4.0-audit.5-rc.1**. Audit 5 añade World Insight propio, Far Terrain 3D en 1.8.9, DH 3.3.4 integrado en 26.3 y Compartir mundo con consentimiento por sesión. El relay público TFL requiere un despliegue autorizado. Zirconium y Starlight permanecen como mods independientes. Consulta [validación y límites de la candidata](docs/AUDIT5_STATUS.md). Consulta [mundos de servidor, cámara y marcadores](docs/SERVER_MAPS.md). Una compilación o una prueba de menú no certifica todos los módulos ni garantiza una tasa de FPS en cualquier equipo.
 
 ## Uso
 

@@ -1,0 +1,94 @@
+{
+  "shaderPack": "ComplementaryReimagined_r5.9.3.zip",
+  "shaderPipeline": "net.irisshaders.iris.pipeline.IrisRenderingPipeline",
+  "completedDhRenders": 9,
+  "dhRenderer": "OPEN_GL",
+  "remoteWorldIsolationExercised": false,
+  "checks": [
+    {
+      "name": "Requested shader pack has a real active pipeline without fallback",
+      "passed": true
+    },
+    {
+      "name": "Shader pack exposes its DH terrain program",
+      "passed": true
+    },
+    {
+      "name": "DH renderer has not disabled itself after an exception",
+      "passed": true
+    },
+    {
+      "name": "Real managed DH world and renderer initialized",
+      "passed": true
+    },
+    {
+      "name": "Single DH engine resolved",
+      "passed": true
+    },
+    {
+      "name": "Core terrain toggle reaches official DH API",
+      "passed": true
+    },
+    {
+      "name": "Core terrain distance reaches official DH API",
+      "passed": true
+    },
+    {
+      "name": "Terrain preferences restored",
+      "passed": true
+    },
+    {
+      "name": "DH updates remain managed without changing disk preference",
+      "passed": true
+    },
+    {
+      "name": "World Insight received targets and player privacy",
+      "passed": true
+    },
+    {
+      "name": "Diorama and DH sessions coexist",
+      "passed": true
+    },
+    {
+      "name": "Sharing transport bridge exists on native classpath",
+      "passed": true
+    },
+    {
+      "name": "No tunnel before consent",
+      "passed": true
+    },
+    {
+      "name": "Native LAN publish",
+      "passed": true
+    },
+    {
+      "name": "LAN uses a real nonzero bound port",
+      "passed": true
+    },
+    {
+      "name": "World game mode preserved",
+      "passed": true
+    },
+    {
+      "name": "DH chat is delivered on client tick outside active render passes",
+      "passed": true
+    },
+    {
+      "name": "Real DH shader render callbacks completed",
+      "passed": true
+    },
+    {
+      "name": "World sharing screen is integrated",
+      "passed": true
+    },
+    {
+      "name": "Opening sharing UI is offline",
+      "passed": true
+    },
+    {
+      "name": "LAN survives internet stop",
+      "passed": true
+    }
+  ],
+  "status": "passed"
+}

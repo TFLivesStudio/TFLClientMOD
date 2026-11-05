@@ -14,15 +14,22 @@ import java.nio.file.*;
 // Focused feature checks, separate from UnifiedSmoke and the physical-GPU/shader matrix.
 public final class Audit5Smoke {
     private final JsonArray checks=new JsonArray();private final JsonObject report=new JsonObject();
-    private int phase,wait;private final long started=System.nanoTime();
-    public static void install(){Audit5Smoke probe=new Audit5Smoke();net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(probe::tick);}
+    private int phase,wait,chatBefore;private final java.util.concurrent.atomic.AtomicLong dhFrames=new java.util.concurrent.atomic.AtomicLong();private final long started=System.nanoTime();
+    public static void install(){Audit5Smoke probe=new Audit5Smoke();com.seibel.distanthorizons.api.methods.events.DhApiEventRegister.on(com.seibel.distanthorizons.api.methods.events.abstractEvents.DhApiAfterRenderEvent.class,new com.seibel.distanthorizons.api.methods.events.abstractEvents.DhApiAfterRenderEvent(){public void afterRender(com.seibel.distanthorizons.api.methods.events.sharedParameterObjects.DhApiEventParam<Void> event){probe.dhFrames.incrementAndGet();}});net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(probe::tick);}
     private void check(String name,boolean ok){JsonObject entry=new JsonObject();entry.addProperty("name",name);entry.addProperty("passed",ok);checks.add(entry);System.out.println("[TFL Audit5] "+name+": "+ok);if(!ok)throw new AssertionError(name);}
     private void tick(Minecraft mc){if(phase==99||wait-->0)return;try{
         if(System.nanoTime()-started>300_000_000_000L)throw new AssertionError("Audit5 modern timeout "+phase);
         switch(phase){
-            case 0 -> {if(Mc.overlay()!=null||Mc.screen()==null)return;mc.options.pauseOnLostFocus=false;mc.options.renderDistance().set(2);TrsClient.get().modules().dynamicFps.setEnabled(false);AutoTest.startWorld(mc);phase++;}
+            case 0 -> {if(Mc.overlay()!=null||Mc.screen()==null)return;mc.options.pauseOnLostFocus=false;mc.options.renderDistance().set(2);TrsClient.get().modules().dynamicFps.setEnabled(false);if(System.getProperty("tflcore.audit5.shaderPack")!=null){var iris=Class.forName("net.irisshaders.iris.Iris");var config=iris.getMethod("getIrisConfig").invoke(null);config.getClass().getMethod("setShaderPackName",String.class).invoke(config,System.getProperty("tflcore.audit5.shaderPack"));config.getClass().getMethod("setShadersEnabled",boolean.class).invoke(config,true);config.getClass().getMethod("save").invoke(config);iris.getMethod("reload").invoke(null);}AutoTest.startWorld(mc);phase++;}
             case 1 -> {
                 if(mc.level==null||mc.player==null||Mc.overlay()!=null||Mc.screen()!=null||DhApi.Delayed.renderProxy==null)return;
+                if(System.getProperty("tflcore.audit5.shaderPack")!=null){
+                    var iris=Class.forName("net.irisshaders.iris.Iris");var manager=iris.getMethod("getPipelineManager").invoke(null);var pipeline=manager.getClass().getMethod("getPipelineNullable").invoke(manager);
+                    check("Requested shader pack has a real active pipeline without fallback",((java.util.Optional<?>)iris.getMethod("getCurrentPack").invoke(null)).isPresent() && !(Boolean)iris.getMethod("isFallback").invoke(null) && pipeline!=null && !pipeline.getClass().getSimpleName().contains("FixedFunction"));
+                    check("Shader pack exposes its DH terrain program",((java.util.Optional<?>)pipeline.getClass().getMethod("getDHTerrainShader").invoke(pipeline)).isPresent());
+                    check("DH renderer has not disabled itself after an exception",!com.seibel.distanthorizons.core.api.internal.ClientApi.INSTANCE.rendererDisabledBecauseOfExceptions);
+                    report.addProperty("shaderPack",System.getProperty("tflcore.audit5.shaderPack"));report.addProperty("shaderPipeline",pipeline.getClass().getName());
+                }
                 check("Real managed DH world and renderer initialized",DhApi.Delayed.worldProxy.worldLoaded());
                 check("Single DH engine resolved",net.fabricmc.loader.api.FabricLoader.getInstance().getAllMods().stream().filter(m->m.getMetadata().getId().equals("distanthorizons")).count()==1);
                 var module=TrsClient.get().modules().farTerrain;boolean before=module.isEnabled();int distance=module.distance.getInt();
@@ -39,9 +46,14 @@ public final class Audit5Smoke {
                 var gameMode=mc.getSingleplayerServer().getPersonalGameMode();check("Native LAN publish",WorldSharingHooks.openLan());
                 check("LAN uses a real nonzero bound port",WorldSharingHooks.port()>0);
                 check("World game mode preserved",gameMode==mc.getSingleplayerServer().getPersonalGameMode());
+                var dispatch=dev.theredstonee.trsclient.compat.dh.DhShaderOrdering.class.getDeclaredField("delivered");dispatch.setAccessible(true);chatBefore=dispatch.getInt(null);
+                com.seibel.distanthorizons.common.wrappers.minecraft.MinecraftClientWrapper.INSTANCE.sendChatMessage("TFL Audit 5: DH chat dispatched before render pass");
                 WorldSharingHooks.open(null);phase++;wait=10;
             }
             case 2 -> {
+                var dispatch=dev.theredstonee.trsclient.compat.dh.DhShaderOrdering.class.getDeclaredField("delivered");dispatch.setAccessible(true);
+                check("DH chat is delivered on client tick outside active render passes",dispatch.getInt(null)>chatBefore);
+                if(System.getProperty("tflcore.audit5.shaderPack")!=null){check("Real DH shader render callbacks completed",dhFrames.get()>0);report.addProperty("completedDhRenders",dhFrames.get());}
                 check("World sharing screen is integrated",Mc.screen() instanceof dev.theredstonee.trsclient.screen.TrsUiScreen ui && ui.ui() instanceof dev.theredstonee.trsclient.core.ui.menus.WorldShareUi);
                 check("Opening sharing UI is offline",WorldSharingHooks.service().snapshot().state==WorldShareService.State.OFF);
                 AutoTest.shot(mc,"audit5-world-sharing");WorldSharingHooks.service().stop();check("LAN survives internet stop",WorldSharingHooks.port()>0);

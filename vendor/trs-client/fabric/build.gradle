@@ -309,7 +309,7 @@ if (stonecutter.eval(mc, '<1.15')) mixinClasses << 'ShieldGlMixin'
 // Komfort-Paket 2: bessere Tooltips (Zusatzkarte am Inventar, Text-Zusätze an der Tooltip-Liste).
 mixinClasses += ['TooltipScreenMixin', 'TooltipLinesMixin']
 
-if(mc.toString()=='26.3')mixinClasses += ['DhClientWrapperMixin','DhSaveCacheAccess']
+if(mc.toString()=='26.3')mixinClasses += ['DhClientWrapperMixin','DhSaveCacheAccess','DhShaderOrderingMixin','DhChatDispatchMixin']
 
 processResources {
 	def props = [

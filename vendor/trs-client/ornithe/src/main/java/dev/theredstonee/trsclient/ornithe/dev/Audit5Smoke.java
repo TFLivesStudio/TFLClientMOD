@@ -19,7 +19,8 @@ public final class Audit5Smoke implements Runnable {
     private long uploads;
     private long beforeMove;
     private double originalZ;
-    private boolean lifecycleDone;
+    private boolean measured;private long measureStarted,worldStarted;
+    private boolean lifecycleDone,stressDone;private long stressStarted;private int stressX,stressZ;
     private int lightX,lightY,lightZ,lightCell,beforeHeight;
     private dev.theredstonee.trsclient.core.terrain.FarTerrainEngine overworldEngine;
     private dev.theredstonee.trsclient.core.terrain.FarTerrainEngine stopped;
@@ -31,12 +32,14 @@ public final class Audit5Smoke implements Runnable {
         switch(phase){
             case 0 -> {
                 c.mc.options.pauseOnUnfocus=false;c.mc.options.fpsLimit=120;c.mc.options.vsync=false;c.mc.options.viewDistance=restart?2:6;
+                if(Boolean.getBoolean("tflcore.audit5.measure")){for(var module:c.modules.registry.all())if(module instanceof dev.theredstonee.trsclient.core.module.HudModule)module.setEnabled(false);report.addProperty("benchmarkScene","flat-known-terrain-v1; HUD off; vanilla range 2; LOD 128; vsync off");report.addProperty("windowWidth",c.mc.width);report.addProperty("windowHeight",c.mc.height);}
                 c.modules.dynamicFps.setEnabled(false);c.modules.farTerrain.setEnabled(true);
                 c.modules.minimap.setEnabled(false);c.modules.menuBackground.set(dev.theredstonee.trsclient.core.ui.background.MenuBackground.Mode.STATIC);
-                c.mc.startGame("tfl-audit5-terrain","TFL Audit5 Terrain",new WorldSettings(189L,WorldSettings.GameMode.CREATIVE,false,false,WorldGeneratorType.FLAT).enableCommands());phase++;wait=30;
+                try{var iris=Class.forName("us.z1x.lucerna.Iris");var config=iris.getMethod("getIrisConfig").invoke(null);config.getClass().getMethod("setShaderPackName",String.class).invoke(config,System.getProperty("tflcore.audit5.shaderPack"));config.getClass().getMethod("setShadersEnabled",boolean.class).invoke(config,System.getProperty("tflcore.audit5.shaderPack")!=null);config.getClass().getMethod("save").invoke(config);iris.getMethod("reload").invoke(null);}catch(ClassNotFoundException absent){if(System.getProperty("tflcore.audit5.shaderPack")!=null)throw absent;}worldStarted=System.nanoTime();c.mc.startGame(Boolean.getBoolean("tflcore.audit5.measure")?"tfl-audit5-bench-"+System.currentTimeMillis():"tfl-audit5-terrain","TFL Audit5 Terrain",new WorldSettings(189L,WorldSettings.GameMode.CREATIVE,false,false,WorldGeneratorType.FLAT).enableCommands());phase++;wait=30;
             }
             case 1 -> {
                 if(c.mc.player==null||c.mc.world==null||c.mc.screen!=null||c.farTerrain.engine()==null)return;
+                report.addProperty("worldReadyMs",(System.nanoTime()-worldStarted)/1e6);
                 c.mc.player.abilities.flying=true;c.mc.player.syncAbilities();c.mc.player.pitch=35;c.mc.player.yaw=0;
                 c.mc.player.sendChat("/tp @p ~ 50 ~ 0 35");
                 WorldInsightProbe.run(c);check("World Insight native received targets and privacy",true);
@@ -55,6 +58,7 @@ public final class Audit5Smoke implements Runnable {
             case 3 -> {
                 if(!c.farTerrain.failure.isEmpty())throw new AssertionError("LOD renderer "+c.farTerrain.failure);
                 if(c.farTerrain.draws<8 || c.farTerrain.uploads<2)return;
+                checkShader();
                 check("3D LOD geometry drawn beyond vanilla two-chunk range",c.farTerrain.verticesDrawn>0);
                 check("GPU geometry budget respected",c.farTerrain.gpuBytes()<=(long)c.modules.farTerrain.gpuBudget.getInt()*1024*1024);
                 check("LOD is submitted once before vanilla geometry per non-stereo frame",c.farTerrain.maxPassesPerFrame==1);
@@ -62,10 +66,13 @@ public final class Audit5Smoke implements Runnable {
                 check("LOD pass preserves valid OpenGL state",org.lwjgl.opengl.GL11.glGetError()==org.lwjgl.opengl.GL11.GL_NO_ERROR);
                 report.addProperty("lodVertices",c.farTerrain.verticesDrawn);report.addProperty("gpuBytes",c.farTerrain.gpuBytes());
                 report.addProperty("meshBuildNanos",c.farTerrain.engine().generationNanos);report.addProperty("nativeRenderer",org.lwjgl.opengl.GL11.glGetString(org.lwjgl.opengl.GL11.GL_RENDERER));
+                if(Boolean.getBoolean("tflcore.audit5.measure")&&!measured){phase=40;wait=80;return;}
                 shot("terrain-enabled");
                 if(!restart){originalZ=c.mc.player.z;beforeMove=c.farTerrain.draws;c.mc.player.sendChat("/tp @p ~ 50 ~32 180 35");phase=31;wait=25;}
                 else {stopped=c.farTerrain.engine();uploads=c.farTerrain.uploads;c.modules.farTerrain.setEnabled(false);phase=4;wait=10;}
             }
+            case 40 -> {FrameMetrics.begin();measureStarted=System.nanoTime();phase=41;}
+            case 41 -> {if(System.nanoTime()-measureStarted<10_000_000_000L)return;report.add("performance",FrameMetrics.finish());measured=true;phase=3;}
             case 31 -> {
                 if(c.mc.player.z<originalZ+31 || c.farTerrain.draws<=beforeMove+8)return;
                 check("Known 3D terrain remains visible after moving away",c.farTerrain.engine()!=null && c.farTerrain.verticesDrawn>0);
@@ -105,6 +112,7 @@ public final class Audit5Smoke implements Runnable {
                 if(column==null||column.height(lightCell)!=beforeHeight||column.blockLight(lightCell)!=0)return;
                 check("Removing emissive terrain invalidates cached height and lighting",true);
                 check("Night-time LOD keeps valid render state",c.farTerrain.failure.isEmpty()&&org.lwjgl.opengl.GL11.glGetError()==org.lwjgl.opengl.GL11.GL_NO_ERROR);
+                if(Boolean.getBoolean("tflcore.audit5.lightBench")&&!stressDone){stressX=lightX&~15;stressZ=lightZ&~15;stressStarted=System.nanoTime();c.mc.player.sendChat("/fill "+stressX+" 70 "+stressZ+" "+(stressX+15)+" 85 "+(stressZ+15)+" minecraft:glowstone");phase=26;return;}
                 shot("terrain-night");c.mc.player.sendChat("/time set 6000");overworldEngine=c.farTerrain.engine();
                 int px=(int)Math.floor(c.mc.player.x),py=(int)Math.ceil(c.mc.player.y),pz=(int)Math.floor(c.mc.player.z);
                 c.mc.player.sendChat("/fill "+(px-1)+" "+py+" "+pz+" "+(px+2)+" "+(py+4)+" "+pz+" minecraft:obsidian");
@@ -121,7 +129,24 @@ public final class Audit5Smoke implements Runnable {
                 if(c.mc.world==null||c.mc.world.dimension.getId()!=0||c.mc.screen!=null||c.farTerrain.engine()==null||c.farTerrain.engine().diskHits<30)return;
                 check("Return from Nether restores the isolated Overworld cache",c.farTerrain.engine()!=overworldEngine&&c.farTerrain.engine().diskHits>=30);
                 check("No LOD renderer failure after dimension round trip",c.farTerrain.failure.isEmpty());
+                checkShader();
                 c.mc.player.sendChat("/tp @p ~8 50 ~8");phase=24;wait=30;
+            }
+            case 26 -> {
+                var column=c.farTerrain.engine().column(stressX>>4,stressZ>>4);
+                var snapshot=c.diorama.chunk(stressX>>4,stressZ>>4);
+                if(column==null||column.height(8*16+8)!=86||snapshot==null||snapshot.blockLight(5,8,5,8)!=15)return;
+                report.addProperty("lightStress4096PlaceMs",(System.nanoTime()-stressStarted)/1e6);
+                check("4096 luminous blocks reach Diorama and LOD with correct lighting",true);
+                stressStarted=System.nanoTime();c.mc.player.sendChat("/fill "+stressX+" 70 "+stressZ+" "+(stressX+15)+" 85 "+(stressZ+15)+" minecraft:air");phase=27;
+            }
+            case 27 -> {
+                var column=c.farTerrain.engine().column(stressX>>4,stressZ>>4);
+                var snapshot=c.diorama.chunk(stressX>>4,stressZ>>4);
+                if(column==null||column.height(8*16+8)!=beforeHeight||snapshot==null||snapshot.blockLight(5,8,5,8)!=0)return;
+                report.addProperty("lightStress4096RemoveMs",(System.nanoTime()-stressStarted)/1e6);
+                check("Removing luminous volume updates both caches without stale light",true);
+                stressDone=true;phase=21;
             }
             case 24 -> { lifecycleDone=true;phase=5; }
             case 6 -> {
@@ -165,6 +190,13 @@ public final class Audit5Smoke implements Runnable {
             }
         }
     }catch(Throwable failure){phase=99;finish(failure);}}
+    private void checkShader() throws ReflectiveOperationException {
+                if(System.getProperty("tflcore.audit5.shaderPack")!=null){
+                    var iris=Class.forName("us.z1x.lucerna.Iris");var manager=iris.getMethod("getPipelineManager").invoke(null);var pipeline=manager.getClass().getMethod("getPipelineNullable").invoke(manager);
+                    check("Requested shader pack has a real active pipeline without fallback",((java.util.Optional<?>)iris.getMethod("getCurrentPack").invoke(null)).isPresent() && !(Boolean)iris.getMethod("isFallback").invoke(null) && pipeline!=null && !pipeline.getClass().getSimpleName().contains("FixedFunction"));
+                    report.addProperty("shaderPack",System.getProperty("tflcore.audit5.shaderPack"));report.addProperty("shaderPipeline",pipeline.getClass().getName());
+                }
+    }
     private void finish(Throwable error){report.addProperty("status",error==null?"passed":"failed");if(error!=null){error.printStackTrace();report.addProperty("error",error.toString());}
         try{Files.createDirectories(out);Files.writeString(out.resolve(restart?"restart.json":"report.json"),new GsonBuilder().setPrettyPrinting().create().toJson(report));}catch(Exception e){e.printStackTrace();}c.mc.stop();}
 }

@@ -11,5 +11,21 @@
   "distribution": "unmodified nested Fabric mod; never relocated",
   "sourceRevision": "eb1007cb6cc3e0419effe2b40ab485cf24e55b43",
   "sourceTag": "3.3.4",
-  "sourceArchive": "https://gitlab.com/distant-horizons-team/distant-horizons/-/archive/eb1007cb6cc3e0419effe2b40ab485cf24e55b43/distant-horizons-eb1007cb6cc3e0419effe2b40ab485cf24e55b43.tar.gz"
+  "sourceArchive": "https://gitlab.com/distant-horizons-team/distant-horizons/-/archive/eb1007cb6cc3e0419effe2b40ab485cf24e55b43/distant-horizons-eb1007cb6cc3e0419effe2b40ab485cf24e55b43.tar.gz",
+  "correspondingSources": [
+    {
+      "repository": "https://gitlab.com/distant-horizons-team/distant-horizons",
+      "revision": "eb1007cb6cc3e0419effe2b40ab485cf24e55b43",
+      "url": "https://gitlab.com/distant-horizons-team/distant-horizons/-/archive/eb1007cb6cc3e0419effe2b40ab485cf24e55b43/distant-horizons-eb1007cb6cc3e0419effe2b40ab485cf24e55b43.tar.gz",
+      "filename": "dh-corresponding-source.tar.gz",
+      "sha256": "4f15897fd5e9ec05124309c0b8f27ce46c347b868794006a8c40866693e24c24"
+    },
+    {
+      "repository": "https://gitlab.com/jeseibel/distant-horizons-core",
+      "revision": "64410621767ee697e8bc175c2a3ebe4c5e2ce520",
+      "url": "https://gitlab.com/api/v4/projects/jeseibel%2Fdistant-horizons-core/repository/archive.tar.gz?sha=64410621767ee697e8bc175c2a3ebe4c5e2ce520",
+      "filename": "dh-core-corresponding-source.tar.gz",
+      "sha256": "49e76bf3ac57054e284dfda93c8dc0314584ec42a1e31886d5ba1300f3e2829a"
+    }
+  ]
 }
