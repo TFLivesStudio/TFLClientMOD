@@ -25,7 +25,7 @@ class CapabilityRegistryTest {
     Set<String> ids = new HashSet<>();
     for (var entry : tree.getAsJsonArray("modules"))
       ids.add(entry.getAsJsonObject().get("id").getAsString());
-    assertEquals(80, ids.size());
+    assertEquals(82, ids.size());
     assertEquals(ids, registry.entries().keySet());
     for (var module : modules.registry.all()) assertFalse(registry.active(module), module.id());
     assertThrows(

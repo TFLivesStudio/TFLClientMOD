@@ -3,6 +3,42 @@
   "implementation": "TRS common registry with TFL modifications",
   "modules": [
     {
+      "id": "farTerrain",
+      "name": "Far Terrain",
+      "category": "WORLD",
+      "hud": false,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "distance",
+        "gpuBudget",
+        "diskBudget"
+      ]
+    },
+    {
+      "id": "worldInsight",
+      "name": "World Insight",
+      "category": "HUD",
+      "hud": true,
+      "defaultEnabled": true,
+      "classification": "registered; offline logic covered where tests exist; in-game verification pending",
+      "settings": [
+        "textColor",
+        "shadow",
+        "background",
+        "backgroundOpacity",
+        "scale",
+        "identifiers",
+        "origin",
+        "properties",
+        "health",
+        "tool",
+        "icon",
+        "hideWithF1",
+        "hideInMenus"
+      ]
+    },
+    {
       "id": "miniPlayer",
       "name": "Paper Doll · Mini Player",
       "category": "HUD",

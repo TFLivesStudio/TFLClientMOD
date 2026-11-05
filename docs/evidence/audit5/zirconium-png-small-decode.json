@@ -1,0 +1,35 @@
+[
+  {
+    "kind": "CPU-only procedural RGBA PNG decode",
+    "width": 16,
+    "iterations": 32,
+    "identicalRgb": true,
+    "imageIoMedianMs": 0.162705,
+    "spngMedianMs": 0.056675,
+    "imageIoP95Ms": 0.230747,
+    "spngP95Ms": 0.095804,
+    "physicalGpu": false
+  },
+  {
+    "kind": "CPU-only procedural RGBA PNG decode",
+    "width": 64,
+    "iterations": 32,
+    "identicalRgb": true,
+    "imageIoMedianMs": 0.243396,
+    "spngMedianMs": 0.164327,
+    "imageIoP95Ms": 0.3393,
+    "spngP95Ms": 0.285379,
+    "physicalGpu": false
+  },
+  {
+    "kind": "CPU-only procedural RGBA PNG decode",
+    "width": 256,
+    "iterations": 32,
+    "identicalRgb": true,
+    "imageIoMedianMs": 1.708308,
+    "spngMedianMs": 1.442008,
+    "imageIoP95Ms": 1.910574,
+    "spngP95Ms": 1.572695,
+    "physicalGpu": false
+  }
+]
