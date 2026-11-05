@@ -28,9 +28,11 @@ if (project.hasProperty('depthNativeProbe')) {
     tasks.named('runProdClient') {
         mods.from(probeArtifact)
         if (project.name != '26.3') {
-            jvmArgs.addAll('-Dtflcore.ornithe.smoke=true',"-Dtflcore.ornithe.report=${layout.buildDirectory.dir('smoke/production').get().asFile}",'-Dtflcore.ui.smoke.large=true')
+            def reportPath=project.hasProperty('audit5Smoke') ? 'smoke/production/audit5' : 'smoke/production'
+            jvmArgs.addAll('-Dtflcore.ornithe.smoke=true',"-Dtflcore.ornithe.report=${layout.buildDirectory.dir(reportPath).get().asFile}",'-Dtflcore.ui.smoke.large=true')
             programArgs.addAll('--width','1920','--height','1080')
             if(project.hasProperty('restart'))jvmArgs.add('-Dtflcore.ornithe.restart=true')
+            if(project.hasProperty('audit5Smoke'))jvmArgs.add('-Dtflcore.audit5.smoke=true')
             if(project.hasProperty('unifiedSmoke'))jvmArgs.add('-Dtflcore.unified.smoke=true')
             // Diagnostic bisect (development probe only): render the map without the fog layer.
             if(project.hasProperty('smokeMapNoFog'))jvmArgs.add('-Dtflcore.smoke.noFog=true')

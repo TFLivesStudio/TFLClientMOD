@@ -8,6 +8,13 @@ import org.spongepowered.asm.mixin.injection.callback.*;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
+ @Inject(method="render(IFJ)V",at=@At(value="INVOKE",target="Lnet/minecraft/client/render/world/WorldRenderer;render(Lnet/minecraft/client/render/block/BlockLayer;DILnet/minecraft/entity/Entity;)I",ordinal=0))
+ private void tfl$compareLodProjection(int pass,float partial,long limit,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null&&c.ready)c.farTerrain.compareNativeProjection();}
+ @Inject(method="render(IFJ)V",at=@At(value="INVOKE",target="Lnet/minecraft/client/render/platform/GlStateManager;shadeModel(I)V",ordinal=0))
+ private void tfl$farTerrain(int pass,float partial,long limit,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null&&c.ready)c.farTerrain.draw(partial);}
+
+ @Inject(method="setupFog",at=@At("TAIL"))
+ private void tfl$farFog(int mode,float partial,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null&&c.ready)c.farTerrain.fog(mode);}
  @Inject(method="render(FJ)V",at=@At("TAIL"))
  private void tfl$hiddenMini(float partial,long limit,CallbackInfo ci){var c=OrnitheClient.get();if(c!=null)c.drawHiddenMini(partial);}
 

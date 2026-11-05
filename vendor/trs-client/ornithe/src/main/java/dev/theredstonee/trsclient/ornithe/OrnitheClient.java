@@ -89,6 +89,7 @@ public final class OrnitheClient implements ModInitializer {
   public dev.theredstonee.trsclient.core.map.MapEngine map;
   public OrnitheMapPlatform mapPlatform;
   public OrnitheDiorama diorama;
+  public final OrnitheFarTerrain farTerrain = new OrnitheFarTerrain(this);
   private final DioramaMinimapTarget minimapTarget=new DioramaMinimapTarget();
   private final dev.theredstonee.trsclient.core.map.MinimapRenderer minimapRenderer =
       new dev.theredstonee.trsclient.core.map.MinimapRenderer();
@@ -249,6 +250,8 @@ public final class OrnitheClient implements ModInitializer {
           if (cinematic != null) cinematic.detachView(false);
           minimapTarget.close();
           if (diorama != null)diorama.close();
+          farTerrain.shutdown();
+          OrnitheWorldSharing.service().stop();
           if (map != null) map.shutdown();
           try {
             waypoints.saveIfDirty();
@@ -325,6 +328,7 @@ public final class OrnitheClient implements ModInitializer {
     if (mapPlatform != null) mapPlatform.reloaded();
     minimapTarget.close();
     if(diorama!=null)diorama.reload();
+    farTerrain.reload();
     if (map != null) {
       map.textures().clear();
       map.sprites().clear();
@@ -496,6 +500,7 @@ public final class OrnitheClient implements ModInitializer {
     mapPlatform.updateIdentity();
     // Diorama owns terrain capture and tile work; the old engine remains a data migration reader.
     if(diorama==null)diorama=new OrnitheDiorama(this);
+    farTerrain.tick();
     diorama.tick();
     notes.tick(System.currentTimeMillis());
     boolean noteKey = OrnitheKeys.isDown(modules.notes.openKey.get());
@@ -573,6 +578,7 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   public void frame() {
+    farTerrain.beginFrame();
     if (!ready) return;
     latency.frame();
     cinematic.frame();
@@ -703,6 +709,9 @@ public final class OrnitheClient implements ModInitializer {
 
   private OrnitheWorldInsight worldInsight;
   private void createHud() {
+    capabilities.connect(modules.farTerrain, dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.EXPERIMENTAL,
+        "Received-client terrain LOD, world-isolated persistent columns and bounded 3D geometry",
+        modules.farTerrain.settings().stream().map(setting -> setting.key()).toList(), "OrnitheFarTerrain");
     worldInsight = new OrnitheWorldInsight(this); hudItems.add(worldInsight);
     capabilities.connect(modules.worldInsight, dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.EXPERIMENTAL,
         "Client-visible crosshair block/entity data; no remote inventories or hidden player health",

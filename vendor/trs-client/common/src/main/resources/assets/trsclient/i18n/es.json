@@ -2710,5 +2710,10 @@
   "share.state.preparing": "Preparando transporte verificado",
   "share.state.connecting": "Conectando al relay",
   "share.state.online": "Enlace de internet activo",
-  "share.state.error": "Relay no disponible"
+  "share.state.error": "Relay no disponible",
+  "module.farTerrain": "Terreno lejano",
+  "module.farTerrain.desc": "Terreno distante real a partir de chunks recibidos y recordados",
+  "setting.farTerrain.distance": "Distancia LOD en chunks",
+  "setting.farTerrain.gpuBudget": "Memoria de geometría 1.8.9 (MiB)",
+  "setting.farTerrain.diskBudget": "Caché LOD persistente 1.8.9 (MiB)"
 }

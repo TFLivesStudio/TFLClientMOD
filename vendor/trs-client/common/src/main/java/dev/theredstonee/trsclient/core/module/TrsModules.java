@@ -18,6 +18,7 @@ import java.util.OptionalDouble;
  */
 public final class TrsModules {
 	public final ModuleRegistry registry = new ModuleRegistry();
+    public final dev.theredstonee.trsclient.core.terrain.FarTerrainModule farTerrain = registry.register(new dev.theredstonee.trsclient.core.terrain.FarTerrainModule());
     public final dev.theredstonee.trsclient.core.insight.WorldInsightModule worldInsight = registry.register(new dev.theredstonee.trsclient.core.insight.WorldInsightModule());
 	/** Gespeicherte HUD-Layouts (wird nach den Modulen erstellt). */
 	public final HudProfiles profiles;

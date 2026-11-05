@@ -186,6 +186,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
   public int snapshotCount() {
     return chunks.size();
   }
+  public int[] lodPalette() { return looks==null ? null : looks.top; }
 
   public int autoLayer() {
     if (client.modules.minimapCaveMode.get()
@@ -286,6 +287,7 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
           if (snapshot == null || world != client.mc.world) continue;
           captured.put(key, now);
           ChunkSnapshot previous = chunks.get(key);
+          client.farTerrain.received(snapshot, looks);
           if (snapshot.sameContent(previous)) return;
           chunks.put(key, snapshot);
           captured.put(key, now);
