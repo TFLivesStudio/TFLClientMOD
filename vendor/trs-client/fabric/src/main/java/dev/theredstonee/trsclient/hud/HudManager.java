@@ -41,7 +41,8 @@ public final class HudManager {
 		this.redstoneOverlay = new RedstoneHuds.Overlay(modules, redstone);
 		this.elements = dev.theredstonee.trsclient.qol.QolHuds.join(Arrays.asList(
 				//? if >=26.3 {
-				/*miniPlayer,
+				/*new WorldInsightHud(modules),
+                miniPlayer,
 				*///?}
 				new FpsHud(modules.fps),
 				new CpsHud(modules.cps),

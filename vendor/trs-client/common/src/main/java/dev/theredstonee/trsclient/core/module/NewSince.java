@@ -169,7 +169,7 @@ public final class NewSince {
 	private static final Map<String, List<String>> EXTRAS = new LinkedHashMap<String, List<String>>();
 
 	static {
-        add("0.14.0", "miniPlayer");
+        add("0.14.0", "miniPlayer", "worldInsight");
 		add("0.1.0", "fps", "cps", "keystrokes", "ping", "zoom", "fullbright");
 		add("0.2.0", "armor", "effects", "coords", "clock", "memory", "server", "packs", "toggleSprint", "toggleSneak",
 				"reach", "combo", "speed", "minimap", "crosshair", "hitColor", "freelook", "titleScreen", "oldAnimations",

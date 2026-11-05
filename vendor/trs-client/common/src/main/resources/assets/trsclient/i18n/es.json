@@ -2677,5 +2677,12 @@
   "serverMaps.waypoints": "Waypoints",
   "serverMaps.hideFolder": "Ocultar carpeta: {0}",
   "serverMaps.showFolder": "Mostrar carpeta: {0}",
-  "serverMaps.invalidCoordinates": "Introduce coordenadas válidas en este mundo."
+  "serverMaps.invalidCoordinates": "Introduce coordenadas válidas en este mundo.",
+  "module.worldInsight": "Información del mundo",
+  "module.worldInsight.desc": "Información del bloque o entidad que estás mirando",
+  "setting.worldInsight.identifiers": "Identificador técnico",
+  "setting.worldInsight.origin": "Mod de origen verificado",
+  "setting.worldInsight.properties": "Propiedades del bloque",
+  "setting.worldInsight.health": "Vida visible de la entidad",
+  "setting.worldInsight.icon": "Icono del bloque"
 }

@@ -701,6 +701,10 @@ public final class OrnitheClient implements ModInitializer {
   }
 
   private void createHud() {
+    hudItems.add(new OrnitheWorldInsight(this));
+    capabilities.connect(modules.worldInsight, dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.EXPERIMENTAL,
+        "Client-visible crosshair block/entity data; no remote inventories or hidden player health",
+        modules.worldInsight.settings().stream().map(setting -> setting.key()).toList(), "OrnitheWorldInsight");
     miniPlayer=new OrnitheMiniPlayer(this);hudItems.add(miniPlayer);
     capabilities.connect(modules.miniPlayer,dev.theredstonee.trsclient.ornithe.capability.CapabilityRegistry.State.EXPERIMENTAL,"Live native player, cached depth framebuffer and draw-only equipment filters",modules.miniPlayer.settings().stream().map(s->s.key()).toList(),"OrnitheMiniPlayer","EntityRenderDispatcher.render");
     hudItems.add(item(modules.fps, () -> fps));

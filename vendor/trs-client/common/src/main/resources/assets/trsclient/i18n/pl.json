@@ -2677,5 +2677,12 @@
   "serverMaps.waypoints": "Waypoints",
   "serverMaps.hideFolder": "Hide folder: {0}",
   "serverMaps.showFolder": "Show folder: {0}",
-  "serverMaps.invalidCoordinates": "Enter coordinates within this world."
+  "serverMaps.invalidCoordinates": "Enter coordinates within this world.",
+  "module.worldInsight": "World Insight",
+  "module.worldInsight.desc": "Information about the block or entity under the crosshair",
+  "setting.worldInsight.identifiers": "Technical identifier",
+  "setting.worldInsight.origin": "Verified mod of origin",
+  "setting.worldInsight.properties": "Block properties",
+  "setting.worldInsight.health": "Visible entity health",
+  "setting.worldInsight.icon": "Block icon"
 }

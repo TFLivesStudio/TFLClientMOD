@@ -49,7 +49,8 @@
     "MiniPlayerArmorLayerMixin",
     "ArgentumDrawMixin",
     "DioramaChunkMixin",
-    "MapSessionMixin"
+    "MapSessionMixin",
+    "InsightEntityAccess"
   ],
   "injectors": {
     "defaultRequire": 1
