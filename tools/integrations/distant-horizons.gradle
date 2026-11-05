@@ -1,0 +1,41 @@
+// Real unmodified Fabric runtime. The loader resolves an external copy with the same mod id.
+if (project.name != '26.3') return
+
+def integrationRoot = rootProject.file('../../tools/integrations')
+def pin = new groovy.json.JsonSlurper().parse(new File(integrationRoot, 'distant-horizons.lock.json'))
+repositories {
+    maven {
+        url = 'https://api.modrinth.com/maven'
+        content { includeModule('maven.modrinth', 'distanthorizons') }
+    }
+}
+dependencies {
+    compileOnly("maven.modrinth:distanthorizons:${pin.modrinthVersion}") { transitive = false }
+    include("maven.modrinth:distanthorizons:${pin.modrinthVersion}") { transitive = false }
+}
+def verificationArtifacts = configurations.create('dhPinnedVerification') {
+    canBeResolved = true
+    canBeConsumed = false
+    extendsFrom(configurations.include)
+}
+def verifyDh = tasks.register('verifyPinnedDistantHorizons') {
+    inputs.file(new File(integrationRoot, 'distant-horizons.lock.json'))
+    inputs.files(verificationArtifacts)
+    doLast {
+        def artifact = verificationArtifacts.resolvedConfiguration.resolvedArtifacts.find {
+            it.moduleVersion.id.group == 'maven.modrinth' && it.name == 'distanthorizons'
+        }
+        if (artifact == null) throw new GradleException('Pinned DH runtime was not resolved')
+        def digest = java.security.MessageDigest.getInstance('SHA-512')
+        artifact.file.withInputStream { stream ->
+            byte[] block = new byte[1024 * 1024]
+            int n
+            while ((n = stream.read(block)) > 0) digest.update(block, 0, n)
+        }
+        if (digest.digest().encodeHex().toString() != pin.sha512)
+            throw new GradleException('Distant Horizons runtime SHA-512 mismatch')
+    }
+}
+tasks.named('processIncludeJars') { dependsOn(verifyDh) }
+
+tasks.named('compileJava') { dependsOn(verifyDh) }

@@ -487,3 +487,6 @@ if (project.hasProperty('tflAuditProfile')) {
         }
     }
 }
+
+// Audit 5: real DH runtime, pinned and included at build time, never downloaded by the client.
+apply from: rootProject.file('../../tools/integrations/distant-horizons.gradle')

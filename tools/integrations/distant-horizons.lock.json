@@ -1,0 +1,15 @@
+{
+  "id": "distanthorizons",
+  "version": "3.3.4-26.3",
+  "minecraft": "26.3",
+  "modrinthVersion": "TGgEbP9A",
+  "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+  "sha512": "0b90b1b08d99974bfc3c8e86b2ceb252e2f91715ed66b925004c28335fb44e1bddbbb6b8043e4d4d53c87ed247789cd1788b1ba4e3f4394efe154e0c59cff236",
+  "filename": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+  "license": "LGPL-3.0-only",
+  "source": "https://gitlab.com/distant-horizons-team/distant-horizons",
+  "distribution": "unmodified nested Fabric mod; never relocated",
+  "sourceRevision": "eb1007cb6cc3e0419effe2b40ab485cf24e55b43",
+  "sourceTag": "3.3.4",
+  "sourceArchive": "https://gitlab.com/distant-horizons-team/distant-horizons/-/archive/eb1007cb6cc3e0419effe2b40ab485cf24e55b43/distant-horizons-eb1007cb6cc3e0419effe2b40ab485cf24e55b43.tar.gz"
+}

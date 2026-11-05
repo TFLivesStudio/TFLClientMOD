@@ -11,6 +11,8 @@ import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 public final class TrsPreLaunch implements PreLaunchEntrypoint {
 	@Override
 	public void onPreLaunch() {
+        //? if >=26.3
+        /*dev.theredstonee.trsclient.compat.dh.DhRuntimePolicy.register();*/
 		try {
 			FpsConfigMode.load(FabricLoader.getInstance().getConfigDir()).applyModFiles();
 		} catch (RuntimeException | LinkageError e) {
