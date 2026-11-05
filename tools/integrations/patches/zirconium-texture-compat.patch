@@ -1,0 +1,252 @@
+--- a/build.gradle
++++ b/build.gradle
+@@ -1,8 +1,8 @@
+ plugins {
+ 	id 'maven-publish'
+ 	id 'io.freefair.lombok' version '8.12'
+-	id 'net.fabricmc.fabric-loom-remap' version '1.17-SNAPSHOT'
+-	id 'ploceus' version '1.17-SNAPSHOT'
++	id 'net.fabricmc.fabric-loom-remap' version '1.18.4'
++	id 'ploceus' version '1.18.3'
+ }
+ 
+ lombok { version = '1.18.42' }
+@@ -11,7 +11,7 @@
+ 	archivesName = project.archives_base_name
+ }
+ 
+-version = "${project.version}+mc${project.minecraft_version}"
++version = "${project.version}+mc${project.minecraft_version}.tfl.1"
+ group = project.maven_group
+ 
+ 
+@@ -20,6 +20,7 @@
+ }
+ 
+ repositories {
++    exclusiveContent { forRepository { maven { name="TflLwjglCentral"; url="https://repo.maven.apache.org/maven2" } }; filter { includeGroup("org.lwjgl") } }
+ 	// Add repositories to retrieve artifacts from in here.
+ 	// You should only use this when depending on other mods because
+ 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+@@ -38,15 +39,15 @@
+ 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+ 
+ 	implementation "it.unimi.dsi:fastutil:8.5.13"
+-	implementation "org.lwjgl:lwjgl:3.4.1"
+-	implementation "org.lwjgl:lwjgl-spng:3.4.1"
+-	include "org.lwjgl:lwjgl-spng:3.4.1"
+-	include "org.lwjgl:lwjgl-spng:3.4.1:natives-windows"
+-	include "org.lwjgl:lwjgl-spng:3.4.1:natives-windows-arm64"
+-	include "org.lwjgl:lwjgl-spng:3.4.1:natives-macos"
+-	include "org.lwjgl:lwjgl-spng:3.4.1:natives-macos-arm64"
+-	include "org.lwjgl:lwjgl-spng:3.4.1:natives-linux"
+-	include "org.lwjgl:lwjgl-spng:3.4.1:natives-linux-arm64"
++	implementation "org.lwjgl:lwjgl:3.4.3"
++	implementation "org.lwjgl:lwjgl-spng:3.4.3"
++	include "org.lwjgl:lwjgl-spng:3.4.3"
++	include "org.lwjgl:lwjgl-spng:3.4.3:natives-windows"
++	include "org.lwjgl:lwjgl-spng:3.4.3:natives-windows-arm64"
++	include "org.lwjgl:lwjgl-spng:3.4.3:natives-macos"
++	include "org.lwjgl:lwjgl-spng:3.4.3:natives-macos-arm64"
++	include "org.lwjgl:lwjgl-spng:3.4.3:natives-linux"
++	include "org.lwjgl:lwjgl-spng:3.4.3:natives-linux-arm64"
+     //include "it.unimi.dsi:fastutil:8.5.13"
+ 
+ 	//exceptions ploceus.raven(project.raven_build)
+@@ -107,3 +108,18 @@
+ 		// retrieving dependencies.
+ 	}
+ }
++
++// TFL reproducible archive metadata and targeted native image regressions.
++tasks.withType(Jar).configureEach { preserveFileTimestamps=false; reproducibleFileOrder=true }
++dependencies {
++    testImplementation platform('org.junit:junit-bom:5.11.4')
++    testImplementation 'org.junit.jupiter:junit-jupiter'
++    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
++    def testOs=System.getProperty('os.name').toLowerCase(java.util.Locale.ROOT)
++    def nativeOs=testOs.contains('win')?'windows':testOs.contains('mac')?'macos':'linux'
++    def testArch=System.getProperty('os.arch').toLowerCase(java.util.Locale.ROOT)
++    def nativeSuffix=testArch in ['aarch64','arm64']?'-arm64':''
++    testRuntimeOnly "org.lwjgl:lwjgl:3.4.3:natives-${nativeOs}${nativeSuffix}"
++    testRuntimeOnly "org.lwjgl:lwjgl-spng:3.4.3:natives-${nativeOs}${nativeSuffix}"
++}
++tasks.named('test') { useJUnitPlatform(); jvmArgs '--enable-native-access=ALL-UNNAMED' }
+--- a/gradle/wrapper/gradle-wrapper.properties
++++ b/gradle/wrapper/gradle-wrapper.properties
+@@ -1,6 +1,6 @@
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-9.5.1-bin.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-9.7.1-bin.zip
+ networkTimeout=10000
+ validateDistributionUrl=true
+ zipStoreBase=GRADLE_USER_HOME
+--- a/src/main/java/net/eliotex/zirconium/mixin/stbitextureloading/TextureAtlasMixin.java
++++ b/src/main/java/net/eliotex/zirconium/mixin/stbitextureloading/TextureAtlasMixin.java
+@@ -22,7 +22,15 @@
+             target = "Lnet/minecraft/client/render/texture/TextureUtil;readImage(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;",
+             remap = false))
+     private BufferedImage redirectImageRead(InputStream stream) {
++        // TFL: LWJGL2 has no MemoryUtil/SPNG; keep the vanilla decoder on that platform.
+         try {
++            if (!net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("legacy-lwjgl3")) {
++                try (InputStream input = stream) {
++                    BufferedImage image = javax.imageio.ImageIO.read(input);
++                    if (image == null) throw new IOException("Unsupported texture image");
++                    return image;
++                }
++            }
+             return NativeBackedImage.make(stream);
+         } catch (IOException ex) {
+             throw new RuntimeException(ex);
+--- a/src/main/java/net/eliotex/zirconium/utils/misc/NativeBackedImage.java
++++ b/src/main/java/net/eliotex/zirconium/utils/misc/NativeBackedImage.java
+@@ -17,84 +17,23 @@
+ 
+ public class NativeBackedImage extends BufferedImage implements AutoCloseable {
+ 
+-    private final int width;
+-    private final int height;
+-    private long pointer;
+-    private final int sizeBytes;
+-
+-    private NativeBackedImage(int width, int height, long pointer) {
++    // TFL: decode with SPNG, then publish an ordinary ARGB raster. This preserves the
++    // BufferedImage contract (crop/stride/subimages/raster consumers) and frees native
++    // pixels before callers receive the image, avoiding retained duplicate buffers.
++    private NativeBackedImage(int width, int height, long pixels) {
+         super(width, height, TYPE_INT_ARGB);
+-        this.width = width;
+-        this.height = height;
+-        this.pointer = pointer;
+-
+-        // 4 channels: RGBA
+-        this.sizeBytes = width * height * 4;
+-    }
+-
+-    public int getWidth() {
+-        return width;
+-    }
+-
+-    public int getHeight() {
+-        return height;
++        int[] raster = ((java.awt.image.DataBufferInt) getRaster().getDataBuffer()).getData();
++        boolean bigEndian = java.nio.ByteOrder.nativeOrder() == java.nio.ByteOrder.BIG_ENDIAN;
++        for (int i = 0; i < raster.length; i++) {
++            int rgba = MemoryUtil.memGetInt(pixels + i * 4L);
++            raster[i] = bigEndian ? Integer.rotateRight(rgba, 8)
++                : (rgba & 0xff00ff00) | ((rgba & 255) << 16) | ((rgba >>> 16) & 255);
++        }
+     }
+ 
+     @Override
+-    public int[] getRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize) {
+-
+-        // Inverse itr for cache coherency
+-        for (int z = startY; z < h; z++) {
+-            for (int x = startX; x < w; x++) {
+-                int color = MemoryUtil.memGetInt(this.pointer + ((x + z * width) * 4));
+-                // ABGR -> ARGB
+-                int a = (color >> 24) & 0xFF;
+-                int b = (color >> 16) & 0xFF;
+-                int g = (color >> 8) & 0xFF;
+-                int r = (color >> 0) & 0xFF;
+-
+-                int finalColor = (a << 24) | (r << 16) | (g << 8) | b;
+-
+-                rgbArray[x + (z * width)] = finalColor;
+-            }
+-        }
+-
+-        return rgbArray;
+-    }
+-
+-    @Override
+-    public int getRGB(int x, int z) {
+-        checkBounds(x, z);
+-
+-        return MemoryUtil.memGetInt(this.pointer + ((x + z * width) * 4));
+-    }
+-
+-    @Override
+-    public void setRGB(int x, int z, int rgb) {
+-        checkBounds(x, z);
+-
+-        MemoryUtil.memPutInt(this.pointer + ((x + z * width) * 4), rgb);
+-    }
+-
+-    @Override
+-    public BufferedImage getSubimage(int x, int y, int w, int h) {
+-        throw new UnsupportedOperationException("Not implemented");
+-    }
+-
+-    @Override
+-    public void close() throws Exception {
+-        if (this.pointer != 0) {
+-            MemoryUtil.nmemFree(this.pointer);
+-
+-            this.pointer = 0;
+-        }
+-    }
+-
+-    private void checkBounds(int x, int z) {
+-        if (x < 0 || x >= this.width || z < 0 || z >= this.height) {
+-            throw new IllegalStateException(
+-                "Out of bounds: " + x + ", " + z + " (width: " + this.width + ", height: " + this.height + ")");
+-        }
++    public void close() {
++        flush(); // Only the managed Java raster remains.
+     }
+ 
+     // Parsing
+@@ -153,7 +92,11 @@
+                     SPNG.spng_ctx_free(ctx);
+                 }
+ 
+-                return new NativeBackedImage(ihdr.width(), ihdr.height(), imageBuffer);
++                try {
++                    return new NativeBackedImage(ihdr.width(), ihdr.height(), imageBuffer);
++                } finally {
++                    MemoryUtil.nmemFree(imageBuffer);
++                }
+             }
+ 
+         } finally {
+--- /dev/null
++++ b/src/test/java/net/eliotex/zirconium/utils/misc/NativeBackedImageTest.java
+@@ -0,0 +1,34 @@
++package net.eliotex.zirconium.utils.misc;
++import org.junit.jupiter.api.Test;
++import static org.junit.jupiter.api.Assertions.*;
++import java.awt.image.BufferedImage;
++import java.io.*;
++import javax.imageio.ImageIO;
++class NativeBackedImageTest {
++    private NativeBackedImage image() throws Exception {
++        BufferedImage source=new BufferedImage(5,3,BufferedImage.TYPE_INT_ARGB);
++        for(int y=0;y<3;y++)for(int x=0;x<5;x++)source.setRGB(x,y,0xff000000|(x*41)<<16|(y*73)<<8|0x32);
++        ByteArrayOutputStream encoded=new ByteArrayOutputStream();ImageIO.write(source,"png",encoded);
++        return NativeBackedImage.make(new ByteArrayInputStream(encoded.toByteArray()));
++    }
++    @Test void pngArgbCropAndScanlinesMatchImageIo() throws Exception {
++        try(NativeBackedImage image=image()) {
++            assertEquals(0xff524932,image.getRGB(2,1));
++            int[] pixels=new int[16];java.util.Arrays.fill(pixels,0x11223344);
++            image.getRGB(2,1,2,2,pixels,3,6);
++            assertEquals(image.getRGB(2,1),pixels[3]);assertEquals(image.getRGB(3,1),pixels[4]);
++            assertEquals(image.getRGB(2,2),pixels[9]);assertEquals(image.getRGB(3,2),pixels[10]);
++            assertEquals(0x11223344,pixels[0]);assertEquals(0x11223344,pixels[5]);
++            assertNotNull(image.getRGB(0,0,5,3,null,0,5));
++            image.setRGB(4,2,0x803355ee);assertEquals(0x803355ee,image.getRGB(4,2));
++        }
++    }
++    @Test void rasterSubimageAndCloseUseManagedPixelsWithoutNativeLifetimeHazards() throws Exception {
++        NativeBackedImage image=image();
++        assertThrows(ArrayIndexOutOfBoundsException.class,()->image.getRGB(4,2,2,2,new int[4],0,2));
++        int expected=image.getRGB(2,1);
++        assertEquals(expected,image.getSubimage(2,1,2,2).getRGB(0,0));
++        assertEquals(expected,((java.awt.image.DataBufferInt)image.getRaster().getDataBuffer()).getData()[7]);
++        image.close();image.close();assertEquals(expected,image.getRGB(2,1));
++    }
++}

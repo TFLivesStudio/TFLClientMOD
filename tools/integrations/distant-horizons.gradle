@@ -39,3 +39,12 @@ def verifyDh = tasks.register('verifyPinnedDistantHorizons') {
 tasks.named('processIncludeJars') { dependsOn(verifyDh) }
 
 tasks.named('compileJava') { dependsOn(verifyDh) }
+tasks.named('processResources') {
+    inputs.property('managedDhRuntime', '3.3.4')
+    doLast {
+        def metadata = new File(destinationDir, 'fabric.mod.json')
+        def json = new groovy.json.JsonSlurper().parse(metadata)
+        json.depends.distanthorizons = '3.3.4'
+        metadata.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json)) + '\n'
+    }
+}

@@ -156,6 +156,9 @@ public final class TrsClient implements ClientModInitializer {
 		// Kamera-Fahrten: Tasten, Ende der Fahrt, Vorschau – und während der Fahrt alle Eingaben loslassen.
 		ClientTickEvents.START_CLIENT_TICK.register(dev.theredstonee.trsclient.cinematic.CinematicHooks::tick);
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            //? if >=26.3 {
+            /*dev.theredstonee.trsclient.hosting.WorldSharingHooks.service().close();
+            *///?}
 			saveConfig();
 			waypoints.save();
 			if (dev.theredstonee.trsclient.core.notes.Notes.get() != null) dev.theredstonee.trsclient.core.notes.Notes.get().save();
@@ -261,6 +264,7 @@ public final class TrsClient implements ClientModInitializer {
 	private void onTick(Minecraft mc) {
         //? if >=26.3 {
         /*dev.theredstonee.trsclient.hosting.WorldSharingHooks.tick();
+        dev.theredstonee.trsclient.compat.dh.DhRuntimePolicy.tick(mc);
         *///?}
         //? if >=26.3 {
         /*dev.theredstonee.trsclient.branding.WindowIdentity.refresh();

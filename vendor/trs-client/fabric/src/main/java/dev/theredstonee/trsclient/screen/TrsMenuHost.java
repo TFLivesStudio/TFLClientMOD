@@ -165,7 +165,8 @@ public final class TrsMenuHost implements MenuHost {
 
     @Override public java.util.List<dev.theredstonee.trsclient.core.module.Setting> settings(Module module){
         //? if >=26.3 {
-        /*if(module==modules().worldMap)return module.settings().stream().filter(s->java.util.Set.of("key","cloudQuality","cloudMotion","showWaypoints","showPlayers","showHostile","showPassive").contains(s.key())).toList();
+        /*if(module==modules().farTerrain)return java.util.List.of(modules().farTerrain.distance);
+        if(module==modules().worldMap)return module.settings().stream().filter(s->java.util.Set.of("key","cloudQuality","cloudMotion","showWaypoints","showPlayers","showHostile","showPassive").contains(s.key())).toList();
         if(module==modules().minimap)return module.settings().stream().filter(s->java.util.Set.of("shape","size","zoom","opacity","caveMode","showWaypoints","showPlayers","showHostile","showPassive","mobIcons","compass","coords","biome").contains(s.key())).toList();
         *///?}
         return module.settings();

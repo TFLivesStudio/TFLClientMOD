@@ -3,10 +3,14 @@
     "repo": "Coccocoahelper/Zirconium-Ornithe",
     "revision": "d687019623a153e03a9210e05b3eea0d33059cf7",
     "license": "LGPL-3.0-only",
-    "jar": "Zirconium-0.2.0+mc1.8.9.jar",
-    "builtSha256": "964e8cd11529f1f7723d113cf6b77ada89b9122fffb08c6b6c226010dfcc8d43",
-    "patch": "patches/zirconium-java25.patch",
-    "compatibility": "not yet certified; do not add to Selection catalog"
+    "jar": "Zirconium-0.2.0+mc1.8.9.tfl.1.jar",
+    "builtSha256": "7c3de2d1db7925a8dbc22b4ec5b5b60270385d4a358054d6f6049018e9f13b28",
+    "compatibility": "ARGB/raster tests pass; native target/optimizer acceptance pending; not in Selection",
+    "patches": [
+      "patches/zirconium-java25.patch",
+      "patches/zirconium-texture-compat.patch"
+    ],
+    "buildToolchain": "Java25; Gradle9.7.1; Loom1.18.4; Ploceus1.18.3"
   },
   {
     "repo": "Polyfrost/Legacy-Starlight",

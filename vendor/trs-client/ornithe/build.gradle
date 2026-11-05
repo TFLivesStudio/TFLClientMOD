@@ -2,6 +2,19 @@ plugins {
     id 'fabric-loom' version '1.18.4'
     id 'ploceus' version '1.18.3'
 }
+abstract class PrepareAudit5Guest extends net.fabricmc.loom.task.prod.ClientProductionRunTask {
+    @org.gradle.api.tasks.OutputFile
+    abstract org.gradle.api.file.RegularFileProperty getLaunchFile()
+    @Override
+    protected void configureProgramArgs(org.gradle.process.ExecSpec spec) {
+        super.configureProgramArgs(spec)
+        def target=launchFile.get().asFile;target.parentFile.mkdirs()
+        target.text=groovy.json.JsonOutput.toJson([command:spec.commandLine.collect{it.toString()},workingDirectory:runDir.get().asFile.absolutePath])
+        spec.commandLine('/usr/bin/true')
+    }
+}
+ext.audit5GuestTaskType=PrepareAudit5Guest
+ext.audit5GuestRunType=net.fabricmc.loom.task.prod.ClientProductionRunTask
 group='dev.tflives'
 version=project.mod_version
 base { archivesName='tflcore-1.8.9' }
@@ -113,6 +126,7 @@ tasks.named('test') {
 tasks.named('runClient') { useXvfb.set(false) }
 
 apply from: file("../../../tools/verification/depth-native.gradle")
+apply from: file("../../../tools/verification/sharing-guest.gradle")
 
 // Pinned Diorama ray tracer, ported to immutable 1.8.9 client snapshots.
 sourceSets.main.java.srcDir '../../diorama/ornithe/src/main/java'

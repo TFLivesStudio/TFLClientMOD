@@ -31,6 +31,17 @@ class WorldShareServiceTest {
         void send(byte[] bytes) { sink.data(bytes,0,bytes.length); }
     }
     static byte[] status() { return new byte[] {7,0,47,1,'x',0,1,1}; }
+    @Test void applicationCloseWaitsForTransportRevocationAndCannotRestart() throws Exception {
+        Tunnel tunnel=new Tunnel();
+        WorldShareService service=new WorldShareService(Paths.get("unused"),(p,progress)->tunnel);
+        assertTrue(service.start(new Object(),12345,"Host",BROKER,consent()));
+        assertTrue(tunnel.ready.await(3,TimeUnit.SECONDS));
+        service.close();
+        assertEquals(0,tunnel.stopped.getCount());
+        assertEquals(WorldShareService.State.OFF,service.snapshot().state);
+        var unused=consent();assertFalse(service.start(new Object(),12345,"Host",BROKER,unused));assertTrue(unused.ready());
+        service.close();
+    }
     static byte[] login(String name) throws IOException {
         ByteArrayOutputStream out=new ByteArrayOutputStream(); out.write(new byte[] {7,0,47,1,'x',0,1,2});
         out.write(name.length()+2); out.write(0); out.write(name.length()); out.write(name.getBytes("UTF-8")); return out.toByteArray();

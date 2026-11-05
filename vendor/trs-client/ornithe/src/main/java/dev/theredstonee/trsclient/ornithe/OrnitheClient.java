@@ -251,7 +251,7 @@ public final class OrnitheClient implements ModInitializer {
           minimapTarget.close();
           if (diorama != null)diorama.close();
           farTerrain.shutdown();
-          OrnitheWorldSharing.service().stop();
+          OrnitheWorldSharing.service().close();
           if (map != null) map.shutdown();
           try {
             waypoints.saveIfDirty();

@@ -1,0 +1,81 @@
+{
+  "checks": [
+    {
+      "name": "World Insight native received targets and privacy",
+      "passed": true
+    },
+    {
+      "name": "No internet sharing without explicit session consent",
+      "passed": true
+    },
+    {
+      "name": "Immutable received terrain columns available",
+      "passed": true
+    },
+    {
+      "name": "3D LOD geometry drawn beyond vanilla two-chunk range",
+      "passed": true
+    },
+    {
+      "name": "GPU geometry budget respected",
+      "passed": true
+    },
+    {
+      "name": "LOD is submitted once before vanilla geometry per non-stereo frame",
+      "passed": true
+    },
+    {
+      "name": "LOD camera axes and screen projection match native terrain",
+      "passed": true
+    },
+    {
+      "name": "LOD pass preserves valid OpenGL state",
+      "passed": true
+    },
+    {
+      "name": "Known 3D terrain remains visible after moving away",
+      "passed": true
+    },
+    {
+      "name": "Disabling LOD terminates workers and releases all GPU geometry",
+      "passed": true
+    },
+    {
+      "name": "Re-enabling LOD restores derived cache without resending terrain",
+      "passed": true
+    },
+    {
+      "name": "Native LAN publish succeeds",
+      "passed": true
+    },
+    {
+      "name": "Native LAN port is actual bound TCP listener",
+      "passed": true
+    },
+    {
+      "name": "Publishing preserves world game mode",
+      "passed": true
+    },
+    {
+      "name": "Shared World Sharing screen is reachable from native adapter",
+      "passed": true
+    },
+    {
+      "name": "Opening sharing screen never initiates tunnel",
+      "passed": true
+    },
+    {
+      "name": "LAN remains open after stopping internet sharing",
+      "passed": true
+    }
+  ],
+  "scenario": "audit5-lod-lan",
+  "mapFogExercised": false,
+  "receivedColumns": 113,
+  "diskRestores": 112,
+  "lodVertices": 1213944,
+  "gpuBytes": 4344832,
+  "meshBuildNanos": 83661152,
+  "nativeRenderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+  "status": "passed"
+}

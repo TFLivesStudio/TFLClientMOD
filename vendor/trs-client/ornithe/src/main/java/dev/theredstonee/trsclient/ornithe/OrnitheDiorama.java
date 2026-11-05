@@ -461,6 +461,14 @@ public final class OrnitheDiorama implements ChunkSource, AutoCloseable {
     captured.remove(ChunkSnapshot.key(x, z));
   }
 
+  /** Light propagation may finish after the original block packet was captured. */
+  public void changedRegion(int minX,int minZ,int maxX,int maxZ) {
+    int x0=minX>>4,z0=minZ>>4,x1=maxX>>4,z1=maxZ>>4;
+    if(x1<x0||z1<z0)return;
+    if(((long)x1-x0+1)*((long)z1-z0+1)>1024){captured.clear();return;}
+    for(int x=x0;x<=x1;x++)for(int z=z0;z<=z1;z++)captured.remove(ChunkSnapshot.key(x,z));
+  }
+
   public void reload() {
     markers.reload();
     for (Cached cache : worlds.values())

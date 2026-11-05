@@ -55,17 +55,7 @@ public final class TflRelay implements AutoCloseable {
                 .maxIdleTimeout(15,TimeUnit.SECONDS).initialMaxData(8L*MAX_PENDING)
                 .initialMaxStreamDataBidirectionalLocal(MAX_PENDING).initialMaxStreamDataBidirectionalRemote(MAX_PENDING)
                 .initialMaxStreamsBidirectional(1)
-                .handler(new ChannelInboundHandlerAdapter(){
-                    public void channelActive(ChannelHandlerContext ctx) {
-                        QuicChannel q=(QuicChannel)ctx.channel();
-                        if(!sessionSlots.tryAcquire()) { q.close();return; }
-                        Session s=new Session(q);sessions.add(s);q.attr(SESSION).set(s);
-                        q.closeFuture().addListener(done->s.close());
-                        q.eventLoop().schedule(()->{if(s.domain==null)s.close();},10,TimeUnit.SECONDS);
-                        q.eventLoop().schedule(s::close,2,TimeUnit.HOURS);
-                        ctx.fireChannelActive();
-                    }
-                }).streamHandler(new ChannelInitializer<QuicStreamChannel>() {
+                .handler(new AcceptHost()).streamHandler(new ChannelInitializer<QuicStreamChannel>() {
                     protected void initChannel(QuicStreamChannel ch) {
                         Session s=ch.parent().attr(SESSION).get();
                         if(s==null || !s.control.compareAndSet(false,true)){ch.close();return;}
@@ -101,6 +91,19 @@ public final class TflRelay implements AutoCloseable {
             });broker.start();
             group.next().scheduleAtFixedRate(rate::clear,1,1,TimeUnit.MINUTES);
         } catch(Exception e) {close();throw e;}
+    }
+    // One handler instance is supplied by the codec to every host channel. Its state is channel-local.
+    @ChannelHandler.Sharable
+    private final class AcceptHost extends ChannelInboundHandlerAdapter {
+                    public void channelActive(ChannelHandlerContext ctx) {
+                        QuicChannel q=(QuicChannel)ctx.channel();
+                        if(!sessionSlots.tryAcquire()) { q.close();return; }
+                        Session s=new Session(q);sessions.add(s);q.attr(SESSION).set(s);
+                        q.closeFuture().addListener(done->s.close());
+                        q.eventLoop().schedule(()->{if(s.domain==null)s.close();},10,TimeUnit.SECONDS);
+                        q.eventLoop().schedule(s::close,2,TimeUnit.HOURS);
+                        ctx.fireChannelActive();
+                    }
     }
     private boolean allow(InetAddress ip) {
         AtomicInteger count=rate.get(ip);

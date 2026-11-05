@@ -1,0 +1,187 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Remote received level uses a catalog-scoped DH wrapper",
+      "passed": true
+    },
+    {
+      "name": "Diorama and DH share the same remote world identity",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #0",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #1",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #2",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #3",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #4",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #5",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #6",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #7",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #8",
+      "passed": true
+    },
+    {
+      "name": "Manual selection replaces wrapper without replacing Minecraft\u0027s dimension",
+      "passed": true
+    },
+    {
+      "name": "Wrapper reuse path also respects the current catalog world",
+      "passed": true
+    },
+    {
+      "name": "Remote cache is isolated beneath the dedicated TFL Horizons root",
+      "passed": true
+    },
+    {
+      "name": "Same-dimension catalog world has a distinct persistent DH folder #9",
+      "passed": true
+    },
+    {
+      "name": "Revisiting a catalog world restores its original namespace",
+      "passed": true
+    },
+    {
+      "name": "Revisiting a catalog world reuses its original DH database",
+      "passed": true
+    },
+    {
+      "name": "All ten legitimate cache databases remain on disk",
+      "passed": true
+    },
+    {
+      "name": "No loaded DH level belongs to another catalog world",
+      "passed": true
+    },
+    {
+      "name": "No loaded DH level belongs to another catalog world",
+      "passed": true
+    }
+  ],
+  "sameDimensionWorlds": 10,
+  "receivedRemoteMinecraftLevel": true
+}

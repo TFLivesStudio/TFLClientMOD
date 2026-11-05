@@ -1,0 +1,49 @@
+// Produce a normal Loom command before starting the host, avoiding concurrent builds of its JAR.
+// An explicitly invoked Minecraft guest without TFL Core, for local relay gameplay acceptance.
+if (!project.hasProperty('audit5GuestAddress')) return
+def modern=project.name=='26.3'
+if (!modern && !project.plugins.hasPlugin('ploceus')) return
+def remote=modern && project.hasProperty('audit5RemoteGuest')
+def guestClass=remote?'dev/theredstonee/trsclient/dev/Audit5RemoteWorlds':modern?'dev/theredstonee/trsclient/dev/Audit5Guest':'dev/theredstonee/trsclient/ornithe/dev/Audit5Guest'
+def guestMetadata=layout.buildDirectory.file((remote?'share-remote-resources':'share-guest-resources')+'/fabric.mod.json')
+def metadataTask=tasks.register('writeShareGuestMetadata') {
+    outputs.file(guestMetadata)
+    inputs.property('guestClass',guestClass)
+    doLast {
+        def file=guestMetadata.get().asFile;file.parentFile.mkdirs()
+        file.text=groovy.json.JsonOutput.toJson([schemaVersion:1,id:'tfl_test_guest',version:'1.0.0',environment:'client',entrypoints:[(modern?'client':'init'):[guestClass.replace('/','.')]],depends:(modern ? [minecraft:'26.3',java:'>=25','fabric-lifecycle-events-v1':'*']+(remote ? [tflcore:'*'] : [:]) : [minecraft:'1.8.9',java:'>=25','osl-entrypoints':'>=0.6.1','osl-lifecycle-events':'>=0.6.0'])])
+    }
+}
+def guestJar=tasks.register('shareGuestJar',Jar) {
+    dependsOn(tasks.named('classes'),metadataTask)
+    setExcludes([])
+    archiveClassifier=remote?'sharing-remote-dev':'sharing-guest-dev'
+    from(sourceSets.main.output.classesDirs) { include guestClass+'*' }
+    from(guestMetadata)
+}
+def remapped=modern?guestJar:tasks.register('remapShareGuestJar',Class.forName('net.fabricmc.loom.task.RemapJarTask',true,tasks.named('remapJar').get().class.classLoader)) {
+    inputFile=guestJar.flatMap{it.archiveFile};archiveClassifier='sharing-guest';addNestedDependencies=false
+    classpath.from(sourceSets.main.compileClasspath,sourceSets.main.output.classesDirs)
+}
+def guestLoader=modern?null:configurations.detachedConfiguration(dependencies.create("net.fabricmc:fabric-loader:${project.loader_version}"))
+def guestMappings=modern?null:configurations.detachedConfiguration(dependencies.create("net.ornithemc:calamus-intermediary-gen2:${project.minecraft_version}"))
+def configureGuest={ task -> task.with {
+    outputs.upToDateWhen{false}
+    mods.setFrom(remapped)
+    if(remote)mods.from(tasks.named('jar'))
+    if(modern){def api=configurations.detachedConfiguration(dependencies.create("net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"));api.transitive=false;mods.from(api)}
+    else mods.from(files("${project.property('runtimeModsDir')}/ornithe-standard-libraries-${project.osl_version}.jar"))
+    runDir=modern?rootProject.layout.projectDirectory.dir(remote?'run/audit5-remote263':'run/audit5-guest263'):layout.projectDirectory.dir('run/audit5-guest')
+    jvmArgs.addAll('--enable-native-access=ALL-UNNAMED',"-Djdk.net.hosts.file=${project.property('audit5GuestHosts')}")
+    if(modern)programArgs.addAll('--quickPlayMultiplayer',project.property('audit5GuestAddress').toString()+':25565')
+    else programArgs.addAll('--server',project.property('audit5GuestAddress').toString(),'--port','25565')
+    programArgs.addAll('--username',remote?'TFLRemote':'TFLGuest','--width','854','--height','480')
+    useXVFB=false
+    if(!modern){classpath.setFrom(files(loom.minecraftProvider.minecraftClientJar),guestLoader,guestMappings,configurations.named('minecraftTestClientRuntimeLibraries'));jvmArgs.addAll('-Dfabric.fixPackageAccess=true','-Dfabric.gameVersion=1.8.9')}
+}
+}
+tasks.register('runAudit5Guest',project.audit5GuestRunType,configureGuest)
+tasks.register('prepareAudit5Guest',project.audit5GuestTaskType) {
+    configureGuest.call(delegate)
+    launchFile=layout.buildDirectory.file(remote?'sharing-remote-launch.json':'sharing-guest-launch.json')
+}

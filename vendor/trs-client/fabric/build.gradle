@@ -309,6 +309,8 @@ if (stonecutter.eval(mc, '<1.15')) mixinClasses << 'ShieldGlMixin'
 // Komfort-Paket 2: bessere Tooltips (Zusatzkarte am Inventar, Text-Zusätze an der Tooltip-Liste).
 mixinClasses += ['TooltipScreenMixin', 'TooltipLinesMixin']
 
+if(mc.toString()=='26.3')mixinClasses += ['DhClientWrapperMixin','DhSaveCacheAccess']
+
 processResources {
 	def props = [
 			mixins      : mixinClasses.collect { "\"${it}\"" }.join(', '),
@@ -490,3 +492,18 @@ if (project.hasProperty('tflAuditProfile')) {
 
 // Audit 5: real DH runtime, pinned and included at build time, never downloaded by the client.
 apply from: rootProject.file('../../tools/integrations/distant-horizons.gradle')
+
+abstract class PrepareAudit5Guest extends net.fabricmc.loom.task.prod.ClientProductionRunTask {
+    @org.gradle.api.tasks.OutputFile
+    abstract org.gradle.api.file.RegularFileProperty getLaunchFile()
+    @Override
+    protected void configureProgramArgs(org.gradle.process.ExecSpec spec) {
+        super.configureProgramArgs(spec)
+        def target=launchFile.get().asFile;target.parentFile.mkdirs()
+        target.text=groovy.json.JsonOutput.toJson([command:spec.commandLine.collect{it.toString()},workingDirectory:runDir.get().asFile.absolutePath])
+        spec.commandLine('/usr/bin/true')
+    }
+}
+ext.audit5GuestTaskType=PrepareAudit5Guest
+ext.audit5GuestRunType=net.fabricmc.loom.task.prod.ClientProductionRunTask
+apply from: rootProject.file('../../tools/verification/sharing-guest.gradle')

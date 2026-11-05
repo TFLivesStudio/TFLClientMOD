@@ -48,7 +48,7 @@
     "MiniPlayerLayersMixin",
     "MiniPlayerArmorLayerMixin",
     "ArgentumDrawMixin",
-    "DioramaChunkMixin",
+    "DioramaChunkMixin", "DioramaLightMixin",
     "MapSessionMixin",
     "LanListenerAccess"
   ],

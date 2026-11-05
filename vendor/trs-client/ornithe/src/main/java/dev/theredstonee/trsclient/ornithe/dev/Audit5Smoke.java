@@ -19,6 +19,9 @@ public final class Audit5Smoke implements Runnable {
     private long uploads;
     private long beforeMove;
     private double originalZ;
+    private boolean lifecycleDone;
+    private int lightX,lightY,lightZ,lightCell,beforeHeight;
+    private dev.theredstonee.trsclient.core.terrain.FarTerrainEngine overworldEngine;
     private dev.theredstonee.trsclient.core.terrain.FarTerrainEngine stopped;
     public Audit5Smoke(OrnitheClient c,Path out){this.c=c;this.out=out;report.add("checks",checks);report.addProperty("scenario","audit5-lod-lan");report.addProperty("mapFogExercised",false);}
     private void check(String label,boolean ok){JsonObject check=new JsonObject();check.addProperty("name",label);check.addProperty("passed",ok);checks.add(check);System.out.println("[TFL Audit5] "+label+": "+ok);if(!ok)throw new AssertionError(label);}
@@ -76,18 +79,89 @@ public final class Audit5Smoke implements Runnable {
             case 5 -> {
                 var engine=c.farTerrain.engine();if(engine==null||engine.diskHits<30||c.farTerrain.uploads<=uploads)return;
                 check("Re-enabling LOD restores derived cache without resending terrain",engine.diskHits>=30);
+                if(!lifecycleDone){
+                    lightX=(int)Math.floor(c.mc.player.x)+2;lightZ=(int)Math.floor(c.mc.player.z)+2;lightCell=(lightZ&15)*16+(lightX&15);
+                    var column=engine.column(lightX>>4,lightZ>>4);if(column==null)return;
+                    beforeHeight=column.height(lightCell);lightY=Math.min(250,beforeHeight+4);
+                    c.mc.player.sendChat("/setblock "+lightX+" "+lightY+" "+lightZ+" minecraft:glowstone");phase=20;wait=10;return;
+                }
                 var s=c.mc.getServer();var mode=s.getDefaultGameMode();
                 check("Native LAN publish succeeds",s.isPublished()||s.publish(mode,false)!=null);
                 check("Native LAN port is actual bound TCP listener",OrnitheWorldSharing.port(c)>0);
                 check("Publishing preserves world game mode",s.getDefaultGameMode()==mode);
                 OrnitheWorldSharing.open(c,null);phase++;wait=10;
             }
+            case 20 -> {
+                var column=c.farTerrain.engine().column(lightX>>4,lightZ>>4);
+                if(column==null||column.height(lightCell)!=lightY+1||column.blockLight(lightCell)!=15)return;
+                var snapshot=c.diorama.chunk(lightX>>4,lightZ>>4);
+                if(snapshot==null||snapshot.blockLight(lightY>>4,lightX&15,lightY&15,lightZ&15)!=15)return;
+                check("Received emissive block updates LOD height and block light",true);
+                check("Diorama observes the same legitimate light update",snapshot!=null&&snapshot.blockLight(lightY>>4,lightX&15,lightY&15,lightZ&15)==15);
+                c.mc.player.sendChat("/setblock "+lightX+" "+lightY+" "+lightZ+" minecraft:air");c.mc.player.sendChat("/time set 18000");phase=21;wait=15;
+            }
+            case 21 -> {
+                var column=c.farTerrain.engine().column(lightX>>4,lightZ>>4);
+                if(column==null||column.height(lightCell)!=beforeHeight||column.blockLight(lightCell)!=0)return;
+                check("Removing emissive terrain invalidates cached height and lighting",true);
+                check("Night-time LOD keeps valid render state",c.farTerrain.failure.isEmpty()&&org.lwjgl.opengl.GL11.glGetError()==org.lwjgl.opengl.GL11.GL_NO_ERROR);
+                shot("terrain-night");c.mc.player.sendChat("/time set 6000");overworldEngine=c.farTerrain.engine();
+                int px=(int)Math.floor(c.mc.player.x),py=(int)Math.ceil(c.mc.player.y),pz=(int)Math.floor(c.mc.player.z);
+                c.mc.player.sendChat("/fill "+(px-1)+" "+py+" "+pz+" "+(px+2)+" "+(py+4)+" "+pz+" minecraft:obsidian");
+                c.mc.player.sendChat("/fill "+px+" "+(py+1)+" "+pz+" "+(px+1)+" "+(py+3)+" "+pz+" minecraft:portal");
+                c.mc.player.sendChat("/tp @p "+(px+.5)+" "+(py+1)+" "+(pz+.5));phase=22;wait=30;
+            }
+            case 22 -> {
+                if(c.mc.world==null||c.mc.world.dimension.getId()!=-1||c.mc.screen!=null||c.farTerrain.engine()==null||c.farTerrain.engine().columnCount()==0)return;
+                check("Nether receives a distinct LOD engine and cache",c.farTerrain.engine()!=overworldEngine);
+                check("Changing dimension terminates previous terrain workers",overworldEngine.stopped());
+                shot("terrain-nether");var uuid=c.mc.player.getUuid();c.mc.getServer().executeTask(()->c.mc.getServer().getPlayerManager().changeDimension(c.mc.getServer().getPlayerManager().get(uuid),0));phase=23;wait=30;
+            }
+            case 23 -> {
+                if(c.mc.world==null||c.mc.world.dimension.getId()!=0||c.mc.screen!=null||c.farTerrain.engine()==null||c.farTerrain.engine().diskHits<30)return;
+                check("Return from Nether restores the isolated Overworld cache",c.farTerrain.engine()!=overworldEngine&&c.farTerrain.engine().diskHits>=30);
+                check("No LOD renderer failure after dimension round trip",c.farTerrain.failure.isEmpty());
+                c.mc.player.sendChat("/tp @p ~8 50 ~8");phase=24;wait=30;
+            }
+            case 24 -> { lifecycleDone=true;phase=5; }
             case 6 -> {
                 check("Shared World Sharing screen is reachable from native adapter",c.mc.screen instanceof CoreScreen screen&&screen.ui instanceof dev.theredstonee.trsclient.core.ui.menus.WorldShareUi);
                 check("Opening sharing screen never initiates tunnel",OrnitheWorldSharing.service().snapshot().state==dev.theredstonee.trsclient.core.hosting.e4mc.WorldShareService.State.OFF);
                 shot("world-sharing");c.mc.openScreen(null);OrnitheWorldSharing.service().stop();
                 check("LAN remains open after stopping internet sharing",OrnitheWorldSharing.port(c)>0);
-                phase=99;finish(null);
+                if(System.getProperty("tflcore.audit5.shareBroker")!=null){
+                    var broker=java.net.URI.create(System.getProperty("tflcore.audit5.shareBroker"));
+                    check("Offline guest fixture is restricted to a local HTTPS broker",broker.getScheme().equals("https")&&broker.getHost().equals("localhost"));
+                    // Test fixture only: no account credentials exist in this environment.
+                    // This class is excluded from the installable Core artifact.
+                    c.mc.getServer().setOnlineMode(false);
+                    var consent=new dev.theredstonee.trsclient.core.hosting.e4mc.WorldShareService.Consent();consent.understood(true);
+                    check("Explicit fixture consent starts the isolated runtime tunnel",OrnitheWorldSharing.service().start(c.mc.getServer(),OrnitheWorldSharing.port(c),c.mc.player.getName(),broker.toString(),consent));
+                    phase=7;
+                }else {phase=99;finish(null);}
+            }
+            case 7 -> {
+                var s=OrnitheWorldSharing.service().snapshot();
+                if(s.state==dev.theredstonee.trsclient.core.hosting.e4mc.WorldShareService.State.ERROR)throw new AssertionError("Sharing failed: "+s.error);
+                if(s.state!=dev.theredstonee.trsclient.core.hosting.e4mc.WorldShareService.State.ONLINE)return;
+                var invitation=new JsonObject();invitation.addProperty("address",s.address);invitation.addProperty("lanPort",s.lanPort);
+                Files.writeString(Path.of(System.getProperty("tflcore.audit5.shareFixture")).resolve("invitation.json"),new Gson().toJson(invitation));
+                phase=8;
+            }
+            case 8 -> {
+                var failedGuest=Path.of(System.getProperty("tflcore.audit5.shareFixture")).resolve("guest-result.json");
+                if(Files.exists(failedGuest))throw new AssertionError("Guest terminated before acceptance: "+Files.readString(failedGuest));
+                if(!Files.exists(Path.of(System.getProperty("tflcore.audit5.shareFixture")).resolve("guest-ready.json")))return;
+                check("Core-free native guest joined the actual integrated server",c.mc.getServer().getPlayerManager().get("TFLGuest")!=null);
+                check("Real guest has an active relayed stream",OrnitheWorldSharing.service().snapshot().peers>0);
+                OrnitheWorldSharing.service().stop();phase=9;
+            }
+            case 9 -> {
+                var result=Path.of(System.getProperty("tflcore.audit5.shareFixture")).resolve("guest-result.json");
+                if(!Files.exists(result))return;
+                check("Stopping sharing disconnects native guest",new JsonParser().parse(Files.readString(result)).getAsJsonObject().get("status").getAsString().equals("passed"));
+                check("Stopping internet sharing preserves real LAN listener",OrnitheWorldSharing.port(c)>0);
+                report.addProperty("nativeGuestWithoutCore",true);report.addProperty("offlineLocalFixture",true);phase=99;finish(null);
             }
         }
     }catch(Throwable failure){phase=99;finish(failure);}}

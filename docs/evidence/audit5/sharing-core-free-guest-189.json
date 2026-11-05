@@ -1,0 +1,107 @@
+{
+  "checks": [
+    {
+      "name": "World Insight native received targets and privacy",
+      "passed": true
+    },
+    {
+      "name": "No internet sharing without explicit session consent",
+      "passed": true
+    },
+    {
+      "name": "Immutable received terrain columns available",
+      "passed": true
+    },
+    {
+      "name": "3D LOD geometry drawn beyond vanilla two-chunk range",
+      "passed": true
+    },
+    {
+      "name": "GPU geometry budget respected",
+      "passed": true
+    },
+    {
+      "name": "LOD is submitted once before vanilla geometry per non-stereo frame",
+      "passed": true
+    },
+    {
+      "name": "LOD camera axes and screen projection match native terrain",
+      "passed": true
+    },
+    {
+      "name": "LOD pass preserves valid OpenGL state",
+      "passed": true
+    },
+    {
+      "name": "Known 3D terrain remains visible after moving away",
+      "passed": true
+    },
+    {
+      "name": "Disabling LOD terminates workers and releases all GPU geometry",
+      "passed": true
+    },
+    {
+      "name": "Re-enabling LOD restores derived cache without resending terrain",
+      "passed": true
+    },
+    {
+      "name": "Native LAN publish succeeds",
+      "passed": true
+    },
+    {
+      "name": "Native LAN port is actual bound TCP listener",
+      "passed": true
+    },
+    {
+      "name": "Publishing preserves world game mode",
+      "passed": true
+    },
+    {
+      "name": "Shared World Sharing screen is reachable from native adapter",
+      "passed": true
+    },
+    {
+      "name": "Opening sharing screen never initiates tunnel",
+      "passed": true
+    },
+    {
+      "name": "LAN remains open after stopping internet sharing",
+      "passed": true
+    },
+    {
+      "name": "Offline guest fixture is restricted to a local HTTPS broker",
+      "passed": true
+    },
+    {
+      "name": "Explicit fixture consent starts the isolated runtime tunnel",
+      "passed": true
+    },
+    {
+      "name": "Core-free native guest joined the actual integrated server",
+      "passed": true
+    },
+    {
+      "name": "Real guest has an active relayed stream",
+      "passed": true
+    },
+    {
+      "name": "Stopping sharing disconnects native guest",
+      "passed": true
+    },
+    {
+      "name": "Stopping internet sharing preserves real LAN listener",
+      "passed": true
+    }
+  ],
+  "scenario": "audit5-lod-lan",
+  "mapFogExercised": false,
+  "receivedColumns": 119,
+  "diskRestores": 118,
+  "lodVertices": 678632,
+  "gpuBytes": 4007040,
+  "meshBuildNanos": 173926172,
+  "nativeRenderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+  "nativeGuestWithoutCore": true,
+  "offlineLocalFixture": true,
+  "status": "passed"
+}

@@ -1,0 +1,97 @@
+{
+  "dhRenderer": "VULKAN",
+  "remoteWorldIsolationExercised": false,
+  "nativeGuestWithoutCore": true,
+  "offlineLocalFixture": true,
+  "checks": [
+    {
+      "name": "Real managed DH world and renderer initialized",
+      "passed": true
+    },
+    {
+      "name": "Single DH engine resolved",
+      "passed": true
+    },
+    {
+      "name": "Core terrain toggle reaches official DH API",
+      "passed": true
+    },
+    {
+      "name": "Core terrain distance reaches official DH API",
+      "passed": true
+    },
+    {
+      "name": "Terrain preferences restored",
+      "passed": true
+    },
+    {
+      "name": "DH updates remain managed without changing disk preference",
+      "passed": true
+    },
+    {
+      "name": "World Insight received targets and player privacy",
+      "passed": true
+    },
+    {
+      "name": "Diorama and DH sessions coexist",
+      "passed": true
+    },
+    {
+      "name": "Sharing transport bridge exists on native classpath",
+      "passed": true
+    },
+    {
+      "name": "No tunnel before consent",
+      "passed": true
+    },
+    {
+      "name": "Native LAN publish",
+      "passed": true
+    },
+    {
+      "name": "LAN uses a real nonzero bound port",
+      "passed": true
+    },
+    {
+      "name": "World game mode preserved",
+      "passed": true
+    },
+    {
+      "name": "World sharing screen is integrated",
+      "passed": true
+    },
+    {
+      "name": "Opening sharing UI is offline",
+      "passed": true
+    },
+    {
+      "name": "LAN survives internet stop",
+      "passed": true
+    },
+    {
+      "name": "Offline guest fixture is restricted to a local HTTPS broker",
+      "passed": true
+    },
+    {
+      "name": "Explicit fixture consent starts the isolated runtime tunnel",
+      "passed": true
+    },
+    {
+      "name": "Core-free native guest joined the actual integrated server",
+      "passed": true
+    },
+    {
+      "name": "Real guest has an active relayed stream",
+      "passed": true
+    },
+    {
+      "name": "Stopping sharing disconnects native guest",
+      "passed": true
+    },
+    {
+      "name": "Stopping internet sharing preserves real LAN listener",
+      "passed": true
+    }
+  ],
+  "status": "passed"
+}

@@ -63,6 +63,21 @@ class RelayRoutingTest {
                 hello.write(host.length+6);hello.write(0);hello.write(47);hello.write(host.length);hello.write(host);hello.write(0);hello.write(1);hello.write(1);
                 revoked.getOutputStream().write(hello.toByteArray());assertEquals(-1,revoked.getInputStream().read());
             }
+            // A single relay must serve subsequent hosts, not just its first QUIC connection.
+            QuiclimeTunnel second=new QuiclimeTunnel(trust);
+            CountDownLatch reassigned=new CountDownLatch(1);AtomicReference<String> secondDomain=new AtomicReference<>();
+            AtomicReference<String> secondFailure=new AtomicReference<>();
+            try {
+                second.start("https://localhost:"+relay.brokerPort()+"/getBestRelay",new PublicTunnel.Events(){
+                    public void domain(String domain){secondDomain.set(domain);reassigned.countDown();}
+                    public void stream(PeerStream peer){peer.close("no guest in this session");}
+                    public void broadcast(String message){}
+                    public void failed(String error){secondFailure.set(error);reassigned.countDown();}
+                });
+                assertTrue(reassigned.await(8,TimeUnit.SECONDS),"A fresh host must obtain a new lease");
+                assertNull(secondFailure.get(),secondFailure.get());assertNotNull(secondDomain.get());
+                assertNotEquals(address.get(),secondDomain.get());assertEquals(1,relay.activeSessions());
+            }finally{second.stop();}
         } finally {tunnel.stop();HttpsURLConnection.setDefaultSSLSocketFactory(old);}
     }
 }

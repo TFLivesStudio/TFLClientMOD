@@ -2715,5 +2715,5 @@
   "module.farTerrain.desc": "Real distant terrain from received and remembered chunks",
   "setting.farTerrain.distance": "LOD distance in chunks",
   "setting.farTerrain.gpuBudget": "1.8.9 geometry memory budget (MiB)",
-  "setting.farTerrain.diskBudget": "1.8.9 persistent LOD cache budget (MiB)"
+  "setting.farTerrain.diskBudget": "LOD disk önbelleği (MiB)"
 }

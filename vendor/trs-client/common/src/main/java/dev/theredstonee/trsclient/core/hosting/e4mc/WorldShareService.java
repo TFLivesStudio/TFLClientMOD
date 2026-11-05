@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
 /** A consent-scoped relay into a real LAN listener. Never enables the unrelated TRS services. */
-public final class WorldShareService {
+public final class WorldShareService implements AutoCloseable {
     public static final String COMMUNITY_BROKER = "https://broker.e4mc.link/getBestRelay";
     static final int MAX_PEERS = 8, MAX_BYTES = 1024 * 1024;
     public enum State { OFF, PREPARING, CONNECTING, ONLINE, ERROR }
@@ -50,7 +50,7 @@ public final class WorldShareService {
 
     /** Native adapter supplies the live integrated-server identity and its actual published LAN port. */
     public synchronized boolean start(Object server, int port, String hostName, String broker, Consent consent) {
-        if (server==null || port<1 || port>65535 || active!=null || control.getActiveCount()!=0
+        if (server==null || port<1 || port>65535 || active!=null || control.isShutdown() || control.getActiveCount()!=0
             || !control.getQueue().isEmpty() || consent==null || !consent.ready()) return false;
         URI uri;
         try { uri=URI.create(broker); } catch (RuntimeException e) { return false; }
@@ -77,6 +77,13 @@ public final class WorldShareService {
                 // Queue has at most eight operations; live work checks closed before starting a tunnel.
             }
         }
+    }
+    /** Application shutdown only. Ordinary world/session stop leaves this service reusable. */
+    @Override public void close() {
+        stop();
+        control.shutdown();
+        try { if (!control.awaitTermination(2,TimeUnit.SECONDS)) control.shutdownNow(); }
+        catch (InterruptedException e) { control.shutdownNow(); Thread.currentThread().interrupt(); }
     }
     private synchronized void update(Session s, State state, String address, String error, int progress) {
         if (active==s && !s.closed.get()) snapshot=new Snapshot(state,address,error,s.port,s.peers.size(),progress);
