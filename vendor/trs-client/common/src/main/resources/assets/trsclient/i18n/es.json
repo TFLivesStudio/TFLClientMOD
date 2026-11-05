@@ -2686,5 +2686,8 @@
   "setting.worldInsight.health": "Vida visible de la entidad",
   "setting.worldInsight.icon": "Icono del objetivo",
   "setting.worldInsight.hideWithF1": "Ocultar con F1",
-  "setting.worldInsight.hideInMenus": "Ocultar en menús"
+  "setting.worldInsight.hideInMenus": "Ocultar en menús",
+  "setting.worldInsight.tool": "Herramienta adecuada en mano",
+  "insight.tool": "Herramienta: {0}",
+  "insight.entityType": "Tipo: {0}"
 }

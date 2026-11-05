@@ -9,6 +9,7 @@ public final class WorldInsightModule extends HudModule {
     public final BoolSetting origin = add(new BoolSetting("origin", "Verified mod of origin", true));
     public final BoolSetting properties = add(new BoolSetting("properties", "Block properties", true));
     public final BoolSetting health = add(new BoolSetting("health", "Visible entity health", true));
+    public final BoolSetting tool = add(new BoolSetting("tool", "Suitable held tool", true));
     public final BoolSetting icon = add(new BoolSetting("icon", "Block icon", true));
     public final BoolSetting hideF1 = add(new BoolSetting("hideWithF1", "Hide with F1", true));
     public final BoolSetting hideMenus = add(new BoolSetting("hideInMenus", "Hide in menus", true));

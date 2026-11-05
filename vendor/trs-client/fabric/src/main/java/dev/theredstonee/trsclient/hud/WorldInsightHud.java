@@ -31,7 +31,10 @@ public final class WorldInsightHud extends HudElement {
                 var properties = new ArrayList<String>();
                 for (var property : state.getProperties()) properties.add(property.getName() + ": " + String.valueOf(state.getValue(property)));
                 Collections.sort(properties);
-                info = new TargetInfo(state.getBlock().getName().getString(), id, id.startsWith("minecraft:") ? "Minecraft" : "", properties, new ItemStack(state.getBlock()), null, null);
+                var held = mc.player.getMainHandItem();
+                String tool = !held.isEmpty() && held.isCorrectToolForDrops(state) && (state.requiresCorrectToolForDrops() || held.getDestroySpeed(state) > 1)
+                    ? held.getHoverName().getString() : null;
+                info = new TargetInfo(state.getBlock().getName().getString(), id, id.startsWith("minecraft:") ? "Minecraft" : "", properties, new ItemStack(state.getBlock()), null, null, tool);
             } else if (mc.hitResult instanceof EntityHitResult hit) {
                 var entity = hit.getEntity();
                 String id = String.valueOf(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
@@ -39,7 +42,7 @@ public final class WorldInsightHud extends HudElement {
                 Object visual = entity instanceof net.minecraft.client.player.AbstractClientPlayer player
                     ? new dev.theredstonee.trsclient.core.ui.TextureRef(player.getSkin().body().texturePath(), 64, 64)
                     : engine == null ? null : heads.head(id, engine.palette(), dev.theredstonee.trsclient.ui.TextureStore.INSTANCE.resourceGeneration());
-                info = new TargetInfo(entity.getName().getString(), id, id.startsWith("minecraft:") ? "Minecraft" : "", List.of(), visual,
+                info = new TargetInfo(entity.getName().getString(), id, id.startsWith("minecraft:") ? "Minecraft" : "", List.of(dev.theredstonee.trsclient.core.i18n.I18n.tr("insight.entityType", entity.getType().getDescription().getString())), visual,
                     !(entity instanceof net.minecraft.world.entity.player.Player) && entity instanceof LivingEntity living ? living.getHealth() : null, !(entity instanceof net.minecraft.world.entity.player.Player) && entity instanceof LivingEntity living ? living.getMaxHealth() : null);
             }
         }

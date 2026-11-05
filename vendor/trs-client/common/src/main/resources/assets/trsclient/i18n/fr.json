@@ -2686,5 +2686,8 @@
   "setting.worldInsight.health": "Visible entity health",
   "setting.worldInsight.icon": "Target icon",
   "setting.worldInsight.hideWithF1": "Hide with F1",
-  "setting.worldInsight.hideInMenus": "Hide in menus"
+  "setting.worldInsight.hideInMenus": "Hide in menus",
+  "setting.worldInsight.tool": "Suitable held tool",
+  "insight.tool": "Tool: {0}",
+  "insight.entityType": "Type: {0}"
 }

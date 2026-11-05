@@ -4,6 +4,14 @@ import java.util.*;
 import dev.theredstonee.trsclient.core.hud.HudAnchor;
 import static org.junit.jupiter.api.Assertions.*;
 class WorldInsightTest {
+    @Test void toolIsOptionalAndUserCanSuppressIt() {
+        WorldInsightModule m = new WorldInsightModule();
+        TargetInfo info = new TargetInfo("Stone", "minecraft:stone", "Minecraft", Collections.emptyList(), null, null, null, "Diamond Pickaxe");
+        assertTrue(info.lines(m).stream().anyMatch(line -> line.contains("Diamond Pickaxe")));
+        m.tool.set(false);
+        assertFalse(info.lines(m).stream().anyMatch(line -> line.contains("Diamond Pickaxe")));
+    }
+
     @Test void visibilityKeepsPauseClearAndF1IsExplicitOptIn() {
         WorldInsightModule m = new WorldInsightModule();
         assertFalse(m.shouldDraw(true,false,false,false));

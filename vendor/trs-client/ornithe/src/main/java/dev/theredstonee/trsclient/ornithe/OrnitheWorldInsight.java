@@ -43,7 +43,10 @@ final class OrnitheWorldInsight implements HudItem {
                     for (Property property : state.properties()) properties.add(property.getName() + ": " + property.getName(state.get(property)));
                     Collections.sort(properties);
                     var stack = new ItemStack(block);
-                    info = new TargetInfo(block.getName(), id, id.startsWith("minecraft:") ? "Minecraft" : "", properties, stack, null, null);
+                    var held = c.mc.player.getItemInHand();
+                    String tool = held != null && (held.canMineBlock(block) || block.getMaterial().isToolNotRequired() && held.getMiningSpeed(block) > 1)
+                        ? held.getHoverName() : null;
+                    info = new TargetInfo(block.getName(), id, id.startsWith("minecraft:") ? "Minecraft" : "", properties, stack, null, null, tool);
                 }
             } else if (hit.entity != null) {
                 var entity = hit.entity;
@@ -53,7 +56,10 @@ final class OrnitheWorldInsight implements HudItem {
                 Object visual = entity instanceof net.minecraft.client.entity.living.player.ClientPlayerEntity player
                     ? c.canvas.game(player.getSkinTextureLocation().toString(), 64, 64)
                     : c.map == null || kind == null ? null : heads.head(kind, c.map.palette(), c.canvas.resourceGeneration());
-                info = new TargetInfo(entity.getName(), kind, "", List.of(), visual, health, max);
+                String typeKey = "entity." + kind + ".name";
+                String typeName = kind == null ? "" : net.minecraft.locale.I18n.translate(typeKey);
+                List<String> properties = typeName.isEmpty() || typeName.equals(typeKey) ? List.of() : List.of(dev.theredstonee.trsclient.core.i18n.I18n.tr("insight.entityType", typeName));
+                info = new TargetInfo(entity.getName(), kind, "", properties, visual, health, max);
             }
         }
         lines = info == null ? List.of() : info.lines(c.modules.worldInsight);
