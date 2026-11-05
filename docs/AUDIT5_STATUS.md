@@ -1,12 +1,12 @@
 # Audit 5 — estado de ejecución
 
-Rama: `feat/audit5-integrations`, creada desde `48cad89` (HEAD real de desarrollo), con incorporación no destructiva de `docs/audit5-integrations-plan` (`abc22c6`). Checkpoint previo local: `checkpoint/pre-audit5-directive-14db347`.
+Rama `feat/audit5-integrations`, base real `48cad89`, documentos incorporados desde `abc22c6`; checkpoint `checkpoint/pre-audit5-directive-14db347`. No tocar main ni producción.
 
-- Misiones 01–06 conservadas. Misión 06 sí ejecutada: nofog atraviesa el bloqueo. No se ha demostrado todavía el campo GL culpable; no se ha reducido calidad ni desactivado niebla productiva.
-- World Insight: overlay propio conectado en ambos adapters, bloques/propiedades/icono, datos de entidades, filtros, escala/opacidad/posición del HUD y persistencia. No consulta inventarios ni muestra salud remota de jugadores. Compilación inicial de ambos targets aprobada. Pruebas comunes detectaron registros faltantes; corregidos y repetidos. Pendientes: prueba nativa, herramientas, caras de entidades y controles específicos F1/ESC.
-- DH: artefacto real 3.3.4 para 26.3 localizado y hash SHA-512 verificado. Pendiente empaquetado, API/configuración y validación nativa; todavía no está integrado.
-- e4mc Retro/moderno, Zirconium y Starlight: fuentes descargadas fuera del repositorio para inspección. No integrados ni declarados compatibles.
-- Far Terrain 1.8.9 y relay: pendientes de implementación.
-- Sin cambios en main, datos del usuario, DNS, VPS, firewall o producción. Sin release nueva.
+- World Insight propio: bloques y estados recibidos, iconos, entidades y tipos localizados, herramienta verificada, privacidad de jugadores, HUD/editor/perfiles y opciones F1/menús en ambos targets. Comunes: 1.190 tests sin fallos (2 skips, antes de los últimos ajustes focalizados). Nativo: 1.8.9+Argentum nofog 99 comprobaciones; 26.3+DH/Sodium 132, evidencia en `docs/evidence/audit5/`. Pendiente aceptación visual y matriz final de los ajustes recientes.
+- DH real 3.3.4-26.3 anidado, original/hash/fuente fijados en `tools/integrations/distant-horizons.lock.json`. Actualizador desactivado mediante override de API sin cambiar preferencias guardadas. Nativo Vulkan: 112/113 checks sin Sodium; 132 con Sodium y DH externo duplicado (un solo motor). Faltan controles TFL e identidad/caché mult mundo antes de considerarlo terminado.
+- Zirconium y Starlight independientes compilados (lock y parche mínimo Lombok/Java25 en `tools/integrations/`). Core+Argentum+ambos: 99 checks nofog; registro `/tmp/audit5-optimizers-native189.log`. Su informe fue sobrescrito por otro escenario: no atribuir el JSON baseline a optimizadores. Falta matriz/perfilado/Selection; catálogo todavía intacto.
+- Compartir: puente QUIClime con TLS/hostname obligatorio, colas de 1 MiB y cierre de sesión; 7 tests nativos QUIC aprobados. Gestor nuevo separado del hosting TRS: consentimiento de un uso, proxy a LAN, rechazo de nombre del anfitrión, revocación al salir, LAN permanece abierta; 5 tests con sockets reales aprobados. UI y adapters en implementación/compilación; falta relay propio, segundo Minecraft y protocolo extremo a extremo. Servicios TRS siguen desactivados.
+- Far Terrain 1.8.9: pendiente.
+- Stall nativo: se conservan misiones 01–06. `textureLod(...,0)` corrige derivadas indefinidas en niebla sin bajar calidad; local baseline standard pasa 36 checks, pero CI `41955098822` aún se atasca en fase 4. No es una solución demostrada al stall. Comunes de CI pasan; subida de artefactos falla por cuota. No repetir matriz sin nueva hipótesis instrumentada.
 
-Continuar con las integraciones; no repetir matrices completas de CI sin nueva evidencia. El dominio público requiere autorización específica; el desarrollo local y los pushes a esta rama están autorizados por la directiva.
+Continuar implementando. Sin DNS, VPS, firewall ni despliegue público. Sin nueva release o candidata certificada. Versión del proyecto aún audit.4: no distribuir estos builds como Audit 5 completa. Datos y Visual Overhaul preservados.
