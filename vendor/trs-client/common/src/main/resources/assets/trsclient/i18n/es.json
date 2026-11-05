@@ -2684,5 +2684,7 @@
   "setting.worldInsight.origin": "Mod de origen verificado",
   "setting.worldInsight.properties": "Propiedades del bloque",
   "setting.worldInsight.health": "Vida visible de la entidad",
-  "setting.worldInsight.icon": "Icono del bloque"
+  "setting.worldInsight.icon": "Icono del objetivo",
+  "setting.worldInsight.hideWithF1": "Ocultar con F1",
+  "setting.worldInsight.hideInMenus": "Ocultar en menús"
 }

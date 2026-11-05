@@ -184,6 +184,8 @@ public final class UnifiedSmoke implements Runnable {
         case 3 -> {
           if (c.mc.player == null || c.mc.world == null) return;
           c.mc.openScreen(null);
+          WorldInsightProbe.run(c);
+          check("World Insight received block, player privacy and target miss", true);
           mark("phase3:world-screen-closed");
           while (c.mapPlatform.catalog().turns() != 0) c.mapPlatform.catalog().rotate(1);
           mark("phase3:catalog-rotated");

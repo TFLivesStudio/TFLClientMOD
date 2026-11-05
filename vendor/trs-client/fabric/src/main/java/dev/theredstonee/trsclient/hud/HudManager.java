@@ -26,6 +26,7 @@ public final class HudManager {
 	private final MinimapHud minimap;
 	//? if >=26.3 {
 	/*private final MiniPlayerHud miniPlayer;
+    private final WorldInsightHud worldInsight;
 	*///?}
 	private final RedstoneHuds.Overlay redstoneOverlay;
 	private List<HudItem> editorItems;
@@ -33,6 +34,7 @@ public final class HudManager {
 	public HudManager(TrsModules modules) {
 		//? if >=26.3 {
 		/*this.miniPlayer=new MiniPlayerHud(modules.miniPlayer);
+        this.worldInsight=new WorldInsightHud(modules);
 		*///?}
 		this.crosshair = new CrosshairRenderer(modules);
 		this.waypointOverlay = new WaypointOverlay(modules);
@@ -41,7 +43,7 @@ public final class HudManager {
 		this.redstoneOverlay = new RedstoneHuds.Overlay(modules, redstone);
 		this.elements = dev.theredstonee.trsclient.qol.QolHuds.join(Arrays.asList(
 				//? if >=26.3 {
-				/*new WorldInsightHud(modules),
+				/*worldInsight,
                 miniPlayer,
 				*///?}
 				new FpsHud(modules.fps),
@@ -156,7 +158,7 @@ public final class HudManager {
 	}
 
     //? if >=26.3 {
-    /*public void renderHiddenMini(Gfx g){if(Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay)return;if(miniPlayer!=null&&!miniPlayer.module().isEnabled())return;draw(g,mc.font,miniPlayer,g.width(),g.height(),false);}
+    /*public void renderHiddenMini(Gfx g){if(Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay)return;if(miniPlayer!=null&&miniPlayer.module().isEnabled())draw(g,mc.font,miniPlayer,g.width(),g.height(),false);if(worldInsight.visible())draw(g,mc.font,worldInsight,g.width(),g.height(),false);}
     *///?}
 
 	private void renderElements(Gfx g) {

@@ -13,13 +13,14 @@ import java.util.*;
 
 public final class WorldInsightHud extends HudElement {
     private final WorldInsightModule settings;
-    private Object world;
+    private final dev.theredstonee.trsclient.core.map.MobHeads heads = new dev.theredstonee.trsclient.core.map.MobHeads();
+    private java.lang.ref.WeakReference<Object> world = new java.lang.ref.WeakReference<>(null);
     private long next;
     private TargetInfo info;
     private List<String> lines = List.of();
     public WorldInsightHud(TrsModules modules) { super(modules.worldInsight); settings = modules.worldInsight; }
     private void refresh(boolean preview) {
-        if (world != mc.level) { world = mc.level; next = 0; info = null; lines = List.of(); }
+        if (world.get() != mc.level) { world = new java.lang.ref.WeakReference<>(mc.level); next = 0; info = null; lines = List.of(); }
         if (preview) { lines = List.of("World Insight", "Minecraft"); return; }
         long now = System.nanoTime(); if (now < next) return; next = now + 100_000_000L;
         info = null;
@@ -34,20 +35,24 @@ public final class WorldInsightHud extends HudElement {
             } else if (mc.hitResult instanceof EntityHitResult hit) {
                 var entity = hit.getEntity();
                 String id = String.valueOf(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
-                info = new TargetInfo(entity.getName().getString(), id, id.startsWith("minecraft:") ? "Minecraft" : "", List.of(), null,
+                var engine = dev.theredstonee.trsclient.core.map.MapEngine.get();
+                Object visual = entity instanceof net.minecraft.client.player.AbstractClientPlayer player
+                    ? new dev.theredstonee.trsclient.core.ui.TextureRef(player.getSkin().body().texturePath(), 64, 64)
+                    : engine == null ? null : heads.head(id, engine.palette(), dev.theredstonee.trsclient.ui.TextureStore.INSTANCE.resourceGeneration());
+                info = new TargetInfo(entity.getName().getString(), id, id.startsWith("minecraft:") ? "Minecraft" : "", List.of(), visual,
                     !(entity instanceof net.minecraft.world.entity.player.Player) && entity instanceof LivingEntity living ? living.getHealth() : null, !(entity instanceof net.minecraft.world.entity.player.Player) && entity instanceof LivingEntity living ? living.getMaxHealth() : null);
             }
         }
         lines = info == null ? List.of() : info.lines(settings);
     }
-    public boolean visible() { refresh(false); return !lines.isEmpty(); }
+    public boolean visible() { if (!settings.shouldDraw(dev.theredstonee.trsclient.compat.Mc.hudHidden(), dev.theredstonee.trsclient.compat.Mc.screen() instanceof dev.theredstonee.trsclient.core.ui.menus.PauseOverlay, dev.theredstonee.trsclient.compat.Mc.screen() != null, false)) return false; refresh(false); return !lines.isEmpty(); }
     public int width(Font font, boolean preview) { refresh(preview); int w = 100; for (String line : lines) w = Math.max(w, font.width(line) + 32); return w; }
     public int height(Font font, boolean preview) { refresh(preview); return Math.max(24, lines.size() * 11 + 8); }
     public void draw(Gfx g, Font font, boolean preview) {
         refresh(preview); if (lines.isEmpty()) return;
         g.fill(0, 0, width(font, preview), height(font, preview), settings.backgroundArgb());
         int left = !preview && settings.icon.get() && info != null && info.icon != null ? 26 : 5;
-        if (left == 26) g.item(font, (ItemStack)info.icon, 5, 5);
+        if (left == 26) InsightIcon.draw(dev.theredstonee.trsclient.ui.GfxCanvas.of(g, font), info.icon, 5, 5);
         for (int i = 0; i < lines.size(); i++) g.text(font, lines.get(i), left, 4 + i * 11, settings.textColor.argb(), settings.shadow());
     }
 }

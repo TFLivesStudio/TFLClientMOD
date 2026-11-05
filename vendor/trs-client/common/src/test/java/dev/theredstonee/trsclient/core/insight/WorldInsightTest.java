@@ -4,6 +4,18 @@ import java.util.*;
 import dev.theredstonee.trsclient.core.hud.HudAnchor;
 import static org.junit.jupiter.api.Assertions.*;
 class WorldInsightTest {
+    @Test void visibilityKeepsPauseClearAndF1IsExplicitOptIn() {
+        WorldInsightModule m = new WorldInsightModule();
+        assertFalse(m.shouldDraw(true,false,false,false));
+        assertFalse(m.shouldDraw(false,false,true,false));
+        m.hideF1.set(false);m.hideMenus.set(false);
+        assertTrue(m.shouldDraw(true,false,false,false));
+        assertTrue(m.shouldDraw(false,false,true,false));
+        assertFalse(m.shouldDraw(false,true,true,false));
+        m.setEnabled(false);assertFalse(m.shouldDraw(false,false,false,false));
+        assertTrue(m.shouldDraw(false,false,true,true));
+    }
+
     @Test void unknownOriginAndHealthAreNeverInvented() {
         WorldInsightModule m = new WorldInsightModule();
         TargetInfo info = new TargetInfo("NPC", "", null, Collections.emptyList(), null, Float.NaN, Float.POSITIVE_INFINITY);
