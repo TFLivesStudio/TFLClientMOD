@@ -5,12 +5,16 @@
 set -euo pipefail
 test -n "${JAVA_HOME:-}"
 test -d "$RUNNER_TEMP/ornithe-mods"
+truststore=$(readlink -f "$JAVA_HOME/lib/security/cacerts")
+test -r "$truststore"
 docker run --rm --init \
   -v "$PWD:/work" -w /work \
   -v "$JAVA_HOME:/opt/java:ro" \
+  -v "$truststore:/tfl-cacerts:ro" \
   -v "$HOME/.gradle:/gradle" \
   -v "$RUNNER_TEMP/ornithe-mods:/native-mods:ro" \
   -e JAVA_HOME=/opt/java -e GRADLE_USER_HOME=/gradle \
+  -e JAVA_TOOL_OPTIONS=-Djavax.net.ssl.trustStore=/tfl-cacerts \
   -e TFL_NATIVE_VARIANT="${1:-standard}" -e TFL_NATIVE_STACK="${2:-argentum}" \
   -e PATH=/opt/java/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   -e LIBGL_ALWAYS_SOFTWARE=1 -e LP_NUM_THREADS=2 -e ALSOFT_DRIVERS=null \
