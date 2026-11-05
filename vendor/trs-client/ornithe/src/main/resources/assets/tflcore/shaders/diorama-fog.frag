@@ -17,6 +17,12 @@ const int FAST_LAYERS = 2;
 
 // Surface fog banks are tall and soft. Cave fog hugs the ground with a tight edge, so a
 // three-block tunnel you walked down stays readable instead of blurring into the fog.
+// Both inputs are non-mipmapped dynamic textures with LINEAR min/mag filtering.
+// Explicit level zero avoids undefined implicit derivatives in per-fragment clear/deep
+// branches and the layer loop; it does not reduce the number of layers or samples.
+vec4 sampleMask(vec2 uv) { return textureLod(Sampler0, uv, 0.0); }
+vec4 sampleNoise(vec2 uv) { return textureLod(Sampler1, uv, 0.0); }
+
 float fogHeight;
 float blurUnits;
 float unitsPerUv;
@@ -39,22 +45,22 @@ bool deep;
 
 // The known share at uv, without the read where the answer is already known.
 float knownAt(vec2 uv) {
-    return deep ? 0.0 : texture(Sampler0, uv).r;
+    return deep ? 0.0 : sampleMask(uv).r;
 }
 
 // Known share blurred over a radius in map units, so chunk-shaped edges melt away.
 float knownBlur(vec2 uv, float units) {
     float r = max(units / unitsPerUv, 1.0 / MASK_TEXELS);
-    float k = texture(Sampler0, uv).r * 0.2;
-    k += texture(Sampler0, uv + vec2(r, 0.0)).r * 0.1;
-    k += texture(Sampler0, uv - vec2(r, 0.0)).r * 0.1;
-    k += texture(Sampler0, uv + vec2(0.0, r)).r * 0.1;
-    k += texture(Sampler0, uv - vec2(0.0, r)).r * 0.1;
+    float k = sampleMask(uv).r * 0.2;
+    k += sampleMask(uv + vec2(r, 0.0)).r * 0.1;
+    k += sampleMask(uv - vec2(r, 0.0)).r * 0.1;
+    k += sampleMask(uv + vec2(0.0, r)).r * 0.1;
+    k += sampleMask(uv - vec2(0.0, r)).r * 0.1;
     float d = r * 1.9;
-    k += texture(Sampler0, uv + vec2(d, d)).r * 0.1;
-    k += texture(Sampler0, uv + vec2(-d, d)).r * 0.1;
-    k += texture(Sampler0, uv + vec2(d, -d)).r * 0.1;
-    k += texture(Sampler0, uv + vec2(-d, -d)).r * 0.1;
+    k += sampleMask(uv + vec2(d, d)).r * 0.1;
+    k += sampleMask(uv + vec2(-d, d)).r * 0.1;
+    k += sampleMask(uv + vec2(d, -d)).r * 0.1;
+    k += sampleMask(uv + vec2(-d, -d)).r * 0.1;
     return k;
 }
 
@@ -75,9 +81,9 @@ float knownSoft(vec2 uv) {
 
 float noiseLayer(vec2 n) {
     // Speeds are whole periods per 1200 s, so the loop of GameTime wraps without a jump.
-    float a = texture(Sampler1, n + vec2(5.0, 2.0) * seconds / 1200.0).r;
-    float b = texture(Sampler1, n + vec2(-8.0, 3.0) * seconds / 1200.0).g;
-    float c = texture(Sampler1, n + vec2(13.0, -9.0) * seconds / 1200.0).b;
+    float a = sampleNoise(n + vec2(5.0, 2.0) * seconds / 1200.0).r;
+    float b = sampleNoise(n + vec2(-8.0, 3.0) * seconds / 1200.0).g;
+    float c = sampleNoise(n + vec2(13.0, -9.0) * seconds / 1200.0).b;
     return a * 0.55 + b * 0.3 + c * 0.15;
 }
 
