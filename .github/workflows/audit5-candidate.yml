@@ -1,6 +1,11 @@
 name: Audit 5 internal candidate
 on:
   workflow_dispatch:
+    inputs:
+      acceptance_run:
+        description: 'Comma-separated Core native run IDs with identical production/fixture trees'
+        type: string
+        required: true
   workflow_call:
     inputs:
       acceptance_run:
@@ -27,6 +32,10 @@ jobs:
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '25'}
       - uses: gradle/actions/setup-gradle@v4
+      - name: Require six successful native rows of the exact production and fixture content
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/verification/check_native_acceptance.py --runs "$NATIVE_ACCEPTANCE_RUN" --output native-acceptance.json
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg openssl patch
       - name: Common regressions, relay TLS and source policy
         run: |
@@ -65,6 +74,7 @@ jobs:
           shutil.make_archive(str(root/'native-evidence'),'zip',root/'native-evidence')
           shutil.rmtree(root/'native-evidence')
           shutil.copy2('docs/AUDIT5_STATUS.md',root/'VALIDATION.md')
+          shutil.copy2('native-acceptance.json',root/'NATIVE-ACCEPTANCE.json')
           import hashlib
           (root/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n' for p in sorted(root.iterdir()) if p.is_file()))
           PY

@@ -44,7 +44,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: unified-${{ github.head_ref || github.ref_name }}-${{ ((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) && 'preview' || 'native' }}
+  group: unified-${{ github.head_ref || github.ref_name }}-${{ ((github.event_name == 'workflow_dispatch' && inputs.preview_189) || (github.event_name == 'push' && github.ref_name == 'fix/server-map-sessions')) && 'preview' || 'native' }}-${{ inputs.native_target || 'all' }}-${{ inputs.native_stack || 'all' }}
   cancel-in-progress: true
 jobs:
   common:
@@ -123,6 +123,10 @@ jobs:
       - name: Installed 1.8.9 client and separate probe
         if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: |
+          if [ '${{ matrix.stack }}' = argentum ] && [ '${{ inputs.legacy_gl_driver }}' = zink ]; then
+            bash tools/verification/run_argentum_ci.sh '${{ steps.selector.outputs.variant || 'standard' }}'
+            exit 0
+          fi
           profile=()
           if [ '${{ matrix.stack }}' = argentum ]; then profile+=(--profile); fi
           # Dispatch-only diagnostic variant: nofog skips the map fog draw pass (the shader
