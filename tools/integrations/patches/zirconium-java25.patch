@@ -1,0 +1,11 @@
+--- a/build.gradle
++++ b/build.gradle
+@@ -5,6 +5,8 @@
+ 	id 'ploceus' version '1.17-SNAPSHOT'
+ }
+ 
++lombok { version = '1.18.42' }
++
+ base {
+ 	archivesName = project.archives_base_name
+ }

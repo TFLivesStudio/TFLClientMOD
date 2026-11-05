@@ -1,0 +1,20 @@
+[
+  {
+    "repo": "Coccocoahelper/Zirconium-Ornithe",
+    "revision": "d687019623a153e03a9210e05b3eea0d33059cf7",
+    "license": "LGPL-3.0-only",
+    "jar": "Zirconium-0.2.0+mc1.8.9.jar",
+    "builtSha256": "964e8cd11529f1f7723d113cf6b77ada89b9122fffb08c6b6c226010dfcc8d43",
+    "patch": "patches/zirconium-java25.patch",
+    "compatibility": "not yet certified; do not add to Selection catalog"
+  },
+  {
+    "repo": "Polyfrost/Legacy-Starlight",
+    "revision": "ed5214d0f9ff787a43aafd915c31c793620ef280",
+    "license": "GPL-3.0-only",
+    "jar": "starlight-1.0.0+1.8.9.jar",
+    "builtSha256": "4d572d90d1bdd27c747b0fd03295ae47c232e3500dbea3a93bde35903b4500c8",
+    "patch": null,
+    "compatibility": "not yet certified; do not add to Selection catalog"
+  }
+]
