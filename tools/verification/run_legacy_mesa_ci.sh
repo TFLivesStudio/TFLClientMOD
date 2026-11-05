@@ -28,6 +28,11 @@ docker run --rm --init \
     export VK_ICD_FILENAMES="$(find /usr/share/vulkan/icd.d -maxdepth 1 -name "*lvp*.json" -print -quit)"
     test -n "$VK_ICD_FILENAMES"
     export MESA_LOADER_DRIVER_OVERRIDE=zink GALLIUM_DRIVER=zink
+    # Verify every compressed entry before starting the JVM. This also keeps
+    # the two remappers from writing archives concurrently during this diagnostic.
+    vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :remapJar :remapNativeProbeJar -Psmoke -PdepthNativeProbe -PtestStack="$TFL_NATIVE_STACK" -PruntimeModsDir=/native-mods --no-daemon --max-workers=1
+    version=$(sed -n "s/^mod_version=//p" vendor/trs-client/ornithe/gradle.properties)
+    python3 tools/ornithe/verify_jar.py "vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-$version.jar"
     case "$TFL_NATIVE_STACK" in baseline|lwjgl3|argentum) ;; *) exit 2;; esac
     profile=()
     if [ "$TFL_NATIVE_STACK" = argentum ]; then profile+=(--profile); fi

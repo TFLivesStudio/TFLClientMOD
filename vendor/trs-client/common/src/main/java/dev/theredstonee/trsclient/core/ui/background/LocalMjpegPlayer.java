@@ -28,6 +28,8 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
     public static void installNativeDecoder(NativeDecoder decoder){nativeDecoder=decoder;}
     private static final int MAX_FRAME=16*1024*1024;
     private final Path path;
+    interface VideoSource { InputStream open() throws IOException; }
+    private final VideoSource source;
     private volatile Work active;
     private TextureRef texture;
     private int generation=-1;
@@ -52,7 +54,7 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
         final java.util.List<Work> decoders=java.util.Collections.synchronizedList(new java.util.ArrayList<Work>());
         final ThreadLocal<Work> decoder;
         volatile java.util.concurrent.ExecutorService executor;
-        volatile boolean running=true;volatile Throwable failure;volatile InputStream stream;Thread thread;
+        volatile boolean running=true;volatile Throwable failure;Thread thread;
         final java.util.concurrent.ArrayBlockingQueue<Frame> pending=new java.util.concurrent.ArrayBlockingQueue<>(2);
         final java.util.ArrayDeque<int[]> pool=new java.util.ArrayDeque<int[]>();
         BufferedImage sourceImage,scaledImage;volatile long pixelAllocations,imageAllocations,cpuNanos;
@@ -60,7 +62,8 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
         synchronized void recycle(Frame frame){if(frame!=null&&pool.size()<10)pool.addLast(frame.pixels);}
 
     }
-    public LocalMjpegPlayer(Path path){this.path=path;}
+    public LocalMjpegPlayer(Path path){this(path,null);}
+    LocalMjpegPlayer(Path path,VideoSource source){this.path=path;this.source=source;}
     public void start(final MenuBackground.Mode mode) throws IOException {
         close();
         if(Files.exists(path,LinkOption.NOFOLLOW_LINKS)) {
@@ -77,6 +80,7 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
         work.thread=new Thread(()->run(work,mode),"TFL-local-video");work.thread.setDaemon(true);work.thread.setPriority(Thread.NORM_PRIORITY);work.thread.start();
     }
     private InputStream openVideo(Work work) throws IOException {
+        if(source!=null)return source.open();
         if(Files.exists(path,LinkOption.NOFOLLOW_LINKS)) {
             if(!Files.isRegularFile(path,LinkOption.NOFOLLOW_LINKS)||Files.size(path)>256L*1024*1024)throw new IOException("Invalid local video");
             return Files.newInputStream(path);
@@ -94,7 +98,6 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
             while(work.running) {
                 int count=0;
                 try(InputStream in=new BufferedInputStream(openVideo(work),256*1024)) {
-                    work.stream=in;
                     boolean eof=false;
                     while(work.running&&(!eof||!ahead.isEmpty())) {
                         while(work.running&&!eof&&ahead.size()<6) {
@@ -130,7 +133,7 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
                         // Never stall the render thread or build an unbounded backlog.
                         if(due<System.nanoTime()-1_000_000_000L)due=System.nanoTime();
                     }
-                } finally {work.stream=null;}
+                }
                 if(count==0)throw new IOException("Empty video");
                 if(work.running)loops++;
             }
@@ -139,11 +142,13 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
     }
     /** Baseline JPEG marker/segment parser: APP metadata cannot be mistaken for frame delimiters. */
     static byte[] readFrame(InputStream in) throws IOException {
+        checkCancelled();
         int first=in.read();if(first<0)return null;
         if(first!=255||in.read()!=216)throw new IOException("Expected Motion JPEG SOI");
         ByteArrayOutputStream bytes=new ByteArrayOutputStream();bytes.write(255);bytes.write(216);
         boolean baseline=false;
         while(bytes.size()<MAX_FRAME) {
+            checkCancelled();
             int prefix=in.read(),marker=in.read();
             if(prefix!=255||marker<0)throw new IOException("Invalid JPEG marker");
             bytes.write(prefix);bytes.write(marker);
@@ -153,11 +158,12 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
             int length=(hi<<8)|lo;
             if(length<2||bytes.size()+length>MAX_FRAME)throw new IOException("Invalid JPEG segment");
             bytes.write(hi);bytes.write(lo);
-            for(int i=2;i<length;i++){int v=in.read();if(v<0)throw new EOFException();bytes.write(v);}
+            for(int i=2;i<length;i++){if((i&16383)==0)checkCancelled();int v=in.read();if(v<0)throw new EOFException();bytes.write(v);}
             if(marker==218) {
                 if(!baseline)throw new IOException("Baseline JPEG required");
                 int previous=-1;
                 while(bytes.size()<MAX_FRAME) {
+                    if((bytes.size()&16383)==0)checkCancelled();
                     int v=in.read();if(v<0)throw new EOFException();bytes.write(v);
                     if(previous==255&&v==217)return bytes.toByteArray();
                     previous=v;
@@ -165,6 +171,9 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
             }
         }
         throw new IOException("Video frame exceeds bound");
+    }
+    private static void checkCancelled() throws InterruptedIOException {
+        if(Thread.currentThread().isInterrupted())throw new InterruptedIOException("Video reading cancelled");
     }
     static BufferedImage decode(byte[] jpeg,int maxW,int maxH) throws IOException {return decode(jpeg,maxW,maxH,null);}
     private static BufferedImage decode(byte[] jpeg,int maxW,int maxH,Work work) throws IOException {
@@ -210,7 +219,10 @@ public final class LocalMjpegPlayer implements MenuBackground.Player {
     public long uploadedFrames(){return uploaded;}
     public void close() {
         Work work=active;active=null;
-        if(work!=null){work.running=false;if(work.executor!=null)work.executor.shutdownNow();work.thread.interrupt();try{if(work.stream!=null)work.stream.close();}catch(IOException ignored){}work.pending.clear();}
+        // The worker owns the compressed JAR stream. Closing it from this thread can
+        // return its inflater to JarFile while a read is still in progress. Interrupt
+        // bounded local parsing instead; try-with-resources closes on the owner thread.
+        if(work!=null){work.running=false;if(work.executor!=null)work.executor.shutdownNow();work.thread.interrupt();work.pending.clear();}
         if(texture!=null&&Textures.store()!=null)Textures.store().release(texture);texture=null;
     }
 }

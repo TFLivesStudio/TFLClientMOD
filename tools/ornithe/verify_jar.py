@@ -3,6 +3,7 @@
 import hashlib,io,json,pathlib,struct,sys,zipfile
 p=pathlib.Path(sys.argv[1])
 with zipfile.ZipFile(p) as z:
+    assert z.testzip() is None,'Corrupt compressed entry in installable JAR'
     names=set(z.namelist());meta=json.loads(z.read('fabric.mod.json'))
     assert meta['id']=='tflcore' and meta['name']=='TFL Client'
     assert meta['environment']=='client' and meta['license']=='GPL-3.0-only'
