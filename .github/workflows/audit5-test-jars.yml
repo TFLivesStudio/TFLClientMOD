@@ -1,6 +1,9 @@
 name: Audit 5 experimental test JARs
 on:
   workflow_dispatch:
+  push:
+    branches: [feat/audit5-integrations]
+    paths: ['.github/workflows/audit5-test-jars.yml']
 permissions:
   contents: read
 jobs:
