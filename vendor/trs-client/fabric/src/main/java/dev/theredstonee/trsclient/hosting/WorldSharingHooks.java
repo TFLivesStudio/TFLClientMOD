@@ -24,7 +24,7 @@ public final class WorldSharingHooks {
             public int lanPort() { return port(); }
             public boolean openLan() {
                 var s=Mc.mc().getSingleplayerServer();
-                return s!=null && (s.isPublished() || s.publishServer(MinecraftServer.MultiplayerScope.LAN,false,0));
+                return s!=null && (s.isPublished() || s.publishServer(MinecraftServer.MultiplayerScope.LAN,false,net.minecraft.util.HttpUtil.getAvailablePort()));
             }
             public String playerName() { return Mc.mc().player==null ? "" : Mc.mc().player.getGameProfile().name(); }
             public void copy(String address) { Mc.mc().keyboardHandler.setClipboard(address); }

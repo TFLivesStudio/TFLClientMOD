@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Validate the installable Ornithe artifact, including Gen2 references and archive boundaries."""
-import hashlib,json,pathlib,struct,sys,zipfile
+import hashlib,io,json,pathlib,struct,sys,zipfile
 p=pathlib.Path(sys.argv[1])
 with zipfile.ZipFile(p) as z:
     names=set(z.namelist());meta=json.loads(z.read('fabric.mod.json'))
@@ -16,7 +16,12 @@ with zipfile.ZipFile(p) as z:
     assert 'circuits/index.json' in names
     assert len(json.loads(z.read('circuits/index.json'))['circuits']) >= 3
     nested={n for n in names if n.endswith('.jar')}
-    assert all(n.startswith('META-INF/jars/fastutil-8.5.15') for n in nested),nested
+    bridge='assets/trsclient/e4mc/e4mc-bridge.jar'
+    assert bridge in nested,'World Sharing transport bridge missing'
+    assert all(n==bridge or n.startswith('META-INF/jars/fastutil-8.5.15') for n in nested),nested
+    with zipfile.ZipFile(io.BytesIO(z.read(bridge))) as b:
+        assert 'META-INF/LICENSE-e4mc' in b.namelist()
+        assert all(n.startswith('dev/theredstonee/trsclient/e4mcbridge/QuiclimeTunnel') for n in b.namelist() if n.endswith('.class')),'Unexpected code in isolated sharing bridge'
     assert 'META-INF/licenses/diorama-MIT.txt' in names
     assert not any(n.endswith('/MenuFontMixin.class') or n.endswith('/ClientMenuFontMixin.class') for n in names)
     assert 'dev/diorama/bake/TileBaker.class' in names

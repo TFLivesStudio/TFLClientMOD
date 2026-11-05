@@ -81,8 +81,8 @@ if (testStack != 'baseline') {
     }
     loom.runs.client.vmArg '-Dorg.lwjgl.librarypath='
 }
-// This platform does not expose the legacy hosting bridge and ships no nested third-party binaries.
-sourceSets.main.resources.exclude '**/*.jar'
+// World Sharing uses our isolated, source-built QUIClime bridge. Other old hosting binaries stay out.
+sourceSets.main.resources.exclude { entry -> entry.path.endsWith('.jar') && entry.path != 'assets/trsclient/e4mc/e4mc-bridge.jar' }
 if (testStack == 'argentum') {
     dependencies { modLocalRuntime fileTree("${project.property('runtimeModsDir')}/argentum-dev-libs") { include '*.jar' } }
 }

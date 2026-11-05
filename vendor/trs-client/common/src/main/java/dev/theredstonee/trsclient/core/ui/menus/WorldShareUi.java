@@ -61,6 +61,7 @@ public final class WorldShareUi extends WindowUi {
             }); p+=29;
         }
         maxScroll=Math.max(0,p-top-h); scroll=Math.min(scroll,maxScroll);
+        scrollbar(c,x+w-2,y,h,scroll,maxScroll,p-top);
         hits.noClip(); c.noScissor();
     }
     private int paragraph(Canvas c,String text,int x,int y,int width,int color) {
