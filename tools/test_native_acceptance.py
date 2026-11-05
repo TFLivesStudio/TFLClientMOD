@@ -8,6 +8,13 @@ spec.loader.exec_module(acceptance)
 
 
 class NativeAcceptanceTest(unittest.TestCase):
+    def test_diagnostic_nofog_cannot_qualify_even_if_its_checks_passed(self):
+        line = "if [ 'standard' = nofog ] && [ '1.8.9' = '1.8.9' ]; then echo variant=nofog"
+        self.assertTrue(acceptance.standard_legacy_variant(line))
+        self.assertFalse(acceptance.standard_legacy_variant(line.replace("'standard'", "'nofog'")))
+        self.assertFalse(acceptance.standard_legacy_variant('36 checks passed'))
+        self.assertFalse(acceptance.standard_legacy_variant(line+'\n'+line.replace("'standard'", "'nofog'")))
+
     def test_filtered_jobs_and_failed_native_steps_never_certify_a_row(self):
         job = dict(name='native (26.3, iris, ubuntu-latest)', conclusion='success', steps=[])
         self.assertEqual(set(), acceptance.successful_rows([job]))

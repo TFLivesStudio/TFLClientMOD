@@ -7,6 +7,7 @@ Filtered/skipped rows never count. Does not waive a failed required assertion.
 import argparse
 import json
 from pathlib import Path
+import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,6 +31,13 @@ def successful_rows(jobs):
     return rows
 
 
+def standard_legacy_variant(log):
+    # This is the materialized command in the runner's selector step, not a
+    # user-facing success claim. Diagnostic nofog must never qualify for delivery.
+    variants = re.findall(r"if \[ '([^']+)' = nofog \] && \[ '1\.8\.9' = '1\.8\.9' \]; then echo variant=", log)
+    return bool(variants) and all(value == 'standard' for value in variants)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--runs', required=True, help='Comma-separated Actions run IDs')
@@ -51,6 +59,12 @@ def main():
                 raise ValueError(f'Run {run} has different production/fixture content: {tree}')
         jobs = api(f'actions/runs/{run}/jobs?per_page=100')['jobs']
         rows = successful_rows(jobs)
+        for job in jobs:
+            matching = rows.intersection(successful_rows([job]))
+            if any(combo.startswith('1.8.9,') for combo in matching):
+                log = subprocess.check_output(['gh', 'api', f'repos/{REPOSITORY}/actions/jobs/{job["id"]}/logs'], text=True)
+                if not standard_legacy_variant(log):
+                    raise ValueError(f'Run {run}: diagnostic/unknown fog variant cannot certify {matching}')
         accepted.update(rows)
         common |= any(j['name'] == 'common' and j.get('conclusion') == 'success' for j in jobs)
         evidence.append(dict(run=run, sourceCommit=sha, successfulRows=sorted(rows)))
