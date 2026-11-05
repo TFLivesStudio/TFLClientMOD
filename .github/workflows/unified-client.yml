@@ -107,15 +107,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         if: ${{ steps.selector.outputs.run != 'false' }}
       - run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils x11-xserver-utils libxrandr2 libxcursor1 libxi6 libxinerama1 libgl1-mesa-dri libegl1 libegl-mesa0 libvulkan1 mesa-vulkan-drivers libopenal1 ffmpeg
-        if: ${{ steps.selector.outputs.run != 'false' }}
-      - name: Configure real Zink software context for the selected diagnostic
-        if: github.event_name == 'workflow_dispatch' && inputs.legacy_gl_driver == 'zink' && matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
-        run: |
-          icd=$(find /usr/share/vulkan/icd.d -maxdepth 1 -name '*lvp*.json' -print -quit)
-          test -n "$icd"
-          echo "VK_ICD_FILENAMES=$icd" >> "$GITHUB_ENV"
-          echo 'MESA_LOADER_DRIVER_OVERRIDE=zink' >> "$GITHUB_ENV"
-          echo 'GALLIUM_DRIVER=zink' >> "$GITHUB_ENV"
+        if: ${{ steps.selector.outputs.run != 'false' && !(github.event_name == 'workflow_dispatch' && inputs.legacy_gl_driver == 'zink' && matrix.target == '1.8.9') }}
       - if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: python3 tools/ornithe/fetch_dependencies.py "$RUNNER_TEMP/ornithe-mods"
       - if: (matrix.stack == 'sodium' || matrix.stack == 'iris') && steps.selector.outputs.run != 'false'
@@ -123,8 +115,8 @@ jobs:
       - name: Installed 1.8.9 client and separate probe
         if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: |
-          if [ '${{ matrix.stack }}' = argentum ] && [ '${{ inputs.legacy_gl_driver }}' = zink ]; then
-            bash tools/verification/run_argentum_ci.sh '${{ steps.selector.outputs.variant || 'standard' }}'
+          if [ '${{ inputs.legacy_gl_driver }}' = zink ]; then
+            bash tools/verification/run_legacy_mesa_ci.sh '${{ steps.selector.outputs.variant || 'standard' }}' '${{ matrix.stack }}'
             exit 0
           fi
           profile=()
