@@ -8,6 +8,7 @@
     "PauseChatInputMixin",
     "LucernaScreenMixin",
     "LucernaControlsMixin",
+    "LucernaFarTerrainWaterMixin",
     "MinecraftResizeAccess",
     "VideoOptionsAccess",
     "GameRendererMixin",

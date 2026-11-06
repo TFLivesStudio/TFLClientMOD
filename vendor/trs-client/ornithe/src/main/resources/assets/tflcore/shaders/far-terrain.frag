@@ -1,12 +1,10 @@
 #version 120
-uniform float nearEdge;
 uniform float farEdge;
 uniform vec3 fogColor;
 varying vec3 terrainColor;
 varying float rangeDistance;
 void main() {
-    float coverage = smoothstep(nearEdge, nearEdge + 16.0, rangeDistance)
-                   * (1.0 - smoothstep(farEdge - 32.0, farEdge, rangeDistance));
+    float coverage = (1.0 - smoothstep(farEdge - 32.0, farEdge, rangeDistance));
     vec2 pixel = mod(floor(gl_FragCoord.xy), 4.0);
     float threshold = mod(pixel.x * 2.0 + pixel.y * 3.0, 4.0) * 4.0 + mod(pixel.x + pixel.y * 2.0, 4.0);
     if (coverage * 16.0 <= threshold) discard;

@@ -1,4 +1,6 @@
-# Audit 5 — candidata 0.4.0-audit.5-rc.1
+# Audit 5 — candidata 0.4.0-audit.5-rc.2
+
+Nueva adaptación 1.8.9: [Lucerna API v1](FAR_TERRAIN_LUCERNA.md), terreno/agua separados y solapamiento radial. Verificado: compilación/JAR y tres casos CPU focalizados; la comprobación dentro del juego corresponde al usuario. La evidencia nativa RC1 que aparece abajo es histórica y no certifica esta nueva integración. No se ejecutó una matriz gráfica para este cambio.
 
 Targets: 1.8.9 Ornithe Gen2/OSL 0.22.2 y 26.3 Fabric/Fabric API 0.161.0+26.3, Java 25. Rama `feat/audit5-integrations`; no se modifica main. Candidata interna: no publicación definitiva ni despliegue público autorizado.
 

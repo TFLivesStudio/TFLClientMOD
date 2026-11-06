@@ -25,6 +25,10 @@ dependencies {
     mappings ploceus.featherMappings(project.feather_build)
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     ploceus.dependOsl(project.osl_version)
+    // External Lucerna-owned API, never included in the TFL runtime JAR.
+    def lucernaApi=providers.gradleProperty('lucernaApiJar').getOrElse(layout.projectDirectory.file('.gradle/lucerna-api/lucerna-0.1.5-tfl.1.jar').asFile.absolutePath)
+    if (!file(lucernaApi).isFile()) throw new GradleException('Missing compile-only Lucerna API: run python3 tools/ornithe/fetch_lucerna_api.py, or pass -PlucernaApiJar=/path/to/lucerna-0.1.5-tfl.1.jar')
+    modCompileOnly files(lucernaApi)
 }
 sourceSets.main {
     java.srcDir '../common/src/main/java'

@@ -118,14 +118,15 @@ public final class FarTerrainEngine implements AutoCloseable {
     public int knownCount(){return known.size();}
     public void diskBudget(long bytes){if(bytes==diskBudget || closed.get())return;store.budget(bytes);if(submit(disk,()->{try{store.trim();}catch(IOException e){failure="cache-trim";}}))diskBudget=bytes;}
     public TerrainColumns column(int x,int z){return columns.get(TerrainColumns.key(x,z));}
-    public boolean request(int x,int z,int step) {
+    public boolean request(int x,int z,int step) {return request(x,z,step,false);}
+    public boolean request(int x,int z,int step,boolean shaderLayout) {
         long region=TerrainColumns.key(x,z),revision=regions.containsKey(region)?regions.get(region):0;
-        String job=x+":"+z+":"+step+":"+revision;if(!building.add(job))return false;
+        String job=x+":"+z+":"+step+":"+revision+":"+shaderLayout;if(!building.add(job))return false;
         Map<Long,TerrainColumns> input=new HashMap<Long,TerrainColumns>();
         for(int dz=-1;dz<=4;dz++)for(int dx=-1;dx<=4;dx++){long k=TerrainColumns.key(x*4+dx,z*4+dz);TerrainColumns c=columns.get(k);if(c!=null)input.put(k,c);}
         boolean accepted=submit(work,()->{
             long start=System.nanoTime();
-            try {LodMesh result=LodMesh.build(x,z,step,revision,input);generationNanos+=System.nanoTime()-start;meshesBuilt++;
+            try {LodMesh result=LodMesh.build(x,z,step,revision,input,shaderLayout);generationNanos+=System.nanoTime()-start;meshesBuilt++;
                 while(!closed.get()&&!meshes.offer(result,50,TimeUnit.MILLISECONDS)){}
             }catch(InterruptedException e){Thread.currentThread().interrupt();}finally{building.remove(job);}
         });if(!accepted)building.remove(job);return accepted;

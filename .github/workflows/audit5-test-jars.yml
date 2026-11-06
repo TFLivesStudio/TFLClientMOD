@@ -1,9 +1,6 @@
 name: Audit 5 experimental test JARs
 on:
   workflow_dispatch:
-  push:
-    branches: [feat/audit5-integrations]
-    paths: ['.github/workflows/audit5-test-jars.yml']
 permissions:
   contents: read
 jobs:
@@ -17,6 +14,10 @@ jobs:
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '25'}
       - uses: gradle/actions/setup-gradle@v4
+      - name: Prepare pinned compile-only Lucerna API
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/ornithe/fetch_lucerna_api.py
       - name: Build both targets and verify the legacy unit and archive contracts
         run: |
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test :remapJar --no-daemon --max-workers=2
@@ -40,12 +41,12 @@ jobs:
                   z.writestr('distant-horizons/'+source['filename'],data)
               z.writestr('PROVENANCE.json',json.dumps({'coreCommit':os.environ['GITHUB_SHA'],'distantHorizons':lock},indent=2))
               z.writestr('BUILD.txt','Extract tflcore-source.tar and use Java 25 plus the committed Gradle wrappers; see README.md. DH is the original unmodified nested artifact. Extract its main source archive, then its pinned core archive into coreSubProjects, stripping each archive root. All source revisions, hashes and licenses are retained in PROVENANCE.json and the source archives.\n')
-          notice='''CANDIDATA EXPERIMENTAL PARA PRUEBAS — Audit 5 RC1
+          notice='''CANDIDATA EXPERIMENTAL PARA PRUEBAS — Audit 5 experimental
 
-          Contiene el arreglo de cierre del video al pasar del menu al mundo.
+          Incluye la adaptacion Far Terrain/Lucerna v1 y el arreglo anterior de cierre del video.
           Compilacion de ambos targets, tests unitarios de 1.8.9 y contrato del JAR verificados en este workflow.
-          Pruebas locales del codigo de produccion 9038e61: 1206 tests comunes (2 skips), 184 checks con Argentum/optimizadores y 150 con Iris activo.
-          La matriz completa de CI es independiente: https://github.com/TFLivesStudio/TFLClientMOD/actions/runs/42112169842
+          Para el puente: Lucerna 0.1.5-tfl.1 y -Dlucerna.experimentalFarTerrain=true; usar shaderpack con dh_terrain y dh_water.
+          La jugabilidad y compatibilidad grafica de esta adaptacion requieren prueba manual; no se ejecuta una matriz nativa aqui.
           Esta entrega NO afirma que esa matriz haya aprobado ni que exista certificacion de GPU fisica. No es una release estable ni una promocion de Selection.
 
           Instala Java 25. 1.8.9: Ornithe Gen2, Loader 0.19.5 y OSL 0.22.2.
@@ -68,6 +69,6 @@ jobs:
             test "$(gh release view "$tag" --json isDraft --jq .isDraft)" = true
             gh release upload "$tag" test-candidate/* --clobber
           else
-            gh release create "$tag" test-candidate/* --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'Audit 5 RC1 — experimental test JARs' --notes-file test-candidate/LEEME.txt
+            gh release create "$tag" test-candidate/* --draft --prerelease --latest=false --target "$GITHUB_SHA" --title 'Audit 5 experimental — experimental test JARs' --notes-file test-candidate/LEEME.txt
           fi
           gh release view "$tag" --json url,isDraft,assets >> "$GITHUB_STEP_SUMMARY"

@@ -24,11 +24,21 @@ public final class OrnitheFarTerrain implements AutoCloseable {
     private Object world;
     private java.lang.ref.WeakReference<Object> localServer=new java.lang.ref.WeakReference<>(null);
     private String saveId="";
-    private int program,originUniform,nearUniform,farUniform,fogUniform,sunUniform;
+    private int program,originUniform,farUniform,fogUniform,sunUniform;
     private long gpuBytes;
     public long uploads,draws,verticesDrawn,uploadNanos,drawNanos;
     public int maxPassesPerFrame;
     private int framePasses;
+    private final ShaderFarTerrainBridge bridge=ShaderFarTerrainBridge.create();
+    private boolean shaderLayout,terrainSubmitted,waterSubmitted;
+    private int waterSortCursor;
+    private record WaterRequest(GpuMesh mesh,double x,double y,double z) {}
+    private List<ShaderFarTerrainBridge.Batch> waterBatches=List.of();
+    private java.util.concurrent.ThreadPoolExecutor waterSorter;
+    private final java.util.concurrent.atomic.AtomicBoolean sortingWater=new java.util.concurrent.atomic.AtomicBoolean();
+    private final java.util.concurrent.ConcurrentLinkedQueue<SortedWater> sortedWater=new java.util.concurrent.ConcurrentLinkedQueue<>();
+    private volatile long geometryEpoch;
+    private record SortedWater(long epoch,GpuMesh mesh,float[] data,double x,double y,double z) {}
     public boolean projectionAligned;
     public void compareNativeProjection(){
         if(!Boolean.getBoolean("tflcore.audit5.smoke")||projectionAligned||draws<8)return;
@@ -37,12 +47,17 @@ public final class OrnitheFarTerrain implements AutoCloseable {
         for(int i=0;i<16;i++){if(i!=10 && i!=14)same&=Math.abs(projection.get(i)-p[i])<.00001f;same&=Math.abs(model.get(i)-v[i])<.00001f;}
         projectionAligned=same;
     }
-    public void beginFrame(){framePasses=0;}
+    public void beginFrame(){framePasses=0;terrainSubmitted=waterSubmitted=false;waterBatches=List.of();if(bridge!=null)bridge.reset();}
     public String failure="";
-    private record GpuMesh(int buffer,int count,int bytes,int step,long revision,int minY,int maxY){}
+    private static final class GpuMesh {
+        final int buffer,count,bytes,step,minY,maxY;final long revision;final float[] water;
+        int waterBuffer;double sortedX=Double.NaN,sortedY,sortedZ;
+        GpuMesh(int buffer,int count,int bytes,int step,long revision,int min,int max,float[] water){this.buffer=buffer;this.count=count;this.bytes=bytes;this.step=step;this.revision=revision;minY=min;maxY=max;this.water=water;}
+    }
     public OrnitheFarTerrain(OrnitheClient c){this.c=c;}
     public FarTerrainEngine engine(){return engine;}
     public long gpuBytes(){return gpuBytes;}
+    public String shaderDiagnostic(){return bridge==null?"":bridge.diagnostic();}
     private void ensure() {
         if(!c.modules.farTerrain.isEnabled() || c.mc.world==null || c.mc.player==null){close();return;}
         String key=worldIdentity();
@@ -92,6 +107,7 @@ public final class OrnitheFarTerrain implements AutoCloseable {
         return new TerrainColumns(s.chunkX,s.chunkZ,height,colors,light,states,tints);
     }
     public void fog(int mode) {
+        if(bridge!=null&&bridge.status()!=ShaderFarTerrainBridge.Status.LEGACY)return;
         if(mode!=0 || !c.modules.farTerrain.isEnabled() || c.mc.world==null || GL11.glGetInteger(GL11.GL_FOG_MODE)!=GL11.GL_LINEAR || GL11.glGetFloat(GL11.GL_FOG_END)<16)return;
         float far=c.modules.farTerrain.distance.getInt()*16f;
         GL11.glFogf(GL11.GL_FOG_START,far*.65f);GL11.glFogf(GL11.GL_FOG_END,far*.98f);
@@ -99,11 +115,17 @@ public final class OrnitheFarTerrain implements AutoCloseable {
     public void draw(float delta) {
         if(engine==null || !c.modules.farTerrain.isEnabled() || c.mc.world!=world || c.mc.player==null || !failure.isEmpty())return;
         if(!identity.equals(worldIdentity()))return;
-        if(GL11.glGetInteger(GL11.GL_FOG_MODE)!=GL11.GL_LINEAR || GL11.glGetFloat(GL11.GL_FOG_END)<16)return;
+        var status=bridge==null?ShaderFarTerrainBridge.Status.LEGACY:bridge.status();
+        if(bridge!=null&&bridge.shadowPass())return;
+        if(status==ShaderFarTerrainBridge.Status.SKIP){clearGeometry();return;}
+        boolean useShaders=status==ShaderFarTerrainBridge.Status.READY;
+        if(shaderLayout!=useShaders){clearGeometry();shaderLayout=useShaders;}
+        if(useShaders&&terrainSubmitted)return;
+        if(!useShaders&&(GL11.glGetInteger(GL11.GL_FOG_MODE)!=GL11.GL_LINEAR || GL11.glGetFloat(GL11.GL_FOG_END)<16))return;
         long start=System.nanoTime();
         var camera=c.mc.getCamera();if(camera==null)return;
         double cx=camera.prevX+(camera.x-camera.prevX)*delta,cy=camera.prevY+(camera.y-camera.prevY)*delta,cz=camera.prevZ+(camera.z-camera.prevZ)*delta;
-        float near=Math.max(16,(c.mc.options.viewDistance-1)*16),far=c.modules.farTerrain.distance.getInt()*16f;
+        float near=0,far=c.modules.farTerrain.distance.getInt()*16f;
         if(near>=far)return;
         maxPassesPerFrame=Math.max(maxPassesPerFrame,++framePasses);
         projection.clear();model.clear();fog.clear();
@@ -112,11 +134,42 @@ public final class OrnitheFarTerrain implements AutoCloseable {
         float clipNear=p[14]/(p[10]-1);if(!(clipNear>0))return;
         float clipFar=far*1.8f;p[10]=-(clipFar+clipNear)/(clipFar-clipNear);p[14]=-2*clipFar*clipNear/(clipFar-clipNear);
         projection.clear();projection.put(p).flip();
+        if(useShaders) {
+            List<ShaderFarTerrainBridge.Batch> opaque=new ArrayList<>(),water=new ArrayList<>();
+            List<WaterRequest> waterRequests=new ArrayList<>();
+            try(var scope=state.begin()) {
+                upload();uploadSortedWater();trim();
+                for(var entry:engine.regions().entrySet()) {
+                    long key=entry.getKey();int rx=(int)(key>>32),rz=(int)key;
+                    double dx=rx*64+32-cx,dz=rz*64+32-cz,d=Math.hypot(dx,dz);
+                    if(d-46>far)continue;
+                    int step=d<256?1:d<512?2:d<1024?4:8;
+                    GpuMesh mesh=requestMesh(key,rx,rz,step,entry.getValue());
+                    if(mesh==null||!visible(rx*64-cx,mesh.minY-cy,rz*64-cz,rx*64+64-cx,mesh.maxY-cy,rz*64+64-cz))continue;
+                    double dy=(mesh.minY+mesh.maxY)*.5-cy,dist=dx*dx+dy*dy+dz*dz;
+                    if(mesh.count>0)opaque.add(new ShaderFarTerrainBridge.Batch(mesh.buffer,mesh.count,(float)(rx*64-cx),(float)-cy,(float)(rz*64-cz),dist));
+                    if(mesh.water.length>0)waterRequests.add(new WaterRequest(mesh,cx-rx*64,cy,cz-rz*64));
+                    if(mesh.waterBuffer!=0)water.add(new ShaderFarTerrainBridge.Batch(mesh.waterBuffer,mesh.water.length/13,(float)(rx*64-cx),(float)-cy,(float)(rz*64-cz),dist));
+                }
+            } catch(RuntimeException error){failure=error.getClass().getSimpleName();OrnitheClient.LOG.error("Far Terrain upload stopped safely",error);return;}
+            // Round-robin avoids starving distant/initial water buffers while the camera moves.
+            if(!waterRequests.isEmpty())for(int i=0;i<waterRequests.size();i++){
+                int index=Math.floorMod(waterSortCursor+i,waterRequests.size());var request=waterRequests.get(index);
+                if(sortWater(request.mesh,request.x,request.y,request.z)){waterSortCursor=index+1;break;}
+            }
+            opaque.sort(Comparator.comparingDouble(ShaderFarTerrainBridge.Batch::distance));
+            water.sort(Comparator.comparingDouble(ShaderFarTerrainBridge.Batch::distance).reversed());
+            terrainSubmitted=true;
+            if(bridge.terrain(p,v,clipNear,clipFar,(int)far,opaque)) {
+                waterBatches=water;draws+=opaque.size();for(var batch:opaque)verticesDrawn+=batch.count();
+            }
+            drawNanos+=System.nanoTime()-start;return;
+        }
         try(var scope=state.begin()) {
             upload();
             if(program==0)program();
             GL20.glUseProgram(program);
-            GL20.glUniform1f(nearUniform,near);GL20.glUniform1f(farUniform,far);
+            GL20.glUniform1f(farUniform,far);
             GL20.glUniform1f(sunUniform,Math.max(0,Math.min(1,c.mc.world.calculateAmbientLight(delta))));
             GL20.glUniform3f(fogUniform,fog.get(0),fog.get(1),fog.get(2));
             GL11.glMatrixMode(GL11.GL_PROJECTION);GL11.glLoadMatrix(projection);GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -128,14 +181,13 @@ public final class OrnitheFarTerrain implements AutoCloseable {
             regions.sort(Comparator.comparingDouble(e->distance(e.getKey(),cx,cz)));
             for(var entry:regions){
                 long key=entry.getKey();int rx=(int)(key>>32),rz=(int)key;
-                double dx=rx*64+32-cx,dz=rz*64+32-cz,d=Math.max(Math.abs(dx),Math.abs(dz));
-                if(d+32<near || d-32>far)continue;
+                double dx=rx*64+32-cx,dz=rz*64+32-cz,d=Math.hypot(dx,dz);
+                if(d-46>far)continue;
                 int step=d<256?1:d<512?2:d<1024?4:8;
-                GpuMesh m=gpu.get(key);String request=step+":"+entry.getValue();
-                if((m==null||m.step!=step||m.revision!=entry.getValue())&&!request.equals(pending.get(key))){if(engine.request(rx,rz,step))pending.put(key,request);}
+                GpuMesh m=requestMesh(key,rx,rz,step,entry.getValue());
                 if(m==null||m.count==0 || !visible(rx*64-cx,m.minY-cy,rz*64-cz,rx*64+64-cx,m.maxY-cy,rz*64+64-cz))continue;
                 GL11.glLoadMatrix(model);GL11.glTranslated(rx*64-cx,-cy,rz*64-cz);
-                GL20.glUniform2f(originUniform,(float)(rx*64-cx),(float)(rz*64-cz));
+                GL20.glUniform3f(originUniform,(float)(rx*64-cx),(float)-cy,(float)(rz*64-cz));
                 GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER,m.buffer);
                 GL11.glVertexPointer(3,GL11.GL_FLOAT,32,0L);GL11.glColorPointer(3,GL11.GL_FLOAT,32,12L);GL11.glTexCoordPointer(2,GL11.GL_FLOAT,32,24L);
                 GL11.glDrawArrays(GL11.GL_QUADS,0,m.count);draws++;verticesDrawn+=m.count;
@@ -148,6 +200,54 @@ public final class OrnitheFarTerrain implements AutoCloseable {
         drawNanos+=System.nanoTime()-start;
     }
     private static double distance(long key,double x,double z){double dx=(int)(key>>32)*64+32-x,dz=(int)key*64+32-z;return dx*dx+dz*dz;}
+    /** Runs from Lucerna's post-deferred hook; reuses the opaque frame and borrowed VBOs. */
+    public void drawShaderWater() {
+        if(waterSubmitted||!terrainSubmitted||bridge==null||!shaderLayout||engine==null
+                ||c.mc.world!=world||!c.modules.farTerrain.isEnabled()||!identity.equals(worldIdentity()))return;
+        if(bridge.shadowPass())return;
+        waterSubmitted=true;bridge.water(waterBatches);waterBatches=List.of();
+    }
+    private GpuMesh requestMesh(long key,int rx,int rz,int step,long revision) {
+        GpuMesh mesh=gpu.get(key);String request=shaderLayout+":"+step+":"+revision;
+        if((mesh==null||mesh.step!=step||mesh.revision!=revision)&&!request.equals(pending.get(key)))
+            if(engine.request(rx,rz,step,shaderLayout))pending.put(key,request);
+        return mesh;
+    }
+    private boolean sortWater(GpuMesh mesh,double x,double y,double z) {
+        if(mesh.water.length==0)return false;
+        double dx=x-mesh.sortedX,dy=y-mesh.sortedY,dz=z-mesh.sortedZ;
+        if(mesh.waterBuffer!=0&&dx*dx+dy*dy+dz*dz<1)return false;
+        if(!sortingWater.compareAndSet(false,true))return false;
+        if(waterSorter==null){
+            waterSorter=new java.util.concurrent.ThreadPoolExecutor(0,1,1,java.util.concurrent.TimeUnit.SECONDS,
+                new java.util.concurrent.ArrayBlockingQueue<>(1),r->{Thread t=new Thread(r,"TFL-LOD-water-sort");t.setDaemon(true);return t;});
+        }
+        long epoch=geometryEpoch;
+        try{waterSorter.execute(()->{
+            try {
+                float[] sorted=WaterTriangleOrder.sort(mesh.water,x,y,z);
+                if(epoch==geometryEpoch)sortedWater.offer(new SortedWater(epoch,mesh,sorted,x,y,z));
+            } catch(InterruptedException cancelled){Thread.currentThread().interrupt();if(epoch==geometryEpoch)sortingWater.set(false);}
+            catch(RuntimeException error){if(epoch==geometryEpoch)sortingWater.set(false);OrnitheClient.LOG.warn("LOD water sorting failed",error);}
+        });}catch(java.util.concurrent.RejectedExecutionException closed){sortingWater.set(false);return false;}
+        return true;
+    }
+    private void uploadSortedWater() {
+        SortedWater sorted=sortedWater.poll();if(sorted==null)return;sortingWater.set(false);
+        if(sorted.epoch!=geometryEpoch||!gpu.containsValue(sorted.mesh))return;
+        GpuMesh mesh=sorted.mesh;
+        if(staging.capacity()<sorted.data.length)staging=BufferUtils.createFloatBuffer(sorted.data.length);
+        staging.clear();staging.put(sorted.data).flip();
+        if(mesh.waterBuffer==0)mesh.waterBuffer=GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER,mesh.waterBuffer);GL15.glBufferData(GL15.GL_ARRAY_BUFFER,staging,GL15.GL_DYNAMIC_DRAW);
+        mesh.sortedX=sorted.x;mesh.sortedY=sorted.y;mesh.sortedZ=sorted.z;
+    }
+    private void clearGeometry() {
+        geometryEpoch++;if(waterSorter!=null)waterSorter.shutdownNow();waterSorter=null;
+        sortedWater.clear();sortingWater.set(false);waterBatches=List.of();terrainSubmitted=waterSubmitted=false;
+        if(bridge!=null)bridge.reset();
+        for(var mesh:gpu.values())release(mesh);gpu.clear();pending.clear();gpuBytes=0;
+    }
     private boolean visible(double x0,double y0,double z0,double x1,double y1,double z1) {
         int outside=63;
         for(int i=0;i<8;i++){
@@ -160,11 +260,12 @@ public final class OrnitheFarTerrain implements AutoCloseable {
     private void upload() {
         long start=System.nanoTime();int bytes=0;LodMesh mesh;
         while(bytes<2*1024*1024 && (mesh=engine.pollMesh())!=null){
-            int size=mesh.vertices.length*4;if(size>c.modules.farTerrain.gpuBudget.getInt()*1024*1024)continue;
+            if(mesh.shaderLayout!=shaderLayout)continue;
+            int size=(mesh.vertices.length+mesh.waterVertices.length)*4;if(size>c.modules.farTerrain.gpuBudget.getInt()*1024*1024)continue;
             long key=TerrainColumns.key(mesh.regionX,mesh.regionZ);GpuMesh old=gpu.remove(key);if(old!=null)release(old);
             int buffer=0;
-            if(size>0){if(staging.capacity()<mesh.vertices.length)staging=BufferUtils.createFloatBuffer(mesh.vertices.length);staging.clear();staging.put(mesh.vertices).flip();buffer=GL15.glGenBuffers();GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER,buffer);GL15.glBufferData(GL15.GL_ARRAY_BUFFER,staging,GL15.GL_STATIC_DRAW);}
-            gpu.put(key,new GpuMesh(buffer,mesh.vertices.length/8,size,mesh.step,mesh.revision,mesh.minY,mesh.maxY));gpuBytes+=size;bytes+=size;uploads++;pending.remove(key);
+            if(mesh.vertices.length>0){if(staging.capacity()<mesh.vertices.length)staging=BufferUtils.createFloatBuffer(mesh.vertices.length);staging.clear();staging.put(mesh.vertices).flip();buffer=GL15.glGenBuffers();GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER,buffer);GL15.glBufferData(GL15.GL_ARRAY_BUFFER,staging,GL15.GL_STATIC_DRAW);}
+            gpu.put(key,new GpuMesh(buffer,mesh.vertices.length/(shaderLayout?13:8),size,mesh.step,mesh.revision,mesh.minY,mesh.maxY,mesh.waterVertices));gpuBytes+=size;bytes+=size;uploads++;pending.remove(key);
         }uploadNanos+=System.nanoTime()-start;
     }
     private void trim() {
@@ -172,14 +273,14 @@ public final class OrnitheFarTerrain implements AutoCloseable {
         long limit=(long)c.modules.farTerrain.gpuBudget.getInt()*1024*1024;
         it=gpu.entrySet().iterator();while(gpuBytes>limit&&it.hasNext()){var e=it.next();release(e.getValue());it.remove();}
     }
-    private void release(GpuMesh mesh){if(mesh.buffer!=0)GL15.glDeleteBuffers(mesh.buffer);gpuBytes-=mesh.bytes;}
+    private void release(GpuMesh mesh){if(mesh.buffer!=0)GL15.glDeleteBuffers(mesh.buffer);if(mesh.waterBuffer!=0)GL15.glDeleteBuffers(mesh.waterBuffer);gpuBytes-=mesh.bytes;}
     private void program() {
         int vertex=0,fragment=0,linked=0;
         try {
             vertex=shader(GL20.GL_VERTEX_SHADER,"/assets/tflcore/shaders/far-terrain.vert");fragment=shader(GL20.GL_FRAGMENT_SHADER,"/assets/tflcore/shaders/far-terrain.frag");
             linked=GL20.glCreateProgram();GL20.glAttachShader(linked,vertex);GL20.glAttachShader(linked,fragment);GL20.glLinkProgram(linked);
             if(GL20.glGetProgrami(linked,GL20.GL_LINK_STATUS)==0)throw new IllegalStateException(GL20.glGetProgramInfoLog(linked,4096));
-            program=linked;linked=0;originUniform=GL20.glGetUniformLocation(program,"origin");nearUniform=GL20.glGetUniformLocation(program,"nearEdge");farUniform=GL20.glGetUniformLocation(program,"farEdge");fogUniform=GL20.glGetUniformLocation(program,"fogColor");sunUniform=GL20.glGetUniformLocation(program,"sunBrightness");
+            program=linked;linked=0;originUniform=GL20.glGetUniformLocation(program,"origin");farUniform=GL20.glGetUniformLocation(program,"farEdge");fogUniform=GL20.glGetUniformLocation(program,"fogColor");sunUniform=GL20.glGetUniformLocation(program,"sunBrightness");
         } finally {if(vertex!=0)GL20.glDeleteShader(vertex);if(fragment!=0)GL20.glDeleteShader(fragment);if(linked!=0)GL20.glDeleteProgram(linked);}
     }
     private int shader(int type,String path) {
@@ -192,7 +293,7 @@ public final class OrnitheFarTerrain implements AutoCloseable {
     }
     public void close() {
         if(engine!=null)engine.close();engine=null;world=null;identity="";
-        for(var mesh:gpu.values())release(mesh);gpu.clear();pending.clear();gpuBytes=0;
+        clearGeometry();
         if(program!=0)GL20.glDeleteProgram(program);program=0;
         if(staging.capacity()>1024)staging=BufferUtils.createFloatBuffer(1024);
     }

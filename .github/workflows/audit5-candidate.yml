@@ -43,6 +43,10 @@ jobs:
           vendor/trs-client/gradlew -p vendor/trs-client/e4mc-bridge test relayDist --no-daemon --max-workers=2
           python3 -m unittest discover -s tools -p 'test_*.py'
           python3 tools/scan_secrets.py
+      - name: Prepare pinned compile-only Lucerna API
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/ornithe/fetch_lucerna_api.py
       - name: Build and verify installable clients
         run: |
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test :remapJar --no-daemon --max-workers=2

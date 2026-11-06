@@ -108,6 +108,11 @@ jobs:
         if: ${{ steps.selector.outputs.run != 'false' }}
       - run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils x11-xserver-utils libxrandr2 libxcursor1 libxi6 libxinerama1 libgl1-mesa-dri libegl1 libegl-mesa0 libvulkan1 mesa-vulkan-drivers libopenal1 ffmpeg
         if: ${{ steps.selector.outputs.run != 'false' && !(github.event_name == 'workflow_dispatch' && inputs.legacy_gl_driver == 'zink' && matrix.target == '1.8.9') }}
+      - name: Prepare pinned compile-only Lucerna API
+        if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/ornithe/fetch_lucerna_api.py
       - if: matrix.target == '1.8.9' && steps.selector.outputs.run != 'false'
         run: python3 tools/ornithe/fetch_dependencies.py "$RUNNER_TEMP/ornithe-mods"
       - if: (matrix.stack == 'sodium' || matrix.stack == 'iris') && steps.selector.outputs.run != 'false'
@@ -229,6 +234,10 @@ jobs:
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '25'}
       - uses: gradle/actions/setup-gradle@v4
+      - name: Prepare pinned compile-only Lucerna API
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/ornithe/fetch_lucerna_api.py
       - name: Compile and test Ornithe 1.8.9 without native graphics
         run: |
           vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :test :remapJar --no-daemon --max-workers=2
