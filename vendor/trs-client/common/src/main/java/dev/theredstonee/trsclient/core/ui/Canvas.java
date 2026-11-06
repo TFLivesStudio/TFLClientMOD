@@ -7,6 +7,8 @@ package dev.theredstonee.trsclient.core.ui;
  * {@code core.ui} und kennen Minecraft nicht.
  */
 public interface Canvas {
+    /** Native canvas-local text scope; returns the previous value for try/finally restoration. */
+    default boolean uiText(boolean enabled) { return false; }
 	/** Rechteck von (x1, y1) bis ausschließlich (x2, y2) in ARGB. */
 	default int pixelScale() { return 1; }
 	/** Optional cached rounded geometry; false retains the shared coverage renderer. */

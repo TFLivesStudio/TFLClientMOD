@@ -26,13 +26,15 @@ import java.util.List;
  * Immediate Mode: beim Zeichnen werden die Klickflächen in {@link Hits} registriert.
  */
 public final class SettingsPanel {
-	public static final int ROW_BOOL = 20;
-	public static final int ROW_NUMBER = 30;
+	public static final int ROW_BOOL = 26;
+	public static final int ROW_NUMBER = 36;
 	public static final int PICKER_HEIGHT = 64;
-	private static final int CHOICE_ITEM = 14;
+	private static final int CHOICE_ITEM = 22;
 
 	/** Aufgeklappter Farbwähler/Auswahlliste (nur eine Einstellung gleichzeitig). */
 	private Setting expanded;
+    private Setting revealed;
+    public void reveal(Setting setting) { revealed=setting; }
 	/** Einstellung, die gerade auf einen Tastendruck wartet. */
 	private KeySetting capturing;
 	/** Textfeld, das gerade bearbeitet wird (Auto-GG-Nachricht, Text-Hotkeys). */
@@ -54,6 +56,7 @@ public final class SettingsPanel {
 
 	public void reset() {
 		expanded = null;
+        revealed=null;
 		capturing = null;
 		stopEditing();
 	}
@@ -87,6 +90,7 @@ public final class SettingsPanel {
 		for (int i = 0; i < settings.size(); i++) {
 			Setting s = settings.get(i);
 			int rh = rowHeight(s);
+            if(s==revealed)c.fill(x-2,y+3,x,y+Math.min(rh-3,23),Theme.get().accent);
 			boolean rowHover = inside(mouseX, mouseY, x - 2, y, w + 4, s instanceof NumberSetting ? ROW_NUMBER : ROW_BOOL);
 			// Die Zeile unter der Maus liegt leicht erhöht – so ist klar, wozu ein Regler gehört.
 			if (rowHover) Redstone.block(c, x - 2, y, w + 4, (s instanceof NumberSetting ? ROW_NUMBER : ROW_BOOL) - 1, ColorMath.withAlpha(Theme.get().surfaceHover, 150));
@@ -122,7 +126,7 @@ public final class SettingsPanel {
 			} else {
 				boolean hover = inside(mx, my, bx - 4, y, bw + 4, 18);
 				Paint.toggle(c, bx, y + 4, bw, 12, b.get() ? 1f : 0f, hover);
-				hits.add(bx - 4, y, bw + 4, 18, new Toggle(b));
+				hits.add(x, y, w, ROW_BOOL, new Toggle(b));
 			}
 		} else if (s instanceof NumberSetting) {
 			number(c, hits, (NumberSetting) s, x, y, w, mx, my);
@@ -483,6 +487,7 @@ public final class SettingsPanel {
 	public boolean collapse() {
 		boolean was = expanded != null || capturing != null;
 		expanded = null;
+        revealed=null;
 		capturing = null;
 		return was;
 	}

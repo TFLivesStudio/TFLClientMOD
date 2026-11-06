@@ -19,8 +19,8 @@ import java.util.List;
  * den Inhalt in {@link #content}.
  */
 public abstract class WindowUi extends UiScreen {
-	protected static final int HEADER_H = 30;
-	protected static final int PAD = 10;
+	protected static final int HEADER_H = 36;
+	protected static final int PAD = 12;
 
 	/** Fensterrechteck des letzten Bilds {x, y, w, h}. */
 	protected final int[] window = new int[4];
@@ -82,7 +82,7 @@ public abstract class WindowUi extends UiScreen {
 		int ly = py + (HEADER_H - PixelFont.HEIGHT * 2) / 2;
         c.strongText("TFL Client",lx,py+(HEADER_H-c.lineHeight())/2,t.text);
         int titleX=lx+c.textWidth("TFL Client")+12;
-		int closeSize = 16;
+		int closeSize = 22;
 		int closeX = screenClose() ? fullWidth - PAD - closeSize : px + pw - PAD - closeSize;
 		int closeY = screenClose() ? 8 : py + (HEADER_H - closeSize) / 2;
 		int right = headerExtras(c, closeX - 4, closeY, mx, my);
@@ -167,7 +167,9 @@ public abstract class WindowUi extends UiScreen {
 
 	@Override
 	public boolean keyPressed(int rawKey, UiKey key, boolean shift) {
-		if (key == UiKey.ESCAPE) {
+		if(key == UiKey.TAB) return hits.focusNext(shift);
+        if(key == UiKey.ENTER) return hits.activateFocused();
+        if (key == UiKey.ESCAPE) {
 			requestClose();
 			return true;
 		}

@@ -44,7 +44,7 @@ class MenuRailTest {
 				seen = c.visible(label);
 				if (seen == null || seen[1] + 8 > bottom) {
 					seen = null;
-					menu.mouseScrolled(c.railX(), (size[1]) / 2.0, -1);
+					menu.mouseScrolled(menu.testRailBox()[0]+4, (size[1]) / 2.0, -1);
 				}
 			}
 			assertNotNull(seen, "„" + label + "“ nie sichtbar bei " + size[0] + "×" + size[1]);
@@ -86,7 +86,7 @@ class MenuRailTest {
                 assertTrue(host.capturesOpened);
                 return;
             }
-            menu.mouseScrolled(c.railX(), 270, -1);
+            menu.mouseScrolled(menu.testRailBox()[0]+4, 270, -1);
             render(menu, c, new int[]{960, 540});
         }
         assertTrue(host.capturesOpened, "Local captures must remain reachable");

@@ -7,6 +7,7 @@ package dev.theredstonee.trsclient.core.ui;
  * gar nicht erst gezeichnet.)
  */
 public final class FadeCanvas implements Canvas {
+    public boolean uiText(boolean enabled){return delegate.uiText(enabled);}
 	private final Canvas delegate;
 	private float factor = 1f;
 

@@ -1,0 +1,50 @@
+{
+  "version": "0.5.0-visual-preview.1",
+  "scope": "UI only; no world, shaders or map certification",
+  "checks": [
+    {
+      "name": "graphics native host connected",
+      "passed": true
+    },
+    {
+      "name": "native profile exposes supported changes",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:renderDistance",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:cloudStatus",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:mipmapLevels",
+      "passed": true
+    },
+    {
+      "name": "native undo available",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:renderDistance",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:cloudStatus",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:mipmapLevels",
+      "passed": true
+    }
+  ]
+}

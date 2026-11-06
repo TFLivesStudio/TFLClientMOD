@@ -300,7 +300,7 @@ public final class OrnitheClient implements ModInitializer {
         modules.titleScreen,
         limited,
         "Shared TFL title and asynchronous optional local video at config/tflcore/menu.mjpeg; static black-hole fallback when unavailable",
-        List.of("animated","backgroundMode","menuFpsLimit","panelOpacity","cornerRadius","menuAccent"),
+        List.of("animated","backgroundMode","menuFpsLimit","reducedMotion","panelOpacity","cornerRadius","menuAccent"),
         "MinecraftMixin.openScreen",
         "OrnitheClient.title");
     var backend =

@@ -9,6 +9,7 @@ package dev.theredstonee.trsclient.core.ui;
  * Vergrößerung kurz mit {@code scale(1/factor)} aufgehoben ist – das ergibt in beiden Fällen dasselbe Rechteck.
  */
 public final class ScaledCanvas implements Canvas {
+    public boolean uiText(boolean enabled){return delegate.uiText(enabled);}
 	private final Canvas delegate;
 	private final float factor;
 

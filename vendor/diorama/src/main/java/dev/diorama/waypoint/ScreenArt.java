@@ -72,8 +72,10 @@ final class ScreenArt {
 
 	/** Vanilla's selection outline: white when the list has focus, as vanilla's lists draw it. */
 	static void selection(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1) {
-		graphics.fill(x0, y0, x1, y1, 0xFFFFFFFF);
-		graphics.fill(x0 + 1, y0 + 1, x1 - 1, y1 - 1, 0xFF000000);
+        var canvas=dev.theredstonee.trsclient.ui.GfxCanvas.of(dev.theredstonee.trsclient.ui.Gfx.of(graphics),net.minecraft.client.Minecraft.getInstance().font);
+        var theme=dev.theredstonee.trsclient.core.ui.Theme.get();
+        dev.theredstonee.trsclient.core.ui.SelectionStyle.panel(canvas,x0,y0,x1-x0,y1-y0,theme.surfaceHover,theme.accent);
+
 	}
 
 	/** Vanilla's scrollbar on the right of a list from y0 to y1, its handle {@code top} of {@code range} down. */

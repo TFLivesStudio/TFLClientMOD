@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Font;
  * Zeichnen ({@link Gfx}). Mehr braucht {@code core.ui} nicht von Minecraft.
  */
 public final class GfxCanvas implements Canvas {
+    public boolean uiText(boolean enabled){boolean previous=nunito;nunito=enabled;return previous;}
 	private static final GfxCanvas INSTANCE = new GfxCanvas();
 
 	static {
@@ -83,7 +84,7 @@ public final class GfxCanvas implements Canvas {
         var screen = dev.theredstonee.trsclient.compat.Mc.screen();
         INSTANCE.nunito = screen instanceof dev.theredstonee.trsclient.screen.TrsTitleScreen
             || (screen instanceof dev.theredstonee.trsclient.screen.TrsUiScreen custom
-                && custom.ui() instanceof dev.theredstonee.trsclient.core.ui.menu.ModMenu);
+                && custom.ui().usesUiFont());
 		INSTANCE.pending = true;
 		return INSTANCE;
 	}

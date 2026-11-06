@@ -159,6 +159,25 @@ public final class VanillaGraphics implements GraphicsUi.Host {
       return "Minecraft OptionInstance: " + id;
     }
 
+    public GraphicsProfiles.Capability capability() {
+      return new GraphicsProfiles.Capability() {
+        public Object read() { return option.get(); }
+        public Object[] choices() {
+          if(option.values() instanceof OptionInstance.CycleableValueSet values)
+            return values.valueListSupplier().getSelectedList().toArray();
+          return new Object[0];
+        }
+        public boolean accepts(Object value) {
+          return available() && option.values().validateValue(value).filter(v -> Objects.equals(v,value)).isPresent();
+        }
+        public void write(Object value) {
+          if(!accepts(value)) throw new IllegalArgumentException(id);
+          pendingFraction=Double.NaN;
+          option.set(value);
+        }
+      };
+    }
+
     public boolean slider() {
       return option.values() instanceof OptionInstance.SliderableValueSet;
     }

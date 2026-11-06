@@ -40,6 +40,7 @@ public final class Hits {
 
 	private final List<Spot> spots = new ArrayList<Spot>();
 	private Drag active;
+    private int focused=-1;
 	/** Bereich, auf den weitere Klickflächen begrenzt sind (Scroll-Liste); null = kein Clipping. */
 	private int[] clip;
 
@@ -106,6 +107,7 @@ public final class Hits {
 		for (int i = spots.size() - 1; i >= 0; i--) {
 			Spot s = spots.get(i);
 			if (s.button != button || !s.contains(mx, my)) continue;
+            focused=-1;
 			if (s.drag != null) {
 				active = s.drag;
 				s.drag.to(mx, my);
@@ -115,6 +117,32 @@ public final class Hits {
 		}
 		return false;
 	}
+
+    public boolean focusNext(boolean backwards) {
+        if(spots.isEmpty()) return false;
+        for(int i=1;i<=spots.size();i++) {
+            int next=Math.floorMod(focused+(backwards?-i:i),spots.size());
+            Spot s=spots.get(next);
+            if(s.button==0 && s.action!=null) { focused=next; return true; }
+        }
+        return false;
+    }
+    public boolean activateFocused() {
+        if(focused<0 || focused>=spots.size()) return false;
+        Spot s=spots.get(focused);
+        if(s.action==null || s.button!=0) return false;
+        s.action.run(); return true;
+    }
+    public void drawFocus(Canvas c) {
+        if(focused<0 || focused>=spots.size()) return;
+        Spot s=spots.get(focused);
+        if(s.action==null) return;
+        c.push();
+        try {
+            c.raise(600f);
+            Redstone.frame(c,s.x,s.y,s.w,s.h,UiAppearance.accent());
+        } finally { c.pop(); }
+    }
 
 	/** Ziehen weiterreichen; true, wenn gerade etwas gezogen wird. */
 	public boolean drag(double mx, double my) {

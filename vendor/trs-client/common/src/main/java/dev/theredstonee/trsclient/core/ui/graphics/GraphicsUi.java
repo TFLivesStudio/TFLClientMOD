@@ -26,6 +26,9 @@ public final class GraphicsUi extends WindowUi {
 
     void revert();
 
+    /** Optional typed, reversible binding. Null explicitly excludes unsafe controls from presets. */
+    default GraphicsProfiles.Capability capability() { return null; }
+
     default String backend() {
       return getClass().getName();
     }
@@ -76,10 +79,13 @@ public final class GraphicsUi extends WindowUi {
   }
 
   private static final String[] CATEGORIES = {
-    "display", "quality", "performance", "shaders", "advanced"
+    "display", "quality", "performance", "shaders", "advanced", "lighting", "geometry"
   };
+  private static final int[] NAVIGATION={-1,0,1,5,6,2,3,4};
   private final List<SliderHit> sliders = new ArrayList<SliderHit>();
   private SliderHit dragging;
+  private int navScroll;
+  private final int[] navigation=new int[4];
 
   private static final class SliderHit {
     Option option;
@@ -95,8 +101,12 @@ public final class GraphicsUi extends WindowUi {
   }
 
   private final Host host;
+  private final GraphicsProfiles profiles;
+  private GraphicsProfiles.Plan profilePlan;
+  private int profileFocus, profileScroll;
+  private String profileReport = "";
   private final TextInput search = new TextInput(100);
-  private int category, scroll, focus, focusZone, actionFocus, visibleRows = 1;
+  private int category = -1, scroll, focus, focusZone, actionFocus, visibleRows = 1;
   private List<Option> shown = Collections.emptyList();
   private String error = "";
   private String selectedGroup = "";
@@ -105,6 +115,7 @@ public final class GraphicsUi extends WindowUi {
 
   public GraphicsUi(Host host) {
     this.host = host;
+    this.profiles = new GraphicsProfiles(host);
     I18n.refresh();
   }
 
@@ -171,18 +182,24 @@ public final class GraphicsUi extends WindowUi {
           focusZone = 1;
           search.setFocused(true);
         });
-    int categoryRow = 0;
-    for (int i = 0; i < CATEGORIES.length; i++) {
-      final int selected = i;
+    navigation[0]=x;navigation[1]=y;navigation[2]=side;navigation[3]=h;
+    int navHeight=27*(CATEGORIES.length+1);
+    navScroll=Math.max(0,Math.min(navScroll,Math.max(0,navHeight-h)));
+    c.scissor(x,y,x+side,y+h);hits.clip(x,y,side,h);
+    button(c, x, y-navScroll, side, 25, I18n.tr("graphics.profile.title"), category == -1, true, mx, my,
+        () -> { category=-1; profilePlan=null; profileScroll=0; search.setFocused(false); focusZone=0; });
+    int categoryRow = 1;
+    for (int sectionIndex=1;sectionIndex<NAVIGATION.length;sectionIndex++) {
+      final int i=NAVIGATION[sectionIndex], selected=i;
       boolean present = false;
       for (Option o : host.options())
-        if (o.category() == i) {
+        if (section(o) == i) {
           present = true;
           break;
         }
       if (i == 3 && host.hasShaders()) present = true;
       if (!present) continue;
-      int row = y + categoryRow++ * 27;
+      int row = y + categoryRow++ * 27-navScroll;
       SelectionStyle.button(c, x, row, side, 23, category == i, false);
       c.text(
           c.clip(I18n.tr("graphics.category." + CATEGORIES[i]), side - 10),
@@ -202,10 +219,16 @@ public final class GraphicsUi extends WindowUi {
             search.setFocused(false);
           });
     }
+    hits.noClip();c.noScissor();
+    scrollbar(c,x+side-2,y,h,navScroll,Math.max(0,navHeight-h),navHeight);
+    if(category == -1 && search.isEmpty()) {
+      profilePage(c,right,y+27,bodyW,h-27,mx,my);
+      return;
+    }
     List<String> groups = new ArrayList<String>();
     groups.add("");
     for (Option option : host.options())
-      if (option.category() == category && !groups.contains(GraphicsPurpose.group(option.id())))
+      if (section(option) == category && !groups.contains(GraphicsPurpose.group(option.id())))
         groups.add(GraphicsPurpose.group(option.id()));
     if (!groups.contains(selectedGroup)) selectedGroup = "";
     String groupLabel =
@@ -229,7 +252,7 @@ public final class GraphicsUi extends WindowUi {
     shown = new ArrayList<Option>();
     for (Option o : host.options())
       if ((query.isEmpty()
-          ? o.category() == category
+          ? section(o) == category
               && (selectedGroup.isEmpty() || selectedGroup.equals(GraphicsPurpose.group(o.id())))
           : (o.id()
                   + " "
@@ -242,7 +265,7 @@ public final class GraphicsUi extends WindowUi {
                   + searchAliases(o.id()))
               .toLowerCase(Locale.ROOT)
               .contains(query))) shown.add(o);
-    int rows = Math.max(1, (h - (category == 3 && host.hasShaders() ? 130 : 100)) / 30);
+    int rows = Math.max(1, (h - (category == 3 && host.hasShaders() ? 130 : 100)) / 36);
     visibleRows = rows;
     scroll = Math.max(0, Math.min(scroll, Math.max(0, shown.size() - rows)));
     int top = y + 47;
@@ -251,20 +274,22 @@ public final class GraphicsUi extends WindowUi {
     for (int i = scroll; i < Math.min(shown.size(), scroll + rows); i++) {
       final Option o = shown.get(i);
       final int index = i;
-      int row = top + (i - scroll) * 30;
+      int row = top + (i - scroll) * 36;
       boolean active = o.available();
-      if (focusZone == 2 && focus == i) c.fill(right, row, right + bodyW, row + 27, t.surfaceHigh);
+      SelectionStyle.rounded(c,right,row,bodyW,32,4,
+          focusZone == 2 && focus == i ? t.surfaceHover : t.surface);
+      if (focusZone == 2 && focus == i) c.fill(right,row+6,right+2,row+26,t.accent);
       int control = Math.min(95, bodyW / 2);
       c.text(
           c.clip(GraphicsPurpose.name(o.id(), o.name()), bodyW - control - 12),
-          right + 3,
-          row + 4,
+          right + 7,
+          row + 5,
           active ? t.text : t.textDim,
           false);
       c.text(
           c.clip(GraphicsPurpose.description(o.id(), o.description()), bodyW - control - 12),
-          right + 3,
-          row + 16,
+          right + 7,
+          row + 18,
           t.textDim,
           false);
       int cx = right + bodyW - control;
@@ -381,13 +406,92 @@ public final class GraphicsUi extends WindowUi {
           false);
   }
 
+  private void profilePage(Canvas c,int x,int y,int w,int h,int mx,int my) {
+    Theme t=Theme.get();
+    GraphicsProfiles.Profile effective=profiles.effective();
+    c.strongText(I18n.tr("graphics.profile.title"),x,y,t.text);
+    c.text(c.clip(I18n.tr("graphics.profile.current", effective==null ? I18n.tr("graphics.profile.custom") : profileName(effective)),w),x,y+15,t.textDim,false);
+    int bottom=y+h-24;
+    if(profilePlan==null) {
+      boolean horizontal=w>=210 && h>=132;
+      int rowH=horizontal?Math.min(82,h-62):44,view=Math.max(1,bottom-y-37);
+      int max=horizontal?0:Math.max(0,3*(rowH+4)-view);
+      profileScroll=Math.max(0,Math.min(profileScroll,max));
+      c.scissor(x,y+31,x+w,bottom-5);hits.clip(x,y+31,w,view);
+      for(GraphicsProfiles.Profile profile:GraphicsProfiles.Profile.values()) {
+        int cardW=horizontal?(w-12)/3:w;
+        int cardX=horizontal?x+profile.ordinal()*(cardW+6):x;
+        int row=y+32+(horizontal?0:profile.ordinal()*(rowH+4)-profileScroll);
+        boolean active=profile==effective, hovered=inside(mx,my,cardX,row,cardW,rowH);
+        SelectionStyle.panel(c,cardX,row,cardW,rowH,hovered?t.surfaceHover:t.surface,active?t.accent:t.border);
+        c.strongText(c.clip(profileName(profile),cardW-16),cardX+8,row+8,t.text);
+        String description=I18n.tr("graphics.profile."+profile.name().toLowerCase(Locale.ROOT)+".desc");
+        if(horizontal) {
+          int line=0;
+          for(String text:Paint.wrap(c,description,cardW-16)) {
+            if(25+line*12>rowH-13)break;
+            c.text(c.clip(text,cardW-16),cardX+8,row+25+line++*12,t.textDim,false);
+          }
+        } else c.text(c.clip(description,cardW-16),cardX+8,row+25,t.textDim,false);
+        if(focusZone==2 && profileFocus==profile.ordinal()) c.fill(cardX,row+6,cardX+2,row+rowH-6,t.accent);
+        hits.add(cardX,row,cardW,rowH,()->prepareProfile(profile));
+      }
+      hits.noClip();c.noScissor();
+      scrollbar(c,x+w-2,y+32,view,profileScroll,max,3*(rowH+4));
+      button(c,x,bottom,Math.min(100,w/2-3),22,I18n.tr("graphics.back"),false,true,mx,my,this::requestClose);
+      button(c,x+w/2+3,bottom,Math.max(40,w/2-3),22,I18n.tr("graphics.profile.restore"),false,profiles.canUndo(),mx,my,()->runProfile(()->profiles.undo()));
+    } else {
+      List<String> lines=new ArrayList<>();
+      lines.add(I18n.tr("graphics.profile.preview",profileName(profilePlan.profile)));
+      for(GraphicsProfiles.Change change:profilePlan.changes) {
+        lines.add(GraphicsPurpose.name(change.option.id(),change.option.name())+": "+GraphicsPurpose.text(String.valueOf(change.before))+" → "+GraphicsPurpose.text(String.valueOf(change.after)));
+        lines.add("  "+change.option.backend());
+      }
+      lines.add(I18n.tr("graphics.profile.omitted",profilePlan.omitted.size()));
+      lines.addAll(profilePlan.omitted);
+      lines.addAll(Paint.wrap(c,I18n.tr("graphics.profile.safe"),w-8));
+      lines.addAll(Paint.wrap(c,I18n.tr("graphics.profile.reload"),w-8));
+      int rows=Math.max(1,(h-67)/13);
+      profileScroll=Math.max(0,Math.min(profileScroll,Math.max(0,lines.size()-rows)));
+      for(int i=profileScroll;i<Math.min(lines.size(),profileScroll+rows);i++)
+        c.text(c.clip(lines.get(i),w-10),x+4,y+32+(i-profileScroll)*13,t.textDim,false);
+      scrollbar(c,x+w-2,y+32,rows*13,profileScroll,Math.max(0,lines.size()-rows),lines.size()*13);
+      button(c,x,bottom,Math.max(40,w/2-3),22,I18n.tr("graphics.cancel"),false,true,mx,my,()->profilePlan=null);
+      button(c,x+w/2+3,bottom,Math.max(40,w/2-3),22,I18n.tr("graphics.apply"),true,!profilePlan.changes.isEmpty(),mx,my,
+          ()->runProfile(()->{ profiles.apply(profilePlan); profileReport=I18n.tr("graphics.profile.applied",profilePlan.changes.size(),profilePlan.omitted.size()); profilePlan=null; }));
+    }
+    if(focusZone==3) {
+      int fx=actionFocus==0?x:x+w/2+3;
+      c.fill(fx+3,bottom+21,fx+Math.max(40,w/2-3)-3,bottom+22,t.accent);
+    }
+    String message=error.isEmpty()?profileReport:error;
+    if(!message.isEmpty()) c.text(c.clip(message,w),x,y+h-37,error.isEmpty()?t.textDim:0xFFEF7D89,false);
+  }
+  private static String profileName(GraphicsProfiles.Profile profile) {
+    return I18n.tr("graphics.profile."+profile.name().toLowerCase(Locale.ROOT));
+  }
+  private void prepareProfile(GraphicsProfiles.Profile profile) {
+    runProfile(()->{profilePlan=profiles.prepare(profile);profileScroll=0;});
+  }
+  private void runProfile(Runnable action) {
+    try { action.run(); error=""; }
+    catch(RuntimeException e) {error=I18n.trOr(e.getMessage(),e.getMessage()==null?e.getClass().getSimpleName():e.getMessage());}
+  }
+
+  private static int section(Option option) {
+    String group=GraphicsPurpose.group(option.id());
+    if(option.category()!=3 && group.equals("lighting"))return 5;
+    if(option.category()==1 && (group.equals("geometry") || group.equals("entities")))return 6;
+    return option.category();
+  }
+
   public Host provider() {
     return host;
   }
 
   public boolean selectCategory(int next) {
     for (Option o : host.options())
-      if (o.category() == next) {
+      if (section(o) == next) {
         category = next;
         scroll = focus = 0;
         return true;
@@ -403,7 +507,7 @@ public final class GraphicsUi extends WindowUi {
       row.put("name", o.name());
       row.put("localizedName", GraphicsPurpose.name(o.id(), o.name()));
       row.put("group", GraphicsPurpose.group(o.id()));
-      row.put("category", I18n.tr("graphics.category." + CATEGORIES[o.category()]));
+      row.put("category", I18n.tr("graphics.category." + CATEGORIES[section(o)]));
       row.put("backend", o.backend());
       result.add(row);
     }
@@ -466,7 +570,7 @@ public final class GraphicsUi extends WindowUi {
   }
 
   public boolean mouseClicked(double x, double y, int button) {
-    if (button == 0)
+    if (button == 0 && pending == null && category != -1)
       for (SliderHit hit : sliders)
         if (x >= hit.x - 3 && x < hit.x + hit.w + 3 && y >= hit.y && y < hit.y + 26) {
           dragging = hit;
@@ -511,7 +615,11 @@ public final class GraphicsUi extends WindowUi {
   }
 
   public boolean mouseScrolled(double x, double y, double amount) {
-    scroll -= amount > 0 ? 1 : -1;
+    if(inside(x,y,navigation[0],navigation[1],navigation[2],navigation[3])) {
+      navScroll-=(amount>0?27:-27);return true;
+    }
+    if(category == -1 && search.isEmpty()) profileScroll -= amount > 0 ? (profilePlan==null?24:1) : (profilePlan==null?-24:-1);
+    else scroll -= amount > 0 ? 1 : -1;
     return true;
   }
 
@@ -527,6 +635,7 @@ public final class GraphicsUi extends WindowUi {
 
   @Override
   public void requestClose() {
+    if(profilePlan!=null) {profilePlan=null;return;}
     if (pending != null) {
       pending = null;
       return;
@@ -545,6 +654,18 @@ public final class GraphicsUi extends WindowUi {
       return true;
     }
     if (key == UiKey.ESCAPE) return super.keyPressed(raw, key, shift);
+    if(category == -1 && search.isEmpty() && focusZone==2) {
+      if(key==UiKey.UP || key==UiKey.DOWN || key==UiKey.LEFT || key==UiKey.RIGHT) {
+        if(profilePlan!=null) profileScroll=Math.max(0,profileScroll+(key==UiKey.DOWN?1:-1));
+        else {profileFocus=Math.floorMod(profileFocus+(key==UiKey.DOWN || key==UiKey.RIGHT?1:-1),3);profileScroll=Math.max(0,profileFocus*48-24);}
+        return true;
+      }
+      if(key==UiKey.ENTER) {
+        if(profilePlan==null) prepareProfile(GraphicsProfiles.Profile.values()[profileFocus]);
+        else if(!profilePlan.changes.isEmpty()) runProfile(()->{profiles.apply(profilePlan);profilePlan=null;});
+        return true;
+      }
+    }
     if (key == UiKey.TAB) {
       focusZone = Math.floorMod(focusZone + (shift ? -1 : 1), 4);
       search.setFocused(focusZone == 1);
@@ -560,14 +681,26 @@ public final class GraphicsUi extends WindowUi {
     if (focusZone == 0) {
       if (key == UiKey.DOWN || key == UiKey.RIGHT || key == UiKey.UP || key == UiKey.LEFT) {
         int step = key == UiKey.DOWN || key == UiKey.RIGHT ? 1 : -1;
-        for (int i = 1; i <= CATEGORIES.length; i++) {
-          int next = Math.floorMod(category + step * i, CATEGORIES.length);
-          if (selectCategory(next)) break;
+        int current=0;
+        for(int i=0;i<NAVIGATION.length;i++)if(NAVIGATION[i]==category)current=i;
+        for(int i=1;i<=NAVIGATION.length;i++) {
+          int at=Math.floorMod(current+step*i,NAVIGATION.length),next=NAVIGATION[at];
+          if(next==-1) {category=-1;profilePlan=null;navScroll=0;break;}
+          if(selectCategory(next)) {navScroll=Math.max(0,at*27-27);break;}
         }
         return true;
       }
       if (key == UiKey.ENTER) {
         focusZone = 2;
+        return true;
+      }
+    }
+    if (focusZone == 3 && category==-1 && search.isEmpty()) {
+      if(key==UiKey.LEFT || key==UiKey.RIGHT) {actionFocus=Math.floorMod(actionFocus+1,2);return true;}
+      if(key==UiKey.ENTER) {
+        if(actionFocus==0) {if(profilePlan!=null)profilePlan=null;else requestClose();}
+        else if(profilePlan!=null && !profilePlan.changes.isEmpty())runProfile(()->{profiles.apply(profilePlan);profilePlan=null;});
+        else if(profiles.canUndo())runProfile(()->profiles.undo());
         return true;
       }
     }

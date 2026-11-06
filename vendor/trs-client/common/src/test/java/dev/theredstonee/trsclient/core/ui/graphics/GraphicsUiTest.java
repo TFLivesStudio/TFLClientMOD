@@ -21,13 +21,13 @@ class GraphicsUiTest {
   public void fill(int a,int b,int c,int d,int color){}public void text(String s,int x,int y,int color,boolean shadow){text.add(s);}public int textWidth(String s){return s.length()*6;}public int lineHeight(){return 9;}public String clip(String s,int max){return s.substring(0,Math.min(s.length(),Math.max(0,max/6)));}public void flush(){}public void scissor(int a,int b,int c,int d){}public void noScissor(){}
  }
  @Test void keyboardEditsAndAppliesTheProvidersOwnModel(){
-  Host host=new Host();GraphicsUi ui=new GraphicsUi(host);ui.render(new Draw(),480,270,-1,-1);
+  Host host=new Host();GraphicsUi ui=new GraphicsUi(host);ui.selectCategory(0);ui.render(new Draw(),480,270,-1,-1);
   ui.keyPressed(0,UiKey.ENTER,false);ui.keyPressed(0,UiKey.RIGHT,false);assertTrue(host.display.changed());
   ui.keyPressed(0,UiKey.ESCAPE,false);assertTrue(host.display.changed(),"pending change is retained until apply or undo");
   ui.keyPressed(0,UiKey.TAB,false);ui.keyPressed(0,UiKey.ENTER,false);assertEquals(1,host.applied);assertFalse(host.display.changed());assertTrue(host.display.value);
  }
  @Test void unavailableProviderOptionCannotBeChangedByKeyboard(){
-  Host host=new Host();host.display.enabled=false;GraphicsUi ui=new GraphicsUi(host);ui.render(new Draw(),480,270,-1,-1);ui.keyPressed(0,UiKey.ENTER,false);ui.keyPressed(0,UiKey.RIGHT,false);assertFalse(host.display.value);
+  Host host=new Host();host.display.enabled=false;GraphicsUi ui=new GraphicsUi(host);ui.selectCategory(0);ui.render(new Draw(),480,270,-1,-1);ui.keyPressed(0,UiKey.ENTER,false);ui.keyPressed(0,UiKey.RIGHT,false);assertFalse(host.display.value);
  }
  @Test void purposeSearchFindsAnOptionOutsideTheSelectedCategory(){
   Host host=new Host();GraphicsUi ui=new GraphicsUi(host);Draw draw=new Draw();ui.render(draw,480,270,-1,-1);ui.keyPressed(0,UiKey.TAB,false);for(char c:"fsr1".toCharArray())assertTrue(ui.charTyped(c));draw.text.clear();ui.render(draw,480,270,-1,-1);assertTrue(draw.text.contains("Upscaler"));assertFalse(draw.text.contains("Brightness"));
@@ -35,11 +35,21 @@ class GraphicsUiTest {
 
  @Test void confirmationCanBeCancelledWithoutApplyingAndRequiresExplicitAcceptance(){
   Host host=new Host();host.confirm=true;host.display.value=true;GraphicsUi ui=new GraphicsUi(host);
-  ui.render(new Draw(),480,270,-1,-1);
+  ui.selectCategory(0);ui.render(new Draw(),480,270,-1,-1);
   for(int i=0;i<3;i++)ui.keyPressed(0,UiKey.TAB,false);
   ui.keyPressed(0,UiKey.ENTER,false);assertEquals(0,host.applied);
   ui.keyPressed(0,UiKey.ESCAPE,false);assertEquals(0,host.applied);assertTrue(host.display.changed());
   ui.keyPressed(0,UiKey.ENTER,false);assertEquals(0,host.applied);
   ui.keyPressed(0,UiKey.ENTER,false);assertEquals(1,host.applied);assertFalse(host.display.changed());
  }
+ @Test void profilesAreFirstAndKeyboardPreviewRequiresASecondExplicitAcceptance(){
+  GraphicsProfilesTest.Host host=new GraphicsProfilesTest.Host();host.add("minecraft:render_distance",8);
+  GraphicsUi ui=new GraphicsUi(host);Draw draw=new Draw();ui.render(draw,427,240,-1,-1);
+  assertTrue(draw.text.contains(dev.theredstonee.trsclient.core.i18n.I18n.tr("graphics.profile.quality")));
+  ui.keyPressed(0,UiKey.ENTER,false);ui.keyPressed(0,UiKey.ENTER,false);assertEquals(0,host.saves);
+  ui.keyPressed(0,UiKey.ESCAPE,false);assertEquals(0,host.saves);
+  ui.render(draw,427,240,-1,-1);ui.keyPressed(0,UiKey.ENTER,false);assertEquals(0,host.saves);
+  ui.keyPressed(0,UiKey.ENTER,false);assertEquals(1,host.saves);
+ }
+
 }

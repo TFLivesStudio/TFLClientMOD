@@ -95,6 +95,7 @@ public final class SmokeHarness implements Runnable {
 
   private UnifiedSmoke unified;
   private Audit5Smoke audit5;
+  private VisualSmoke visual;
   // Diagnostics heartbeat: prints probe state with timestamps and persists a small JSON pulse so
   // the smoke driver can enforce an inactivity deadline separately from the total runtime budget.
   // Daemon-only and read-only with respect to the client; it never touches game state.
@@ -168,6 +169,7 @@ public final class SmokeHarness implements Runnable {
 
   @Override
   public void run() {
+    if(Boolean.getBoolean("tflcore.visual.smoke")){if(visual==null)visual=new VisualSmoke(c,out);visual.run();return;}
     if(Boolean.getBoolean("tflcore.audit5.smoke")){if(audit5==null)audit5=new Audit5Smoke(c,out);audit5.run();return;}
     if(Boolean.getBoolean("tflcore.unified.smoke")){if(unified==null)unified=new UnifiedSmoke(c,out);startPulse();unified.run();return;}
     try {

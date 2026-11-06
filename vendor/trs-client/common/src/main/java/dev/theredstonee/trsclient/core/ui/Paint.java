@@ -119,6 +119,15 @@ public final class Paint {
 	 * Eigene Umbruchlogik, weil die Vanilla-Funktion je Version anders heißt.
 	 */
 	public static java.util.List<String> wrap(Canvas c, String text, int maxWidth) {
+        if(text!=null && (text.indexOf('\n')>=0 || text.indexOf('\r')>=0)) {
+            java.util.List<String> paragraphs=new java.util.ArrayList<String>();
+            for(String paragraph:text.replace("\r\n","\n").replace('\r','\n').split("\n",-1)) {
+                if(paragraph.isEmpty())paragraphs.add("");
+                else paragraphs.addAll(wrap(c,paragraph,maxWidth));
+            }
+            return paragraphs;
+        }
+
 		java.util.List<String> lines = new java.util.ArrayList<String>();
 		if (text == null || text.isEmpty() || maxWidth <= 0) return lines;
 		StringBuilder line = new StringBuilder();

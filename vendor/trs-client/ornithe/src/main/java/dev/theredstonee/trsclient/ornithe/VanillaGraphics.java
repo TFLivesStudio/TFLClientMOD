@@ -88,6 +88,38 @@ public final class VanillaGraphics implements GraphicsUi.Host {
       return "Minecraft GameOptions: " + option.name();
     }
 
+    private Object profileValue() {
+      if(option.isFloat()) return client.mc.options.getFloat(option);
+      return switch(option.name()) {
+        case "GRAPHICS" -> client.mc.options.fancyGraphics;
+        case "RENDER_CLOUDS" -> client.mc.options.cloudRenderMode;
+        case "PARTICLES" -> client.mc.options.particles;
+        case "AMBIENT_OCCLUSION" -> client.mc.options.ambientOcclusion;
+        default -> null;
+      };
+    }
+    public GraphicsProfiles.Capability capability() {
+      if(profileValue()==null) return null;
+      return new GraphicsProfiles.Capability() {
+        public Object read() { return profileValue(); }
+        public boolean accepts(Object value) {
+          Object current=read();
+          if(current instanceof Float && value instanceof Float n)
+            return Float.isFinite(n) && Math.abs(option.denormalize(option.normalize(n))-n)<.001f;
+          if(current instanceof Boolean) return value instanceof Boolean;
+          return current instanceof Integer && value instanceof Integer n && n>=0 && n<=2;
+        }
+        public void write(Object value) {
+          if(!accepts(value)) throw new IllegalArgumentException(id());
+          if(option.isFloat()) client.mc.options.set(option,(Float)value);
+          else {
+            for(int i=0;i<4 && !Objects.equals(read(),value);i++) client.mc.options.set(option,1);
+            if(!Objects.equals(read(),value)) throw new IllegalStateException(id());
+          }
+        }
+      };
+    }
+
     public boolean slider() {
       return option.isFloat();
     }

@@ -2,6 +2,7 @@ package dev.theredstonee.trsclient.ornithe;
 
 import dev.diorama.Projection;
 import dev.theredstonee.trsclient.core.map.QuarterTurn;
+import dev.theredstonee.trsclient.core.i18n.I18n;
 import dev.theredstonee.trsclient.core.ui.*;
 import dev.theredstonee.trsclient.core.waypoint.Waypoint;
 
@@ -34,85 +35,6 @@ public final class OrnitheDioramaUi extends UiScreen {
     double p = zoom / scale;
     c.diorama.draw(canvas, 0, 0, w, h, x, y, z, p, layer);
     Theme t = Theme.get();
-    SelectionStyle.panel(canvas, 8, 8, Math.min(w - 16, 310), 28, 0xC0101828, t.border);
-    canvas.strongText("TFL Maps", 17, 17, t.text);
-    control(
-        canvas,
-        100,
-        13,
-        46,
-        "Center",
-        () -> {
-          follow = true;
-        });
-    control(canvas, 151, 13, 24, "−", () -> zoom = Math.max(.125, zoom / 1.4));
-    control(canvas, 180, 13, 24, "+", () -> zoom = Math.min(16, zoom * 1.4));
-    control(
-        canvas,
-        209,
-        13,
-        55,
-        "Settings",
-        () ->
-            c.mc.openScreen(
-                new CoreScreen(
-                    new dev.theredstonee.trsclient.core.ui.menu.ModMenu(
-                            new OrnitheMenuHost(c, c.mc.screen))
-                        .select(c.modules.worldMap),
-                    false)));
-    control(canvas, w - 62, 13, 50, "Close", () -> requestClose());
-    control(
-        canvas,
-        12,
-        44,
-        58,
-        layer == dev.diorama.bake.TileKey.SURFACE ? "Surface" : "Caves",
-        () -> toggleLayer());
-    control(
-        canvas,
-        205,
-        44,
-        82,
-        dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.rotate"),
-        () -> {
-          try {
-            c.mapPlatform.catalog().rotate(1);
-          } catch (java.io.IOException e) {
-            c.mapPlatform.message("Cannot save map rotation: " + e.getMessage());
-          }
-        });
-    if (!c.mc.isSingleplayer())
-      control(
-          canvas,
-          137,
-          44,
-          60,
-          dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.worlds"),
-          () -> {
-            var parent = c.mc.screen;
-            c.mc.openScreen(
-                new CoreScreen(
-                    new dev.theredstonee.trsclient.core.map.session.WorldCatalogUi(
-                        c.mapPlatform.catalog(),
-                        c.mapPlatform::selectedWorld,
-                        () -> c.mc.openScreen(parent)),
-                    false));
-          });
-    control(
-        canvas,
-        12,
-        70,
-        80,
-        dev.theredstonee.trsclient.core.i18n.I18n.tr("serverMaps.waypoints"),
-        () -> {
-          var parent = c.mc.screen;
-          c.mc.openScreen(
-              new CoreScreen(new OrnitheWaypointListUi(c, () -> c.mc.openScreen(parent)), false));
-        });
-    if (layer != dev.diorama.bake.TileKey.SURFACE) {
-      control(canvas, 75, 44, 24, "−", () -> layer = Math.max(8, layer - 8));
-      control(canvas, 104, 44, 24, "+", () -> layer = Math.min(255, layer + 8));
-    }
     if (c.modules.worldMapWaypoints.get())
       for (Waypoint point :
           c.waypoints.visible(c.mapPlatform.worldKey(), c.mapPlatform.dimension())) {
@@ -138,6 +60,33 @@ public final class OrnitheDioramaUi extends UiScreen {
             28,
             () -> edit(point, false));
       }
+    SelectionStyle.panel(canvas,8,8,w-16,26,Theme.get().surfaceHigh,t.border);
+    canvas.strongText("TFL Maps",17,17,t.text);
+    Toolbar toolbar=new Toolbar(canvas,hits,12,40,w-24,mx,my);
+    toolbar.action(I18n.tr("overhaul.map.center"),()->follow=true);
+    toolbar.action("−",()->zoom=Math.max(.125,zoom/1.4));
+    toolbar.action("+",()->zoom=Math.min(16,zoom*1.4));
+    toolbar.action(I18n.tr(layer==dev.diorama.bake.TileKey.SURFACE?"overhaul.map.surface":"overhaul.map.caves"),this::toggleLayer);
+    if(layer!=dev.diorama.bake.TileKey.SURFACE) {
+      toolbar.action("− Y",()->layer=Math.max(8,layer-8));
+      toolbar.action("+ Y",()->layer=Math.min(255,layer+8));
+    }
+    toolbar.action(I18n.tr("serverMaps.rotate"),()->{
+      try {c.mapPlatform.catalog().rotate(1);}
+      catch(java.io.IOException failure){c.mapPlatform.message(failure.getMessage());}
+    });
+    if(!c.mc.isSingleplayer())toolbar.action(I18n.tr("serverMaps.worlds"),()->{
+      var parent=c.mc.screen;
+      c.mc.openScreen(new CoreScreen(new dev.theredstonee.trsclient.core.map.session.WorldCatalogUi(
+          c.mapPlatform.catalog(),c.mapPlatform::selectedWorld,()->c.mc.openScreen(parent)),false));
+    });
+    toolbar.action(I18n.tr("serverMaps.waypoints"),()->{
+      var parent=c.mc.screen;
+      c.mc.openScreen(new CoreScreen(new OrnitheWaypointListUi(c,()->c.mc.openScreen(parent)),false));
+    });
+    toolbar.action(I18n.tr("overhaul.settings"),()->c.mc.openScreen(new CoreScreen(
+        new dev.theredstonee.trsclient.core.ui.menu.ModMenu(new OrnitheMenuHost(c,c.mc.screen)).select(c.modules.worldMap),false)));
+    toolbar.action(I18n.tr("common.done"),this::requestClose);
     int q = c.diorama.rotation();
     double viewU = QuarterTurn.u(x, z, q) + (mx - w / 2) / p,
         viewD = Projection.zAt(Projection.v(y, QuarterTurn.depth(x, z, q)) + (my - h / 2) / p, y);
@@ -145,7 +94,7 @@ public final class OrnitheDioramaUi extends UiScreen {
     String status =
         String.format(
             java.util.Locale.ROOT,
-            "X %.0f  Z %.0f   ·   %.2f×   ·   %d chunks   ·   Right click: waypoint",
+            I18n.tr("overhaul.map.status"),
             worldX,
             worldZ,
             zoom,
@@ -156,18 +105,13 @@ public final class OrnitheDioramaUi extends UiScreen {
         h - 24,
         Math.min(w - 16, canvas.textWidth(status) + 16),
         18,
-        0xC0101828,
+        t.surfaceHigh,
         t.border);
     canvas.text(canvas.clip(status, w - 32), 16, h - 19, t.text, false);
     if (!c.diorama.failure.isEmpty())
       canvas.text(canvas.clip(c.diorama.failure, w - 20), 10, h - 38, 0xFFFFA0A0, true);
   }
 
-  private void control(Canvas canvas, int x, int y, int w, String label, Runnable action) {
-    SelectionStyle.button(canvas, x, y, w, 18, false, false);
-    canvas.text(label, x + 5, y + 5, Theme.get().text, false);
-    hits.add(x, y, w, 18, action);
-  }
 
   public boolean mouseClicked(double mx, double my, int button) {
     if (super.mouseClicked(mx, my, button)) return true;
@@ -224,6 +168,8 @@ public final class OrnitheDioramaUi extends UiScreen {
   }
 
   public boolean keyPressed(int raw, UiKey key, boolean shift) {
+    if(key==UiKey.TAB)return hits.focusNext(shift);
+    if(key==UiKey.ENTER)return hits.activateFocused();
     if (key == UiKey.ESCAPE || raw == c.mapKey.getKeyCode()) {
       requestClose();
       return true;

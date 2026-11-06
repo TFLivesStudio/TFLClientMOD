@@ -89,7 +89,8 @@ public final class AutoTest {
 		if (RealBenchRunner.installIfRequested()) return;
 		TrsClient.LOGGER.info("[Autotest] aktiv");
 		//? if >=26.3 {
-        /*if("audit5".equals(System.getProperty("trsclient.autotest.only"))){Audit5Smoke.install();return;}
+        /*if("visual".equals(System.getProperty("trsclient.autotest.only"))){VisualSmoke.install();return;}
+        if("audit5".equals(System.getProperty("trsclient.autotest.only"))){Audit5Smoke.install();return;}
         if("unified".equals(System.getProperty("trsclient.autotest.only"))){UnifiedSmoke.install();return;}
         if("depth".equals(System.getProperty("trsclient.autotest.only"))||"depthrestart".equals(System.getProperty("trsclient.autotest.only"))){DepthSmoke.install();return;}
         *///?}

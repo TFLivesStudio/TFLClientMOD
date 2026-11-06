@@ -174,19 +174,12 @@ public final class Redstone {
 	}
 
 	/** Knopf: {@code primary} = leuchtende Lampe, sonst Stein mit Staubkante beim Überfahren. */
-	public static void button(Canvas c, int x, int y, int w, int h, String label, boolean primary, boolean hover) {
-		Theme t = Theme.get();
-		if (primary) {
-			lamp(c, x, y, w, h, hover ? 1f : 0.82f, 0f);
-			String s = c.clip(label, w - 6);
-			c.text(s, x + (w - c.textWidth(s)) / 2, y + (h - 8) / 2 + (h >= 16 ? 0 : 1), lampTextColor(1f), false);
-			return;
-		}
-		stone(c, x, y, w, h, hover ? t.surfaceHover : t.surfaceHigh, hover ? ColorMath.lerp(t.border, t.textDim, 0.5f) : t.border);
-		if (hover) dustH(c, x + 3, x + w - 3, y + h - 3, t.dustOn, 0f);
-		String s = c.clip(label, w - 6);
-		c.text(s, x + (w - c.textWidth(s)) / 2, y + (h - 8) / 2 + (h >= 16 ? 0 : 1) - (hover ? 1 : 0), t.text, false);
-	}
+    public static void button(Canvas c,int x,int y,int w,int h,String label,boolean primary,boolean hover) {
+        Theme t=Theme.get();
+        SelectionStyle.button(c,x,y,w,h,primary,hover);
+        String text=c.clip(label,Math.max(0,w-12));
+        c.text(text,x+(w-c.textWidth(text))/2,y+(h-c.lineHeight())/2,t.text,false);
+    }
 
 	/** Quadratischer Symbol-Knopf. */
 	public static void iconButton(Canvas c, int x, int y, int size, String icon, boolean hover, boolean primary) {

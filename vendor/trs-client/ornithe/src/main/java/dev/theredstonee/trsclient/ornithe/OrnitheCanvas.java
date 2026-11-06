@@ -230,10 +230,13 @@ public final class OrnitheCanvas implements Canvas, Textures.Store {
     return normalizePunctuation(c != null && c.ready ? c.privacy.text(text) : text);
   }
 
+  private boolean forcedUiText;
+  public boolean uiText(boolean enabled){boolean previous=forcedUiText;forcedUiText=enabled;return previous;}
+
   private boolean useNunito() {
+    if(forcedUiText)return true;
     return mc.screen instanceof CoreScreen screen
-        && (screen.ui instanceof dev.theredstonee.trsclient.core.ui.title.TitleUi
-            || screen.ui instanceof dev.theredstonee.trsclient.core.ui.menu.ModMenu);
+        && screen.ui.usesUiFont();
   }
 
   public void text(String text, int x, int y, int color, boolean shadow) {

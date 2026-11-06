@@ -43,6 +43,10 @@ public final class HudEditor extends UiScreen {
 	private final SettingsPanel panel = new SettingsPanel();
 	private final HudHistory history;
 	private boolean showPresets;
+    private boolean showLibrary=true;
+    private int libraryScroll, inspectorScroll;
+    private final int[] inspectorBounds=new int[4];
+    private final int[] libraryBounds=new int[4];
 	private boolean safeZones = true;
 	private String presetError;
 
@@ -142,6 +146,8 @@ public final class HudEditor extends UiScreen {
 		topBar(c, width, mouseX, mouseY);
 		if (dragging == null) hint(c, width, height);
 		tools(c, width, height, mouseX, mouseY);
+        if(showLibrary && width>=370 && !showPresets && dragging==null) library(c,width,height,mouseX,mouseY);
+        else libraryBounds[2]=0;
 		panelIn = Anim.approach(panelIn, selected != null ? 1f : 0f, dt, 0.07f);
 		if (panelIn > 0.02f) sidePanel(c, width, height, mouseX, mouseY);
 		c.pop();
@@ -253,6 +259,7 @@ public final class HudEditor extends UiScreen {
         if (width >= 222) tool(c, width >= 294 ? 226 : 156, y, 60, I18n.trOr("editor.arrange", "Arrange"), true, mx, my, new Runnable() {
             public void run() { arrangePreset(); history.commit(); }
         });
+        if(width>=370) tool(c,290,y,72,I18n.tr("overhaul.library"),true,mx,my,()->showLibrary=!showLibrary);
         if (!showPresets) return;
         int columns = Math.max(1, Math.min(3, (width - 16) / 84));
         int rows = (HudPresets.Preset.values().length + columns - 1) / columns;
@@ -319,6 +326,35 @@ public final class HudEditor extends UiScreen {
 		c.text(text, x + 7, y + 4, t.textDim, false);
 	}
 
+    private void library(Canvas c,int width,int height,int mx,int my) {
+        Theme t=Theme.get();int x=8,y=barHeight+30,w=width>=520?148:122,h=Math.max(20,height-y-27);
+        libraryBounds[0]=x;libraryBounds[1]=y;libraryBounds[2]=w;libraryBounds[3]=h;
+        Redstone.window(c,x,y,w,h);
+        c.strongText(c.clip(I18n.tr("overhaul.library"),w-16),x+8,y+8,t.text);
+        List<HudItem> items=new ArrayList<HudItem>();
+        for(HudItem item:host.hudItems())if(item.module().available() && host.supports(item.module()))items.add(item);
+        int view=Math.max(1,h-28),max=Math.max(0,items.size()*26-view);
+        libraryScroll=Math.max(0,Math.min(max,libraryScroll));
+        hits.add(x,y,w,h,()->{});
+        c.scissor(x+4,y+26,x+w-4,y+h-3);hits.clip(x+4,y+26,w-8,h-29);
+        try {
+            int first=libraryScroll/26,last=Math.min(items.size(),(libraryScroll+view)/26+1);
+            for(int i=first;i<last;i++) {
+                final HudItem item=items.get(i);final HudModule module=item.module();
+                int row=y+26+i*26-libraryScroll;
+                if(item==selected)dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,x+4,row,w-8,23,4,t.surfaceHover);
+                c.text(c.clip(module.name(),w-46),x+8,row+7,module.isEnabled()?t.text:t.textDim,false);
+                Paint.toggle(c,x+w-32,row+5,22,12,module.isEnabled()?1:0,false);
+                hits.add(x+4,row,w-8,23,()->{selected=item;host.playClick();});
+                hits.add(x+w-36,row,32,23,()->{host.setEnabled(module,!module.isEnabled());selected=item;host.playClick();});
+            }
+        }finally {hits.noClip();c.noScissor();}
+        if(max>0) {
+            int bh=Math.max(12,view*view/(view+max)),by=y+26+(view-bh)*libraryScroll/max;
+            c.fill(x+w-3,by,x+w-1,by+bh,t.textDim);
+        }
+    }
+
 	private void sidePanel(Canvas c, int width, int height, int mx, int my) {
 		Theme t = Theme.get();
 		final HudItem item = selected;
@@ -330,7 +366,7 @@ public final class HudEditor extends UiScreen {
 		settings.add(module.textShadow);
 		settings.add(module.textColor);
 
-		int h = 40 + panel.height(settings) + 22;
+		int h = Math.min(height-barHeight-38,40 + panel.height(settings) + 22);
 		int x = width - PANEL_W - 8 - TouchMode.insetsGui().right + Math.round((1 - Anim.easeOut(panelIn)) * 20);
 		int y = barHeight + 30;
 		Redstone.window(c, x, y, PANEL_W, h);
@@ -347,8 +383,13 @@ public final class HudEditor extends UiScreen {
 		});
 		c.fill(x + 6, y + 21, x + PANEL_W - 6, y + 22, t.border);
 
-		int ry = y + 26;
-		ry = panel.draw(c, hits, settings, x + 8, ry, PANEL_W - 16, mx, my);
+        inspectorBounds[0]=x;inspectorBounds[1]=y;inspectorBounds[2]=PANEL_W;inspectorBounds[3]=h;
+        hits.add(x,y+22,PANEL_W,Math.max(0,h-22),()->{});
+        int view=Math.max(1,h-28);
+        inspectorScroll=Math.max(0,Math.min(inspectorScroll,Math.max(0,panel.height(settings)+24-view)));
+        c.scissor(x+4,y+24,x+PANEL_W-4,y+h-4);hits.clip(x+4,y+24,PANEL_W-8,Math.max(1,h-28));
+        int ry=y+26-inspectorScroll;
+        ry=panel.draw(c,hits,settings,x+8,ry,PANEL_W-16,mx,my);
 
 		boolean resetHover = inside(mx, my, x + 8, ry + 2, PANEL_W - 16, 16);
 		Paint.button(c, x + 8, ry + 2, PANEL_W - 16, 16, I18n.tr("common.reset"), false, resetHover);
@@ -361,6 +402,7 @@ public final class HudEditor extends UiScreen {
 				history.commit();
 			}
 		});
+        hits.noClip();c.noScissor();
 	}
 
 	// --- Eingaben ---
@@ -430,7 +472,13 @@ public final class HudEditor extends UiScreen {
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-		// Über der Leiste oder dem Einstellungsfeld ändert das Mausrad nichts am Element darunter.
+        if(showLibrary && libraryBounds[2]>0 && inside(mouseX,mouseY,libraryBounds[0],libraryBounds[1],libraryBounds[2],libraryBounds[3])) {
+            libraryScroll=Math.max(0,libraryScroll-(int)Math.signum(amount)*26);return true;
+        }
+        if(selected!=null && inside(mouseX,mouseY,inspectorBounds[0],inspectorBounds[1],inspectorBounds[2],inspectorBounds[3])) {
+            inspectorScroll=Math.max(0,inspectorScroll-(int)Math.signum(amount)*26);return true;
+        }
+        // Über der Leiste oder dem Einstellungsfeld ändert das Mausrad nichts am Element darunter.
 		if (hits.hovers(mouseX, mouseY)) return false;
 		HudItem item = itemAt(mouseX, mouseY, lastWidth, lastHeight);
 		if (item == null || amount == 0) return false;

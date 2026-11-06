@@ -2,6 +2,7 @@
 /*package dev.theredstonee.trsclient.screen;
 
 import dev.theredstonee.trsclient.core.ui.graphics.GraphicsUi;
+import dev.theredstonee.trsclient.core.ui.graphics.GraphicsProfiles;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -163,6 +164,33 @@ public final class SodiumGraphics implements GraphicsUi.Host {
         }
       } else throw new IllegalStateException("Unsupported option type");
       invoke(option, "modifyValue", next);
+    }
+
+    public GraphicsProfiles.Capability capability() {
+      if(!stateful) return null;
+      return new GraphicsProfiles.Capability() {
+        public Object read() { return call(option,"getValidatedValue"); }
+        public Object[] choices() {
+          Object v=read();
+          return v instanceof Enum<?> e ? e.getDeclaringClass().getEnumConstants() : new Object[0];
+        }
+        public boolean accepts(Object value) {
+          if(!available()) return false;
+          Object v=read();
+          if(v instanceof Enum) return Arrays.asList(choices()).contains(value) && Boolean.TRUE.equals(invoke(option,"isValueAllowed",value));
+          if(v instanceof Boolean) return value instanceof Boolean;
+          if(v instanceof Integer && has(option,"getSteppedValidator") && value instanceof Integer n) {
+            Object validator=call(option,"getSteppedValidator");
+            int min=(Integer)call(validator,"min"), max=(Integer)call(validator,"max"), step=(Integer)call(validator,"step");
+            return n>=min && n<=max && (n-min)%step==0;
+          }
+          return false;
+        }
+        public void write(Object value) {
+          if(!accepts(value)) throw new IllegalArgumentException(id);
+          invoke(option,"modifyValue",value);
+        }
+      };
     }
 
     public boolean slider() {

@@ -12,7 +12,7 @@ import java.util.List;
 public final class TitleUi extends UiScreen {
     private static final class Entry {
         final String id, label; final Runnable action;
-        int x,y,w,h;
+        int x,y,w,h;float hover;
         Entry(String id,Runnable action) { this.id=id;this.label=I18n.tr("title."+id);this.action=action; }
     }
     private final TitleHost host;
@@ -55,11 +55,10 @@ public final class TitleUi extends UiScreen {
         for(int i=0;i<entries.size();i++) {
             Entry e=entries.get(i);e.x=left;e.y=top+i*row;e.w=rail;e.h=Math.max(10,row-3);
             boolean selected=focus==i||inside(mx,my,e);
-            // One play action; remaining destinations are text navigation, never a stack of large cards.
-            if(selected) {
-                SelectionStyle.rounded(c,e.x,e.y,e.w,e.h,4,0x64344B69);
-                c.fill(e.x,e.y+3,e.x+2,e.y+e.h-3,t.accent);
-            }
+            e.hover=Anim.approach(e.hover,selected?1f:0f,dt,.08f);
+            int fill=ColorMath.lerp(ColorMath.withAlpha(t.surfaceHigh,115),ColorMath.withAlpha(t.surfaceHover,210),e.hover);
+            SelectionStyle.panel(c,e.x,e.y,e.w,e.h,fill,ColorMath.lerp(t.border,t.accent,e.hover));
+            if(selected)c.fill(e.x,e.y+4,e.x+2,e.y+e.h-4,t.accent);
             String label="trsMenu".equals(e.id)?I18n.trOr("title.clientSettings","Client settings"):e.label;
             c.text(c.clip(label,e.w-18),e.x+9,e.y+(e.h-c.lineHeight())/2,selected?t.text:t.textDim,false);
             final int index=i;hits.add(e.x,e.y,e.w,e.h,()->activate(index));

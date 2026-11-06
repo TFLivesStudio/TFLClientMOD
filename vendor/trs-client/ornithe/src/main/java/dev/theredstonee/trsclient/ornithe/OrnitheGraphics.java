@@ -1,6 +1,7 @@
 package dev.theredstonee.trsclient.ornithe;
 
 import dev.theredstonee.trsclient.core.ui.graphics.GraphicsUi;
+import dev.theredstonee.trsclient.core.ui.graphics.GraphicsProfiles;
 import java.lang.reflect.*;
 import java.util.*;
 import net.minecraft.client.gui.screen.Screen;
@@ -295,6 +296,32 @@ public final class OrnitheGraphics implements GraphicsUi.Host {
         next = Math.max(min, Math.min(max, (Integer) value + direction * interval));
       } else throw new IllegalStateException("Control no compatible; conserva el valor original");
       invoke(option, "setValue", next);
+    }
+
+    public GraphicsProfiles.Capability capability() {
+      String type=control.getClass().getSimpleName();
+      Object v=call(option,"getValue");
+      if(!(v instanceof Boolean) && !type.equals("CyclingControl") && !type.equals("SliderControl")) return null;
+      return new GraphicsProfiles.Capability() {
+        public Object read() { return call(option,"getValue"); }
+        public Object[] choices() {
+          return type.equals("CyclingControl") ? (Object[])field(control,"allowedValues") : new Object[0];
+        }
+        public boolean accepts(Object value) {
+          if(!available()) return false;
+          if(type.equals("CyclingControl")) return Arrays.asList(choices()).contains(value);
+          if(type.equals("SliderControl")) {
+            if(!(value instanceof Integer n)) return false;
+            int min=(Integer)field(control,"min"),max=(Integer)field(control,"max"),step=(Integer)field(control,"interval");
+            return n>=min && n<=max && (n-min)%step==0;
+          }
+          return value instanceof Boolean;
+        }
+        public void write(Object value) {
+          if(!accepts(value)) throw new IllegalArgumentException(id);
+          invoke(option,"setValue",value);
+        }
+      };
     }
 
     public boolean slider() {

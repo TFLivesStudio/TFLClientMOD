@@ -10,6 +10,8 @@ import dev.theredstonee.trsclient.core.touch.TouchMode;
  * (Menü, HUD-Editor) steht in {@code core.ui} und kennt Minecraft nicht.
  */
 public abstract class UiScreen {
+    /** Only native TFL screen canvases consult this; never Minecraft chat/inventory fonts. */
+    public boolean usesUiFont() { return true; }
 	/** Dauer der Öffnen-/Schließen-Animation in Sekunden. */
 	protected static final float OPEN_TIME = 0.16f;
 
@@ -22,6 +24,8 @@ public abstract class UiScreen {
 
 	/** Zeichnet den Bildschirm. */
 	public final void render(Canvas c, int width, int height, int mouseX, int mouseY) {
+        boolean previousUiText=c.uiText(usesUiFont());
+        try {
 		long now = System.nanoTime();
 		long profileCpu=dev.theredstonee.trsclient.core.performance.UiProfiler.cpuTime();
 		float dt = lastNanos == 0 ? 1f / 60f : Math.min(0.25f, (now - lastNanos) / 1_000_000_000f);
@@ -38,9 +42,11 @@ public abstract class UiScreen {
 		}
 		hits.clear();
 		draw(c, width, height, mouseX, mouseY, dt);
+        hits.drawFocus(c);
 		// Halloween (nur während des Events): Filmkorn, Hinweise, Toasts „Kürbis gefunden!“.
 		dev.theredstonee.trsclient.core.halloween.HalloweenOverlay.afterScreen(c, hits, width, height, mouseX, mouseY, overlay());
 		dev.theredstonee.trsclient.core.performance.UiProfiler.frame(now,profileCpu);
+        } finally { c.uiText(previousUiText); }
 	}
 
 	// --- Touch-Modus (nur mit -Dtrs.touch=true; sonst laufen alle Eingaben unverändert durch) ---

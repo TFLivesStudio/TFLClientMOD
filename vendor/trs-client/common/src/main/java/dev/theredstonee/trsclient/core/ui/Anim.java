@@ -52,6 +52,7 @@ public final class Anim {
 
 	/** Exponentielle Annäherung, bildrate-unabhängig. */
 	public static float approach(float value, float target, float dt, float tau) {
+        if(UiAppearance.reducedMotion()) return target;
 		if (dt <= 0) return value;
 		float f = (float) (1 - Math.exp(-Math.min(dt, 0.25f) / Math.max(0.001f, tau)));
 		float next = value + (target - value) * f;

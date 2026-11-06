@@ -10,6 +10,7 @@ public final class PauseActionsUi extends UiScreen {
   private final List<MenuAction> primary, secondary;
   private final Runnable close, click;
   private int focus = -1;
+  private final float[] hover;
 
   public PauseActionsUi(
       String title,
@@ -18,6 +19,7 @@ public final class PauseActionsUi extends UiScreen {
       Runnable close,
       Runnable click) {
     this.primary = new ArrayList<MenuAction>(primary);
+    this.hover=new float[primary.size()];
     this.secondary = new ArrayList<MenuAction>(secondary);
     this.close = close;
     this.click = click;
@@ -46,7 +48,8 @@ public final class PauseActionsUi extends UiScreen {
       final MenuAction action = primary.get(i);
       int y = top + i * row, h = row - 5;
       boolean hover = focus == i || inside(mx, my, x, y, w, h);
-      MenuSkin.button(c, x, y, w, h, hover, true);
+      this.hover[i]=Anim.approach(this.hover[i],hover?1f:0f,dt,.08f);
+      SelectionStyle.panel(c,x,y,w,h,ColorMath.lerp(t.surfaceHigh,t.surfaceHover,this.hover[i]),ColorMath.lerp(t.border,t.accent,this.hover[i]));
       c.text(c.clip(action.label(), w - 18), x + 9, y + (h - c.lineHeight()) / 2, t.text, false);
       hits.add(x, y, w, h, () -> run(action));
     }

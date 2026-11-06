@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public final class ModMenu extends UiScreen {
 	private enum Page {
-		GRID, SETTINGS, PROFILES, PACKS, SERVERS, CIRCUITS, BUG_REPORT, NOTES, HALLOWEEN, ABOUT, CONFIG
+		GRID, SETTINGS, PROFILES, PACKS, SERVERS, CIRCUITS, BUG_REPORT, NOTES, HALLOWEEN, ABOUT, CONFIG, SETTINGS_HUB
 	}
 
 	private static final int HEADER_H = 30;
@@ -60,7 +60,19 @@ public final class ModMenu extends UiScreen {
 	private final Map<String, Float> hover = new HashMap<String, Float>();
 
 	private Page page = Page.GRID;
+    private Page detailOrigin=Page.GRID;
 	private Category category;
+    private Setting revealSetting;
+    private int hubScroll;
+    private String hubQuery;
+    private int hubLanguage=-1;
+    private final int[] hubResultBox=new int[4];
+    public int[] testFirstSettingResultBox(){return hubResultBox.clone();}
+    private final List<HubEntry> hubEntries=new ArrayList<HubEntry>();
+    private static final class HubEntry {
+        final Module owner; final Setting setting;
+        HubEntry(Module owner,Setting setting){this.owner=owner;this.setting=setting;}
+    }
 	private Module selected;
 	private int gridScroll;
 	private int settingsScroll;
@@ -73,6 +85,7 @@ public final class ModMenu extends UiScreen {
     private int aboutScroll;
     private String transferMessage;
     private boolean resetArmed;
+    private Module moduleResetArmed;
 	private long docsFailedUntil;
 	/** Seitenleiste: Bildlauf, wenn nicht alle Einträge ins Fenster passen (kleine Fenster, große GUI-Skalierung). */
 	private int railScroll;
@@ -247,6 +260,8 @@ public final class ModMenu extends UiScreen {
 	}
 
 	/** Suchfeld (x, y, Breite, Höhe) des letzten Frames (Selbsttest: echter Klick). */
+	public int[] testRailBox(){return railRect.clone();}
+
 	public int[] testSearchBox() {
 		return searchBox.clone();
 	}
@@ -398,6 +413,9 @@ public final class ModMenu extends UiScreen {
 			newsOpenFor = null;
 		}
 		switch (page) {
+            case SETTINGS_HUB:
+                settingsHub(c,cx,cy,cw,ch,mouseX,mouseY);
+                break;
             case CONFIG:
                 configurationPage(c,cx,cy,cw,ch,mouseX,mouseY);
                 break;
@@ -455,7 +473,7 @@ public final class ModMenu extends UiScreen {
         int ly=py+(HEADER_H-c.lineHeight())/2;
         c.text("TFL Client",lx,ly,t.text,false);
         int clientX=lx+c.textWidth("TFL Client")+8;
-        String client="Selection";
+        String client=I18n.tr("overhaul.controlCenter");
         if(pw>420)c.text(client,clientX,ly,t.textDim,false);
 
 		// Schließen
@@ -516,6 +534,43 @@ public final class ModMenu extends UiScreen {
 	/** Docs (Überblick über den TRS Client) in der Client-Sprache im Browser öffnen. */
     private void openDocs() { page=Page.ABOUT;aboutScroll=0; }
 
+    public ModMenu showSettingsHub(){page=Page.SETTINGS_HUB;hubQuery=null;return this;}
+
+    private void settingsHub(Canvas c,int x,int y,int w,int h,int mx,int my) {
+        Theme t=Theme.get();String query=search.text().trim().toLowerCase(java.util.Locale.ROOT);
+        if(!query.equals(hubQuery) || hubLanguage!=I18n.generation()) {
+            hubQuery=query;hubLanguage=I18n.generation();hubEntries.clear();hubScroll=0;
+            for(Module m:host.modules().registry.all()) {
+                if(!shown(m) || host.settings(m).isEmpty())continue;
+                if(query.isEmpty() || (m.name()+" "+m.category().label()+" "+m.description()).toLowerCase(java.util.Locale.ROOT).contains(query))
+                    hubEntries.add(new HubEntry(m,null));
+                else for(Setting setting:host.settings(m))
+                    if((setting.label()+" "+setting.fallbackLabel()+" "+setting.key()).toLowerCase(java.util.Locale.ROOT).contains(query))
+                        hubEntries.add(new HubEntry(m,setting));
+            }
+        }
+        c.strongText(I18n.tr("overhaul.settings"),x,y,t.text);
+        c.text(c.clip(I18n.tr("overhaul.settingsHint"),w),x,y+15,t.textDim,false);
+        int top=y+33,view=Math.max(1,h-33),max=Math.max(0,hubEntries.size()*35-view);
+        hubScroll=Math.min(hubScroll,max);
+        c.scissor(x,top,x+w,top+view);hits.clip(x,top,w-5,view);
+        try {
+            int first=hubScroll/35,last=Math.min(hubEntries.size(),(hubScroll+view)/35+1);
+            for(int i=first;i<last;i++) {
+                final HubEntry entry=hubEntries.get(i);int row=top+i*35-hubScroll;
+                if(i==0){hubResultBox[0]=x;hubResultBox[1]=row;hubResultBox[2]=w-6;hubResultBox[3]=32;}
+                boolean hovered=inside(mx,my,x,row,w-6,32);
+                dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,x,row,w-6,32,4,hovered?t.surfaceHover:t.surface);
+                String title=entry.setting==null?entry.owner.name():entry.setting.label();
+                c.text(c.clip(title,w-24),x+8,row+5,t.text,false);
+                c.text(c.clip(entry.owner.category().label()+" / "+entry.owner.name(),w-24),x+8,row+19,t.textDim,false);
+                hits.add(x,row,w-6,32,()->{openModule(entry.owner);revealSetting=entry.setting;});
+            }
+            if(hubEntries.isEmpty())c.text(c.clip(I18n.tr("menu.noMatch",query),w),x,top+8,t.textDim,false);
+        } finally {hits.noClip();c.noScissor();}
+        if(max>0)scrollbar(c,x+w-2,top,view,hubScroll,max);
+    }
+
     private void configurationPage(Canvas c,int x,int y,int w,int h,int mx,int my) {
         dev.theredstonee.trsclient.core.config.ConfigStore store=dev.theredstonee.trsclient.core.config.ConfigStore.active();
         c.text(I18n.tr("config.title"),x,y,Theme.get().text,false);
@@ -573,25 +628,14 @@ public final class ModMenu extends UiScreen {
 		for (Category cat : Category.values()) {
 			if (hasModules(cat)) shownCategories++;
 		}
-		int items = 5 + shownCategories + (host.hasPacks() ? 1 : 0) + ((Product.onlineServices() && host.hasAccounts()) ? 1 : 0)
+		int items = 6 + shownCategories + (host.hasPacks() ? 1 : 0) + ((Product.onlineServices() && host.hasAccounts()) ? 1 : 0)
 				+ ((Product.onlineServices() && host.hasWardrobe()) ? 1 : 0) + ((Product.onlineServices() && host.hasFriends()) ? 1 : 0) + (host.hasClips() ? 1 : 0)
 				+ (dev.theredstonee.trsclient.core.bugreport.BugReports.get() != null ? 1 : 0) + (notesAvailable() ? 1 : 0)
 				+ (HalloweenPage.available() ? 1 : 0)
 				+ 1; // Hilfe (Docs)
-		int rowH = 18;
-		int gap = 3;
-		int footer = 32;
-		while (items * (rowH + gap) + 11 + footer > h && (gap > 1 || rowH > 14)) {
-			if (gap > 1) gap--;
-			else rowH--;
-		}
-		if (items * (rowH + gap) + 11 + footer > h) footer = 0;
-		// Kleine Fenster: etwas enger, aber lesbar (Symbol 8 px + Text) – reicht es dann immer noch nicht, wird die
-		// Leiste scrollbar (Mausrad, abgeschnitten am Fensterrand), statt Einträge unten aus dem Menü zu schieben.
-		while (items * (rowH + gap) + 11 > h && (gap > 1 || rowH > 13)) {
-			if (gap > 1) gap--;
-			else rowH--;
-		}
+        int rowH=22, gap=3, footer=32;
+        if(h>=340 && items*(rowH+gap)+11>h)gap=1;
+        if(items*(rowH+gap)+11+footer>h)footer=0;
 		int contentH = items * (rowH + gap) + 11;
 		railMaxScroll = Math.max(0, contentH - gap - h);
 		railScroll = Math.max(0, Math.min(railScroll, railMaxScroll));
@@ -606,6 +650,9 @@ public final class ModMenu extends UiScreen {
 			hits.clip(x, y, w, h);
 		}
 		int cy = y - railScroll;
+        railItem(c,x,cy,w,rowH,"gear",I18n.tr("overhaul.settings"),page==Page.SETTINGS_HUB,mx,my,
+            ()->{page=Page.SETTINGS_HUB;search.clear();hubQuery=null;hubScroll=0;});
+        cy+=rowH+gap;
 		railItem(c, x, cy, w, rowH, "layers", I18n.tr("menu.all"), category == null && page == Page.GRID, mx, my, new Runnable() {
 			@Override
 			public void run() {
@@ -873,112 +920,57 @@ public final class ModMenu extends UiScreen {
 		return out;
 	}
 
-	private void grid(Canvas c, int x, int y, int w, int h, int mx, int my, float dt) {
-		Theme t = Theme.get();
-		List<Module> modules = visibleModules();
-		int usable = w - 7;
-		int minW = Math.max(tileMin, (usable - (MAX_COLUMNS - 1) * TILE_GAP) / MAX_COLUMNS);
-		// Halloween: ein versteckter Kürbis als letzte „Kachel“ (nur in „Alle“ ohne Suche, bis er gefunden ist).
-		boolean pumpkinTile = category == null && search.text().trim().isEmpty() && !modules.isEmpty()
-				&& dev.theredstonee.trsclient.core.halloween.Halloween.active()
-				&& dev.theredstonee.trsclient.core.halloween.HalloweenService.get().pumpkinVisible(
-						dev.theredstonee.trsclient.core.halloween.Pumpkins.CLIENT_MODULES);
-		TileGrid layout = TileGrid.of(usable, h - 6, modules.size() + (pumpkinTile ? 1 : 0), minW, TILE_H, TILE_GAP);
-		gridScroll = layout.clampScroll(gridScroll);
-
-		if (modules.isEmpty()) {
-			Paint.textCentered(c, I18n.tr("menu.noMatch", search.text().trim()), x + w / 2, y + h / 2 - 10, t.text, false);
-			Paint.textCentered(c, I18n.tr("menu.clearSearch"), x + w / 2, y + h / 2 + 2, t.textDim, false);
-			return;
-		}
-		c.scissor(x, y, x + w, y + h);
-		hits.clip(x, y, w, h);
-		for (int i = 0; i < modules.size(); i++) {
-			final Module m = modules.get(i);
-			// 3 px Rand für das Leuchten der Kacheln
-			int tx = x + 3 + layout.x(i);
-			int ty = y + 3 + layout.y(i) - gridScroll;
-			if (ty + TILE_H < y || ty > y + h) continue;
-			boolean tileHover = inside(mx, my, tx, ty, layout.tileWidth, TILE_H) && inside(mx, my, x, y, w, h);
-			float hv = Anim.approach(hoverOf(m.id()), tileHover ? 1f : 0f, dt, 0.05f);
-			hover.put(m.id(), Float.valueOf(hv));
-			tile(c, m, tx, ty, layout.tileWidth, TILE_H, tileHover, mx, my, dt);
-		}
-		if (pumpkinTile) {
-			int last = modules.size();
-			int tx = x + 3 + layout.x(last);
-			int ty = y + 3 + layout.y(last) - gridScroll;
-			dev.theredstonee.trsclient.core.halloween.Pumpkins.draw(c, hits, dev.theredstonee.trsclient.core.halloween.Pumpkins.CLIENT_MODULES,
-					tx + layout.tileWidth / 2, ty + TILE_H / 2, mx, my);
-		} else if (category == null && search.text().trim().isEmpty()) {
-			// Platz-Animation nach dem Klick weiterlaufen lassen (der Kürbis ist schon „gefunden“).
-			int last = Math.max(0, modules.size() - 1);
-			int tx = x + 3 + layout.x(last) + layout.tileWidth + TILE_GAP;
-			int ty = y + 3 + layout.y(last) - gridScroll;
-			if (tx + layout.tileWidth <= x + w) {
-				dev.theredstonee.trsclient.core.halloween.Pumpkins.draw(c, null, dev.theredstonee.trsclient.core.halloween.Pumpkins.CLIENT_MODULES,
-						tx + layout.tileWidth / 2, ty + TILE_H / 2, mx, my);
-			}
-		}
-		hits.noClip();
-		c.noScissor();
-
-		if (layout.maxScroll > 0) scrollbar(c, x + w - 2, y, h, gridScroll, layout.maxScroll);
-	}
-
-	private void tile(Canvas c, final Module m, int x, int y, int w, int h, boolean hovered, int mx, int my, float dt) {
-		Theme t = Theme.get();
-		float hv = hoverOf(m.id());
-		float progress = Anim.approach(hoverOf(m.id() + "#on"), m.isEnabled() ? 1f : 0f, dt, 0.05f);
-		hover.put(m.id() + "#on", Float.valueOf(progress));
-
-		// Eingeschaltete Kacheln stehen "unter Strom": Akzent-Kante und Leuchten.
-		int fill = ColorMath.lerp(ColorMath.lerp(t.surface, t.surfaceHover, hv), ColorMath.lerp(ColorMath.lerp(t.surface, t.surfaceHover, hv), t.accent, 0.09f), progress);
-		int edge = ColorMath.lerp(ColorMath.lerp(t.border, t.textDim, hv * 0.6f), ColorMath.lerp(t.border, t.accent, 0.75f + 0.25f * hv), progress);
-		if (progress > 0.02f) Redstone.glow(c, x, y, w, h, t.glow, progress * (0.45f + 0.35f * hv));
-		Redstone.stone(c, x, y, w, h, fill, edge);
-
-		int iconColor = ColorMath.lerp(hovered ? t.text : t.textDim, t.dustOn, progress);
-		Redstone.iconWell(c, x + 8, y + 8, 2, m.icon(), iconColor, progress);
-		if (host.modules().clientState.news().hasNew(m)) NewBadge.draw(c, x + 34, y + 11);
-
-		int tw = 24;
-		int tx = x + w - tw - 8;
-		int ty = y + 10;
-		boolean toggleHover = inside(mx, my, tx - 3, ty - 3, tw + 6, 18);
-		if (m.userToggleable()) Paint.toggle(c, tx, ty, tw, 12, progress, toggleHover);
-
-		// Name ungekürzt: notfalls in zwei Zeilen.
-		boolean gear = !host.settings(m).isEmpty();
-		int nameW = w - 16 - (gear ? 12 : 0);
-		List<String> lines = Paint.wrap(c, m.name(), nameW);
-		int nameColor = ColorMath.lerp(t.text, 0xFFFFFFFF, progress * 0.4f);
-		if (lines.size() <= 1) {
-			Paint.textClipped(c, m.name(), x + 8, y + h - 16, nameW, nameColor, false);
-		} else {
-			Paint.textClipped(c, lines.get(0), x + 8, y + h - 25, nameW, nameColor, false);
-			Paint.textClipped(c, Paint.join(lines, 1), x + 8, y + h - 15, nameW, nameColor, false);
-		}
-		if (gear) Icons.draw(c, "gear", x + w - 16, y + h - 15, 1, hovered ? t.dustOn : ColorMath.withAlpha(t.textDim, 170));
-
-		hits.add(x, y, w, h, new Runnable() {
-			@Override
-			public void run() {
-				host.playClick();
-				selected = m;
-				page = Page.SETTINGS;
-				settingsScroll = 0;
-				panel.reset();
-			}
-		});
-		if (m.userToggleable()) hits.add(tx - 3, ty - 3, tw + 6, 18, new Runnable() {
-			@Override
-			public void run() {
-				host.playClick();
-				host.setEnabled(m, !m.isEnabled());
-			}
-		});
-	}
+    private List<Module> cachedModules;
+    private String cachedQuery;
+    private Category cachedCategory;
+    private int cachedLanguage=-1, moduleFocus;
+    private void grid(Canvas c,int x,int y,int w,int h,int mx,int my,float dt) {
+        Theme t=Theme.get();
+        String query=search.text().trim();
+        if(cachedModules==null || !query.equals(cachedQuery) || category!=cachedCategory || cachedLanguage!=I18n.generation()) {
+            cachedModules=visibleModules();cachedQuery=query;cachedCategory=category;cachedLanguage=I18n.generation();
+        }
+        List<Module> modules=cachedModules;
+        c.strongText(category==null?I18n.tr("menu.all"):category.label(),x,y,t.text);
+        String count=I18n.tr("overhaul.modules",modules.size());
+        Paint.textRight(c,count,x+w-4,y,t.textDim,false);
+        int top=y+23,rowH=44,view=Math.max(1,h-23);
+        int max=Math.max(0,modules.size()*rowH-view);
+        gridScroll=Math.max(0,Math.min(max,gridScroll));
+        moduleFocus=Math.max(0,Math.min(moduleFocus,modules.size()-1));
+        if(modules.isEmpty()) {
+            Paint.textCentered(c,I18n.tr("menu.noMatch",query),x+w/2,top+16,t.text,false);
+            Paint.textCentered(c,I18n.tr("menu.clearSearch"),x+w/2,top+30,t.textDim,false);
+            return;
+        }
+        c.scissor(x,top,x+w,top+view);hits.clip(x,top,w-5,view);
+        try {
+            int first=gridScroll/rowH,last=Math.min(modules.size(),(gridScroll+view)/rowH+1);
+            for(int i=first;i<last;i++) {
+                final Module m=modules.get(i);int row=top+i*rowH-gridScroll;
+                boolean hovering=inside(mx,my,x,row,w-6,rowH-4);
+                boolean keyboard=!search.focused() && moduleFocus==i && moduleKeyboard;
+                dev.theredstonee.trsclient.core.ui.SelectionStyle.rounded(c,x,row,w-6,rowH-4,5,hovering||keyboard?t.surfaceHover:t.surface);
+                if(keyboard)c.fill(x,row+6,x+2,row+rowH-10,t.accent);
+                Icons.draw(c,m.icon(),x+9,row+10,2,m.isEnabled()?t.accent:t.textDim);
+                int switchX=x+w-41;
+                int textX=x+34,textW=Math.max(1,switchX-textX-9);
+                c.strongText(c.clip(m.name(),textW),textX,row+7,t.text);
+                c.text(c.clip(m.description(),textW),textX,row+23,t.textDim,false);
+                if(m.userToggleable()) Paint.toggle(c,switchX,row+13,26,13,m.isEnabled()?1:0,hovering);
+                else Icons.draw(c,"gear",switchX+8,row+15,1,t.textDim);
+                final int index=i;
+                hits.add(x,row,w-6,rowH-4,()->{moduleFocus=index;openModule(m);});
+                if(m.userToggleable())hits.add(switchX-3,row,32,rowH-4,()->{host.playClick();host.setEnabled(m,!m.isEnabled());});
+            }
+        } finally { hits.noClip();c.noScissor(); }
+        if(max>0) scrollbar(c,x+w-2,top,view,gridScroll,max);
+    }
+    private boolean moduleKeyboard;
+    private void openModule(Module module) {
+        detailOrigin=page==Page.SETTINGS_HUB?Page.SETTINGS_HUB:Page.GRID;moduleResetArmed=null;search.setFocused(false);
+        host.playClick();selected=module;page=Page.SETTINGS;settingsScroll=0;panel.reset();
+    }
 
 	/** Schmaler Rollbalken: unbestromter Staub, der sichtbare Teil leuchtet. */
 	private static void scrollbar(Canvas c, int x, int y, int h, int scroll, int maxScroll) {
@@ -1014,7 +1006,7 @@ public final class ModMenu extends UiScreen {
 			@Override
 			public void run() {
 				host.playClick();
-				page = Page.GRID;
+				page = detailOrigin;
 				panel.reset();
 			}
 		});
@@ -1043,15 +1035,16 @@ public final class ModMenu extends UiScreen {
 			@Override
 			public void run() {
 				host.playClick();
-				m.reset();
+				if(moduleResetArmed==m){m.reset();moduleResetArmed=null;}else moduleResetArmed=m;
 			}
 		});
-		int nameX = x + 52;
+        if(moduleResetArmed==m) c.text(c.clip(I18n.tr("overhaul.confirmReset"),w),x,y+27,t.textDim,false);
+        int nameX = x + 52;
 		c.text(c.clip(m.name(), resetX - nameX - 6), nameX, y + 4, t.text, false);
 		String state = m.isEnabled() ? I18n.tr("common.enabled") : I18n.tr("common.disabled");
 		c.text(c.clip((m.userToggleable() ? state + " · " : "") + m.category().label(), resetX - nameX - 6), nameX, y + 14, m.isEnabled() ? t.dustOn : t.textDim, false);
 
-		int top = y + headH + 8;
+		int top = y + headH + (moduleResetArmed==m?24:8);
 		c.fill(x, top - 4, x + w, top - 3, t.border);
 		int bottom = y + h;
 		List<MenuAction> actions = host.actions(m);
@@ -1097,7 +1090,14 @@ public final class ModMenu extends UiScreen {
 				}
 			});
 		}
-		List<Setting> settings = host.settings(m);
+        List<Setting> settings = host.settings(m);
+        if(revealSetting!=null && settings.contains(revealSetting)) {
+            int offset=0;
+            for(Setting setting:settings) {if(setting==revealSetting)break;offset+=panel.rowHeight(setting);}
+            int desired=Math.max(0,ry+settingsScroll+offset-listTop-4);
+            ry+=settingsScroll-desired;settingsScroll=desired;
+            panel.reveal(revealSetting);revealSetting=null;
+        }
 		if (settings.isEmpty() && extra != null) {
 			// Nur der Zusatzbereich (z. B. FPS-Boost) – kein „keine Einstellungen“.
 		} else if (settings.isEmpty()) {
@@ -1180,7 +1180,7 @@ public final class ModMenu extends UiScreen {
 			public void run() {
 				host.playClick();
 				boolean on = m.isEnabled();
-				m.reset();
+				if(moduleResetArmed==m){m.reset();moduleResetArmed=null;}else moduleResetArmed=m;
 				m.setEnabled(on);
 			}
 		});
@@ -1411,12 +1411,13 @@ public final class ModMenu extends UiScreen {
 			return true;
 		}
 		if (!inside(mouseX, mouseY, contentRect[0], contentRect[1], contentRect[2], contentRect[3])) return false;
+		if(page==Page.SETTINGS_HUB){hubScroll=Math.max(0,hubScroll-(int)Math.signum(amount)*35);return true;}
 		if (page == Page.ABOUT) { aboutScroll = Math.max(0, aboutScroll - (int)Math.signum(amount)*24); return true; }
 		if (page == Page.CIRCUITS) return circuitsPage.mouseScrolled(mouseX, mouseY, amount);
 		if (page == Page.BUG_REPORT) return bugPage.mouseScrolled(mouseX, mouseY, amount);
 		if (page == Page.NOTES) return notesPage.mouseScrolled(mouseX, mouseY, amount);
 		if (page == Page.HALLOWEEN) return halloweenPage.mouseScrolled(mouseX, mouseY, amount);
-		int step = (int) Math.signum(amount) * (page == Page.SETTINGS ? 16 : TILE_H + TILE_GAP);
+		int step = (int) Math.signum(amount) * (page == Page.SETTINGS ? 24 : 44);
 		if (page == Page.SETTINGS) settingsScroll = Math.max(0, settingsScroll - step);
 		else if (page == Page.GRID) gridScroll = Math.max(0, gridScroll - step);
 		return true;
@@ -1464,10 +1465,27 @@ public final class ModMenu extends UiScreen {
 			}
 			if (search.key(key)) return true;
 		}
+        if(key==UiKey.TAB) return hits.focusNext(shift);
+        if(key==UiKey.ENTER && hits.activateFocused()) return true;
+        if(page==Page.GRID && (key==UiKey.DOWN || key==UiKey.UP)) {
+            moduleKeyboard=true;
+            List<Module> modules=visibleModules();
+            moduleFocus=Math.max(0,Math.min(modules.size()-1,moduleFocus+(key==UiKey.DOWN?1:-1)));
+            int view=Math.max(1,contentRect[3]-23);
+            if(moduleFocus*44<gridScroll)gridScroll=moduleFocus*44;
+            if((moduleFocus+1)*44>gridScroll+view)gridScroll=(moduleFocus+1)*44-view;
+            return true;
+        }
+        if(page==Page.GRID && key==UiKey.ENTER) {
+            List<Module> modules=visibleModules();
+            if(moduleFocus>=0 && moduleFocus<modules.size())openModule(modules.get(moduleFocus));
+            return true;
+        }
+
 		if (key == UiKey.ESCAPE) {
 			if (panel.collapse()) return true;
 			if (page != Page.GRID) {
-				page = Page.GRID;
+                page = page==Page.SETTINGS?detailOrigin:Page.GRID;
 				return true;
 			}
 			requestClose();

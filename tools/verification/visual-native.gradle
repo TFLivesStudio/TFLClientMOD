@@ -1,0 +1,10 @@
+// Small opt-in UI probe. Excluded from the production mod and unrelated to Audit 5's world matrix.
+allprojects {
+    afterEvaluate { p ->
+        if (p.plugins.hasPlugin('ploceus')) {
+            p.tasks.named('runProdClient') {
+                jvmArgs.addAll('-Dtflcore.ornithe.smoke=true','-Dtflcore.visual.smoke=true',"-Dtflcore.ornithe.report=${p.layout.buildDirectory.dir('smoke/visual').get().asFile}")
+            }
+        }
+    }
+}

@@ -1,0 +1,50 @@
+{
+  "version": "0.5.0-visual-preview.1",
+  "scope": "UI only; no world, shaders or map certification",
+  "checks": [
+    {
+      "name": "graphics native host connected",
+      "passed": true
+    },
+    {
+      "name": "native profile exposes supported changes",
+      "passed": true
+    },
+    {
+      "name": "applied sodium:general.render_distance",
+      "passed": true
+    },
+    {
+      "name": "applied sodium:quality.clouds",
+      "passed": true
+    },
+    {
+      "name": "applied sodium:quality.particles",
+      "passed": true
+    },
+    {
+      "name": "applied sodium:quality.mipmap_levels",
+      "passed": true
+    },
+    {
+      "name": "native undo available",
+      "passed": true
+    },
+    {
+      "name": "restored sodium:general.render_distance",
+      "passed": true
+    },
+    {
+      "name": "restored sodium:quality.clouds",
+      "passed": true
+    },
+    {
+      "name": "restored sodium:quality.particles",
+      "passed": true
+    },
+    {
+      "name": "restored sodium:quality.mipmap_levels",
+      "passed": true
+    }
+  ]
+}

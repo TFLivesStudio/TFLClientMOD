@@ -1,0 +1,66 @@
+{
+  "version": "0.5.0-visual-preview.1",
+  "scope": "UI only; no world, shaders or map certification",
+  "checks": [
+    {
+      "name": "graphics native host connected",
+      "passed": true
+    },
+    {
+      "name": "native profile exposes supported changes",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:render_distance",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:clouds",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:smooth_lighting",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:biome_blend",
+      "passed": true
+    },
+    {
+      "name": "applied minecraft:mipmap_levels",
+      "passed": true
+    },
+    {
+      "name": "native undo available",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:render_distance",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:clouds",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:particles",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:smooth_lighting",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:biome_blend",
+      "passed": true
+    },
+    {
+      "name": "restored minecraft:mipmap_levels",
+      "passed": true
+    }
+  ]
+}
