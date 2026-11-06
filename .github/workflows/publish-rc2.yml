@@ -1,0 +1,55 @@
+name: Publish RC2 requested release
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/audit5-integrations]
+    paths: ['.github/workflows/publish-rc2.yml']
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_SHA: 7503775f8ed6a160348a0e5c3afe4b2e906fcb87
+      RELEASE_TAG: v0.4.0-audit.5-rc.2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 7503775f8ed6a160348a0e5c3afe4b2e906fcb87
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '25'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build the requested 1.8.9 artifact without native tests
+        run: |
+          python3 tools/ornithe/fetch_lucerna_api.py
+          vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :remapJar --no-daemon --max-workers=2
+          python3 tools/ornithe/verify_jar.py vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-0.4.0-audit.5-rc.2.jar
+      - name: Prepare binary, exact sources, instructions and hashes
+        run: |
+          mkdir release-rc2
+          cp vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-0.4.0-audit.5-rc.2.jar release-rc2/
+          cp docs/FAR_TERRAIN_LUCERNA.md release-rc2/LEEME.md
+          git archive --format=zip "$RELEASE_SHA" > release-rc2/tflcore-source.zip
+          cd release-rc2
+          sha256sum *.jar *.zip LEEME.md > SHA256SUMS.txt
+      - name: Upload all assets before publishing the user-authorized prerelease
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = true
+            gh release upload "$RELEASE_TAG" release-rc2/* --clobber
+          else
+            gh release create "$RELEASE_TAG" release-rc2/* --draft --prerelease --latest=false --target "$RELEASE_SHA" --title 'TFL Core RC2 — Far Terrain × Lucerna' --notes-file docs/FAR_TERRAIN_LUCERNA.md
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" > /tmp/rc2-tag.json 2>/dev/null; then
+            test "$(python3 -c 'import json;print(json.load(open("/tmp/rc2-tag.json"))["object"]["sha"])')" = "$RELEASE_SHA"
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$RELEASE_TAG" -f sha="$RELEASE_SHA"
+          fi
+          gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false --target "$RELEASE_SHA" --notes-file docs/FAR_TERRAIN_LUCERNA.md
+          gh release view "$RELEASE_TAG" --json url,isDraft,isPrerelease,assets >> "$GITHUB_STEP_SUMMARY"
