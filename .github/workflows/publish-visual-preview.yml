@@ -1,0 +1,65 @@
+name: Publish requested visual preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/tfl-visual-overhaul]
+    paths: ['.github/workflows/publish-visual-preview.yml']
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_SHA: 17aa9c84d07b435a63aae8ebddc078263af3552d
+      RELEASE_TAG: v0.5.0-visual-preview.1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 17aa9c84d07b435a63aae8ebddc078263af3552d
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '25'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build the requested 1.8.9 artifact without native tests
+        run: |
+          python3 tools/ornithe/fetch_lucerna_api.py
+          vendor/trs-client/ornithe/gradlew -p vendor/trs-client/ornithe :remapJar --no-daemon --max-workers=2
+          python3 tools/ornithe/verify_jar.py vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-0.5.0-visual-preview.1.jar
+      - name: Build modern artifact without native tests
+        run: vendor/trs-client/gradlew -p vendor/trs-client :fabric:26.3:build -PtrsVersions=26.3 --no-daemon --max-workers=2
+      - name: Prepare binary, exact sources, instructions and hashes
+        run: |
+          mkdir release-preview
+          cp vendor/trs-client/ornithe/build/libs/tflcore-1.8.9-0.5.0-visual-preview.1.jar release-preview/
+          cp vendor/trs-client/fabric/versions/26.3/build/libs/tflcore-fabric-26.3-0.5.0-visual-preview.1.jar release-preview/
+          cp docs/visual-overhaul/STATUS.md release-preview/LEEME.md
+          git archive --format=zip "$RELEASE_SHA" > release-preview/tflcore-source.zip
+          python3 - <<'PYCODE'
+          import json,urllib.request,hashlib,pathlib
+          for item in json.load(open('tools/integrations/distant-horizons.lock.json'))['correspondingSources']:
+              data=urllib.request.urlopen(item['url']).read()
+              assert hashlib.sha256(data).hexdigest()==item['sha256']
+              pathlib.Path('release-preview',item['filename']).write_bytes(data)
+          PYCODE
+          cd release-preview
+          sha256sum *.jar *.zip *.tar.gz LEEME.md > SHA256SUMS.txt
+      - name: Upload all assets before publishing the user-authorized prerelease
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release edit "$RELEASE_TAG" --draft=true
+            gh release upload "$RELEASE_TAG" release-preview/* --clobber
+          else
+            gh release create "$RELEASE_TAG" release-preview/* --draft --prerelease --latest=false --target "$RELEASE_SHA" --title 'TFL Core 0.5.0 Visual Preview 1' --notes-file docs/visual-overhaul/STATUS.md
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" > /tmp/rc2-tag.json 2>/dev/null; then
+            test "$(python3 -c 'import json;print(json.load(open("/tmp/rc2-tag.json"))["object"]["sha"])')" = "$RELEASE_SHA"
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$RELEASE_TAG" -f sha="$RELEASE_SHA"
+          fi
+          gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false --target "$RELEASE_SHA" --notes-file docs/visual-overhaul/STATUS.md
+          gh release view "$RELEASE_TAG" --json url,isDraft,isPrerelease,assets >> "$GITHUB_STEP_SUMMARY"
