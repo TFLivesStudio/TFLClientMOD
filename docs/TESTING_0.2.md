@@ -12,7 +12,7 @@
 | ID | Test | Expected behavior |
 |---|---|---|
 | A01 | Start Fabric in a clean profile | Loads without startup crash; TFL Core logged as 0.2.0-SNAPSHOT |
-| A02 | Return to main menu | Original Minecraft title screen replaced by TFL SELECTION |
+| A02 | Return to main menu | Original Minecraft title screen replaced by TFLClient |
 | A03 | Click Un jugador | Vanilla singleplayer world list opens |
 | A04 | Click Multijugador | Vanilla multiplayer server list opens |
 | A05 | Click Opciones de Minecraft | Standard Minecraft settings open |

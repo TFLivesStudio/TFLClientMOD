@@ -1,5 +1,5 @@
 # TFL CORE 0.3 — PROJECT OVERDRIVE
-## Misión maestra de desarrollo • TFL Selection • Fabric 26.3
+## Misión maestra de desarrollo • TFLClient • Fabric 26.3
 
 **Organización:** TFLivesStudio
 **Repositorio:** https://github.com/TFLivesStudio/TFLClientMOD
@@ -8,7 +8,7 @@
 **Versión objetivo:** 0.3.0 (alphas incrementales → candidata → versión testable)
 **Target obligatorio:** Minecraft Java 26.3, Fabric, Java 25.
 **Límite arquitectónico:** 100 % client-side, no requiere nada en el servidor.
-**Marca:** TFL Selection / TFL Core. Identidad azul TFLives, varios temas configurables.
+**Marca:** TFLClient / TFL Core. Identidad azul TFLives, varios temas configurables.
 
 > **Misión:** transformar el núcleo 0.2 en un cliente multimodo, bonito, rápido, accesible y profundamente personalizable. Máximo número de funcionalidades terminadas de forma útil, nunca máximo número de checkboxes falsamente marcados. No reimplementar motores de optimización de terceros. La 1.8.9 se trabajará después.
 
@@ -42,7 +42,7 @@
 
 ## 2. Visual y experiencia de cliente (P0 salvo lo señalado)
 
-- [ ] V01. Rediseñar el menú inicial como interfaz propia de TFL Selection, no simplemente botones Vanilla encima de gradiente.
+- [ ] V01. Rediseñar el menú inicial como interfaz propia de TFLClient, no simplemente botones Vanilla encima de gradiente.
 - [ ] V02. Sistema de diseño consistente: tipografía, spacing, tarjetas, estados hover/focus y botones.
 - [ ] V03. BLUE, MIDNIGHT, FROST pulidos; colores acento ajustables y tema propio importable con validación.
 - [ ] V04. Transiciones suaves configurables y **reduced motion** real.

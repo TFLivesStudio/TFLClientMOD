@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
- * Client-only bootstrap for TFL Core / TFL Selection.
+ * Client-only bootstrap for TFL Core / TFLClient.
  *
  * <p>Initialization order is deliberate: settings are loaded and validated first, then the HUD and
  * keybinds are registered, then modules are resolved against persisted overrides. Nothing in this

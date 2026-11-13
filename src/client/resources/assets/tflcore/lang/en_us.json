@@ -9,7 +9,7 @@
   "tflcore.button.settings": "TFL Core",
   "tflcore.key.unbound": "Unbound",
 
-  "tflcore.menu.title": "TFL Selection",
+  "tflcore.menu.title": "TFLClient",
   "tflcore.menu.singleplayer": "Singleplayer",
   "tflcore.menu.singleplayer.desc": "Load a local world",
   "tflcore.menu.multiplayer": "Multiplayer",

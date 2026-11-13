@@ -16,7 +16,7 @@ import online.tflives.tflcore.client.ui.widget.TflButton;
 import java.util.Locale;
 
 /**
- * TFL Selection main menu.
+ * TFLClient main menu.
  *
  * <p>Replaces the vanilla title screen when enabled. The design uses the shared token system, a
  * brand column, large mode cards and a status strip. Animations are tick-driven (never wall-clock)
@@ -115,7 +115,7 @@ public final class TflMainMenuScreen extends Screen {
         if (!compact) {
             drawBrand(graphics, theme, settings);
         } else {
-            graphics.centeredText(this.font, "TFL SELECTION", this.width / 2, 6, theme.text());
+            graphics.centeredText(this.font, "TFLClient", this.width / 2, 6, theme.text());
         }
         drawFooter(graphics, theme, settings);
     }

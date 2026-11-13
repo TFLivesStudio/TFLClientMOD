@@ -16,7 +16,7 @@
 
 ## 0.2 — First interactive alpha (código + CI; falta prueba en Minecraft)
 
-- [x] Menú principal propio TFL Selection.
+- [x] Menú principal propio TFLClient.
 - [x] Acceso a mundos, multijugador, opciones y configuración del Core.
 - [x] Temas BLUE / MIDNIGHT / FROST.
 - [x] Fondo animado 2D de bajo coste; opción para reducir movimiento.

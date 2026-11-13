@@ -80,7 +80,7 @@ Marca cada punto en un cliente 26.3 real. Hasta que estén todos verificados, la
 | # | Prueba | Esperado | Estado |
 |---|---|---|---|
 | 1 | Arranque con Fabric API | El mod carga y el log muestra `TFL Core 0.3.0-alpha.1 initialized`. | Pendiente |
-| 2 | Menú principal | Se muestra TFL Selection; las 5 tarjetas y el selector de perfil responden. | Pendiente |
+| 2 | Menú principal | Se muestra TFLClient; las 5 tarjetas y el selector de perfil responden. | Pendiente |
 | 3 | Volver a Vanilla | Desactivar `customMainMenu` y volver al título restaura el menú vanilla. | Pendiente |
 | 4 | Ajustes | Right Shift abre la pantalla; las 6 pestañas cambian sin recortes a 1920×1080 y a 1280×720. | Pendiente |
 | 5 | GUI pequeña | Probar 320×240 y 854×480; comprobar que no hay controles inaccesibles. | Pendiente |

@@ -1,14 +1,23 @@
-# TFL Selection · TFL Core
+# TFLClient · TFL Core
 
 [![TFL Client — sitio web oficial](https://launcher.tflives.com/images/social/tfl-client-es.png)](https://launcher.tflives.com)
 
-Cliente oficial de Minecraft de **TFLives**, distribuido mediante **TFL Client** e impulsado por **TFL Core**.
+**TFLClient**, cliente modificado de Minecraft de **TFLives**, distribuido mediante **TFL Client** e impulsado por **TFL Core**.
+
+## Nombres del ecosistema
+
+**TFL Client** es el launcher. **TFL Selection** es la biblioteca donde TFLives
+publica sus clientes modificados. **TFLClient** es el cliente que se instala y se
+utiliza dentro de Minecraft; **TFL Core** impulsa sus funciones.
+
+Consulta [los nombres y términos](docs/PRODUCT_NAMES.md) para mantener esta
+distinción en todo el proyecto.
 
 ## Web oficial · [launcher.tflives.com](https://launcher.tflives.com)
 
-Conoce TFL Selection y sus características en la web oficial. Allí encontrarás la presentación del cliente, la guía de instalación y las novedades del ecosistema TFL Client; este repositorio conserva el código fuente y la documentación técnica de TFL Core.
+Conoce TFLClient y la biblioteca TFL Selection en la web oficial. Allí encontrarás la presentación del cliente, la guía de instalación y las novedades del ecosistema TFL Client; este repositorio conserva el código fuente y la documentación técnica de TFL Core.
 
-**[Conocer TFL Selection](https://launcher.tflives.com/selection)** · [Guía de instalación](https://launcher.tflives.com/ayuda/selection) · [Descargar el launcher](https://launcher.tflives.com/descargas)
+**[Conocer TFLClient en TFL Selection](https://launcher.tflives.com/selection)** · [Guía de instalación](https://launcher.tflives.com/ayuda/selection) · [Descargar el launcher](https://launcher.tflives.com/descargas)
 
 [Novedades](https://launcher.tflives.com/novedades) · [Ayuda](https://launcher.tflives.com/ayuda) · [Discord](https://discord.gg/tflives) · [Website in English](https://launcher.tflives.com/en)
 
@@ -36,7 +45,7 @@ Objetivo: **Minecraft Java 26.3 / Fabric / Java 25**, estrictamente **client-sid
 - Sin telemetría, conexiones propias, cuentas, tokens ni descarga de código. `telemetryConsent` se fuerza a `false` al normalizar.
 
 ### Interfaz
-- Menú principal TFL Selection con tarjetas de modo, selector de perfil, estado del Core y fondo animado de bajo coste.
+- Menú principal TFLClient con tarjetas de modo, selector de perfil, estado del Core y fondo animado de bajo coste.
 - Temas **BLUE, MIDNIGHT, FROST, EMBER, MONO** y acentos **DEFAULT, CYAN, VIOLET, AMBER, LIME, ROSE**.
 - Modo de alto contraste, transparencia reducida, movimiento reducido y duración de transición configurable.
 - Pantalla de ajustes con seis pestañas (General, Apariencia, HUD, Juego, Teclas, Avanzado), búsqueda y paginación de widgets, reinicio en dos pasos, importación/exportación y diagnóstico.

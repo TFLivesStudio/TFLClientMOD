@@ -32,7 +32,7 @@ El botón **TFL Core** también aparece en el menú de pausa.
 
 ## Menú principal
 
-Cuando `customMainMenu` está activo, TFL Selection reemplaza el título vanilla:
+Cuando `customMainMenu` está activo, TFLClient reemplaza el título vanilla:
 
 - **Un jugador**, **Multijugador**, **TFL Core**, **Opciones** y **Salir**.
 - Selector de perfil en la parte inferior: PVP → SURVIVAL → BUILDER → EXPLORATION → MINIMAL → PVP.
