@@ -1,8 +1,22 @@
 # TFL Selection · TFL Core
 
-[![Fabric 26.3 Build](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml/badge.svg)](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml)
+[![TFL Client — sitio web oficial](https://launcher.tflives.com/images/social/tfl-client-es.png)](https://launcher.tflives.com)
 
-Cliente oficial de Minecraft de **TFLives**, distribuido mediante **TFL Client**.
+Cliente oficial de Minecraft de **TFLives**, distribuido mediante **TFL Client** e impulsado por **TFL Core**.
+
+## Web oficial · [launcher.tflives.com](https://launcher.tflives.com)
+
+Conoce TFL Selection y sus características en la web oficial. Allí encontrarás la presentación del cliente, la guía de instalación y las novedades del ecosistema TFL Client; este repositorio conserva el código fuente y la documentación técnica de TFL Core.
+
+**[Conocer TFL Selection](https://launcher.tflives.com/selection)** · [Guía de instalación](https://launcher.tflives.com/ayuda/selection) · [Descargar el launcher](https://launcher.tflives.com/descargas)
+
+[Novedades](https://launcher.tflives.com/novedades) · [Ayuda](https://launcher.tflives.com/ayuda) · [Discord](https://discord.gg/tflives) · [Website in English](https://launcher.tflives.com/en)
+
+> La web presenta el ecosistema y sus distintas versiones. El estado, los requisitos y las limitaciones descritos a continuación corresponden a la rama `main` de este repositorio; otras versiones candidatas pueden diferir.
+
+---
+
+[![Fabric 26.3 Build](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml/badge.svg)](https://github.com/TFLivesStudio/TFLClientMOD/actions/workflows/build.yml)
 
 ## Estado
 
