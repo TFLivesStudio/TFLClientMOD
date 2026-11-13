@@ -1,7 +1,7 @@
 {
-	"key.categories.trsclient": "TFL Client",
-	"key.category.trsclient.main": "TFL Client",
-	"key.trsclient.menu": "Open TFL Client menu",
+	"key.categories.trsclient": "TFLClient",
+	"key.category.trsclient.main": "TFLClient",
+	"key.trsclient.menu": "Open TFLClient menu",
 	"key.trsclient.zoom": "Zoom (hold)",
 	"key.trsclient.fullbright": "Toggle gamma",
 	"key.trsclient.gammaCycle": "Cycle gamma",

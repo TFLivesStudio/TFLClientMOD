@@ -8,7 +8,7 @@
 
 ## 1. Objetivo y estado del proyecto
 
-TFL Core es el mod **client-side** de TFL Selection, distribuido mediante TFL Client.
+TFL Core impulsa el cliente **TFLClient**, publicado en la biblioteca **TFL Selection** e instalado desde el launcher **TFL Client**.
 El proyecto adopta el código de TRS Client MOD como base funcional y Diorama como
 motor de mapas. No es el launcher de TRS y no debe añadir dependencias de sus
 servicios o infraestructura sin aprobación explícita.
@@ -209,3 +209,9 @@ una release estable antes de superar sus verificaciones.
 **Prioridad:** funcionalidad correcta y datos seguros → calidad visual y UX →
 estabilidad → rendimiento medido → compatibilidad adicional, sin ignorar
 regresiones críticas ni degradar la experiencia por defecto.
+
+## Nombres oficiales
+
+TFL Client es el launcher; TFL Selection es la biblioteca; TFLClient es el cliente
+(sin espacio). Sigue [docs/PRODUCT_NAMES.md](docs/PRODUCT_NAMES.md). Conserva IDs,
+paquetes, rutas y datos guardados al corregir los textos visibles.
