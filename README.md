@@ -1,6 +1,8 @@
-# TFL Client
+# TFLClient
 
-Cliente de Minecraft en desarrollo, con una interfaz nativa compartida, HUD configurable, vídeo azul y mapas basados en **Diorama**.
+TFLClient es el cliente modificado de Minecraft de TFLives, disponible en la biblioteca TFL Selection e instalado desde el launcher TFL Client.
+
+Cliente en desarrollo, con una interfaz nativa compartida, HUD configurable, vídeo azul y mapas basados en **Diorama**.
 
 | Minecraft | Plataforma | Java | Dependencias |
 |---|---|---|---|
@@ -33,3 +35,5 @@ El código activo está en `vendor/trs-client/common`, `vendor/trs-client/fabric
 ## Licencias
 
 TFL deriva de TRS Client MOD, © Ohev Tamerin, bajo GPL-3.0-only. Diorama, © Dara Adedeji, usa MIT y conserva su licencia y procedencia en [vendor/diorama/UPSTREAM.md](vendor/diorama/UPSTREAM.md). Se mantienen COPYING, los avisos originales y las licencias de las dependencias. Los recursos y paquetes internos `trsclient` se conservan para mantener la compatibilidad de datos.
+
+Consulta [los nombres del ecosistema](docs/PRODUCT_NAMES.md) para distinguir cliente, biblioteca y launcher.
