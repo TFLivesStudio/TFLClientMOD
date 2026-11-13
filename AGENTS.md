@@ -8,7 +8,7 @@
 
 ## 1. Objetivo y estado del proyecto
 
-TFL Core es el mod **client-side** de TFL Selection, distribuido mediante TFL Client.
+TFL Core impulsa el cliente **TFLClient**, publicado en la biblioteca **TFL Selection** e instalado desde el launcher **TFL Client**.
 El proyecto adopta el código de TRS Client MOD como base funcional y Diorama como
 motor de mapas. No es el launcher de TRS y no debe añadir dependencias de sus
 servicios o infraestructura sin aprobación explícita.
@@ -216,3 +216,9 @@ regresiones críticas ni degradar la experiencia por defecto.
 **Decisión aprobada:** después de cerrar Audit 5, renovar integralmente las GUIs de TFL Core. **Preservar el main menu** en su composición principal (revisar botones), **pulir ESC** sin perder navegación/chat y **rediseñar el resto** de pantallas que el Core crea o modifica. Mantener lógica, datos, backend de gráficos y soporte Ornithe/Fabric. Dirección: calidad premium propia inspirada en claridad de Lunar y organización de Laby, no copia literal.
 
 **Documentos obligatorios cuando se autorice esa nueva etapa:** `docs/visual-overhaul/README.md`, `VISUAL_DIRECTION.md`, `DESIGN_SYSTEM.md`, `IMPLEMENTATION_AND_ACCEPTANCE.md`. Es una especificación futura: **no iniciar el rediseño mientras Audit 5 siga abierto, ni declarar tareas como implementadas** por existir documentos. Crear rama de implementación desde el HEAD definitivo de Audit 5 y checkpoints recuperables.
+
+## Nombres oficiales
+
+TFL Client es el launcher; TFL Selection es la biblioteca; TFLClient es el cliente
+(sin espacio). Sigue [docs/PRODUCT_NAMES.md](docs/PRODUCT_NAMES.md). Conserva IDs,
+paquetes, rutas y datos guardados al corregir los textos visibles.
